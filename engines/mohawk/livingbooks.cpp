@@ -36,6 +36,8 @@
 
 #include "engines/util.h"
 
+#include "gui/message.h"
+
 namespace Mohawk {
 
 // read a null-terminated string from a stream
@@ -594,6 +596,9 @@ void MohawkEngine_LivingBooks::loadBITL(uint16 resourceId) {
 			break;
 		case kLBMovieItem:
 			res = new LBMovieItem(this, rect);
+			break;
+		case kLBMiniGameItem:
+			res = new LBMiniGameItem(this, rect);
 			break;
 		default:
 			warning("Unknown item type %04x", type);
@@ -1262,7 +1267,7 @@ NodeState LBAnimationNode::update(bool seeking) {
 			uint16 strLen = READ_BE_UINT16(entry.data + 2);
 
 			if (strLen)
-				error("String length for unnamed wave file");
+				warning("Named wave file encountered");
 
 			switch (entry.opcode) {
 			case kLBAnimOpPlaySound:
@@ -3468,6 +3473,41 @@ bool LBMovieItem::togglePlaying(bool playing, bool restart) {
 	}
 
 	return LBItem::togglePlaying(playing, restart);
+}
+
+LBMiniGameItem::LBMiniGameItem(MohawkEngine_LivingBooks *vm, Common::Rect rect) : LBItem(vm, rect) {
+	debug(3, "new LBMiniGameItem");
+}
+
+LBMiniGameItem::~LBMiniGameItem() {
+}
+
+bool LBMiniGameItem::togglePlaying(bool playing, bool restart) {
+	// HACK: Since we don't support any of these hardcoded mini games yet,
+	// just skip to the most logical page. For optional minigames, this
+	// will return the player to the previous page. For mandatory minigames,
+	// this will send the player to the next page.
+	// TODO: Document mini games from Arthur's Reading Race
+
+	uint16 destPage;
+
+	// Figure out what minigame we have and bring us back to a page where
+	// the player can continue
+	if (_desc == "Kitch")     // Green Eggs and Ham: Kitchen minigame
+		destPage = 4;
+	else if (_desc == "Eggs") // Green Eggs and Ham: Eggs minigame
+		destPage = 5;
+	else if (_desc == "Fall") // Green Eggs and Ham: Fall minigame
+		destPage = 13;
+	else
+		error("Unknown minigame '%s'", _desc.c_str());
+
+	GUI::MessageDialog dialog(Common::String::format("The '%s' minigame is not supported yet.", _desc.c_str()));
+	dialog.runModal();
+
+	_vm->addNotifyEvent(NotifyEvent(kLBNotifyChangePage, destPage));
+
+	return false;
 }
 
 } // End of namespace Mohawk

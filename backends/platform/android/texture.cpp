@@ -102,10 +102,12 @@ GLESBaseTexture::~GLESBaseTexture() {
 }
 
 void GLESBaseTexture::release() {
-	LOGD("Destroying texture %u", _texture_name);
+	if (_texture_name) {
+		LOGD("Destroying texture %u", _texture_name);
 
-	GLCALL(glDeleteTextures(1, &_texture_name));
-	_texture_name = 0;
+		GLCALL(glDeleteTextures(1, &_texture_name));
+		_texture_name = 0;
+	}
 }
 
 void GLESBaseTexture::reinit() {
@@ -229,8 +231,12 @@ void GLESTexture::allocBuffer(GLuint w, GLuint h) {
 
 	GLESBaseTexture::allocBuffer(w, h);
 
-	if (_surface.w == oldw && _surface.h == oldh)
+	_surface.pitch = w * _pixelFormat.bytesPerPixel;
+
+	if (_surface.w == oldw && _surface.h == oldh) {
+		fillBuffer(0);
 		return;
+	}
 
 	delete[] _buf;
 	delete[] _pixels;
@@ -239,7 +245,8 @@ void GLESTexture::allocBuffer(GLuint w, GLuint h) {
 	assert(_pixels);
 
 	_surface.pixels = _pixels;
-	_surface.pitch = w * _pixelFormat.bytesPerPixel;
+
+	fillBuffer(0);
 
 	_buf = new byte[w * h * _surface.bytesPerPixel];
 	assert(_buf);
@@ -358,22 +365,27 @@ void GLESPaletteTexture::allocBuffer(GLuint w, GLuint h) {
 
 	GLESBaseTexture::allocBuffer(w, h);
 
-	if (_surface.w == oldw && _surface.h == oldh)
+	_surface.pitch = _texture_width;
+
+	if (_surface.w == oldw && _surface.h == oldh) {
+		fillBuffer(0);
 		return;
-
-	byte *new_buffer = new byte[_paletteSize +
-						_texture_width * _texture_height];
-	assert(new_buffer);
-
-	if (_texture) {
-		// preserve palette
-		memcpy(new_buffer, _texture, _paletteSize);
-		delete[] _texture;
 	}
 
-	_texture = new_buffer;
+	byte *old_texture = _texture;
+
+	_texture = new byte[_paletteSize + _texture_width * _texture_height];
+	assert(_texture);
+
 	_surface.pixels = _texture + _paletteSize;
-	_surface.pitch = _texture_width;
+
+	fillBuffer(0);
+
+	if (old_texture) {
+		// preserve palette
+		memcpy(_texture, old_texture, _paletteSize);
+		delete[] old_texture;
+	}
 }
 
 void GLESPaletteTexture::fillBuffer(uint32 color) {
@@ -480,8 +492,13 @@ void GLESFakePaletteTexture::allocBuffer(GLuint w, GLuint h) {
 
 	GLESBaseTexture::allocBuffer(w, h);
 
-	if (_surface.w == oldw && _surface.h == oldh)
+	_surface.bytesPerPixel = 1;
+	_surface.pitch = w;
+
+	if (_surface.w == oldw && _surface.h == oldh) {
+		fillBuffer(0);
 		return;
+	}
 
 	delete[] _buf;
 	delete[] _pixels;
@@ -491,8 +508,8 @@ void GLESFakePaletteTexture::allocBuffer(GLuint w, GLuint h) {
 
 	// fixup surface, for the outside this is a CLUT8 surface
 	_surface.pixels = _pixels;
-	_surface.bytesPerPixel = 1;
-	_surface.pitch = w;
+
+	fillBuffer(0);
 
 	_buf = new uint16[w * h];
 	assert(_buf);

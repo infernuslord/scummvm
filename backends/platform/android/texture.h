@@ -73,7 +73,7 @@ public:
 		_draw_rect = Common::Rect(x1, y1, x2, y2);
 	}
 
-	inline const Common::Rect &getDrawRect() {
+	inline const Common::Rect &getDrawRect() const {
 		return _draw_rect;
 	}
 
@@ -96,6 +96,10 @@ public:
 
 	inline uint16 pitch() const {
 		return _surface.pitch;
+	}
+
+	inline bool isEmpty() const {
+		return _surface.w == 0 || _surface.h == 0;
 	}
 
 	inline const Graphics::Surface *surface_const() const {
