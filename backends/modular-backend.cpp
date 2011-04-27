@@ -30,6 +30,7 @@
 #include "backends/audiocd/default/default-audiocd.h"
 #include "backends/mutex/null/null-mutex.h"
 #include "backends/graphics/null/null-graphics.h"
+#include "backends/updates/default-updates.h"
 
 #include "gui/message.h"
 
@@ -39,6 +40,7 @@ ModularBackend::ModularBackend()
 	_eventManager(0),
 	_savefileManager(0),
 	_timerManager(0),
+	_updateManager(0),
 	_mutexManager(0),
 	_graphicsManager(0),
 	_mixer(0),
@@ -61,6 +63,8 @@ ModularBackend::~ModularBackend() {
 	_savefileManager = 0;
 	delete _timerManager;
 	_timerManager = 0;
+	delete _updateManager;
+	_updateManager = 0;
 	delete _mutexManager;
 	_mutexManager = 0;
 }

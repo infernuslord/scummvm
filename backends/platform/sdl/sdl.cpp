@@ -38,6 +38,7 @@
 #include "backends/events/sdl/sdl-events.h"
 #include "backends/mutex/sdl/sdl-mutex.h"
 #include "backends/timer/sdl/sdl-timer.h"
+#include "backends/updates/default-updates.h"
 #include "backends/graphics/sdl/sdl-graphics.h"
 #ifdef USE_OPENGL
 #include "backends/graphics/openglsdl/openglsdl-graphics.h"
@@ -124,6 +125,9 @@ void OSystem_SDL::init() {
 
 	if (_timerManager == 0)
 		_timerManager = new SdlTimerManager();
+
+	if (_updateManager == 0)
+		_updateManager = new UpdateManager();
 
 #ifdef USE_OPENGL
 	// Setup a list with both SDL and OpenGL graphics modes
@@ -380,7 +384,7 @@ void OSystem_SDL::setupIcon() {
 
 	if (sscanf(scummvm_icon[0], "%d %d %d %d", &w, &h, &ncols, &nbytes) != 4) {
 		warning("Wrong format of scummvm_icon[0] (%s)", scummvm_icon[0]);
-		
+
 		return;
 	}
 	if ((w > 512) || (h > 512) || (ncols > 255) || (nbytes > 1)) {
