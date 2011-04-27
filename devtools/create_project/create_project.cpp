@@ -692,26 +692,27 @@ TokenList tokenize(const std::string &input) {
 namespace {
 const Feature s_features[] = {
 	// Libraries
-	{    "libz",        "USE_ZLIB", "zlib",             true, "zlib (compression) support" },
-	{     "mad",         "USE_MAD", "libmad",           true, "libmad (MP3) support" },
+	{    "libz",        "USE_ZLIB",             "zlib",  true, "zlib (compression) support" },
+	{     "mad",         "USE_MAD",           "libmad",  true, "libmad (MP3) support" },
 	{  "vorbis",      "USE_VORBIS", "libvorbisfile_static libvorbis_static libogg_static", true, "Ogg Vorbis support" },
-	{    "flac",        "USE_FLAC", "libFLAC_static",   true, "FLAC support" },
-	{     "png",         "USE_PNG", "libpng",           true, "libpng support" },
-	{  "theora",   "USE_THEORADEC", "libtheora_static", true, "Theora decoding support" },
-	{   "mpeg2",       "USE_MPEG2", "libmpeg2",         false, "mpeg2 codec for cutscenes" },
+	{    "flac",        "USE_FLAC",   "libFLAC_static",  true, "FLAC support" },
+	{     "png",         "USE_PNG",           "libpng",  true, "libpng support" },
+	{  "theora",   "USE_THEORADEC", "libtheora_static",  true, "Theora decoding support" },
+	{   "mpeg2",       "USE_MPEG2",         "libmpeg2", false, "mpeg2 codec for cutscenes" },
 
 	// Feature flags
-	{     "scalers",     "USE_SCALERS",         "", true, "Scalers" },
-	{   "hqscalers",  "USE_HQ_SCALERS",         "", true, "HQ scalers" },
-	{       "16bit",   "USE_RGB_COLOR",         "", true, "16bit color support" },
-	{     "mt32emu",     "USE_MT32EMU",         "", true, "integrated MT-32 emulator" },
-	{        "nasm",        "USE_NASM",         "", true, "IA-32 assembly support" }, // This feature is special in the regard, that it needs additional handling.
-	{      "opengl",      "USE_OPENGL", "opengl32", true, "OpenGL support" },
-	{      "indeo3",      "USE_INDEO3",         "", true, "Indeo3 codec support"},
-	{ "translation", "USE_TRANSLATION",         "", true, "Translation support" },
-	{      "vkeybd",   "ENABLE_VKEYBD",         "", false, "Virtual keyboard support"},
-	{  "langdetect",  "USE_DETECTLANG",         "", true, "System language detection support" } // This feature actually depends on "translation", there
-	                                                                                            // is just no current way of properly detecting this...
+	{     "scalers",     "USE_SCALERS",            "",  true, "Scalers" },
+	{   "hqscalers",  "USE_HQ_SCALERS",            "",  true, "HQ scalers" },
+	{       "16bit",   "USE_RGB_COLOR",            "",  true, "16bit color support" },
+	{     "mt32emu",     "USE_MT32EMU",            "",  true, "integrated MT-32 emulator" },
+	{        "nasm",        "USE_NASM",            "",  true, "IA-32 assembly support" },    // This feature is special in the regard, that it needs additional handling.
+	{      "opengl",      "USE_OPENGL",    "opengl32",  true, "OpenGL support" },
+	{      "indeo3",      "USE_INDEO3",            "",  true, "Indeo3 codec support"},
+	{     "updates",     "USE_UPDATES",  "WinSparkle",  true, "Automatic updates check support"},
+	{ "translation", "USE_TRANSLATION",            "",  true, "Translation support" },
+	{      "vkeybd",   "ENABLE_VKEYBD",            "", false, "Virtual keyboard support"},
+	{  "langdetect",  "USE_DETECTLANG",            "",  true, "System language detection support" } // This feature actually depends on "translation", there
+	                                                                                                // is just no current way of properly detecting this...
 };
 } // End of anonymous namespace
 
