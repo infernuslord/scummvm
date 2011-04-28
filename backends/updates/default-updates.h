@@ -49,9 +49,9 @@ public:
 
 	enum UpdateInterval {
 		kUpdateIntervalNotSupported = 0,
-		kUpdateIntervalOneDay       = 1,
-		kUpdateIntervalOneWeek      = 2,
-		kUpdateIntervalOneMonth     = 3
+		kUpdateIntervalOneDay       = 86400,
+		kUpdateIntervalOneWeek      = 604800,
+		kUpdateIntervalOneMonth     = 2628000   // average seconds per month (60*60*24*365)/12
 	};
 
 	UpdateManager() {}
@@ -84,7 +84,7 @@ public:
 	virtual void setAutomaticallyChecksForUpdates(UpdateState state) {};
 
 	/**
-	 * Gets the the automatic update checking state
+	 * Gets the automatic update checking state
 	 *
 	 * @return  kUpdateStateDisabled     if automatic update checking is disabled,
 	 *          kUpdateStateEnabled      if automatic update checking is enabled,
