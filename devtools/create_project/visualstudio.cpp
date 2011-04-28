@@ -217,6 +217,7 @@ void VisualStudioProvider::outputGlobalPropFile(std::ofstream &properties, int b
 	              "\tName=\"" << PROJECT_DESCRIPTION << "_Global\"\n"
 	              "\tOutputDirectory=\"$(ConfigurationName)" << bits << "\"\n"
 	              "\tIntermediateDirectory=\"$(ConfigurationName)" << bits << "/$(ProjectName)\"\n"
+	              "\tEmbedManifest=\"0\"\n"
 	              "\t>\n"
 	              "\t<Tool\n"
 	              "\t\tName=\"VCCLCompilerTool\"\n"

@@ -307,6 +307,7 @@ void MSBuildProvider::outputGlobalPropFile(std::ofstream &properties, int bits, 
 	              "\t\t<IncludePath>$(" << LIBS_DEFINE << ")\\include;$(IncludePath)</IncludePath>\n"
 	              "\t\t<OutDir>$(Configuration)" << bits << "\\</OutDir>\n"
 	              "\t\t<IntDir>$(Configuration)" << bits << "/$(ProjectName)\\</IntDir>\n"
+	              "\t\t\t<EmbedManifest>false</EmbedManifest>\n"
 	              "\t</PropertyGroup>\n"
 	              "\t<ItemDefinitionGroup>\n"
 	              "\t\t<ClCompile>\n"
