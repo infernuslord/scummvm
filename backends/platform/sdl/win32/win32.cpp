@@ -36,6 +36,7 @@
 
 #include "backends/platform/sdl/win32/win32.h"
 #include "backends/fs/windows/windows-fs-factory.h"
+#include "backends/updates/win32/win32-updates.h"
 
 #define DEFAULT_CONFIG_FILE "scummvm.ini"
 
@@ -81,6 +82,11 @@ void OSystem_Win32::init() {
 
 	// Initialze File System Factory
 	_fsFactory = new WindowsFilesystemFactory();
+
+#if defined(USE_UPDATES)
+	// Initialize updates manager
+	_updateManager = new Win32UpdateManager();
+#endif
 
 	// Invoke parent implementation of this method
 	OSystem_SDL::init();

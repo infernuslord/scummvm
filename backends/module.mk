@@ -70,6 +70,7 @@ MODULE_OBJS := \
 	timer/default/default-timer.o \
 	timer/sdl/sdl-timer.o \
 	updates/default-updates.o \
+	updates/win32/win32-updates.o \
 	vkeybd/image-map.o \
 	vkeybd/polygon.o \
 	vkeybd/virtual-keyboard.o \
