@@ -69,6 +69,7 @@ MODULE_OBJS := \
 	saves/posix/posix-saves.o \
 	timer/default/default-timer.o \
 	timer/sdl/sdl-timer.o \
+	updates/default-updates.o \
 	vkeybd/image-map.o \
 	vkeybd/polygon.o \
 	vkeybd/virtual-keyboard.o \

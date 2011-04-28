@@ -26,6 +26,8 @@
 #ifndef BACKENDS_UPDATES_ABSTRACT_H
 #define BACKENDS_UPDATES_ABSTRACT_H
 
+#include "common/str.h"
+
 /**
  * The UpdateManager allows configuring of the automatic update checking
  * for systems that support it:
@@ -54,6 +56,17 @@ public:
 
 	UpdateManager() {}
 	virtual ~UpdateManager() {}
+
+	/**
+	 * Gets the appcast url.
+	 *
+	 * Beta/RC versions and releases might have a different appcast url.
+	 * This function takes care of checking which version of ScummVM is running
+	 * and return the url to the proper appcast.
+	 *
+	 * @return the appcast url.
+	 */
+	Common::String getAppcastUrl();
 
 	/**
 	 * Checks manually if an update is available, showing progress UI to the user.
