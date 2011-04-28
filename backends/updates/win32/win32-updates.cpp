@@ -44,21 +44,53 @@ void Win32UpdateManager::checkForUpdates() {
 }
 
 void Win32UpdateManager::setAutomaticallyChecksForUpdates(UpdateManager::UpdateState state) {
-	// FIXME: Not supported by WinSparkle yet
+	if (state == kUpdateStateNotSupported)
+		return;
+
+	win_sparkle_set_automatic_check_for_updates(state == kUpdateStateEnabled ? 1 : 0);
 }
 
 UpdateManager::UpdateState Win32UpdateManager::getAutomaticallyChecksForUpdates() {
-	// FIXME: Not supported by WinSparkle yet
+	switch (win_sparkle_get_automatic_check_for_updates()) {
+	default:
+		break;
+
+	case 0:
+		return kUpdateStateDisabled;
+
+	case 1:
+		return kUpdateStateEnabled;
+	}
+
 	return kUpdateStateNotSupported;
 }
 
 void Win32UpdateManager::setUpdateCheckInterval(UpdateInterval interval) {
-	// FIXME: Not supported by WinSparkle yet
+	if (interval == kUpdateIntervalNotSupported)
+		return;
+
+	win_sparkle_set_update_check_interval(interval);
 }
 
 UpdateManager::UpdateInterval Win32UpdateManager::getUpdateCheckInterval() {
-	// FIXME: Not supported by WinSparkle yet
-	return kUpdateIntervalNotSupported;
+	// This is kind of a hack but necessary, as the value stored by WinSparkle might have been changed outside of ScummVM
+	// (in which case we return the default interval of one day
+	switch (win_sparkle_get_update_check_interval()) {
+	default:
+		break;
+
+	case kUpdateIntervalOneDay:
+		return kUpdateIntervalOneDay;
+
+	case kUpdateIntervalOneWeek:
+		return kUpdateIntervalOneWeek;
+
+	case kUpdateIntervalOneMonth:
+		return kUpdateIntervalOneMonth;
+	}
+
+	// Return the default value (one day)
+	return kUpdateIntervalOneDay;
 }
 
 #endif
