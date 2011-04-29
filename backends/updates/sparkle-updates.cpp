@@ -25,20 +25,17 @@
 
 #include "backends/updates/sparkle-updates.h"
 
-#include "base/version.h"
-
 #if defined(USE_UPDATES)
 
+// TODO replace by proper URL
+#define APPCAST_BASE_URL "http://littleboy.github.com/appcasts/scummvm/"
+
 Common::String SparkleUpdateManager::getAppcastUrl() {
-	// TODO replace by proper URL
-
-	Common::String url = "http://littleboy.github.com/appcasts/scummvm/release.xml";
-
-	// Check if running beta or rc version and adjust appcast url
-	if (Common::String(gScummVMVersion).contains("git"))
-		url = "http://littleboy.github.com/appcasts/scummvm/beta.xml";
-
-	return url;
+#ifdef RELEASE_BUILD
+	return APPCAST_BASE_URL "release.xml";
+#else
+	return APPCAST_BASE_URL "beta.xml";
+#endif
 }
 
 #endif
