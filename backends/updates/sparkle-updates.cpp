@@ -23,27 +23,22 @@
  *
  */
 
-#ifndef BACKENDS_UPDATES_WIN32_H
-#define BACKENDS_UPDATES_WIN32_H
-
 #include "backends/updates/sparkle-updates.h"
 
-#if defined(WIN32) && defined(USE_UPDATES)
+#include "base/version.h"
 
-class Win32UpdateManager : public SparkleUpdateManager {
-public:
-	Win32UpdateManager();
-	virtual ~Win32UpdateManager();
+#if defined(USE_UPDATES)
 
-	virtual void checkForUpdates();
+Common::String SparkleUpdateManager::getAppcastUrl() {
+	// TODO replace by proper URL
 
-	virtual void setAutomaticallyChecksForUpdates(UpdateState state);
-	virtual UpdateState getAutomaticallyChecksForUpdates();
+	Common::String url = "http://littleboy.github.com/appcasts/scummvm/release.xml";
 
-	virtual void setUpdateCheckInterval(UpdateInterval interval);
-	virtual UpdateInterval getUpdateCheckInterval();
-};
+	// Check if running beta or rc version and adjust appcast url
+	if (Common::String(gScummVMVersion).contains("git"))
+		url = "http://littleboy.github.com/appcasts/scummvm/beta.xml";
+
+	return url;
+}
 
 #endif
-
-#endif // BACKENDS_UPDATES_WIN32_H

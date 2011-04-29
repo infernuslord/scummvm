@@ -69,7 +69,7 @@ MODULE_OBJS := \
 	saves/posix/posix-saves.o \
 	timer/default/default-timer.o \
 	timer/sdl/sdl-timer.o \
-	updates/default-updates.o \
+	updates/sparkle-updates.o \
 	updates/win32/win32-updates.o \
 	vkeybd/image-map.o \
 	vkeybd/polygon.o \

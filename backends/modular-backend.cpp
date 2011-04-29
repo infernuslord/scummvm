@@ -30,7 +30,7 @@
 #include "backends/audiocd/default/default-audiocd.h"
 #include "backends/mutex/null/null-mutex.h"
 #include "backends/graphics/null/null-graphics.h"
-#include "backends/updates/default-updates.h"
+#include "common/updates.h"
 
 #include "gui/message.h"
 

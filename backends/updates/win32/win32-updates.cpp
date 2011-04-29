@@ -50,7 +50,7 @@ void Win32UpdateManager::setAutomaticallyChecksForUpdates(UpdateManager::UpdateS
 	win_sparkle_set_automatic_check_for_updates(state == kUpdateStateEnabled ? 1 : 0);
 }
 
-UpdateManager::UpdateState Win32UpdateManager::getAutomaticallyChecksForUpdates() {
+Common::UpdateManager::UpdateState Win32UpdateManager::getAutomaticallyChecksForUpdates() {
 	switch (win_sparkle_get_automatic_check_for_updates()) {
 	default:
 		break;
@@ -72,7 +72,7 @@ void Win32UpdateManager::setUpdateCheckInterval(UpdateInterval interval) {
 	win_sparkle_set_update_check_interval(interval);
 }
 
-UpdateManager::UpdateInterval Win32UpdateManager::getUpdateCheckInterval() {
+Common::UpdateManager::UpdateInterval Win32UpdateManager::getUpdateCheckInterval() {
 	// This is kind of a hack but necessary, as the value stored by WinSparkle might have been changed outside of ScummVM
 	// (in which case we return the default interval of one day
 	switch (win_sparkle_get_update_check_interval()) {

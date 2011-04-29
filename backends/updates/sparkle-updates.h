@@ -23,22 +23,29 @@
  *
  */
 
+#ifndef BACKENDS_UPDATES_SPARKLE_UPDATE_H
+#define BACKENDS_UPDATES_SPARKLE_UPDATE_H
+
+#include "common/scummsys.h"
+#include "common/str.h"
+#include "common/updates.h"
+
 #if defined(USE_UPDATES)
 
-#include "backends/updates/default-updates.h"
-
-#include "base/version.h"
-
-Common::String UpdateManager::getAppcastUrl() {
-	// TODO replace by proper URL
-
-	Common::String url = "http://littleboy.github.com/appcasts/scummvm/release.xml";
-
-	// Check if running beta or rc version and adjust appcast url
-	if (Common::String(gScummVMVersion).contains("git"))
-		url = "http://littleboy.github.com/appcasts/scummvm/beta.xml";
-
-	return url;
-}
+class SparkleUpdateManager : public Common::UpdateManager {
+public:
+	/**
+	 * Gets the appcast url.
+	 *
+	 * Beta/RC versions and releases might have a different appcast url.
+	 * This function takes care of checking which version of ScummVM is running
+	 * and return the url to the proper appcast.
+	 *
+	 * @return the appcast url.
+	 */
+	Common::String getAppcastUrl();
+};
 
 #endif
+
+#endif // BACKENDS_UPDATES_SPARKLE_UPDATE_H

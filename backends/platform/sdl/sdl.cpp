@@ -38,7 +38,6 @@
 #include "backends/events/sdl/sdl-events.h"
 #include "backends/mutex/sdl/sdl-mutex.h"
 #include "backends/timer/sdl/sdl-timer.h"
-#include "backends/updates/default-updates.h"
 #include "backends/graphics/sdl/sdl-graphics.h"
 #ifdef USE_OPENGL
 #include "backends/graphics/openglsdl/openglsdl-graphics.h"
@@ -67,7 +66,6 @@ OSystem_SDL::OSystem_SDL()
 	_logger(0),
 	_mixerManager(0),
 	_eventSource(0) {
-
 }
 
 OSystem_SDL::~OSystem_SDL() {
@@ -125,9 +123,6 @@ void OSystem_SDL::init() {
 
 	if (_timerManager == 0)
 		_timerManager = new SdlTimerManager();
-
-	if (_updateManager == 0)
-		_updateManager = new UpdateManager();
 
 #ifdef USE_OPENGL
 	// Setup a list with both SDL and OpenGL graphics modes

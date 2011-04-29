@@ -29,10 +29,10 @@
 #include "common/system.h"
 #include "common/timer.h"
 #include "common/savefile.h"
+#include "common/updates.h"
 
 class GraphicsManager;
 class MutexManager;
-class UpdateManager;
 
 /**
  * Base class for modular backends.
@@ -166,7 +166,7 @@ protected:
 	Common::EventManager    *_eventManager;
 	Common::SaveFileManager *_savefileManager;
 	Common::TimerManager    *_timerManager;
-	UpdateManager           *_updateManager;
+	Common::UpdateManager   *_updateManager;
 	MutexManager            *_mutexManager;
 	GraphicsManager         *_graphicsManager;
 	Audio::Mixer            *_mixer;

@@ -26,7 +26,7 @@
 #ifndef BACKENDS_UPDATES_ABSTRACT_H
 #define BACKENDS_UPDATES_ABSTRACT_H
 
-#include "common/str.h"
+namespace Common {
 
 /**
  * The UpdateManager allows configuring of the automatic update checking
@@ -58,30 +58,19 @@ public:
 	virtual ~UpdateManager() {}
 
 	/**
-	 * Gets the appcast url.
-	 *
-	 * Beta/RC versions and releases might have a different appcast url.
-	 * This function takes care of checking which version of ScummVM is running
-	 * and return the url to the proper appcast.
-	 *
-	 * @return the appcast url.
-	 */
-	Common::String getAppcastUrl();
-
-	/**
 	 * Checks manually if an update is available, showing progress UI to the user.
 	 *
 	 * By default, update checks are done silently on start.
 	 * This allows to manually start an update check.
 	 */
-	virtual void checkForUpdates() {};
+	virtual void checkForUpdates() {}
 
 	/**
 	 * Sets the automatic update checking state
 	 *
 	 * @param  state    The state.
 	 */
-	virtual void setAutomaticallyChecksForUpdates(UpdateState state) {};
+	virtual void setAutomaticallyChecksForUpdates(UpdateState state) {}
 
 	/**
 	 * Gets the automatic update checking state
@@ -97,7 +86,7 @@ public:
 	 *
 	 * @param  interval    The interval.
 	 */
-	virtual void setUpdateCheckInterval(UpdateInterval interval) {};
+	virtual void setUpdateCheckInterval(UpdateInterval interval) {}
 
 	/**
 	 * Gets the update check interval.
@@ -106,5 +95,7 @@ public:
 	 */
 	virtual UpdateInterval getUpdateCheckInterval() { return kUpdateIntervalNotSupported; }
 };
+
+}	// End of namespace Common
 
 #endif // BACKENDS_UPDATES_ABSTRACT_H
