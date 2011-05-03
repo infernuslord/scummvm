@@ -29,6 +29,9 @@
 #include "mohawk/sound.h"
 #include "mohawk/video.h"
 
+#include "common/system.h"
+#include "common/textconsole.h"
+
 #ifdef ENABLE_CSTIME
 #include "mohawk/cstime.h"
 #endif
@@ -563,7 +566,7 @@ bool RivenConsole::Cmd_DumpScript(int argc, const char **argv) {
 		// deriven.
 		debugN("\n\nDumping scripts for %s\'s card %d!\n", argv[1], (uint16)atoi(argv[3]));
 		debugN("==================================\n\n");
-		Common::SeekableReadStream *cardStream = _vm->getResource(MKID_BE('CARD'), (uint16)atoi(argv[3]));
+		Common::SeekableReadStream *cardStream = _vm->getResource(MKTAG('C','A','R','D'), (uint16)atoi(argv[3]));
 		cardStream->seek(4);
 		RivenScriptList scriptList = _vm->_scriptMan->readScripts(cardStream, false);
 		for (uint32 i = 0; i < scriptList.size(); i++) {
@@ -576,7 +579,7 @@ bool RivenConsole::Cmd_DumpScript(int argc, const char **argv) {
 		debugN("\n\nDumping scripts for %s\'s card %d hotspots!\n", argv[1], (uint16)atoi(argv[3]));
 		debugN("===========================================\n\n");
 
-		Common::SeekableReadStream *hsptStream = _vm->getResource(MKID_BE('HSPT'), (uint16)atoi(argv[3]));
+		Common::SeekableReadStream *hsptStream = _vm->getResource(MKTAG('H','S','P','T'), (uint16)atoi(argv[3]));
 
 		uint16 hotspotCount = hsptStream->readUint16BE();
 

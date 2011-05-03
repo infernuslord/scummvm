@@ -32,6 +32,7 @@
 #include "backends/platform/sdl/sdl.h"
 #include "common/config-manager.h"
 #include "common/mutex.h"
+#include "common/textconsole.h"
 #include "common/translation.h"
 #include "common/util.h"
 #ifdef USE_RGB_COLOR
@@ -1287,9 +1288,9 @@ Graphics::Surface *SdlGraphicsManager::lockScreen() {
 	_framebuffer.h = _screen->h;
 	_framebuffer.pitch = _screen->pitch;
 #ifdef USE_RGB_COLOR
-	_framebuffer.bytesPerPixel = _screenFormat.bytesPerPixel;
+	_framebuffer.format = _screenFormat;
 #else
-	_framebuffer.bytesPerPixel = 1;
+	_framebuffer.format = Graphics::PixelFormat::createFormatCLUT8();
 #endif
 
 	return &_framebuffer;
@@ -1978,7 +1979,6 @@ void SdlGraphicsManager::drawMouse() {
 
 	SDL_Rect dst;
 	int scale;
-	int width, height;
 	int hotX, hotY;
 
 	dst.x = _mouseCurState.x;
@@ -1986,16 +1986,12 @@ void SdlGraphicsManager::drawMouse() {
 
 	if (!_overlayVisible) {
 		scale = _videoMode.scaleFactor;
-		width = _videoMode.screenWidth;
-		height = _videoMode.screenHeight;
 		dst.w = _mouseCurState.vW;
 		dst.h = _mouseCurState.vH;
 		hotX = _mouseCurState.vHotX;
 		hotY = _mouseCurState.vHotY;
 	} else {
 		scale = 1;
-		width = _videoMode.overlayWidth;
-		height = _videoMode.overlayHeight;
 		dst.w = _mouseCurState.rW;
 		dst.h = _mouseCurState.rH;
 		hotX = _mouseCurState.rHotX;
@@ -2059,7 +2055,11 @@ void SdlGraphicsManager::displayMessageOnOSD(const char *msg) {
 	dst.w = _osdSurface->w;
 	dst.h = _osdSurface->h;
 	dst.pitch = _osdSurface->pitch;
-	dst.bytesPerPixel = _osdSurface->format->BytesPerPixel;
+	dst.format = Graphics::PixelFormat(_osdSurface->format->BytesPerPixel,
+	                                   8 - _osdSurface->format->Rloss, 8 - _osdSurface->format->Gloss,
+	                                   8 - _osdSurface->format->Bloss, 8 - _osdSurface->format->Aloss,
+	                                   _osdSurface->format->Rshift, _osdSurface->format->Gshift,
+	                                   _osdSurface->format->Bshift, _osdSurface->format->Ashift);
 
 	// The font we are going to use:
 	const Graphics::Font *font = FontMan.getFontByUsage(Graphics::FontManager::kOSDFont);
@@ -2279,9 +2279,9 @@ bool SdlGraphicsManager::notifyEvent(const Common::Event &event) {
 				SDL_RWclose(file);
 			}
 			if (saveScreenshot(filename))
-				printf("Saved '%s'\n", filename);
+				debug("Saved screenshot '%s'", filename);
 			else
-				printf("Could not save screenshot!\n");
+				warning("Could not save screenshot");
 			return true;
 		}
 

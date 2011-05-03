@@ -26,7 +26,10 @@
 #if defined(__ANDROID__)
 
 #include "base/main.h"
+#include "base/version.h"
 #include "common/config-manager.h"
+#include "common/error.h"
+#include "common/textconsole.h"
 #include "engines/engine.h"
 
 #include "backends/platform/android/android.h"
@@ -403,6 +406,8 @@ void JNI::setAudioStop() {
 void JNI::create(JNIEnv *env, jobject self, jobject asset_manager,
 				jobject egl, jobject egl_display,
 				jobject at, jint audio_sample_rate, jint audio_buffer_size) {
+	LOGI(gScummVMFullVersion);
+
 	assert(!_system);
 
 	pause = false;

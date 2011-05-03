@@ -26,9 +26,9 @@
 #include "base/plugins.h"
 
 #include "engines/advancedDetector.h"
-#include "common/config-manager.h"
-#include "common/file.h"
 #include "common/savefile.h"
+#include "common/system.h"
+#include "common/textconsole.h"
 
 #include "mohawk/livingbooks.h"
 
@@ -121,6 +121,7 @@ static const PlainGameDescriptor mohawkGames[] = {
 	{"csworld", "Where in the World is Carmen Sandiego?"},
 	{"csamtrak", "Where in America is Carmen Sandiego? (The Great Amtrak Train Adventure)"},
 	{"carmentq", "Carmen Sandiego's ThinkQuick Challenge"},
+	{"carmentqc", "Carmen Sandiego's ThinkQuick Challenge Custom Question Creator"},
 	{"maggiesfa", "Maggie's Farmyard Adventure"},
 	{"jamesmath", "James Discovers/Explores Math"},
 	{"treehouse", "The Treehouse"},
@@ -129,7 +130,7 @@ static const PlainGameDescriptor mohawkGames[] = {
 	{"1stdegree", "In the 1st Degree"},
 	{"csusa", "Where in the USA is Carmen Sandiego?"},
 	{"tortoise", "Aesop's Fables: The Tortoise and the Hare"},
-	{"arthur", "Arthur's Teacher Troubles"},
+	{"arthur", "Arthur's Teacher Trouble"},
 	{"grandma", "Just Grandma and Me"},
 	{"ruff", "Ruff's Bone"},
 	{"newkid", "The New Kid on the Block"},
@@ -140,8 +141,11 @@ static const PlainGameDescriptor mohawkGames[] = {
 	{"rugrats", "Rugrats Adventure Game"},
 	{"lbsampler", "Living Books Sampler"},
 	{"bearfight", "The Berenstain Bears Get in a Fight"},
+	{"beardark", "The Berenstain Bears In The Dark"},
 	{"arthurcomp", "Arthur's Computer Adventure"},
 	{"harryhh","Harry and the Haunted House"},
+	{"stellaluna", "Stellaluna"},
+	{"sheila", "Sheila Rae, the Brave"},
 	{0, 0}
 };
 

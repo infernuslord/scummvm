@@ -33,7 +33,7 @@
 #include "graphics/pict.h"
 
 namespace Graphics {
-	class JPEG;
+class JPEG;
 }
 
 namespace Mohawk {
@@ -241,7 +241,7 @@ private:
 	uint _creditsImage, _creditsPos;
 };
 
-#endif ENABLE_RIVEN
+#endif // ENABLE_RIVEN
 
 class LBGraphics : public GraphicsManager {
 public:

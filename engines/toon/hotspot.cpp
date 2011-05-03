@@ -23,6 +23,8 @@
 *
 */
 
+#include "common/debug.h"
+
 #include "toon/hotspot.h"
 #include "toon/tools.h"
 
@@ -124,10 +126,10 @@ bool Hotspots::LoadRif(Common::String rifName, Common::String additionalRifName)
 
 	// RIFs are compressed in RNC1
 	RncDecoder decoder;
-	decoder.unpackM1(rifData, _items);
+	decoder.unpackM1(rifData, size, _items);
 	if (rifsize2) {
 		RncDecoder decoder2;
-		decoder2.unpackM1(rifData2 , _items + (rifsize >> 9));
+		decoder2.unpackM1(rifData2 , size2, _items + (rifsize >> 9));
 		for (int32 i = 0; i < (rifsize2 >> 9); i++) {
 			HotspotData *hot = _items + (rifsize >> 9) + i;
 			hot->setData(0, hot->getX1() + 1280);

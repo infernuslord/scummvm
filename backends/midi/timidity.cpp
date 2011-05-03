@@ -41,13 +41,13 @@
 
 #if defined(USE_TIMIDITY)
 
-#include "common/util.h"
 #include "common/endian.h"
+#include "common/error.h"
 #include "common/str.h"
+#include "common/textconsole.h"
 #include "audio/musicplugin.h"
 #include "audio/mpu401.h"
 
-#include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -428,10 +428,9 @@ void MidiDriver_TIMIDITY::timidity_write_data(const void *buf, size_t nbytes) {
 }
 
 int MidiDriver_TIMIDITY::fdgets(char *buff, size_t buff_size) {
-	int n, len, count, size;
+	int n, count, size;
 	char *buff_endp = buff + buff_size - 1, *pbuff, *beg;
 
-	len = 0;
 	count = _controlbuffer_count;
 	size = _controlbuffer_size;
 	pbuff = _controlbuffer;

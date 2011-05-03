@@ -25,7 +25,10 @@
 
 #include "mohawk/sound.h"
 
+#include "common/debug.h"
+#include "common/system.h"
 #include "common/util.h"
+#include "common/textconsole.h"
 
 #include "audio/musicplugin.h"
 #include "audio/audiostream.h"
@@ -479,7 +482,7 @@ Audio::AudioStream *Sound::makeMohawkWaveStream(Common::SeekableReadStream *stre
 		return Audio::makeRawStream(dataChunk.audioData, dataChunk.sampleRate, flags);
 	} else if (dataChunk.encoding == kCodecADPCM) {
 		uint32 blockAlign = dataChunk.channels * dataChunk.bitsPerSample / 8;
-		return Audio::makeADPCMStream(dataChunk.audioData, DisposeAfterUse::YES, dataSize, Audio::kADPCMIma, dataChunk.sampleRate, dataChunk.channels, blockAlign);
+		return Audio::makeADPCMStream(dataChunk.audioData, DisposeAfterUse::YES, dataSize, Audio::kADPCMDVI, dataChunk.sampleRate, dataChunk.channels, blockAlign);
 	} else if (dataChunk.encoding == kCodecMPEG2) {
 #ifdef USE_MAD
 		return Audio::makeMP3Stream(dataChunk.audioData, DisposeAfterUse::YES);
@@ -572,6 +575,15 @@ bool Sound::isPlaying(uint16 id) {
 	for (uint32 i = 0; i < _handles.size(); i++)
 		if (_handles[i].type == kUsedHandle && _handles[i].id == id)
 			return _vm->_mixer->isSoundHandleActive(_handles[i].handle);
+
+	return false;
+}
+
+bool Sound::isPlaying() {
+	for (uint32 i = 0; i < _handles.size(); i++)
+		if (_handles[i].type == kUsedHandle)
+			if (_vm->_mixer->isSoundHandleActive(_handles[i].handle))
+				return true;
 
 	return false;
 }

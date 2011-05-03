@@ -31,6 +31,7 @@
  */
 
 #include "common/system.h"
+#include "common/textconsole.h"
 
 #include "hugo/hugo.h"
 #include "hugo/intro.h"
@@ -93,7 +94,7 @@ void intro_v1d::introInit() {
 	surf.h = 200;
 	surf.pixels = _vm->_screen->getFrontBuffer();
 	surf.pitch = 320;
-	surf.bytesPerPixel = 1;
+	surf.format = Graphics::PixelFormat::createFormatCLUT8();
 	_vm->_screen->displayList(kDisplayInit);
 }
 
@@ -247,7 +248,7 @@ void intro_v2d::introInit() {
 	surf.h = 200;
 	surf.pixels = _vm->_screen->getFrontBuffer();
 	surf.pitch = 320;
-	surf.bytesPerPixel = 1;
+	surf.format = Graphics::PixelFormat::createFormatCLUT8();
 
 	char buffer[128];
 
@@ -262,7 +263,7 @@ void intro_v2d::introInit() {
 
 	font.drawString(&surf, buffer, 0, 186, 320, _TLIGHTRED, Graphics::kTextAlignCenter);
 
-	if (scumm_stricmp(_vm->_boot.distrib, "David P. Gray")) {
+	if ((*_vm->_boot.distrib != '\0') && (scumm_stricmp(_vm->_boot.distrib, "David P. Gray"))) {
 		// TROMAN, size 10-5
 		sprintf(buffer, "Distributed by %s.", _vm->_boot.distrib);
 		font.drawString(&surf, buffer, 0, 1, 320, _TLIGHTRED, Graphics::kTextAlignCenter);
@@ -293,7 +294,7 @@ void intro_v3d::introInit() {
 	surf.h = 200;
 	surf.pixels = _vm->_screen->getFrontBuffer();
 	surf.pitch = 320;
-	surf.bytesPerPixel = 1;
+	surf.format = Graphics::PixelFormat::createFormatCLUT8();
 
 	char buffer[128];
 	if (_vm->_boot.registered)
@@ -307,7 +308,7 @@ void intro_v3d::introInit() {
 
 	font.drawString(&surf, buffer, 0, 190, 320, _TBROWN, Graphics::kTextAlignCenter);
 
-	if (scumm_stricmp(_vm->_boot.distrib, "David P. Gray")) {
+	if ((*_vm->_boot.distrib != '\0') && (scumm_stricmp(_vm->_boot.distrib, "David P. Gray"))) {
 		sprintf(buffer, "Distributed by %s.", _vm->_boot.distrib);
 		font.drawString(&surf, buffer, 0, 0, 320, _TBROWN, Graphics::kTextAlignCenter);
 	}

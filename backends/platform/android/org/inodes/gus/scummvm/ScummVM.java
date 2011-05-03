@@ -35,7 +35,7 @@ public abstract class ScummVM implements SurfaceHolder.Callback, Runnable {
 
 	private String[] _args;
 
-	final private native void create(AssetManager _asset_manager,
+	final private native void create(AssetManager asset_manager,
 										EGL10 egl, EGLDisplay egl_display,
 										AudioTrack audio_track,
 										int sample_rate, int buffer_size);
@@ -75,6 +75,14 @@ public abstract class ScummVM implements SurfaceHolder.Callback, Runnable {
 	// SurfaceHolder callback
 	final public void surfaceChanged(SurfaceHolder holder, int format,
 										int width, int height) {
+		// the orientation may reset on standby mode and the theme manager
+		// could assert when using a portrait resolution. so lets not do that.
+		if (height > width) {
+			Log.d(LOG_TAG, String.format("Ignoring surfaceChanged: %dx%d (%d)",
+											width, height, format));
+			return;
+		}
+
 		Log.d(LOG_TAG, String.format("surfaceChanged: %dx%d (%d)",
 										width, height, format));
 

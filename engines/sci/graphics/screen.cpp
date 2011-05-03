@@ -32,6 +32,7 @@
 #include "sci/sci.h"
 #include "sci/engine/state.h"
 #include "sci/graphics/screen.h"
+#include "sci/graphics/view.h"
 
 namespace Sci {
 
@@ -359,7 +360,6 @@ byte GfxScreen::isFillMatch(int16 x, int16 y, byte screenMask, byte t_color, byt
 	int offset = y * _width + x;
 	byte match = 0;
 
-	// FIXME:
 	if (screenMask & GFX_SCREEN_MASK_VISUAL) {
 		if (!isEGA) {
 			if (*(_visualScreen + offset) == t_color)
@@ -695,12 +695,39 @@ void GfxScreen::scale2x(const byte *src, byte *dst, int16 srcWidth, int16 srcHei
 	}
 }
 
-void GfxScreen::adjustToUpscaledCoordinates(int16 &y, int16 &x) {
+struct UpScaledAdjust {
+	GfxScreenUpscaledMode gameHiresMode;
+	Sci32ViewNativeResolution viewNativeRes;
+	int numerator;
+	int denominator;
+};
+
+static const UpScaledAdjust s_upscaledAdjustTable[] = {
+	{ GFX_SCREEN_UPSCALED_640x480, SCI_VIEW_NATIVERES_640x400, 5, 6 }
+};
+
+void GfxScreen::adjustToUpscaledCoordinates(int16 &y, int16 &x, Sci32ViewNativeResolution viewNativeRes) {
 	x *= 2;
 	y = _upscaledMapping[y];
+
+	for (int i = 0; i < ARRAYSIZE(s_upscaledAdjustTable); i++) {
+		if (s_upscaledAdjustTable[i].gameHiresMode == _upscaledHires &&
+				s_upscaledAdjustTable[i].viewNativeRes == viewNativeRes) {
+			y = (y * s_upscaledAdjustTable[i].numerator) / s_upscaledAdjustTable[i].denominator;
+			break;
+		}
+	}
 }
 
-void GfxScreen::adjustBackUpscaledCoordinates(int16 &y, int16 &x) {
+void GfxScreen::adjustBackUpscaledCoordinates(int16 &y, int16 &x, Sci32ViewNativeResolution viewNativeRes) {
+	for (int i = 0; i < ARRAYSIZE(s_upscaledAdjustTable); i++) {
+		if (s_upscaledAdjustTable[i].gameHiresMode == _upscaledHires &&
+				s_upscaledAdjustTable[i].viewNativeRes == viewNativeRes) {
+			y = (y * s_upscaledAdjustTable[i].denominator) / s_upscaledAdjustTable[i].numerator;
+			break;
+		}
+	}
+
 	switch (_upscaledHires) {
 	case GFX_SCREEN_UPSCALED_640x400:
 		x /= 2;

@@ -148,7 +148,7 @@ void MystCursorManager::setCursor(uint16 id) {
 	delete clrcStream;
 
 	// Myst ME stores some cursors as 24bpp images instead of 8bpp
-	if (surface->bytesPerPixel == 1) {
+	if (surface->format.bytesPerPixel == 1) {
 		CursorMan.replaceCursor((byte *)surface->pixels, surface->w, surface->h, hotspotX, hotspotY, 0);
 		CursorMan.replaceCursorPalette(mhkSurface->getPalette(), 0, 256);
 	} else {
@@ -221,7 +221,7 @@ void MacCursorManager::setCursor(uint16 id) {
 	}
 
 	// Try a color cursor first
-	Common::SeekableReadStream *stream = _resFork->getResource(MKID_BE('crsr'), id);
+	Common::SeekableReadStream *stream = _resFork->getResource(MKTAG('c','r','s','r'), id);
 
 	if (stream) {
 		byte *cursor, *palette;
@@ -239,7 +239,7 @@ void MacCursorManager::setCursor(uint16 id) {
 	}
 
 	// Fall back to b&w cursors
-	stream = _resFork->getResource(MKID_BE('CURS'), id);
+	stream = _resFork->getResource(MKTAG('C','U','R','S'), id);
 
 	if (stream) {
 		setMacXorCursor(stream);
