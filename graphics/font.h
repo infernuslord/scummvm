@@ -17,9 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- * $URL$
- * $Id$
  */
 
 #ifndef GRAPHICS_FONT_H
@@ -117,18 +114,6 @@ public:
 	int wordWrapText(const Common::String &str, int maxWidth, Common::Array<Common::String> &lines) const;
 };
 
-/**
- * A SCUMM style font.
- */
-class ScummFont : public Font {
-public:
-	virtual int getFontHeight() const { return 8; }
-	virtual int getMaxCharWidth() const { return 8; }
-
-	virtual int getCharWidth(byte chr) const;
-	virtual void drawChar(Surface *dst, byte chr, int x, int y, uint32 color) const;
-};
-
 typedef uint16 bitmap_t; /* bitmap image unit size*/
 
 struct BBX {
@@ -160,15 +145,15 @@ struct NewFontData;
 
 class NewFont : public Font {
 protected:
-	FontDesc desc;
-	NewFontData *font;
+	FontDesc _desc;
+	NewFontData *_font;
 
 public:
-	NewFont(const FontDesc &d, NewFontData *font_ = 0) : desc(d), font(font_) {}
+	NewFont(const FontDesc &desc, NewFontData *font = 0) : _desc(desc), _font(font) {}
 	~NewFont();
 
-	virtual int getFontHeight() const { return desc.height; }
-	virtual int getMaxCharWidth() const { return desc.maxwidth; }
+	virtual int getFontHeight() const { return _desc.height; }
+	virtual int getMaxCharWidth() const { return _desc.maxwidth; }
 
 	virtual int getCharWidth(byte chr) const;
 	virtual void drawChar(Surface *dst, byte chr, int x, int y, uint32 color) const;

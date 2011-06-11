@@ -18,12 +18,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #if defined(__ANDROID__)
+
+// Allow use of stuff in <time.h>
+#define FORBIDDEN_SYMBOL_EXCEPTION_time_h
+
+// Disable printf override in common/forbidden.h to avoid
+// clashes with log.h from the Android SDK.
+// That header file uses
+//   __attribute__ ((format(printf, 3, 4)))
+// which gets messed up by our override mechanism; this could
+// be avoided by either changing the Android SDK to use the equally
+// legal and valid
+//   __attribute__ ((format(printf, 3, 4)))
+// or by refining our printf override to use a varadic macro
+// (which then wouldn't be portable, though).
+// Anyway, for now we just disable the printf override globally
+// for the Android port
+#define FORBIDDEN_SYMBOL_EXCEPTION_printf
 
 #include "common/endian.h"
 #include "graphics/conversion.h"
@@ -165,7 +179,7 @@ void OSystem_Android::initSurface() {
 
 	JNI::initSurface();
 
-	// Initialise OpenGLES context.
+	// Initialize OpenGLES context.
 	GLESTexture::initGLExtensions();
 
 	if (_game_texture)
@@ -787,12 +801,10 @@ void OSystem_Android::setCursorPalette(const byte *colors,
 	_use_mouse_palette = true;
 }
 
-void OSystem_Android::disableCursorPalette(bool disable) {
-	ENTER("%d", disable);
-
+void OSystem_Android::disableCursorPalette() {
 	// when disabling the cursor palette, and we're running a clut8 game,
 	// it expects the game palette to be used for the cursor
-	if (disable && _game_texture->hasPalette()) {
+	if (_game_texture->hasPalette()) {
 		const byte *src = _game_texture->palette_const();
 		byte *dst = _mouse_texture_palette->palette();
 
@@ -811,8 +823,6 @@ void OSystem_Android::disableCursorPalette(bool disable) {
 		byte *p = _mouse_texture_palette->palette() + _mouse_keycolor * 2;
 		WRITE_UINT16(p, READ_UINT16(p) & ~1);
 	}
-
-	_use_mouse_palette = !disable;
 }
 
 #endif

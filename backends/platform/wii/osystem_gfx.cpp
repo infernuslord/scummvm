@@ -19,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#define FORBIDDEN_SYMBOL_EXCEPTION_printf
+
 #include <malloc.h>
 
 #include <gxflux/gfx_con.h>
@@ -390,15 +392,6 @@ void OSystem_Wii::setCursorPalette(const byte *colors, uint start, uint num) {
 		d[start + i] = Graphics::ARGBToColor<Graphics::ColorMasks<3444> >(0xff, s[0], s[1], s[2]);
 
 	_cursorPaletteDirty = true;
-}
-
-void OSystem_Wii::disableCursorPalette(bool disable) {
-	_cursorPaletteDisabled = disable;
-
-	if (_texMouse.palette && disable) {
-		memcpy(_texMouse.palette, _cursorPalette, 256 * 2);
-		_cursorPaletteDirty = true;
-	}
 }
 
 void OSystem_Wii::copyRectToScreen(const byte *buf, int pitch, int x, int y,

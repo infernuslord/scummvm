@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #include "engines/advancedDetector.h"
@@ -374,38 +371,14 @@ static ADGameDescription s_fallbackDesc = {
 
 static char s_fallbackGameIdBuf[256];
 
-
-static const ADParams detectionParams = {
-	// Pointer to ADGameDescription or its superset structure
-	(const byte *)Sci::SciGameDescriptions,
-	// Size of that superset structure
-	sizeof(ADGameDescription),
-	// Number of bytes to compute MD5 sum for
-	5000,
-	// List of all engine targets
-	s_sciGameTitles,
-	// Structure for autoupgrading obsolete targets
-	0,
-	// Name of single gameid (optional)
-	"sci",
-	// List of files for file-based fallback detection (optional)
-	0,
-	// Flags
-	0,
-	// Additional GUI options (for every game}
-	Common::GUIO_NONE,
-	// Maximum directory depth
-	1,
-	// List of directory globs
-	0
-};
-
 class SciMetaEngine : public AdvancedMetaEngine {
 public:
-	SciMetaEngine() : AdvancedMetaEngine(detectionParams) {}
+	SciMetaEngine() : AdvancedMetaEngine(Sci::SciGameDescriptions, sizeof(ADGameDescription), s_sciGameTitles) {
+		params.singleid = "sci";
+	}
 
 	virtual const char *getName() const {
-		return "SCI Engine [SCI0, SCI01, SCI10, SCI11"
+		return "SCI [SCI0, SCI01, SCI10, SCI11"
 #ifdef ENABLE_SCI32
 			", SCI32"
 #endif
@@ -751,7 +724,7 @@ Common::Error SciEngine::loadGameState(int slot) {
 	}
 }
 
-Common::Error SciEngine::saveGameState(int slot, const char *desc) {
+Common::Error SciEngine::saveGameState(int slot, const Common::String &desc) {
 	Common::String fileName = Common::String::format("%s.%03d", _targetName.c_str(), slot);
 	Common::SaveFileManager *saveFileMan = g_engine->getSaveFileManager();
 	Common::OutSaveFile *out = saveFileMan->openForSaving(fileName);

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 namespace Sci {
@@ -505,6 +502,14 @@ static const struct ADGameDescription SciGameDescriptions[] = {
 		{"resource.000", 0, "1c4093f7248240329121fdf8c0d59152", 4231946},
 		AD_LISTEND},
 		Common::FR_FRA, Common::kPlatformPC, 0, GUIO_NOSPEECH	},
+
+	// Eco Quest 2 - Spanish DOS Floppy (supplied by umbrio in bug report #3313962)
+	{"ecoquest2", "Floppy", {
+		{"resource.map", 0, "a6b271b934afa7e84d03816a4fefa67b", 5593},
+		{"resource.000", 0, "1c4093f7248240329121fdf8c0d59152", 4209150},
+		{"resource.msg", 0, "eff8be1925d42288de55e405983e9314", 117810},
+		AD_LISTEND},
+		Common::ES_ESP, Common::kPlatformPC, 0, GUIO_NOSPEECH	},
 
 	// Freddy Pharkas - English DOS demo (from FRG)
 	// SCI interpreter version 1.001.069

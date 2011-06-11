@@ -19,6 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+// Allow use of stuff in <time.h>
+#define FORBIDDEN_SYMBOL_EXCEPTION_time_h
+
+#define FORBIDDEN_SYMBOL_EXCEPTION_printf
+#define FORBIDDEN_SYMBOL_EXCEPTION_getcwd
+
 #include <unistd.h>
 
 #include <ogc/conf.h>
@@ -28,6 +34,8 @@
 #include "common/config-manager.h"
 #include "common/textconsole.h"
 #include "backends/fs/wii/wii-fs-factory.h"
+#include "backends/saves/default/default-saves.h"
+#include "backends/timer/default/default-timer.h"
 
 #include "osystem.h"
 #include "options.h"
@@ -90,20 +98,12 @@ OSystem_Wii::OSystem_Wii() :
 	_padSensitivity(16),
 	_padAcceleration(4),
 
-	_savefile(NULL),
-	_mixer(NULL),
-	_timer(NULL) {
+	_mixer(NULL) {
 }
 
 OSystem_Wii::~OSystem_Wii() {
-	delete _savefile;
-	_savefile = NULL;
-
 	delete _mixer;
 	_mixer = NULL;
-
-	delete _timer;
-	_timer = NULL;
 }
 
 void OSystem_Wii::initBackend() {
@@ -137,14 +137,14 @@ void OSystem_Wii::initBackend() {
 	if (!getcwd(buf, MAXPATHLEN))
 		strcpy(buf, "/");
 
-	_savefile = new DefaultSaveFileManager(buf);
-	_timer = new DefaultTimerManager();
+	_savefileManager = new DefaultSaveFileManager(buf);
+	_timerManager = new DefaultTimerManager();
 
 	initGfx();
 	initSfx();
 	initEvents();
 
-	OSystem::initBackend();
+	EventsBaseBackend::initBackend();
 }
 
 void OSystem_Wii::quit() {
@@ -169,7 +169,7 @@ void OSystem_Wii::engineDone() {
 bool OSystem_Wii::hasFeature(Feature f) {
 	return (f == kFeatureFullscreenMode) ||
 			(f == kFeatureAspectRatioCorrection) ||
-			(f == kFeatureCursorHasPalette) ||
+			(f == kFeatureCursorPalette) ||
 			(f == kFeatureOverlaySupportsAlpha);
 }
 
@@ -182,6 +182,13 @@ void OSystem_Wii::setFeatureState(Feature f, bool enable) {
 	case kFeatureAspectRatioCorrection:
 		_arCorrection = enable;
 		break;
+	case kFeatureCursorPalette:
+		_cursorPaletteDisabled = !enable;
+		if (_texMouse.palette && !enable) {
+			memcpy(_texMouse.palette, _cursorPalette, 256 * 2);
+			_cursorPaletteDirty = true;
+		}
+		break;
 	default:
 		break;
 	}
@@ -193,6 +200,8 @@ bool OSystem_Wii::getFeatureState(Feature f) {
 		return _fullscreen;
 	case kFeatureAspectRatioCorrection:
 		return _arCorrection;
+	case kFeatureCursorPalette:
+		return !_cursorPaletteDisabled;
 	default:
 		return false;
 	}
@@ -246,19 +255,9 @@ void OSystem_Wii::setWindowCaption(const char *caption) {
 	printf("window caption: %s\n", caption);
 }
 
-Common::SaveFileManager *OSystem_Wii::getSavefileManager() {
-	assert(_savefile);
-	return _savefile;
-}
-
 Audio::Mixer *OSystem_Wii::getMixer() {
 	assert(_mixer);
 	return _mixer;
-}
-
-Common::TimerManager *OSystem_Wii::getTimerManager() {
-	assert(_timer);
-	return _timer;
 }
 
 FilesystemFactory *OSystem_Wii::getFilesystemFactory() {
@@ -362,7 +361,7 @@ Common::String OSystem_Wii::getSystemLanguage() const {
 	} else {
 		// This will only happen when new languages are added to the API.
 		warning("WII: Unknown system language: %d", langID);
-		return BaseBackend::getSystemLanguage();
+		return EventsBaseBackend::getSystemLanguage();
 	}
 }
 #endif // !GAMECUBE

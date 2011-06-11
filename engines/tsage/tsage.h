@@ -18,15 +18,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #ifndef TSAGE_H
 #define TSAGE_H
 
-#include "engines/advancedDetector.h"
 #include "engines/engine.h"
 #include "common/rect.h"
 #include "audio/mixer.h"
@@ -86,11 +82,11 @@ public:
 	virtual bool canLoadGameStateCurrently();
 	virtual bool canSaveGameStateCurrently();
 	virtual Common::Error loadGameState(int slot);
-	virtual Common::Error saveGameState(int slot, const char *desc);
+	virtual Common::Error saveGameState(int slot, const Common::String &desc);
 	Common::String generateSaveName(int slot);
 
-	void initialise();
-	void deinitialise();
+	void initialize();
+	void deinitialize();
 };
 
 extern TSageEngine *_vm;

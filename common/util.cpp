@@ -17,9 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- * $URL$
- * $Id$
  */
 
 #include "common/util.h"
@@ -213,7 +210,8 @@ const PlatformDescription g_platforms[] = {
 	{ "segacd", "segacd", "sega", "SegaCD", kPlatformSegaCD },
 	{ "windows", "win", "win", "Windows", kPlatformWindows },
 	{ "playstation", "psx", "psx", "Sony PlayStation", kPlatformPSX },
-	{ "cdi", "cdi", "cdi", "Phillips CD-i", kPlatformCDi },
+	{ "cdi", "cdi", "cdi", "Philips CD-i", kPlatformCDi },
+	{ "ios", "ios", "ios", "Apple iOS", kPlatformIOS },
 
 	{ 0, 0, 0, "Default", kPlatformUnknown }
 };

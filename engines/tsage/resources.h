@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #ifndef RING_RESOURCES_H
@@ -159,7 +156,7 @@ public:
 	byte *getResource(ResourceType resType, uint16 resNum, uint16 rlbNum, bool suppressErrors = false);
 	bool getPalette(int paletteNum, byte *palData, uint *startNum, uint *numEntries);
 	byte *getSubResource(int resNum, int rlbNum, int index, uint *size, bool suppressErrors = false);
-	Common::String getMessage(int resNum, int lineNum, bool suppressErrors = false);
+	bool getMessage(int resNum, int lineNum, Common::String &result, bool suppressErrors = false);
 };
 
 class ResourceManager {

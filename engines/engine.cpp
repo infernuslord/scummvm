@@ -17,10 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- * $URL$
- * $Id$
  */
+
+#define FORBIDDEN_SYMBOL_EXCEPTION_getcwd
 
 #if defined(WIN32) && !defined(_WIN32_WCE) && !defined(__SYMBIAN32__)
 #define WIN32_LEAN_AND_MEAN
@@ -207,12 +206,8 @@ void initGraphics(int width, int height, bool defaultTo1xScaler, const Graphics:
 
 	// Error out on size switch failure
 	if (gfxError & OSystem::kTransactionSizeChangeFailed) {
-		char buffer[16];
-		snprintf(buffer, 16, "%dx%d", width, height);
-
-		Common::String message = "Could not switch to resolution: '";
-		message += buffer;
-		message += "'.";
+		Common::String message;
+		message = Common::String::format("Could not switch to resolution: '%dx%d'.", width, height);
 
 		GUIErrorMessage(message);
 		error("%s", message.c_str());
@@ -475,7 +470,7 @@ bool Engine::canLoadGameStateCurrently() {
 	return false;
 }
 
-Common::Error Engine::saveGameState(int slot, const char *desc) {
+Common::Error Engine::saveGameState(int slot, const Common::String &desc) {
 	// Do nothing by default
 	return Common::kNoError;
 }

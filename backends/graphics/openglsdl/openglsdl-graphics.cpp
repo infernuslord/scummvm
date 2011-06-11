@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #include "common/scummsys.h"
@@ -31,6 +28,7 @@
 #include "backends/platform/sdl/sdl.h"
 #include "common/config-manager.h"
 #include "common/textconsole.h"
+#include "common/translation.h"
 
 OpenGLSdlGraphicsManager::OpenGLSdlGraphicsManager()
 	:
@@ -397,7 +395,8 @@ void OpenGLSdlGraphicsManager::displayModeChangedMsg() {
 		const int scaleFactor = getScale();
 
 		char buffer[128];
-		sprintf(buffer, "Current display mode: %s\n%d x %d -> %d x %d",
+		sprintf(buffer, "%s: %s\n%d x %d -> %d x %d",
+			_("Current display mode"),
 			newModeName,
 			_videoMode.screenWidth * scaleFactor,
 			_videoMode.screenHeight * scaleFactor,
@@ -409,7 +408,8 @@ void OpenGLSdlGraphicsManager::displayModeChangedMsg() {
 void OpenGLSdlGraphicsManager::displayScaleChangedMsg() {
 	char buffer[128];
 	const int scaleFactor = getScale();
-	sprintf(buffer, "Current scale: x%d\n%d x %d -> %d x %d",
+	sprintf(buffer, "%s: x%d\n%d x %d -> %d x %d",
+		_("Current scale"),
 		scaleFactor,
 		_videoMode.screenWidth, _videoMode.screenHeight,
 		_videoMode.overlayWidth, _videoMode.overlayHeight
@@ -452,11 +452,13 @@ void OpenGLSdlGraphicsManager::toggleFullScreen(int loop) {
 #ifdef USE_OSD
 	char buffer[128];
 	if (getFullscreenMode())
-		sprintf(buffer, "Fullscreen mode\n%d x %d",
+		sprintf(buffer, "%s\n%d x %d",
+			_("Fullscreen mode"),
 			_hwscreen->w, _hwscreen->h
 			);
 	else
-		sprintf(buffer, "Windowed mode\n%d x %d",
+		sprintf(buffer, "%s\n%d x %d",
+			_("Windowed mode"),
 			_hwscreen->w, _hwscreen->h
 			);
 	displayMessageOnOSD(buffer);
@@ -511,11 +513,13 @@ bool OpenGLSdlGraphicsManager::notifyEvent(const Common::Event &event) {
 #ifdef USE_OSD
 			char buffer[128];
 			if (getFeatureState(OSystem::kFeatureAspectRatioCorrection))
-				sprintf(buffer, "Enabled aspect ratio correction\n%d x %d -> %d x %d",
+				sprintf(buffer, "%s\n%d x %d -> %d x %d",
+						_("Enabled aspect ratio correction"),
 				        _videoMode.screenWidth, _videoMode.screenHeight,
 				        _hwscreen->w, _hwscreen->h);
 			else
-				sprintf(buffer, "Disabled aspect ratio correction\n%d x %d -> %d x %d",
+				sprintf(buffer, "%s\n%d x %d -> %d x %d",
+						_("Disabled aspect ratio correction"),
 				        _videoMode.screenWidth, _videoMode.screenHeight,
 				        _hwscreen->w, _hwscreen->h);
 			displayMessageOnOSD(buffer);
@@ -535,9 +539,9 @@ bool OpenGLSdlGraphicsManager::notifyEvent(const Common::Event &event) {
 				// modes we use, we might want to consider a better way of
 				// displaying information to the user.
 				if (getAntialiasingState())
-					displayMessageOnOSD("Active filter mode: Linear");
+					displayMessageOnOSD(_("Active filter mode: Linear"));
 				else
-					displayMessageOnOSD("Active filter mode: Nearest");
+					displayMessageOnOSD(_("Active filter mode: Nearest"));
 #endif
 				return true;
 			}

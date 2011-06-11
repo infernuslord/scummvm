@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #include "base/plugins.h"
@@ -44,11 +41,11 @@ uint32 MadsM4Engine::getFeatures() const { return _gameDescription->features; }
 Common::Language MadsM4Engine::getLanguage() const { return _gameDescription->desc.language; }
 Common::Platform MadsM4Engine::getPlatform() const { return _gameDescription->desc.platform; }
 
-}
+} // End of namespace M4
 
 static const PlainGameDescriptor m4Games[] = {
 	{"m4", "MADS/M4 engine game"},
-	{"riddle", "Riddle of Master Lu: Believe it or Not!"},
+	{"riddle", "Ripley's Believe It or Not!: The Riddle of Master Lu"},
 	{"burger", "Orion Burger"},
 	{"rex", "Rex Nebular and the Cosmic Gender Bender"},
 	{"dragon", "DragonSphere"},
@@ -380,39 +377,24 @@ static const M4GameDescription gameDescriptions[] = {
 	{ AD_TABLE_END_MARKER, 0, 0 }
 };
 
-}
+} // End of namespace M4
 
-static const ADParams detectionParams = {
-	// Pointer to ADGameDescription or its superset structure
-	(const byte *)M4::gameDescriptions,
-	// Size of that superset structure
-	sizeof(M4::M4GameDescription),
-	// Number of bytes to compute MD5 sum for
-	5000,
-	// List of all engine targets
-	m4Games,
-	// Structure for autoupgrading obsolete targets
-	0,
-	// Name of single gameid (optional)
-	"m4",
-	// List of files for file-based fallback detection (optional)
-	0,
-	// Flags
-	0,
-	// Additional GUI options (for every game}
-	Common::GUIO_NOMIDI,
-	// Maximum directory depth
-	1,
-	// List of directory globs
+static const char *directoryGlobs[] = {
+	"option1",
 	0
 };
 
 class M4MetaEngine : public AdvancedMetaEngine {
 public:
-	M4MetaEngine() : AdvancedMetaEngine(detectionParams) {}
+	M4MetaEngine() : AdvancedMetaEngine(M4::gameDescriptions, sizeof(M4::M4GameDescription), m4Games) {
+		params.singleid = "m4";
+		params.guioptions = Common::GUIO_NOMIDI;
+		params.depth = 2;
+		params.directoryGlobs = directoryGlobs;
+	}
 
 	virtual const char *getName() const {
-		return "MADS/M4 engine";
+		return "MADS/M4";
 	}
 
 	virtual const char *getOriginalCopyright() const {

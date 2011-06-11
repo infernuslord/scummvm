@@ -17,9 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- * $URL$
- * $Id$
  */
 
 #include "kyra/kyra_lok.h"
@@ -50,39 +47,17 @@ const char * const directoryGlobs[] = {
 	0
 };
 
-static const ADParams detectionParams = {
-	// Pointer to ADGameDescription or its superset structure
-	(const byte *)adGameDescs,
-	// Size of that superset structure
-	sizeof(KYRAGameDescription),
-	// Number of bytes to compute MD5 sum for
-	1024 * 1024,
-	// List of all engine targets
-	gameList,
-	// Structure for autoupgrading obsolete targets
-	0,
-	// Name of single gameid (optional)
-	0,
-	// List of files for file-based fallback detection (optional)
-	0,
-	// Flags
-	0,
-	// Additional GUI options (for every game}
-	Common::GUIO_NONE,
-	// Maximum directory depth
-	2,
-	// List of directory globs
-	directoryGlobs
-};
-
 } // End of anonymous namespace
 
 class KyraMetaEngine : public AdvancedMetaEngine {
 public:
-	KyraMetaEngine() : AdvancedMetaEngine(detectionParams) {}
-
+	KyraMetaEngine() : AdvancedMetaEngine(adGameDescs, sizeof(KYRAGameDescription), gameList) {
+		params.md5Bytes = 1024 * 1024;
+		params.depth = 2;
+		params.directoryGlobs = directoryGlobs;
+	}
 	const char *getName() const {
-		return "Legend of Kyrandia Engine";
+		return "Kyra";
 	}
 
 	const char *getOriginalCopyright() const {

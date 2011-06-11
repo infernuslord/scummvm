@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #include "common/config-manager.h"
@@ -69,29 +66,20 @@ static const PlainGameDescriptor tSageGameTitles[] = {
 
 #include "engines/tsage/detection_tables.h"
 
-static const ADParams detectionParams = {
-	(const byte *)tSage::gameDescriptions,
-	sizeof(tSage::tSageGameDescription),
-	0,
-	tSageGameTitles,
-	0,
-	"tsage",
-	NULL,
-	0,
-	Common::GUIO_NONE,
-	0,
-	NULL
+enum {
+	MAX_SAVES = 100
 };
-
-#define MAX_SAVES 100
 
 class TSageMetaEngine : public AdvancedMetaEngine {
 public:
-	TSageMetaEngine() : AdvancedMetaEngine(detectionParams) {
+	TSageMetaEngine() : AdvancedMetaEngine(tSage::gameDescriptions, sizeof(tSage::tSageGameDescription), tSageGameTitles) {
+		params.md5Bytes = 5000;
+		params.singleid = "tsage";
+		params.guioptions = Common::GUIO_NOSPEECH;
 	}
 
 	virtual const char *getName() const {
-		return "TsAGE Engine";
+		return "TsAGE";
 	}
 
 	virtual const char *getOriginalCopyright() const {

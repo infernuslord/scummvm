@@ -445,14 +445,14 @@ bool GPHGraphicsManager::loadGFXMode() {
 		_videoMode.aspectRatioCorrection = false;
 	}
 
-	fprintf(stdout, "Game ScreenMode = %d*%d\n", _videoMode.screenWidth, _videoMode.screenHeight);
+	debug("Game ScreenMode = %d*%d", _videoMode.screenWidth, _videoMode.screenHeight);
 	if (_videoMode.screenWidth > 320 || _videoMode.screenHeight > 240) {
 		_videoMode.aspectRatioCorrection = false;
 		setGraphicsMode(GFX_HALF);
-		fprintf(stdout, "GraphicsMode set to HALF\n");
+		debug("GraphicsMode set to HALF");
 	} else {
 		setGraphicsMode(GFX_NORMAL);
-		fprintf(stdout, "GraphicsMode set to NORMAL\n");
+		debug("GraphicsMode set to NORMAL");
 	}
 
 	if ((_videoMode.mode == GFX_HALF) && !_overlayVisible) {
@@ -476,7 +476,7 @@ bool GPHGraphicsManager::loadGFXMode() {
 bool GPHGraphicsManager::hasFeature(OSystem::Feature f) {
 	return
 	    (f == OSystem::kFeatureAspectRatioCorrection) ||
-	    (f == OSystem::kFeatureCursorHasPalette);
+	    (f == OSystem::kFeatureCursorPalette);
 }
 
 void GPHGraphicsManager::setFeatureState(OSystem::Feature f, bool enable) {

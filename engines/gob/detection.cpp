@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #include "base/plugins.h"
@@ -89,37 +86,17 @@ static const ADObsoleteGameID obsoleteGameIDsTable[] = {
 
 #include "gob/detection_tables.h"
 
-static const ADParams detectionParams = {
-	// Pointer to ADGameDescription or its superset structure
-	(const byte *)Gob::gameDescriptions,
-	// Size of that superset structure
-	sizeof(Gob::GOBGameDescription),
-	// Number of bytes to compute MD5 sum for
-	5000,
-	// List of all engine targets
-	gobGames,
-	// Structure for autoupgrading obsolete targets
-	obsoleteGameIDsTable,
-	// Name of single gameid (optional)
-	"gob",
-	// List of files for file-based fallback detection (optional)
-	Gob::fileBased,
-	// Flags
-	0,
-	// Additional GUI options (for every game}
-	Common::GUIO_NOLAUNCHLOAD,
-	// Maximum directory depth
-	1,
-	// List of directory globs
-	0
-};
-
 class GobMetaEngine : public AdvancedMetaEngine {
 public:
-	GobMetaEngine() : AdvancedMetaEngine(detectionParams) {}
+	GobMetaEngine() : AdvancedMetaEngine(Gob::gameDescriptions, sizeof(Gob::GOBGameDescription), gobGames) {
+		params.obsoleteList = obsoleteGameIDsTable;
+		params.singleid = "gob";
+		params.fileBasedFallback = Gob::fileBased;
+		params.guioptions = Common::GUIO_NOLAUNCHLOAD;
+	}
 
 	virtual const char *getName() const {
-		return "Gob Engine";
+		return "Gob";
 	}
 
 	virtual const char *getOriginalCopyright() const {

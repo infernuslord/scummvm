@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * $URL$
- * $Id$
- *
  */
 
 #ifndef WINCE_SDL_H
@@ -61,7 +58,6 @@ public:
 	void getTimeAndDate(TimeDate &t) const;
 
 	virtual Common::String getDefaultConfigFileName();
-	virtual FilesystemFactory *getFilesystemFactory();
 
 	void swap_sound_master();
 
@@ -76,8 +72,6 @@ public:
 protected:
 	void initSDL();
 	Audio::MixerImpl *_mixer;
-	DefaultTimerManager *_timer;
-	FilesystemFactory *_fsFactory;
 
 private:
 	void check_mappings();
