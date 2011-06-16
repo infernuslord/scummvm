@@ -18,39 +18,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
+ * $URL: https://svn.scummvm.org:4444/svn/dreamweb/console.h $
+ * $Id: console.h 70 2011-01-26 05:36:55Z digitall $
+ *
  */
 
-#if !defined(BACKEND_EVENTS_SDL_GP2X_H) && !defined(DISABLE_DEFAULT_EVENTMANAGER)
-#define BACKEND_EVENTS_SDL_GP2X_H
+#ifndef DREAMWEB_CONSOLE_H
+#define DREAMWEB_CONSOLE_H
 
-#include "backends/events/sdl/sdl-events.h"
+#include "gui/debugger.h"
 
-/**
- * SDL events manager for GP2X
- */
-class GP2XSdlEventSource : public SdlEventSource {
+namespace DreamWeb {
+
+class DreamWebEngine;
+
+class DreamWebConsole : public GUI::Debugger {
 public:
-	GP2XSdlEventSource();
+	DreamWebConsole(DreamWebEngine *vm);
+	virtual ~DreamWebConsole(void);
 
-protected:
-	bool _stickBtn[32];
-
-	/** Button state for L button modifier */
-	bool _buttonStateL;
-
-	/**
-	 * Handles the stick movement
-	 */
-	void moveStick();
-
-	virtual bool handleKeyDown(SDL_Event &ev, Common::Event &event);
-	virtual bool handleJoyButtonDown(SDL_Event &ev, Common::Event &event);
-	virtual bool handleJoyButtonUp(SDL_Event &ev, Common::Event &event);
-	virtual bool handleJoyAxisMotion(SDL_Event &ev, Common::Event &event);
-
-	virtual void SDLModToOSystemKeyFlags(SDLMod mod, Common::Event &event);
-
-	virtual bool remapKey(SDL_Event &ev, Common::Event &event);
+private:
+	DreamWebEngine *_vm;
 };
+
+} // End of namespace DreamWeb
 
 #endif
