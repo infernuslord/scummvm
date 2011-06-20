@@ -69,12 +69,11 @@ public:
 	void waitForVSync();
 
 	Common::Error loadGameState(int slot);
-	Common::Error saveGameState(int slot, const char *desc);
+	Common::Error saveGameState(int slot, const Common::String &desc);
 
 	bool canLoadGameStateCurrently();
 	bool canSaveGameStateCurrently();
 
-//dreamgen public api:
 	uint8 randomNumber() { return _rnd.getRandomNumber(255); }
 
 	void openFile(const Common::String &name);
@@ -106,6 +105,8 @@ public:
 	void loadSounds(uint bank, const Common::String &file);
 	bool loadSpeech(const Common::String &filename);
 
+	void enableSavingOrLoading(bool enable = true) { _enableSavingOrLoading = enable; }
+
 private:
 	void keyPressed(uint16 ascii);
 	void setSpeed(uint speed);
@@ -122,6 +123,8 @@ private:
 	uint _speed;
 	bool _turbo;
 	uint _oldMouseState;
+	int _loadSavefile;
+	bool _enableSavingOrLoading;
 
 	struct Sample {
 		uint offset;
@@ -139,7 +142,7 @@ private:
 	Audio::SoundHandle _channelHandle[2];
 	uint8 _channel0, _channel1;
 
-	dreamgen::Context _context;
+	DreamGen::DreamGenContext _context;
 };
 
 } // End of namespace DreamWeb

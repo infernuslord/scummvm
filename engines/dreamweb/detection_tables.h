@@ -42,7 +42,7 @@ static const DreamWebGameDescription gameDescriptions[] = {
 			},
 			Common::EN_ANY,
 			Common::kPlatformPC,
-			ADGF_NO_FLAGS,
+			ADGF_UNSTABLE,
 			GUIO_NONE
 		},
 	},
@@ -59,7 +59,7 @@ static const DreamWebGameDescription gameDescriptions[] = {
 			},
 			Common::EN_ANY,
 			Common::kPlatformPC,
-			ADGF_CD,
+			ADGF_CD | ADGF_UNSTABLE,
 			GUIO_NONE
 		},
 	},
@@ -77,6 +77,23 @@ static const DreamWebGameDescription gameDescriptions[] = {
 			Common::EN_USA,
 			Common::kPlatformPC,
 			ADGF_CD,
+			GUIO_NONE
+		},
+	},
+
+	// German CD release
+	{
+		{
+			"dreamweb",
+			"CD",
+			{
+				{"dreamweb.r00", 0, "9960dc3baddabc6ad2a6fd75292b149c", 155886},
+				{"dreamweb.r02", 0, "076ca7cd326cb2abfb2091c6cf46ae08", 201038},
+				AD_LISTEND
+			},
+			Common::DE_DEU,
+			Common::kPlatformPC,
+			ADGF_CD | ADGF_UNSTABLE,
 			GUIO_NONE
 		},
 	},

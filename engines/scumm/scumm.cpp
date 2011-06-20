@@ -114,17 +114,18 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
 	  _rnd("scumm")
 	  {
 
+#ifdef USE_RGB_COLOR
+	if (_game.features & GF_16BIT_COLOR) {
+		if (_game.platform == Common::kPlatformPCEngine)
+			_gdi = new GdiPCEngine(this);
+		else if (_game.heversion > 0)
+			_gdi = new GdiHE16bit(this);
+	} else
+#endif
 	if (_game.heversion > 0) {
 		_gdi = new GdiHE(this);
 	} else if (_game.platform == Common::kPlatformNES) {
 		_gdi = new GdiNES(this);
-#ifdef USE_RGB_COLOR
-	} else if (_game.features & GF_16BIT_COLOR) {
-		if (_game.platform == Common::kPlatformPCEngine)
-			_gdi = new GdiPCEngine(this);
-		else
-			_gdi = new Gdi16Bit(this);
-#endif
 	} else if (_game.version <= 1) {
 		_gdi = new GdiV1(this);
 	} else if (_game.version == 2) {
@@ -328,7 +329,7 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
 	memset(&_cyclRects, 0, 16 * sizeof(Common::Rect));
 	_numCyclRects = 0;
 #endif
-	
+
 	//
 	// Init all VARS to 0xFF
 	//
@@ -590,7 +591,7 @@ ScummEngine::~ScummEngine() {
 			delete _actors[i];
 		delete[] _actors;
 	}
-	
+
 	delete[] _sortedActors;
 
 	delete[] _2byteFontPtr;
@@ -1149,30 +1150,37 @@ Common::Error ScummEngine::init() {
 			screenWidth *= _textSurfaceMultiplier;
 			screenHeight *= _textSurfaceMultiplier;
 		}
-		if (_game.features & GF_16BIT_COLOR 
+		if (_game.features & GF_16BIT_COLOR
 #ifndef DISABLE_TOWNS_DUAL_LAYER_MODE
 			|| _game.platform == Common::kPlatformFMTowns
 #endif
 			) {
 #ifdef USE_RGB_COLOR
 			_outputPixelFormat = Graphics::PixelFormat(2, 5, 5, 5, 0, 10, 5, 0, 0);
-			Common::List<Graphics::PixelFormat> tryModes = _system->getSupportedFormats();
-			// Try default 555 mode first
-			tryModes.push_front(_outputPixelFormat);
 
-			for (Common::List<Graphics::PixelFormat>::iterator g = tryModes.begin(); g != tryModes.end(); ++g) {
-				if (g->bytesPerPixel != 2 || g->aBits())
-					continue;
-				_outputPixelFormat = *g;
+			if (_game.platform != Common::kPlatformFMTowns && _game.platform != Common::kPlatformPCEngine) {
 				initGraphics(screenWidth, screenHeight, screenWidth > 320, &_outputPixelFormat);
-				// Other modes than 555 are only supported for FM-TOWNS games and LOOM PCE.
-				// Especially the HE games require 555.
-				if (*g == _system->getScreenFormat() || (_game.platform != Common::kPlatformFMTowns && _game.platform != Common::kPlatformPCEngine))
-					break;
+				if (_outputPixelFormat != _system->getScreenFormat())
+					return Common::kUnsupportedColorMode;
+			} else {
+				Common::List<Graphics::PixelFormat> tryModes = _system->getSupportedFormats();
+				for (Common::List<Graphics::PixelFormat>::iterator g = tryModes.begin(); g != tryModes.end(); ++g) {
+					if (g->bytesPerPixel != 2 || g->aBits()) {
+						g = tryModes.erase(g);
+						g--;
+					}
+
+					if (*g == _outputPixelFormat) {
+						tryModes.clear();
+						tryModes.push_back(_outputPixelFormat);
+						break;
+					}
+				}
+
+				initGraphics(screenWidth, screenHeight, screenWidth > 320, tryModes);
+				if (_system->getScreenFormat().bytesPerPixel != 2)
+					return Common::kUnsupportedColorMode;
 			}
-			
-			if (_outputPixelFormat != _system->getScreenFormat())
-				return Common::kUnsupportedColorMode;
 #else
 			if (_game.platform == Common::kPlatformFMTowns && _game.version == 3) {
 				warning("Starting game without the required 16bit color support.\nYou may experience color glitches");
@@ -1184,7 +1192,7 @@ Common::Error ScummEngine::init() {
 		} else {
 #ifdef DISABLE_TOWNS_DUAL_LAYER_MODE
 		if (_game.platform == Common::kPlatformFMTowns && _game.version == 5)
-			error("This game requires dual graphics layer support which is disabled in this build");
+			return Common::Error(Common::kUnsupportedColorMode, "This game requires dual graphics layer support which is disabled in this build");
 #endif
 			initGraphics(screenWidth, screenHeight, (screenWidth > 320));
 		}
@@ -1860,7 +1868,7 @@ void ScummEngine::setupMusic(int midi) {
 		}
 
 		_imuse = IMuse::create(_system, nativeMidiDriver, adlibMidiDriver);
-		
+
 		if (_game.platform == Common::kPlatformFMTowns) {
 			_musicEngine = _townsPlayer = new Player_Towns_v2(this, _mixer, _imuse, true);
 			if (!_townsPlayer->init())

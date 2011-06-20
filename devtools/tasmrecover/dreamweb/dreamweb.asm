@@ -135,13 +135,24 @@ Dreamweb	proc	near
 dodecisions:	call	cls
 	call	setmode
 	call	decide
+
+	cmp quitrequested, 0
+	jnz exitgame
+
 	cmp	getback,4
 	jz	mainloop
 
 	call	titles
+
+	cmp quitrequested, 0
+	jnz exitgame
+
 	call	credits
 
-playgame:	call	clearchanges
+playgame:
+	cmp quitrequested, 0
+	jnz exitgame
+	call	clearchanges
 	call	setmode
 	call	loadpalfromiff
 	mov	location,255
@@ -194,7 +205,11 @@ alreadyloaded:	mov	newlocation,255
 	call	startup
 	mov	commandtype,255
 
-mainloop:	call	screenupdate
+mainloop:
+	cmp quitrequested, 0
+	jnz exitgame
+
+	call	screenupdate
 	cmp	wongame,0
 	jnz	endofgame
 	cmp	mandead,1
@@ -235,7 +250,9 @@ endofgame:	call	clearbeforeload
 	call	hangon
 	call	endgame
 	jmp	quickquit2
-	
+
+exitgame:
+	ret
 	endp
 
 
@@ -6218,6 +6235,8 @@ savefiles	db	"DREAMWEB.D00",0
 	db	"DREAMWEB.D06",0
 
 Recname	db	"DREAMWEB.DEM",0
+
+Quitrequested	db 0
 
 
 ;-------------------------------------------------------End of code segment----

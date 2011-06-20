@@ -50,7 +50,7 @@ static const PlainGameDescriptor dreamWebGames[] = {
 class DreamWebMetaEngine : public AdvancedMetaEngine {
 public:
 	DreamWebMetaEngine():
-	AdvancedMetaEngine(DreamWeb::gameDescriptions, 
+	AdvancedMetaEngine(DreamWeb::gameDescriptions,
 	sizeof(DreamWeb::DreamWebGameDescription), dreamWebGames) {
 		_singleid = "dreamweb";
 		_guioptions = Common::GUIO_NOMIDI;
@@ -74,8 +74,8 @@ public:
 bool DreamWebMetaEngine::hasFeature(MetaEngineFeature f) const {
 	switch(f) {
 	case kSupportsListSaves:
-	case kSupportsLoadingDuringStartup:
-	case kSupportsDeleteSave:
+	//case kSupportsLoadingDuringStartup:
+	//case kSupportsDeleteSave:
 		return true;
 	default:
 		return false;
@@ -83,6 +83,12 @@ bool DreamWebMetaEngine::hasFeature(MetaEngineFeature f) const {
 }
 
 bool DreamWeb::DreamWebEngine::hasFeature(EngineFeature f) const {
+	switch(f) {
+	case kSupportsRTL:
+		return true;
+	default:
+		return false;
+	}
 	return false;
 }
 
@@ -134,7 +140,7 @@ Common::Error DreamWebEngine::loadGameState(int slot) {
 	return Common::kNoError;
 }
 
-Common::Error DreamWebEngine::saveGameState(int slot, const char *desc) {
+Common::Error DreamWebEngine::saveGameState(int slot, const Common::String &desc) {
 	return Common::kNoError;
 }
 

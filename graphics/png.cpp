@@ -100,7 +100,7 @@ enum PNGFilters {
 	kFilterPaeth   = 4
 };
 
-PNG::PNG() : _compressedBuffer(0), _compressedBufferSize(0), 
+PNG::PNG() : _compressedBuffer(0), _compressedBufferSize(0),
 			_unfilteredSurface(0), _transparentColorSpecified(false) {
 }
 
@@ -202,7 +202,7 @@ Graphics::Surface *PNG::getSurface(const PixelFormat &format) {
 			}
 			// The surface is a whole scanline wide, skip the rest of it.
 			if (_header.bitDepth == 4)
-				src += output->w / 2;
+				src += output->w / 2 + output->w % 2;
 		}
 	}
 
@@ -236,7 +236,7 @@ bool PNG::read(Common::SeekableReadStream *str) {
 		case kChunkIDAT:
 			if (_compressedBufferSize == 0) {
 				_compressedBufferSize += chunkLength;
-				_compressedBuffer = new byte[_compressedBufferSize];
+				_compressedBuffer = (byte *)malloc(_compressedBufferSize);
 				_stream->read(_compressedBuffer, chunkLength);
 			} else {
 				// Expand the buffer
@@ -244,8 +244,8 @@ bool PNG::read(Common::SeekableReadStream *str) {
 				_compressedBufferSize += chunkLength;
 				byte *tmp = new byte[prevSize];
 				memcpy(tmp, _compressedBuffer, prevSize);
-				delete[] _compressedBuffer;
-				_compressedBuffer = new byte[_compressedBufferSize];
+				free(_compressedBuffer);
+				_compressedBuffer = (byte *)malloc(_compressedBufferSize);
 				memcpy(_compressedBuffer, tmp, prevSize);
 				delete[] tmp;
 				_stream->read(_compressedBuffer + prevSize, chunkLength);
@@ -282,7 +282,7 @@ bool PNG::read(Common::SeekableReadStream *str) {
 	// Unpack the compressed buffer
 	Common::MemoryReadStream *compData = new Common::MemoryReadStream(_compressedBuffer, _compressedBufferSize, DisposeAfterUse::YES);
 	_imageData = Common::wrapCompressedReadStream(compData);
-	
+
 	// Construct the final image
 	constructImage();
 
@@ -306,7 +306,7 @@ byte PNG::paethPredictor(int16 a, int16 b, int16 c) {
   int16 pa = ABS<int16>(b - c);
   int16 pb = ABS<int16>(a - c);
   int16 pc = ABS<int16>(a + b - c - c);
-    
+
   if (pa <= MIN<int16>(pb, pc))
 	  return (byte)a;
   else if (pb <= pc)
