@@ -570,17 +570,3 @@ realcreditsearly:
 	ret
 
 	endp
-
-
-
-
-
-
-
-
-
-
-
-
-
-

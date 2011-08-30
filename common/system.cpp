@@ -27,6 +27,8 @@
 #include "common/fs.h"
 #include "common/savefile.h"
 #include "common/str.h"
+#include "common/taskbar.h"
+#include "common/updates.h"
 #include "common/textconsole.h"
 
 #include "backends/audiocd/default/default-audiocd.h"
@@ -40,6 +42,12 @@ OSystem::OSystem() {
 	_eventManager = 0;
 	_timerManager = 0;
 	_savefileManager = 0;
+#if defined(USE_TASKBAR)
+	_taskbarManager = 0;
+#endif
+#if defined(USE_UPDATES)
+	_updateManager = 0;
+#endif
 	_fsFactory = 0;
 }
 
@@ -52,6 +60,16 @@ OSystem::~OSystem() {
 
 	delete _timerManager;
 	_timerManager = 0;
+
+#if defined(USE_TASKBAR)
+	delete _taskbarManager;
+	_taskbarManager = 0;
+#endif
+
+#if defined(USE_UPDATES)
+	delete _updateManager;
+	_updateManager = 0;
+#endif
 
 	delete _savefileManager;
 	_savefileManager = 0;

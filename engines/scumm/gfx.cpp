@@ -722,11 +722,11 @@ void ScummEngine::drawStripToScreen(VirtScreen *vs, int x, int width, int top, i
 		if (_renderMode == Common::kRenderHercA || _renderMode == Common::kRenderHercG) {
 			ditherHerc(_compositeBuf, _herculesBuf, width, &x, &y, &width, &height);
 
-			src = _herculesBuf + x + y * Common::kHercW;
-			pitch = Common::kHercW;
+			src = _herculesBuf + x + y * kHercWidth;
+			pitch = kHercWidth;
 
 			// center image on the screen
-			x += (Common::kHercW - _screenWidth * 2) / 2;	// (720 - 320*2)/2 = 40
+			x += (kHercWidth - _screenWidth * 2) / 2;	// (720 - 320*2)/2 = 40
 		} else if (_useCJKMode && m == 2) {
 			pitch *= m;
 			x *= m;
@@ -819,10 +819,10 @@ void ditherHerc(byte *src, byte *hercbuf, int srcPitch, int *x, int *y, int *wid
 	int dsty = yo*2 - yo/4;
 
 	for (int y1 = 0; y1 < heighto;) {
-		assert(dsty < Common::kHercH);
+		assert(dsty < kHercHeight);
 
 		srcptr = src + y1 * srcPitch;
-		dstptr = hercbuf + dsty * Common::kHercW + xo * 2;
+		dstptr = hercbuf + dsty * kHercWidth + xo * 2;
 
 		const int idx1 = (dsty % 7) % 2;
 		for (int x1 = 0; x1 < widtho; x1++) {
@@ -1024,6 +1024,16 @@ void ScummEngine::restoreBackground(Common::Rect rect, byte backColor) {
 
 	if (rect.left > vs->w)
 		return;
+
+	// Indy4 Amiga always uses the room or verb palette map to match colors to
+	// the currently setup palette, thus we need to select it over here too.
+	// Done like the original interpreter.
+	if (_game.platform == Common::kPlatformAmiga && _game.id == GID_INDY4) {
+		if (vs->number == kVerbVirtScreen)
+			backColor = _verbPalette[backColor];
+		else
+			backColor = _roomPalette[backColor];
+	}
 
 	// Convert 'rect' to local (virtual screen) coordinates
 	rect.top -= vs->topline;
@@ -1234,6 +1244,16 @@ void ScummEngine::drawBox(int x, int y, int x2, int y2, int color) {
 
 	if ((vs = findVirtScreen(y)) == NULL)
 		return;
+
+	// Indy4 Amiga always uses the room or verb palette map to match colors to
+	// the currently setup palette, thus we need to select it over here too.
+	// Done like the original interpreter.
+	if (_game.platform == Common::kPlatformAmiga && _game.id == GID_INDY4) {
+		if (vs->number == kVerbVirtScreen)
+			color = _verbPalette[color];
+		else
+			color = _roomPalette[color];
+	}
 
 	if (x > x2)
 		SWAP(x, x2);
@@ -1871,6 +1891,16 @@ bool Gdi::drawStrip(byte *dstPtr, VirtScreen *vs, int x, int y, const int width,
 			offset = READ_LE_UINT32(smap_ptr + stripnr * 4 + 8);
 	}
 	assertRange(0, offset, smapLen-1, "screen strip");
+
+	// Indy4 Amiga always uses the room or verb palette map to match colors to
+	// the currently setup palette, thus we need to select it over here too.
+	// Done like the original interpreter.
+	if (_vm->_game.platform == Common::kPlatformAmiga && _vm->_game.id == GID_INDY4) {
+		if (vs->number == kVerbVirtScreen)
+			_roomPalette = _vm->_verbPalette;
+		else
+			_roomPalette = _vm->_roomPalette;
+	}
 
 	return decompressBitmap(dstPtr, vs->pitch, smap_ptr + offset, height);
 }
@@ -4111,4 +4141,3 @@ void ScummEngine::unkScreenEffect6() {
 }
 
 } // End of namespace Scumm
-

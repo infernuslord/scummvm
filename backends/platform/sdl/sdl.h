@@ -54,6 +54,10 @@ public:
 
 	// Override functions from ModularBackend and OSystem
 	virtual void initBackend();
+#if defined(USE_TASKBAR)
+	virtual void engineInit();
+	virtual void engineDone();
+#endif
 	virtual Common::HardwareKeySet *getHardwareKeySet();
 	virtual void quit();
 	virtual void fatalError();
@@ -69,12 +73,6 @@ public:
 	virtual void delayMillis(uint msecs);
 	virtual void getTimeAndDate(TimeDate &td) const;
 	virtual Audio::Mixer *getMixer();
-
-	// HACK: Special SDL events types
-	enum SdlEvent {
-		kSdlEventExpose = 100,
-		kSdlEventResize = 101
-	};
 
 protected:
 	bool _inited;

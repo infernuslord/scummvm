@@ -33,7 +33,7 @@
 #include "tsage/globals.h"
 #include "tsage/sound.h"
 
-namespace tSage {
+namespace TsAGE {
 
 // The engine uses ScumMVM screen buffering, so all logic is hardcoded to use pane buffer 0
 #define CURRENT_PANENUM 0
@@ -53,6 +53,13 @@ InvObject::InvObject(int sceneNumber, int rlbNum, int cursorNum, CursorType curs
 	_bounds = s.getBounds();
 
 	DEALLOCATE(imgData);
+}
+
+InvObject::InvObject(int visage, int strip, int frame, int sceneNumber) {
+	_visage = visage;
+	_strip = strip;
+	_frame = frame;
+	_sceneNumber = sceneNumber;
 }
 
 void InvObject::setCursor() {
@@ -1161,6 +1168,20 @@ void PaletteFader::remove() {
 		action->signal();
 }
 
+void PaletteFader::setPalette(ScenePalette *palette, int step) {
+	if (step < 0) {
+		// Reverse step means moving from dest palette to source, so swap the two palettes
+		byte tempPal[256 * 3];
+		Common::copy(&palette->_palette[0], &palette->_palette[256 * 3], &tempPal[0]);
+		Common::copy(&this->_palette[0], &this->_palette[256 * 3], &palette->_palette[0]);
+		Common::copy(&tempPal[0], &tempPal[256 * 3], &this->_palette[0]);
+
+		step = -step;
+	}
+
+	PaletteModifierCached::setPalette(palette, step);
+}
+
 /*--------------------------------------------------------------------------*/
 
 ScenePalette::ScenePalette() {
@@ -1221,6 +1242,15 @@ void ScenePalette::refresh() {
  */
 void ScenePalette::setPalette(int index, int count) {
 	g_system->getPaletteManager()->setPalette((const byte *)&_palette[index * 3], index, count);
+}
+
+/**
+ * Set a palette entry
+ */
+void ScenePalette::setEntry(int index, uint r, uint g, uint b) {
+	_palette[index * 3] = r;
+	_palette[index * 3 + 1] = g;
+	_palette[index * 3 + 2] = b;
 }
 
 /**
@@ -1314,7 +1344,7 @@ PaletteRotation *ScenePalette::addRotation(int start, int end, int rotationMode,
 	return obj;
 }
 
-PaletteFader *ScenePalette::addFader(const byte *arrBufferRGB, int palSize, int percent, Action *action) {
+PaletteFader *ScenePalette::addFader(const byte *arrBufferRGB, int palSize, int step, Action *action) {
 	PaletteFader *fader = new PaletteFader();
 	fader->_action = action;
 	for (int i = 0; i < 256 * 3; i += 3) {
@@ -1326,7 +1356,7 @@ PaletteFader *ScenePalette::addFader(const byte *arrBufferRGB, int palSize, int 
 			arrBufferRGB += 3;
 	}
 
-	fader->setPalette(this, percent);
+	fader->setPalette(this, step);
 	_globals->_scenePalette._listeners.push_back(fader);
 	return fader;
 }
@@ -1552,7 +1582,7 @@ void SceneItem::display(int resNum, int lineNum, ...) {
 		Event event;
 
 		// Keep event on-screen until a mouse or keypress
-		while (!_vm->getEventManager()->shouldQuit() && !_globals->_events.getEvent(event,
+		while (!_vm->shouldQuit() && !_globals->_events.getEvent(event,
 				EVENT_BUTTON_DOWN | EVENT_KEYPRESS)) {
 			g_system->updateScreen();
 			g_system->delayMillis(10);
@@ -1560,6 +1590,17 @@ void SceneItem::display(int resNum, int lineNum, ...) {
 
 		_globals->_sceneText.remove();
 	}
+}
+
+void SceneItem::display2(int resNum, int lineNum) {
+	if (_vm->getGameID() == GType_BlueForce)
+		display(resNum, lineNum, SET_WIDTH, 312, 
+			SET_X, 4 + GLOBALS._sceneManager._scene->_sceneBounds.left, 
+			SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + BF_INTERFACE_Y + 2,
+			SET_FONT, 4, SET_BG_COLOR, 1, SET_FG_COLOR, 19, SET_EXT_BGCOLOR, 9,
+			SET_EXT_FGCOLOR, 13, LIST_END);
+	else
+		display(resNum, lineNum, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1585,6 +1626,11 @@ void SceneHotspot::doAction(int action) {
 
 /*--------------------------------------------------------------------------*/
 
+NamedHotspot::NamedHotspot() : SceneHotspot() {
+	_resNum = 0;
+	_lookLineNum = _useLineNum = _talkLineNum = -1;
+}
+
 void NamedHotspot::doAction(int action) {
 	switch (action) {
 	case CURSOR_WALK:
@@ -1594,13 +1640,19 @@ void NamedHotspot::doAction(int action) {
 		if (_lookLineNum == -1)
 			SceneHotspot::doAction(action);
 		else
-			SceneItem::display(_resnum, _lookLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
+			SceneItem::display(_resNum, _lookLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
 		break;
 	case CURSOR_USE:
 		if (_useLineNum == -1)
 			SceneHotspot::doAction(action);
 		else
-			SceneItem::display(_resnum, _useLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
+			SceneItem::display(_resNum, _useLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
+		break;
+	case CURSOR_TALK:
+		if (_talkLineNum == -1)
+			SceneHotspot::doAction(action);
+		else
+			SceneItem::display2(_resNum, _talkLineNum);
 		break;
 	default:
 		SceneHotspot::doAction(action);
@@ -1610,17 +1662,52 @@ void NamedHotspot::doAction(int action) {
 
 void NamedHotspot::setup(int ys, int xs, int ye, int xe, const int resnum, const int lookLineNum, const int useLineNum) {
 	setBounds(ys, xe, ye, xs);
-	_resnum = resnum;
+	_resNum = resnum;
 	_lookLineNum = lookLineNum;
 	_useLineNum = useLineNum;
+	_talkLineNum = -1;
 	_globals->_sceneItems.addItems(this, NULL);
+}
+
+void NamedHotspot::setup(const Rect &bounds, int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode, SceneItem *item) {
+	setBounds(bounds);
+	_resNum = resNum;
+	_lookLineNum = lookLineNum;
+	_talkLineNum = talkLineNum;
+	_useLineNum = useLineNum;
+
+	switch (mode) {
+	case 2:
+		_globals->_sceneItems.push_front(this);
+		break;
+	case 4:
+		_globals->_sceneItems.addBefore(item, this);
+		break;
+	case 5:
+		_globals->_sceneItems.addAfter(item, this);
+		break;
+	default:
+		_globals->_sceneItems.push_back(this);
+		break;
+	}
+}
+
+void NamedHotspot::setup(int sceneRegionId, int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode) {
+	_sceneRegionId = sceneRegionId;
+	_resNum = resNum;
+	_lookLineNum = lookLineNum;
+	_talkLineNum = talkLineNum;
+	_useLineNum = useLineNum;
 }
 
 void NamedHotspot::synchronize(Serializer &s) {
 	SceneHotspot::synchronize(s);
-	s.syncAsSint16LE(_resnum);
+	s.syncAsSint16LE(_resNum);
 	s.syncAsSint16LE(_lookLineNum);
 	s.syncAsSint16LE(_useLineNum);
+
+	if (_vm->getGameID() == GType_BlueForce)
+		s.syncAsSint16LE(_talkLineNum);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1641,6 +1728,11 @@ void SceneObjectWrapper::remove() {
 }
 
 void SceneObjectWrapper::dispatch() {
+	if (_vm->getGameID() == GType_Ringworld)
+		check();
+}
+
+void SceneObjectWrapper::check() {
 	_visageImages.setVisage(_sceneObject->_visage);
 	int frameCount = _visageImages.getFrameCount();
 	int angle = _sceneObject->_angle;
@@ -1699,9 +1791,12 @@ SceneObject::SceneObject() : SceneHotspot() {
 	_sceneRegionId = 0;
 	_percent = 100;
 	_flags |= OBJFLAG_PANES;
+	_priority = 0;
 
 	_frameChange = 0;
 	_visage = 0;
+	_strip = 0;
+	_frame = 0;
 }
 
 SceneObject::SceneObject(const SceneObject &so) : SceneHotspot() {
@@ -1988,6 +2083,7 @@ void SceneObject::animate(AnimateMode animMode, ...) {
 		break;
 
 	case ANIM_MODE_8:
+	case ANIM_MODE_9:
 		_field68 = va_arg(va, int);
 		_endAction = va_arg(va, Action *);
 		_frameChange = 1;
@@ -2174,7 +2270,25 @@ void SceneObject::dispatch() {
 			} else {
 				setFrame(changeFrame());
 			}
+			break;
 
+		case ANIM_MODE_9:
+			if (_frame == _endFrame) {
+				if (_frameChange != -1) {
+					_frameChange = -1;
+					_strip = ((_strip - 1) ^ 1) + 1;
+					_endFrame = 1;
+				} else if ((_field68 == 0) || (--_field68 != 0)) {
+					_frameChange = 1;
+					_endFrame = getFrameCount();
+
+					setFrame(changeFrame());
+				} else {
+					animEnded();
+				}
+			} else {
+				setFrame(changeFrame());
+			}
 			break;
 
 		default:
@@ -2201,10 +2315,6 @@ void SceneObject::calcAngle(const Common::Point &pt) {
 void SceneObject::removeObject() {
 	_globals->_sceneItems.remove(this);
 	_globals->_sceneObjects->remove(this);
-
-	if (_visage) {
-		_visage = 0;
-	}
 
 	if (_objectWrapper) {
 		_objectWrapper->remove();
@@ -2263,6 +2373,18 @@ void SceneObject::updateScreen() {
 	}
 }
 
+void SceneObject::updateAngle(SceneObject *sceneObj) {
+	checkAngle(sceneObj);
+	if (_objectWrapper)
+		_objectWrapper->check();
+}
+
+void SceneObject::changeAngle(int angle) {
+	_angle = angle;
+	if (_objectWrapper)
+		_objectWrapper->check();
+}
+
 void SceneObject::setup(int visage, int stripFrameNum, int frameNum, int posX, int posY, int priority) {
 	postInit();
 	setVisage(visage);
@@ -2270,6 +2392,16 @@ void SceneObject::setup(int visage, int stripFrameNum, int frameNum, int posX, i
 	setFrame(frameNum);
 	setPosition(Common::Point(posX, posY), 0);
 	fixPriority(priority);
+}
+
+/*--------------------------------------------------------------------------*/
+
+void AltSceneObject::postInit(SceneObjectList *OwnerList) {
+	SceneObject::postInit(&_globals->_sceneManager._altSceneObjects);
+}
+
+void AltSceneObject::draw() {
+	SceneObject::draw();
 }
 
 /*--------------------------------------------------------------------------*/
@@ -2585,8 +2717,8 @@ void SceneText::synchronize(Serializer &s) {
 /*--------------------------------------------------------------------------*/
 
 Visage::Visage() {
-	_resNum = 0;
-	_rlbNum = 0;
+	_resNum = -1;
+	_rlbNum = -1;
 	_data = NULL;
 }
 
@@ -2613,7 +2745,27 @@ void Visage::setVisage(int resNum, int rlbNum) {
 		_resNum = resNum;
 		_rlbNum = rlbNum;
 		DEALLOCATE(_data);
-		_data = _resourceManager->getResource(RES_VISAGE, resNum, rlbNum);
+
+		if (_vm->getGameID() == GType_Ringworld) {
+			// In Ringworld, we immediately get the data
+			_data = _resourceManager->getResource(RES_VISAGE, resNum, rlbNum);
+		} else {
+			// Blue Force has an extra indirection via a visage index file
+			byte *indexData = _resourceManager->getResource(RES_VISAGE, resNum, 9999);
+			if (rlbNum == 0)
+				rlbNum = 1;
+
+			// Get the flags/rlbNum to use
+			uint32 flags = READ_LE_UINT32(indexData + (rlbNum - 1) * 4 + 2);
+
+			if (flags & 0xC0000000) {
+				// TODO: See whether rest of flags dword is needed
+				rlbNum = (int)(flags & 0xff);
+			}
+
+			_data = _resourceManager->getResource(RES_VISAGE, resNum, rlbNum);
+		}
+
 		assert(_data);
 	}
 }
@@ -2662,6 +2814,10 @@ void Player::disableControl() {
 	_canWalk = false;
 	_uiEnabled = false;
 	_globals->_events.setCursor(CURSOR_NONE);
+	_field8E = 0;
+
+	if ((_vm->getGameID() == GType_BlueForce) && BF_GLOBALS._uiElements._active)
+		BF_GLOBALS._uiElements.hide();
 }
 
 void Player::enableControl() {
@@ -2680,6 +2836,9 @@ void Player::enableControl() {
 		_globals->_events.setCursor(CURSOR_WALK);
 		break;
 	}
+
+	if ((_vm->getGameID() == GType_BlueForce) && BF_GLOBALS._uiElements._active)
+		BF_GLOBALS._uiElements.show();
 }
 
 void Player::process(Event &event) {
@@ -2702,6 +2861,9 @@ void Player::synchronize(Serializer &s) {
 	s.syncAsByte(_canWalk);
 	s.syncAsByte(_uiEnabled);
 	s.syncAsSint16LE(_field8C);
+
+	if (_vm->getGameID() == GType_BlueForce)
+		s.syncAsSint16LE(_field8E);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -2869,8 +3031,6 @@ void Region::draw() {
 }
 
 void Region::uniteLine(int yp, LineSliceSet &sliceSet) {
-	// TODO: More properly implement like the original
-
 	// First expand the bounds as necessary to fit in the row
 	if (_ySlices.empty()) {
 		_bounds = Rect(sliceSet.items[0].xs, yp, sliceSet.items[sliceSet.items.size() - 1].xe, yp + 1);
@@ -3024,13 +3184,12 @@ void WalkRegion::loadProcessList(byte *dataP, int dataSize, int &dataIndex, int 
 		int yp = READ_LE_UINT16(dataP + idx * 4 + 2);
 		if (yp != y1) {
 			/*
-			 * Commented out: doesn't seem to be used
+			 * Commented out: v doesn't seem to be used
 			int v;
 			if (idx == (dataSize - 1))
 				v = READ_LE_UINT16(dataP + 2);
 			else
 				v = process1(idx, dataP, dataSize);
-			warning("TODO: v not used? - %d", v);
 			*/
 			process2(dataIndex, x1, y1, xp, yp);
 			++dataIndex;
@@ -3429,11 +3588,16 @@ void GameHandler::synchronize(Serializer &s) {
 SceneHandler::SceneHandler() {
 	_saveGameSlot = -1;
 	_loadGameSlot = -1;
+	_prevFrameNumber = 0;
 }
 
 void SceneHandler::registerHandler() {
 	postInit();
 	_globals->_game->addHandler(this);
+}
+
+uint32 SceneHandler::getFrameDifference() {
+	return GLOBALS._events.getFrameNumber() - _prevFrameNumber;
 }
 
 void SceneHandler::postInit(SceneObjectList *OwnerList) {
@@ -3461,9 +3625,7 @@ void SceneHandler::process(Event &event) {
 	// Check for displaying right-click dialog
 	if ((event.eventType == EVENT_BUTTON_DOWN) && (event.btnState == BTNSHIFT_RIGHT) &&
 			_globals->_player._uiEnabled) {
-		RightClickDialog *dlg = new RightClickDialog();
-		dlg->execute();
-		delete dlg;
+		_globals->_game->rightClick();
 
 		event.handled = true;
 		return;
@@ -3547,12 +3709,22 @@ void SceneHandler::dispatch() {
 	if (_globals->_sceneManager._scene)
 		_globals->_sceneManager._scene->dispatch();
 
-	//TODO: Figure out purpose of the given list
-	//_globals->_regions.forEach(SceneHandler::handleListener);
+	// Not actually used
+	//_eventListeners.forEach(SceneHandler::handleListener);
 
+	// Handle pending events
 	Event event;
-	while (_globals->_events.getEvent(event))
+	if (_globals->_events.getEvent(event)) {
+		// Process pending events
+		do {
+			process(event);
+		} while (_globals->_events.getEvent(event));
+	} else if (_vm->getGameID() == GType_BlueForce) {
+		// For Blue Force, 'none' events need to be generated in the absence of any
+		event.eventType = EVENT_NONE;
+		event.mousePos = _globals->_events._mousePos;
 		process(event);
+	}
 
 	// Handle drawing the contents of the scene
 	if (_globals->_sceneManager._scene)
@@ -3573,7 +3745,6 @@ void SceneHandler::dispatchObject(EventHandler *obj) {
 }
 
 void SceneHandler::saveListener(Serializer &ser) {
-	warning("TODO: SceneHandler::saveListener");
 }
 
-} // End of namespace tSage
+} // End of namespace TsAGE

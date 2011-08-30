@@ -1555,7 +1555,7 @@ void ResourceManager::readResourcePatches() {
 			name = (*x)->getName();
 
 			// SCI1 scheme
-			if (isdigit(name[0])) {
+			if (isdigit(static_cast<unsigned char>(name[0]))) {
 				char *end = 0;
 				resourceNr = strtol(name.c_str(), &end, 10);
 				bAdd = (*end == '.'); // Ensure the next character is the period
@@ -1563,7 +1563,7 @@ void ResourceManager::readResourcePatches() {
 				// SCI0 scheme
 				int resname_len = strlen(szResType);
 				if (scumm_strnicmp(name.c_str(), szResType, resname_len) == 0
-					&& !isalpha(name[resname_len + 1])) {
+					&& !isalpha(static_cast<unsigned char>(name[resname_len + 1]))) {
 					resourceNr = atoi(name.c_str() + resname_len + 1);
 					bAdd = true;
 				}
@@ -1721,15 +1721,19 @@ int ResourceManager::readResourceMapSCI1(ResourceSource *map) {
 			if (!resource) {
 				addResource(resId, source, fileOffset);
 			} else {
-				// if resource is already present, change it to new content
-				//  this is needed at least for pharkas/german. This version
-				//  contains several duplicate resources INSIDE the resource
-				//  data files like fonts, views, scripts, etc. And if we use
-				//  the first entries, half of the game will be english and
-				//  umlauts will also be missing :P
-				resource->_source = source;
-				resource->_fileOffset = fileOffset;
-				resource->size = 0;
+				// If the resource is already present in a volume, change it to
+				// the new content (but only in a volume, so as not to overwrite
+				// external patches - refer to bug #3366295).
+				// This is needed at least for the German version of Pharkas.
+				// That version contains several duplicate resources INSIDE the
+				// resource data files like fonts, views, scripts, etc. Thus,
+				// if we use the first entries in the resource file, half of the
+				// game will be English and umlauts will also be missing :P
+				if (resource->_source->getSourceType() == kSourceVolume) {
+					resource->_source = source;
+					resource->_fileOffset = fileOffset;
+					resource->size = 0;
+				}
 			}
 		}
 	}
