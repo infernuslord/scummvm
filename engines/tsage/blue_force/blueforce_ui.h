@@ -33,6 +33,11 @@ namespace BlueForce {
 
 using namespace TsAGE;
 
+class StripProxy: public EventHandler {
+public:
+	virtual void process(Event &event);
+};
+
 class UIElement: public AltSceneObject {
 public:
 	int _field88;
@@ -69,8 +74,11 @@ public:
 };
 
 class UIInventorySlot: public UIElement {
+private:
+	void showAmmoBelt();
 public:
 	int _objIndex;
+	InvObject *_object;
 
 	UIInventorySlot();
 	virtual Common::String getClassName() { return "UIInventorySlot"; }
@@ -96,7 +104,7 @@ public:
 	Rect _bounds;
 	bool _visible;
 	bool _clearScreen;
-	int _field4E;
+	bool _cursorChanged;
 	Common::Array<UIElement *> _objList;
 
 	UICollection();
@@ -110,7 +118,6 @@ public:
 class UIElements: public UICollection {
 private:
 	void add(UIElement *obj);
-	void updateInventory();
 	void updateInvList();
 public:
 	UIElement _object1;
@@ -122,11 +129,15 @@ public:
 	int _itemCount, _slotStart, _scoreValue;
 	bool _active;
 	Common::Array<int> _itemList;
+	Visage _cursorVisage;
 
+	UIElements();
 	virtual void postInit(SceneObjectList *OwnerList = NULL) { error("Wrong init() called"); }
 	virtual void process(Event &event);
 
 	void setup(const Common::Point &pt);
+	void updateInventory();
+	void addScore(int amount);
 };
 
 } // End of namespace BlueForce

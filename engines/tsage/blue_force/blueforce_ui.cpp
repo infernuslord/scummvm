@@ -21,6 +21,7 @@
  */
 
 #include "tsage/blue_force/blueforce_ui.h"
+#include "tsage/blue_force/blueforce_dialogs.h"
 #include "tsage/blue_force/blueforce_logic.h"
 #include "tsage/tsage.h"
 #include "tsage/core.h"
@@ -28,6 +29,13 @@
 namespace TsAGE {
 
 namespace BlueForce {
+
+void StripProxy::process(Event &event) {
+	if (_action)
+		_action->process(event);
+}
+
+/*--------------------------------------------------------------------------*/
 
 void UIElement::synchronize(Serializer &s) {
 	AltSceneObject::synchronize(s);
@@ -84,12 +92,16 @@ void UIQuestion::setEnabled(bool flag) {
 void UIScore::postInit(SceneObjectList *OwnerList) {
 	int xp = 266;
 	_digit3.setup(1, 6, 1, xp, 180, 255);
+	_digit3.reposition();
 	xp += 7;
 	_digit2.setup(1, 6, 1, xp, 180, 255);
+	_digit2.reposition();
 	xp += 7;
 	_digit1.setup(1, 6, 1, xp, 180, 255);
+	_digit1.reposition();
 	xp += 7;
 	_digit0.setup(1, 6, 1, xp, 180, 255);
+	_digit0.reposition();
 }
 
 void UIScore::draw() {
@@ -102,34 +114,43 @@ void UIScore::draw() {
 void UIScore::updateScore() {
 	int score = BF_GLOBALS._uiElements._scoreValue;
 	
-	_digit3.setFrame(score / 1000); score %= 1000;
-	_digit2.setFrame(score / 100); score %= 100;
-	_digit1.setFrame(score / 10); score %= 10;
-	_digit0.setFrame(score);
+	_digit3.setFrame(score / 1000 + 1); score %= 1000;
+	_digit2.setFrame(score / 100 + 1); score %= 100;
+	_digit1.setFrame(score / 10 + 1); score %= 10;
+	_digit0.setFrame(score + 1);
 }
 
 /*--------------------------------------------------------------------------*/
 
 UIInventorySlot::UIInventorySlot(): UIElement() {
 	_objIndex = 0;
+	_object = NULL;
 }
 
 void UIInventorySlot::synchronize(Serializer &s) {
 	UIElement::synchronize(s);
 	s.syncAsSint16LE(_objIndex);
+	SYNC_POINTER(_object);
 }
 
 void UIInventorySlot::process(Event &event) {
 	if (event.eventType == EVENT_BUTTON_DOWN) {
 		event.handled = true;
 
-		if (_objIndex == 66) {
-			// Handle showing gun and ammo
-			warning("TODO: show gun");
-		} else if (_objIndex != 0) {
-			GLOBALS._events.setCursor((CursorType)_objIndex);
+		if (_objIndex == INV_AMMO_BELT) {
+			// Handle showing ammo belt
+			showAmmoBelt();
+
+		} else if (_objIndex != INV_NONE) {
+			_object->setCursor();			
 		}
 	}
+}
+
+void UIInventorySlot::showAmmoBelt() {
+	AmmoBeltDialog *dlg = new AmmoBeltDialog();
+	dlg->execute();
+	delete dlg;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -155,7 +176,7 @@ void UIInventoryScroll::process(Event &event) {
 UICollection::UICollection(): EventHandler() {
 	_clearScreen = false;
 	_visible = false;
-	_field4E = 0;
+	_cursorChanged = false;
 }
 
 void UICollection::setup(const Common::Point &pt) {
@@ -192,26 +213,52 @@ void UICollection::draw() {
 		for (uint idx = 0; idx < _objList.size(); ++idx)
 			_objList[idx]->draw();
 
-		// Update the screen
-		g_system->updateScreen();
 		_clearScreen = 1;
 	}
 }
 
 /*--------------------------------------------------------------------------*/
 
-void UIElements::process(Event &event) {
-	if (_clearScreen && BF_GLOBALS._player._field8E && (BF_GLOBALS._sceneManager._sceneNumber != 50)) {
-		if (_bounds.contains(event.mousePos)) {
+UIElements::UIElements(): UICollection() {
+	_cursorVisage.setVisage(1, 5);
+}
 
-		} else if (_field4E) {
-			BF_GLOBALS._events.hideCursor();
-			BF_GLOBALS._events.setCursor((CursorType)1);
-			_field4E = 0;
+void UIElements::process(Event &event) {
+	if (_clearScreen && BF_GLOBALS._player._enabled && (BF_GLOBALS._sceneManager._sceneNumber != 50)) {
+		if (_bounds.contains(event.mousePos)) {
+			// Cursor inside UI area
+			if (!_cursorChanged) {
+				if (BF_GLOBALS._events.isInventoryIcon()) {
+					// Inventory icon being displayed, so leave alone
+				} else {
+					// Change to the inventory use cursor
+					GfxSurface surface = _cursorVisage.getFrame(6);
+					BF_GLOBALS._events.setCursor(surface);
+				}
+				_cursorChanged = true;
+			}
+
+			// Pass event to any element that the cursor falls on
+			for (int idx = (int)_objList.size() - 1; idx >= 0; --idx) {
+				if (_objList[idx]->_bounds.contains(event.mousePos) && _objList[idx]->_enabled) {
+					_objList[idx]->process(event);
+					if (event.handled)
+						break;
+				}
+			}
+
+			if (event.eventType == EVENT_BUTTON_DOWN)
+				event.handled = true;
+
+		} else if (_cursorChanged) {
+			// Cursor outside UI area, so reset as necessary
+			BF_GLOBALS._events.setCursor(BF_GLOBALS._events.getCursor());
+			_cursorChanged = false;
 
 			SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
 			if (scene->_eventHandler) {
-				error("TODO: UIElements::process _eventHandler");
+				GfxSurface surface = _cursorVisage.getFrame(7);
+				BF_GLOBALS._events.setCursor(surface);
 			}
 		}
 	}
@@ -284,6 +331,8 @@ void UIElements::add(UIElement *obj) {
 	_objList.push_back(obj);
 
 	obj->setPosition(Common::Point(_bounds.left + obj->_position.x, _bounds.top + obj->_position.y));
+	obj->reposition();
+
 	GfxSurface s = obj->getFrame();
 	s.draw(obj->_position);
 }
@@ -313,12 +362,14 @@ void UIElements::updateInventory() {
 
 	// Handle refreshing slot graphics
 	UIInventorySlot *slotList[4] = { &_slot1, &_slot2, &_slot3, &_slot4 };
-	
+
+	// Loop through the inventory objects
 	SynchronizedList<InvObject *>::iterator i;
 	int objIndex = 0;
-	for (i = BLUE_INVENTORY._itemList.begin(); i != BLUE_INVENTORY._itemList.end(); ++i, ++objIndex) {
+	for (i = BF_INVENTORY._itemList.begin(); i != BF_INVENTORY._itemList.end(); ++i, ++objIndex) {
 		InvObject *obj = *i;
 
+		// Check whether the object is in any of the four inventory slots
 		for (int slotIndex = 0; slotIndex < 4; ++slotIndex) {
 			int idx = _slotStart + slotIndex;
 			int objectIdx = (idx < (int)_itemList.size()) ? _itemList[idx] : 0;
@@ -327,6 +378,7 @@ void UIElements::updateInventory() {
 				UIInventorySlot *slot = slotList[slotIndex];
 
 				slot->_objIndex = objIndex;
+				slot->_object = obj;
 				slot->setVisage(obj->_visage);
 				slot->setStrip(obj->_strip);
 				slot->setFrame(obj->_frame);
@@ -334,6 +386,7 @@ void UIElements::updateInventory() {
 		}
 	}
 
+	// Refresh the display if necessary
 	if (_active)
 		draw();
 }
@@ -355,19 +408,13 @@ void UIElements::updateInvList() {
 }
 
 /**
- * Updates an inventory slot with the item to be displayed
- 
-void UIElements::updateInvSlot(UIInventorySlot *slot, int objIndex) {
-	slot->_objIndex = objIndex;
-	int itemId = (objIndex < (int)_itemList.size()) ? _itemList[objIndex] : 0;
-	InvObject *obj = BF_GLOBALS._inventory->_itemList[itemId + 2];
-
-	// TODO: Validate usage of fields
-	slot->setVisage(obj._displayResNum);
-	slot->setStrip(obj._rlbNum);
-	slot->setFrame(obj._cursorNum);
+ * Set the game score
+ */
+void UIElements::addScore(int amount) {
+	_scoreValue += amount;
+	BF_GLOBALS._sound2.play(0);
+	updateInventory();
 }
-*/
 
 } // End of namespace BlueForce
 
