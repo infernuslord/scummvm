@@ -45,7 +45,6 @@ public:
 	Common::MemoryReadStream *decompressIndexed(uint32 blockSize, uint32 seqSize, uint32 seqDataSize, uint32 coreSize, uint32 coreDataSize, uint32 size, uint32 indexEnd, uint32 field_C, uint16 field_10);
 	Common::MemoryReadStream *decompressNode();
 	Common::MemoryReadStream *decompressChannel();
-	Common::MemoryReadStream *decompressSound();
 
 private:
 	Common::SeekableReadStream *_fileStream;    ///< The file stream

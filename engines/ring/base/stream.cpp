@@ -248,11 +248,6 @@ Common::MemoryReadStream *CompressedStream::decompressChannel() {
 	//return new Common::MemoryReadStream(buffer, bufferSize, DisposeAfterUse::YES);
 }
 
-Common::MemoryReadStream *CompressedStream::decompressSound() {
-	// Decompress mono sound data
-	error("[CompressedStream::decompressSound] Not implemented!");
-}
-
 uint32 CompressedStream::decodeSound(Common::SeekableReadStream *stream, uint32 a2, uint32 a3, uint32 start, uint32 end, byte* buffer) {
 	return decode(stream, a2, a3, start, end, buffer, 16);
 }
@@ -268,8 +263,6 @@ uint32 CompressedStream::decodeChannel(Common::SeekableReadStream *stream, uint3
 uint32 CompressedStream::decode(Common::SeekableReadStream *stream, uint32 a2, uint32 a3, uint32 start, uint32 end, byte* buffer, uint32 multiplier) {
 	// Reset decompression buffer
 	memset(&_decBuffer, 0, sizeof(_decBuffer));
-
-#define CHECK_BIT(var, pos) !!((var) & ((uint32)1 << (pos)))
 
 	// Store buffer position
 	byte *bufferStart = buffer;

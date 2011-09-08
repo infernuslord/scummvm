@@ -24,6 +24,8 @@
 
 #include "ring/shared.h"
 
+#include "common/stream.h"
+
 namespace Ring {
 
 class CompressedSoundStream;
@@ -82,6 +84,7 @@ struct CompressedSoundHeader {
 // Sound decompression classes
 class CompressedSound {
 public:
+	CompressedSound();
 	virtual ~CompressedSound() {};
 
 	bool init(const Common::String &path);
@@ -95,7 +98,7 @@ public:
 	int getBlockAlign() { return _blockAlign; }
 
 protected:
-	CompressedStream            *_stream;
+	Common::SeekableReadStream  *_stream;
 	byte                        *_buffer;
 	int32                        _field_C;
 	int32                        _field_10;
@@ -107,6 +110,12 @@ protected:
 	byte                         _flags;
 	uint32                       _chunkCount;
 	uint32                       _dataSize;
+
+	// Stream related variables
+	int16                        _offset;
+	int16                        _initialValue;
+
+	uint32 decode(byte delta, uint32 start, uint32 end, int16 *buffer);
 };
 
 class CompressedSoundMono : public CompressedSound {
