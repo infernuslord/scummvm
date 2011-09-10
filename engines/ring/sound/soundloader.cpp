@@ -212,7 +212,7 @@ uint32 CompressedSound::decode(byte delta, uint32 start, uint32, int16 *buffer) 
 #pragma region CompressedSoundMono
 
 CompressedSoundMono::CompressedSoundMono() : CompressedSound() {
-	_field_2C = 0;
+	_compressedDataOffset = 0;
 }
 
 CompressedSoundMono::~CompressedSoundMono() {
@@ -238,7 +238,7 @@ bool CompressedSoundMono::decompressHeader() {
 	// Setup fields and buffer
 	--_chunkCount;
 
-	_field_2C = _stream->readUint16LE();
+	_compressedDataOffset = _stream->readUint16LE();
 	_field_C  = 0;
 	_field_10 = 44;
 
@@ -247,15 +247,15 @@ bool CompressedSoundMono::decompressHeader() {
 		error("[CompressedSoundMono::decompressHeader] Cannot allocate sound decoding buffer");
 
 	return true;
-};
+}
 
 bool CompressedSoundMono::decompress(SoundBuffer *buffer) {
 	error("[CompressedSoundMono::decompress] Not implemented");
-};
+}
 
 bool CompressedSoundMono::getChunk() {
 	_stream->seek(52, SEEK_SET);
-	_field_2C = _stream->readUint16LE();
+	_compressedDataOffset = _stream->readUint16LE();
 
 	_field_C  = 0;
 	_field_10 = 44;
@@ -268,7 +268,7 @@ bool CompressedSoundMono::getChunk() {
 #pragma region CompressedSoundStereo
 
 CompressedSoundStereo::CompressedSoundStereo() : CompressedSound() {
-	_field_2C = 0;
+	_compressedDataOffset = 0;
 	_field_30 = 0;
 }
 
@@ -297,7 +297,7 @@ bool CompressedSoundStereo::decompressHeader() {
 
 	_field_C  = 0;
 	_field_10 = 44;
-	_field_2C = _stream->readUint32LE();
+	_compressedDataOffset = _stream->readUint32LE();
 	_field_30 = _stream->readUint32LE();
 
 	// Compute buffer size
@@ -308,15 +308,49 @@ bool CompressedSoundStereo::decompressHeader() {
 		error("[CompressedSoundStereo::decompressHeader] Cannot allocate sound decoding buffer");
 
 	return true;
-};
+}
 
-bool CompressedSoundStereo::decompress(SoundBuffer *buffer) {
+bool CompressedSoundStereo::decompress(SoundBuffer *soundBuffer) {
+	if (!_stream)
+		error("[CompressedSoundStereo::decompress] Stream not initialized");
+
+	// Compute buffer size
+	uint32 size = soundBuffer->size;
+	if (size > _dataSize - _field_10)
+		size = _dataSize - _field_10;
+
+	if (!size)
+		error("[CompressedSoundStereo::decompress] Invalid buffer size (cannot be 0)");
+
+	// Allocate buffer
+	byte *buffer = (byte *)malloc(size + 1024);
+	if (!buffer)
+		error("[CompressedSoundStereo::decompress] Cannot allocate buffer for sound decompression (size: %d)", size + 1024);
+
+	while (true) {
+
+		// Get buffer from the sound resource
+		if (_resource->getSize()) {
+			error("[CompressedSoundStereo::decompress] Not implemented");
+		}
+
+		// Check that the stream contains enough data
+		uint32 remainingSize = _stream->size() - _stream->pos();
+		if (remainingSize < _compressedDataOffset + 8)
+			error("[CompressedSoundStereo::decompress] Invalid remaining stream size (needed: %d, found: %d)", _compressedDataOffset + 8, remainingSize);
+
+		if (_field_30 >= size)
+			break;
+
+		error("[CompressedSoundStereo::decompress] Not implemented");
+	}
+
 	error("[CompressedSoundStereo::decompress] Not implemented");
-};
+}
 
 bool CompressedSoundStereo::getChunk() {
 	_stream->seek(52, SEEK_SET);
-	_field_2C = _stream->readUint32LE();
+	_compressedDataOffset = _stream->readUint32LE();
 	_field_30 = _stream->readUint32LE();
 
 	_field_C  = 0;

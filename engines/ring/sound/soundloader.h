@@ -56,6 +56,7 @@ public:
 	void add(void *data, uint32 dataSize);
 	void getBuffer(SoundBuffer *buffer, uint32 size);
 	void getBuffer(SoundBuffer *buffer);
+	uint32 getSize() { return _size; }
 
 private:
 	byte   *_buffer;
@@ -128,7 +129,7 @@ public:
 	virtual bool getChunk();
 
 private:
-	int16 _field_2C;
+	int16 _compressedDataOffset;
 };
 
 class CompressedSoundStereo : public CompressedSound {
@@ -141,8 +142,8 @@ public:
 	virtual bool getChunk();
 
 private:
-	int32 _field_2C;
-	int32 _field_30;
+	uint32 _compressedDataOffset;
+	uint32 _field_30;
 };
 
 class SoundLoader {
