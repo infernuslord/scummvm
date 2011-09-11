@@ -644,7 +644,7 @@ Visual *ApplicationRing::createVisual(Id visualId, uint32 a3, uint32 a4, uint32 
 	VisualElementRing *visual = new VisualElementRing(visualId);
 
 	visual->init(a3, a4, left, top, offsetY, height, progressMultiplier, progressColor);
-	visual->setField8(2);
+	visual->setType(2);
 	visual->setVisible(true);
 
 	return visual;

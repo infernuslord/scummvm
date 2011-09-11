@@ -32,7 +32,7 @@ namespace Ring {
 
 class Visual : public BaseObject, public Common::Serializable {
 public:
-	Visual(Id id) : BaseObject(id), _field_8(0), _visible(false) {}
+	Visual(Id id) : BaseObject(id), _type(0), _visible(false) {}
 	virtual ~Visual() {}
 
 	virtual void draw() = 0;
@@ -47,11 +47,11 @@ public:
 	void saveLoadWithSerializer(Common::Serializer &s) {}
 
 	// Accessors
-	void setField8(uint32 val) { _field_8 = val; }
+	void setType(uint32 type) { _type = type; }
 	void setVisible(bool state) { _visible = state; }
 
 protected:
-	uint32 _field_8;
+	uint32 _type;
 	bool _visible;
 };
 
