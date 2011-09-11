@@ -43,7 +43,8 @@
 #include "ring/graphics/hotspot.h"
 #include "ring/graphics/movie.h"
 #include "ring/graphics/screen.h"
-#include "ring/graphics/visual/visual.h"
+#include "ring/graphics/visual/visual_box.h"
+#include "ring/graphics/visual/visual_encyclopedia.h"
 #include "ring/graphics/visual/visual_list.h"
 
 #include "ring/sound/soundentry.h"
@@ -2389,11 +2390,11 @@ void Application::visualAddShowToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a
 void Application::visualListAddToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3,
 	                                    Common::String imagePath, Common::String iconPath, Common::String filename3, Common::String filename4, Common::String filename5, Common::String filename6, Common::String filename7, Common::String filename8, Common::String filename9, Common::String filename10,
 	                                    Common::String filename11, Common::String filename12, Common::String filename13,
-							            DrawType drawType, const Common::Point &origin, const Common::Point &backgroundOffset, uint32 a22, uint32 a23, uint32 a24, uint32 a25, uint32 a26,
+	                                    DrawType drawType, const Common::Point &origin, const Common::Point &backgroundOffset, uint32 a22, uint32 a23, uint32 a24, uint32 a25, uint32 a26,
 	                                    uint32 a27, const Common::Point &upOffset, uint32 a30, uint32 a31, uint32 a32, uint32 a33, const Common::Point &downOffset, uint32 a36,
 	                                    uint32 a37, uint32 a38, uint32 a39, const Common::Point &imageCoords, ImageType imageType, DrawType imageDrawType, uint32 a44, uint32 a45, uint32 a46,
-							            const Color &foreground, const Color &foregroundSelected, const Color &background, FontId fontId,
-							            ArchiveType archiveType) {
+	                                    const Color &foreground, const Color &foregroundSelected, const Color &background, FontId fontId,
+	                                    ArchiveType archiveType) {
 
 
 	if (!_puzzles.has(puzzleId))
@@ -2555,6 +2556,82 @@ void Application::visualListResetObjectClicked(Id visualId, PuzzleId puzzleId) {
 		error("[Application::visualListResetObjectClicked] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
 
 	((VisualObjectList *)puzzle->getVisual(visualId))->resetObjectClicked();
+}
+
+void Application::visualAddBoxToPuzzle(Id visualId, PuzzleId puzzleId, const Common::String &name, ArchiveType archiveType) {
+	if (!_puzzles.has(puzzleId))
+		error("[Application::visualAddBoxToPuzzle] Puzzle Id doesn't exist (%d)", puzzleId.id());
+
+	Puzzle *puzzle = _puzzles.get(puzzleId);
+	if (puzzle->hasVisual(visualId))
+		error("[Application::visualAddBoxToPuzzle] Visual (%d) is already on puzzle (%d)", visualId, puzzleId.id());
+
+	VisualObjectBox *box = new VisualObjectBox(visualId);
+	box->init(name, archiveType);
+	box->setType(5);
+	box->setVisible(true);
+
+	puzzle->addVisual(box);
+}
+
+void Application::visualBoxSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6) {
+	if (!_puzzles.has(puzzleId))
+		error("[Application::visualBoxSetParameters] Puzzle Id doesn't exist (%d)", puzzleId.id());
+
+	Puzzle *puzzle = _puzzles.get(puzzleId);
+	if (!puzzle->hasVisual(visualId))
+		error("[Application::visualBoxSetParameters] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
+
+	((VisualObjectBox *)puzzle->getVisual(visualId))->setParameters(a4, a5, a6);
+}
+
+void Application::visualBoxHide(Id visualId, PuzzleId puzzleId) {
+	if (!_puzzles.has(puzzleId))
+		error("[Application::visualBoxHide] Puzzle Id doesn't exist (%d)", puzzleId.id());
+
+	Puzzle *puzzle = _puzzles.get(puzzleId);
+	if (!puzzle->hasVisual(visualId))
+		error("[Application::visualBoxHide] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
+
+	((VisualObjectBox *)puzzle->getVisual(visualId))->hide();
+}
+
+void Application::visualAddEncyclopediaToPuzzle(Id visualId, PuzzleId puzzleId, const Common::String &name, ArchiveType archiveType) {
+	if (!_puzzles.has(puzzleId))
+		error("[Application::visualAddEncyclopediaToPuzzle] Puzzle Id doesn't exist (%d)", puzzleId.id());
+
+	Puzzle *puzzle = _puzzles.get(puzzleId);
+	if (puzzle->hasVisual(visualId))
+		error("[Application::visualAddEncyclopediaToPuzzle] Visual (%d) is already on puzzle (%d)", visualId, puzzleId.id());
+
+	VisualObjectEncyclopedia *encyclopedia = new VisualObjectEncyclopedia(visualId);
+	encyclopedia->init(name, archiveType);
+	encyclopedia->setType(5);
+	encyclopedia->setVisible(true);
+
+	puzzle->addVisual(encyclopedia);
+}
+
+void Application::visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8, uint32 a9, uint32 a10) {
+	if (!_puzzles.has(puzzleId))
+		error("[Application::visualEncyclopediaSetParameters] Puzzle Id doesn't exist (%d)", puzzleId.id());
+
+	Puzzle *puzzle = _puzzles.get(puzzleId);
+	if (!puzzle->hasVisual(visualId))
+		error("[Application::visualEncyclopediaSetParameters] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
+
+	((VisualObjectEncyclopedia *)puzzle->getVisual(visualId))->setParameters(a4, a5, a6, a7, a8, a9, a10);
+}
+
+void Application::visualEncyclopediaShowFile(Id visualId, PuzzleId puzzleId, const Common::String &filename) {
+	if (!_puzzles.has(puzzleId))
+		error("[Application::visualEncyclopediaShowFile] Puzzle Id doesn't exist (%d)", puzzleId.id());
+
+	Puzzle *puzzle = _puzzles.get(puzzleId);
+	if (!puzzle->hasVisual(visualId))
+		error("[Application::visualEncyclopediaShowFile] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
+
+	((VisualObjectEncyclopedia *)puzzle->getVisual(visualId))->showFile(filename);
 }
 
 #pragma endregion

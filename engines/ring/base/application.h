@@ -331,8 +331,11 @@ public:
 	void varRemoveAll();
 
 	//////////////////////////////////////////////////////////////////////////
-	// Visual
+	// VisualElement
 	void visualAddShowToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 width, uint32 progressMultiplier, uint32 progressColor);
+	virtual Visual *createVisual(Id visualId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) = 0;
+
+	// VisualList
 	void visualListAddToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3,
 	                           Common::String imageDir, Common::String iconDir, Common::String filename3, Common::String filename4, Common::String filename5, Common::String filename6, Common::String filename7, Common::String filename8, Common::String filename9, Common::String filename10,
 	                           Common::String filename11, Common::String filename12, Common::String filename13,
@@ -354,8 +357,15 @@ public:
 	int32 visualListGetObjectIndexClicked(Id visualId, PuzzleId puzzleId);
 	void visualListResetObjectClicked(Id visualId, PuzzleId puzzleId);
 
+	// VisualBox
+	void visualAddBoxToPuzzle(Id visualId, PuzzleId puzzleId, const Common::String &name, ArchiveType archiveType);
+	void visualBoxSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6);
+	void visualBoxHide(Id visualId, PuzzleId puzzleId);
 
-	virtual Visual *createVisual(Id visualId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) = 0;
+	// VisualEncyclopedia
+	void visualAddEncyclopediaToPuzzle(Id visualId, PuzzleId puzzleId, const Common::String &name, ArchiveType archiveType);
+	void visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8, uint32 a9, uint32 a10);
+	void visualEncyclopediaShowFile(Id visualId, PuzzleId puzzleId, const Common::String &filename);
 
 	//////////////////////////////////////////////////////////////////////////
 	// DragControl
