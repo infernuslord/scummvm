@@ -19,14 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef RING_VISUAL_H
-#define RING_VISUAL_H
+#ifndef RING_VISUAL_LIST_H
+#define RING_VISUAL_LIST_H
 
-#include "ring/shared.h"
-
-#include "common/keyboard.h"
-#include "common/rect.h"
-#include "common/serializer.h"
+#include "ring/graphics/visual/visual.h"
 
 namespace Ring {
 
@@ -34,31 +30,6 @@ class Hotspot;
 class ImageHandle;
 class Object;
 class Text;
-
-class Visual : public BaseObject, public Common::Serializable {
-public:
-	Visual(Id id);
-	virtual ~Visual();
-
-	virtual void draw() = 0;
-	virtual uint32 handleLeftButtonUp(const Common::Point &point) = 0;
-	virtual uint32 handleUpdate(const Common::Point &point) = 0;
-	virtual uint32 handleLeftButtonDown(Common::Point point) { return 0; }
-	virtual bool handleKey(Common::KeyCode key) { return false; }
-	virtual void alloc() = 0;
-	virtual void dealloc() = 0;
-
-	// Serializable
-	void saveLoadWithSerializer(Common::Serializer &s) {}
-
-	// Accessors
-	void setField8(uint32 val) { _field_8 = val; }
-	void setVisible(bool state) { _visible = state; }
-
-protected:
-	uint32 _field_8;
-	bool _visible;
-};
 
 class VisualObjectList : public Visual {
 public:
@@ -167,4 +138,4 @@ private:
 
 } // End of namespace Ring
 
-#endif // RING_VISUAL_H
+#endif // RING_VISUAL_LIST_H

@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "ring/graphics/visual.h"
+#include "ring/graphics/visual/visual_list.h"
 
 #include "ring/base/application.h"
 #include "ring/base/event.h"
@@ -38,17 +38,6 @@
 #include "common/tokenizer.h"
 
 namespace Ring {
-
-#pragma region Visual
-
-Visual::Visual(Id id) : BaseObject(id) {
-	_field_8 = 0;
-	_visible = false;
-}
-
-Visual::~Visual() {}
-
-#pragma endregion
 
 #pragma region VisualObjectList
 
@@ -305,8 +294,8 @@ void VisualObjectList::initHotspots() {
 
 	_hotspots.push_back(new Hotspot(Common::Rect(_origin.x + (int16)(_field_91),
 	                                             _origin.y + (int16)(_field_95),
-												 _origin.x + (int16)(_field_91 + _field_99),
-												 _origin.y + (int16)(_field_95 + _field_9D)),
+	                                             _origin.x + (int16)(_field_91 + _field_99),
+	                                             _origin.y + (int16)(_field_95 + _field_9D)),
 	                                false,
 	                                0,
 	                                kCursorActive,
@@ -317,8 +306,8 @@ void VisualObjectList::initHotspots() {
 			uint32 y = i * _field_69 + _field_69 / 2;
 			_hotspots.push_back(new Hotspot(Common::Rect(_origin.x + (int16)(_field_59),
 			                                             _origin.y + (int16)(_field_5D + y - _field_65 / 2),
-														 _origin.x + (int16)(_field_59 + _field_61),
-														 _origin.y + (int16)(_field_5D + _field_65 / 2 + y)),
+			                                             _origin.x + (int16)(_field_59 + _field_61),
+			                                             _origin.y + (int16)(_field_5D + _field_65 / 2 + y)),
 			                                false,
 			                                0,
 			                                kCursorPassiveDraw,
@@ -331,8 +320,8 @@ void VisualObjectList::initHotspots() {
 			uint32 y = i * _field_69 + _field_69 / 2;
 			_hotspots.push_back(new Hotspot(Common::Rect(_origin.x + (int16)(_field_59 + _field_61 / 2 + y),
 			                                             _origin.y + (int16)(_field_5D),
-														 _origin.x + (int16)(_field_59 + _field_61 / 2 + y),
-														 _origin.y + (int16)(_field_5D + _field_65)),
+			                                             _origin.x + (int16)(_field_59 + _field_61 / 2 + y),
+			                                             _origin.y + (int16)(_field_5D + _field_65)),
 			                                false,
 			                                0,
 			                                kCursorPassiveDraw,
@@ -614,8 +603,6 @@ uint32 VisualObjectList::handleUpdate(const Common::Point &point) {
 	return 0;
 }
 
-#pragma endregion
-
 #pragma region Management
 
 void VisualObjectList::add(ObjectId objectId) {
@@ -711,6 +698,8 @@ void VisualObjectList::resetObjectClicked() {
 	_objectIndexClicked = -1;
 	_imageIndexClicked = -1;
 }
+
+#pragma endregion
 
 #pragma endregion
 

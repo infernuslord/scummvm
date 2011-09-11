@@ -28,7 +28,7 @@ MODULE_OBJS := \
 	graphics/imageLoader.o \
 	graphics/movie.o \
 	graphics/screen.o \
-	graphics/visual.o \
+	graphics/visual/visual_list.o \
 	sound/soundentry.o \
 	sound/soundhandler.o \
 	sound/soundloader.o \

@@ -22,7 +22,7 @@
 #ifndef RING_RING_VISUAL_H
 #define RING_RING_VISUAL_H
 
-#include "ring/graphics/visual.h"
+#include "ring/graphics/visual/visual.h"
 
 namespace Ring {
 

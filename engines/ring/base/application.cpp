@@ -43,7 +43,8 @@
 #include "ring/graphics/hotspot.h"
 #include "ring/graphics/movie.h"
 #include "ring/graphics/screen.h"
-#include "ring/graphics/visual.h"
+#include "ring/graphics/visual/visual.h"
+#include "ring/graphics/visual/visual_list.h"
 
 #include "ring/sound/soundentry.h"
 #include "ring/sound/soundhandler.h"
