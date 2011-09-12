@@ -26,6 +26,10 @@
 
 namespace Ring {
 
+class Hotspot;
+class ImageHandle;
+class Text;
+
 class VisualObjectBox : public Visual {
 public:
 	VisualObjectBox(Id id);
@@ -46,7 +50,41 @@ public:
 	void saveLoadWithSerializer(Common::Serializer &s);
 
 private:
+	struct Data {
+		uint32 size;
+		char   filename[255];
 
+		Data() {
+			size = 0;
+			memset(&filename, 0, sizeof(filename));
+		}
+	};
+
+	Data                    *_data;
+	uint32                   _field_11;
+	uint32                   _field_15;
+	bool                     _isLoaded;
+	ArchiveType              _archiveType;
+	Common::Array<Hotspot *> _hotspots;
+	Common::Array<Text *>    _texts;
+	Common::Array<uint32 *>  _field_23;
+	Common::Array<uint32 *>  _field_27;
+	Common::Array<uint32 *>  _field_2B;
+	Text                    *_name;
+	ImageHandle             *_imageKeywords;
+	uint32                   _field_37;
+	uint32                   _size;
+	char                     _filename[255];
+	uint32                   _field_13E;
+	uint32                   _field_142;
+	uint32                   _field_146;
+	uint32                   _field_14A;
+	uint32                   _field_14E;
+	uint32                   _field_152;
+	Common::Point            _point;
+	bool                     _field_15E;
+
+	bool hasImage() { return true; }
 };
 
 } // End of namespace Ring

@@ -21,26 +21,88 @@
 
 #include "ring/graphics/visual/visual_box.h"
 
+#include "ring/base/application.h"
+#include "ring/base/text.h"
+
+#include "ring/graphics/hotspot.h"
+#include "ring/graphics/image.h"
+
+#include "ring/ring.h"
+#include "ring/helpers.h"
+
 namespace Ring {
 
 VisualObjectBox::VisualObjectBox(Id id) : Visual(id) {
-	error("[VisualObjectBox] Not implemented");
+	_data           = NULL;
+	_field_11       = 0;
+	_field_15       = 0;
+	_isLoaded       = false;
+	_archiveType    = kArchiveInvalid;
+	_name           = NULL;
+	_imageKeywords  = NULL;
+	_field_37       = 0;
+	_size           = 0;
+	memset(&_filename, 0, sizeof(_filename));
+	_field_13E      = 0;
+	_field_142      = 0;
+	_field_146      = 0;
+	_field_14A      = 0;
+	_field_14E      = 0;
+	_field_152      = 0;
+	_field_15E     = true;
 }
 
 VisualObjectBox::~VisualObjectBox() {
-	error("[~VisualObjectBox] Not implemented");
+	SAFE_DELETE(_data);
+
+	CLEAR_ARRAY(Hotspot, _hotspots);
+	CLEAR_ARRAY(Text,    _texts);
+	CLEAR_ARRAY(uint32,  _field_23);
+	CLEAR_ARRAY(uint32,  _field_27);
+	CLEAR_ARRAY(uint32,  _field_2B);
+
+	SAFE_DELETE(_name);
+	SAFE_DELETE(_imageKeywords);
 }
 
 void VisualObjectBox::draw() {
-	error("[VisualObjectBox::init] Not implemented");
+	error("[VisualObjectBox::draw] Not implemented");
 }
 
 uint32 VisualObjectBox::handleLeftButtonUp(const Common::Point &point) {
-	error("[VisualObjectBox::handleLeftButtonUp] Not implemented");
+	if (_visible)
+		return handleUpdate(point);
+
+	return 0;
 }
 
 uint32 VisualObjectBox::handleUpdate(const Common::Point &point) {
-	error("[VisualObjectBox::handleUpdate] Not implemented");
+	if (!_visible || _hotspots.size() == 0)
+		return 0;
+
+	for (Common::Array<Hotspot *>::iterator it = _hotspots.begin(); it != _hotspots.end(); it++) {
+		Hotspot *hotspot = *it;
+
+		if (!hotspot->contains(point))
+			continue;
+
+		switch (hotspot->getTarget()) {
+		default:
+			break;
+
+		case 0:
+		case 60:
+			getApp()->cursorSelect(kCursorIdle);
+			return 1;
+
+		case 10:
+		case 50:
+			getApp()->cursorSelect(kCursorMenuActive);
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 uint32 VisualObjectBox::handleLeftButtonDown(Common::Point point) {
@@ -48,15 +110,42 @@ uint32 VisualObjectBox::handleLeftButtonDown(Common::Point point) {
 }
 
 void VisualObjectBox::alloc() {
-	error("[VisualObjectBox::alloc] Not implemented");
+	if (_isLoaded)
+		return;
+
+	if (!hasImage()) {
+		_isLoaded = true;
+		return;
+	}
+
+	if (_imageKeywords)
+		_imageKeywords->loadImage();
+
+	_isLoaded = true;
 }
 
 void VisualObjectBox::dealloc() {
-	error("[VisualObjectBox::dealloc] Not implemented");
+	_isLoaded = false;
+
+	if (_imageKeywords)
+		_imageKeywords->destroy();
 }
 
 void VisualObjectBox::init(const Common::String &name, ArchiveType archiveType) {
-	error("[VisualObjectBox::init] Not implemented");
+	_archiveType = archiveType;
+
+	// Compute image path
+	Common::String path;
+	if (_archiveType == kArchiveFile)
+		path = Common::String::format("DATA/%s/VISUAL/", getApp()->getCurrentZoneFolder().c_str());
+	else
+		path = "/VISUAL/";
+
+	// Create image
+	_imageKeywords = new ImageHandle("keywords.tga", Common::Point(0, 0), true, kDrawType3, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageKeywords->setDirectory(path);
+
+	_name = new Text();
 }
 
 void VisualObjectBox::setParameters(uint32 a2, uint32 a3, uint32 a4) {
@@ -64,7 +153,8 @@ void VisualObjectBox::setParameters(uint32 a2, uint32 a3, uint32 a4) {
 }
 
 void VisualObjectBox::hide() {
-	error("[VisualObjectBox::hide] Not implemented");
+	_field_13E = 0;
+	_visible = false;
 }
 
 void VisualObjectBox::saveLoadWithSerializer(Common::Serializer &s) {
