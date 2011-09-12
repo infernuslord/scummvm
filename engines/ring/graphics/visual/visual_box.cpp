@@ -31,6 +31,8 @@
 #include "ring/ring.h"
 #include "ring/helpers.h"
 
+#include "common/tokenizer.h"
+
 namespace Ring {
 
 VisualObjectBox::DialogList::~DialogList() {
@@ -38,42 +40,31 @@ VisualObjectBox::DialogList::~DialogList() {
 }
 
 VisualObjectBox::VisualObjectBox(Id id) : Visual(id) {
-	_keyword        = NULL;
-	_currentKeyword = NULL;
-	_field_15       = 0;
 	_isLoaded       = false;
 	_archiveType    = kArchiveInvalid;
 	_name           = NULL;
-	_imageKeywords  = NULL;
-	_field_37       = 0;
-	_dialogId       = 0;
+	_background  = NULL;
 	_isSetup        = false;
-	_keywordId1     = 0;
-	_keywordId2     = 0;
-	_keywordId3     = 0;
-	_keywordId4     = 0;
 	_keywordId      = 0;
-	_showOptions    = true;
+	_isFirstTime    = true;
 }
 
 VisualObjectBox::~VisualObjectBox() {
-	SAFE_DELETE(_keyword);
-
 	CLEAR_ARRAY(Hotspot,    _hotspots);
 	CLEAR_ARRAY(Text,       _options);
 	CLEAR_ARRAY(Keyword,    _keywords);
-	CLEAR_ARRAY(uint32,     _field_27);
+	CLEAR_ARRAY(Keyword,    _subKeywords);
 	CLEAR_ARRAY(DialogList, _dialogs);
 
 	SAFE_DELETE(_name);
-	SAFE_DELETE(_imageKeywords);
+	SAFE_DELETE(_background);
 }
 
 void VisualObjectBox::reset() {
 	CLEAR_ARRAY(Hotspot, _hotspots);
 	CLEAR_ARRAY(Text,    _options);
 	CLEAR_ARRAY(Keyword, _keywords);
-	CLEAR_ARRAY(uint32,  _field_27);
+	CLEAR_ARRAY(Keyword, _subKeywords);
 }
 
 void VisualObjectBox::draw() {
@@ -93,16 +84,16 @@ void VisualObjectBox::draw() {
 
 	int16 y = _point.y + 4;
 
-	// Draw image
-	if (_imageKeywords->isInitialized())
-		getApp()->getScreenManager()->draw(_imageKeywords, Common::Point(_point.x, y), _imageKeywords->getDrawType());
+	// Draw background
+	if (_background->isInitialized())
+		getApp()->getScreenManager()->draw(_background, Common::Point(_point.x, y), _background->getDrawType());
 
-	// Draw items
+	// Draw options
 	for (Common::Array<Text *>::iterator it = _options.begin(); it != _options.end(); it++) {
 		y += 13;
 
-		if (_imageKeywords->isInitialized())
-			getApp()->getScreenManager()->draw(_imageKeywords, Common::Point(_point.x, y), _imageKeywords->getDrawType());
+		if (_background->isInitialized())
+			getApp()->getScreenManager()->draw(_background, Common::Point(_point.x, y), _background->getDrawType());
 
 		getApp()->getScreenManager()->drawText(*it);
 	}
@@ -169,8 +160,6 @@ uint32 VisualObjectBox::handleLeftButtonDown(Common::Point point) {
 			if (hotspot->getCursorId() < (CursorId)_keywords.size())
 				keyword = _keywords[hotspot->getCursorId()];
 
-			_currentKeyword = keyword;
-
 			getApp()->onVisualList(_id, 6, Common::Point(keyword->id, 0));
 
 			playDialog(i, keyword->id);
@@ -200,8 +189,8 @@ void VisualObjectBox::alloc() {
 		return;
 	}
 
-	if (_imageKeywords)
-		_imageKeywords->loadImage();
+	if (_background)
+		_background->loadImage();
 
 	_isLoaded = true;
 }
@@ -209,8 +198,8 @@ void VisualObjectBox::alloc() {
 void VisualObjectBox::dealloc() {
 	_isLoaded = false;
 
-	if (_imageKeywords)
-		_imageKeywords->destroy();
+	if (_background)
+		_background->destroy();
 }
 
 void VisualObjectBox::saveLoadWithSerializer(Common::Serializer &s) {
@@ -253,15 +242,15 @@ void VisualObjectBox::init(const Common::String &/*name*/, ArchiveType archiveTy
 		path = "/VISUAL/";
 
 	// Create image
-	_imageKeywords = new ImageHandle("keywords.tga", Common::Point(0, 0), true, kDrawType3, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
-	_imageKeywords->setDirectory(path);
+	_background = new ImageHandle("keywords.tga", Common::Point(0, 0), true, kDrawType3, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_background->setDirectory(path);
 
 	_name = new Text();
 }
 
 void VisualObjectBox::setParameters(Id keywordId, const Common::Point &point) {
-	if (!_showOptions)
-		ignoreKeyword();
+	if (!_isFirstTime)
+		saveKeyword();
 
 	reset();
 
@@ -274,7 +263,7 @@ void VisualObjectBox::setParameters(Id keywordId, const Common::Point &point) {
 
 	setupOptions();
 
-	_showOptions = false;
+	_isFirstTime = false;
 	_keywordId = keywordId;
 }
 
@@ -294,7 +283,7 @@ void VisualObjectBox::setupOptions() {
 
 		// Initialize dialog option
 		Text *text = new Text();
-		text->init(keyword->name, Common::Point(_point.x + 10, y), kFontDefault, Color(255, 255, 255), Color(255, 255, 255));
+		text->init(keyword->name, Common::Point(_point.x + 10, y), kFontDefault, Color(255, -1, -1), Color(-1, -1, -1));
 
 		// Compute text dimensions
 		text->set(keyword->name);
@@ -307,16 +296,80 @@ void VisualObjectBox::setupOptions() {
 	}
 }
 
-void VisualObjectBox::loadKeyword(Id keywordId) {
-	error("[VisualObjectBox::loadKeyword] Not implemented");
+Id VisualObjectBox::loadKeyword(Id keywordId, bool addToSubTree) {
+	Id parent = 0;
+
+	// Open a stream to the keywords file
+	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember("keywords.ini");
+	if (!archive)
+		error("[VisualObjectBox::loadKeyword] Error opening keywords file");
+
+	// Read each keyword info
+	char prefix = ' ';
+	while (!archive->eos() && !archive->err()) {
+
+		Common::String line = archive->readLine();
+		if (archive->eos() || archive->err())
+			break;
+
+		// Check keyword id
+		Id keywordIdTarget = 0;
+		Id keywordIdParent = 0;
+		if (sscanf(line.c_str(), "%c %d %d", &prefix, &keywordIdTarget, &keywordIdParent) == 3
+		 && keywordIdTarget == keywordId) {
+
+			// Found keyword, read the options
+			while (!archive->eos() && !archive->err()) {
+
+				Common::String option = archive->readLine();
+				if (archive->eos() || archive->err())
+					break;
+
+				// Empty line => end of option list
+				if (option.empty())
+					break;
+
+				// Get option id and name
+				Common::StringTokenizer tokenizer(option, "\t");
+				if (tokenizer.empty())
+					error("[VisualObjectBox::loadKeyword] Invalid option format (missing tab separator)");
+
+				Common::String id = tokenizer.nextToken();
+				if (tokenizer.empty() || id.empty())
+					error("[VisualObjectBox::loadKeyword] Invalid line format (missing keyword id)");
+
+				Keyword *keyword = new Keyword(atoi(id.c_str()), tokenizer.nextToken());
+				if (addToSubTree) {
+					_subKeywords.push_back(keyword);
+					parent = keywordIdParent;
+				} else {
+					_keywords.push_back(keyword);
+				}
+			}
+		}
+	}
+
+	delete archive;
+
+	return parent;
 }
 
 void VisualObjectBox::addHotspot(Text *text, uint32 keywordIndex) {
 	_hotspots.push_back(new Hotspot(text->getBoundingBox(), true, 0, (CursorId)keywordIndex, 10));
 }
 
-void VisualObjectBox::sub_4830A0(Id keywordId) {
-	error("[VisualObjectBox::sub_4830A0] Not implemented");
+void VisualObjectBox::loadSubKeyword(Id keywordId) {
+	CLEAR_ARRAY(Keyword, _subKeywords);
+
+	Id parent = loadKeyword(keywordId, true);
+
+	// Merge keywords
+	if (parent == _keywordId) {
+		for (uint32 i = 0; i < _subKeywords.size(); i++)
+			_keywords.push_back(new Keyword(*_subKeywords[i]));
+	}
+
+	updateOptions();
 }
 
 void VisualObjectBox::playDialog(uint32 keywordIndex, Id keywordId) {
@@ -328,18 +381,18 @@ void VisualObjectBox::playDialog(uint32 keywordIndex, Id keywordId) {
 	if (_dialogs.empty() || !_dialogs.has(keywordId))
 		getApp()->soundPlay(keywordId);
 
-	sub_4830A0(keywordId);
-	adjustOptions();
+	loadSubKeyword(keywordId);
+	updateOptions();
 }
 
-void VisualObjectBox::adjustOptions() {
+void VisualObjectBox::updateOptions() {
 	CLEAR_ARRAY(Hotspot, _hotspots);
 	CLEAR_ARRAY(Text,    _options);
 
 	setupOptions();
 }
 
-void VisualObjectBox::ignoreKeyword() {
+void VisualObjectBox::saveKeyword() {
 	if (_dialogs.has(_keywordId))
 		_dialogs.remove(_keywordId);
 
@@ -355,7 +408,15 @@ bool VisualObjectBox::isKeywordLoaded(Id keywordId) {
 	if (_dialogs.empty() || !_dialogs.has(keywordId))
 		return false;
 
-	error("[VisualObjectBox::isKeywordLoaded] Not implemented");
+	DialogList *dialog = _dialogs.get(keywordId);
+	if (dialog->keywords.empty())
+		return true;
+
+	// Repopulate keywords list
+	for (uint32 i = 0; i < dialog->keywords.size(); i++)
+		_keywords.push_back(new Keyword(*dialog->keywords[i]));
+
+	return true;
 }
 
 

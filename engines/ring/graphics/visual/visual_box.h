@@ -63,6 +63,11 @@ private:
 			id = 0;
 		}
 
+		Keyword(Id kId, const Common::String &kName) {
+			id   = kId;
+			name = kName;
+		}
+
 		Keyword(const Keyword& keyword) {
 			id   = keyword.id;
 			name = keyword.name;
@@ -100,42 +105,31 @@ private:
 		}
 	};
 
-	Keyword                         *_keyword;
-	Keyword                         *_currentKeyword;
-	uint32                           _field_15;
 	bool                             _isLoaded;
 	ArchiveType                      _archiveType;
 	Common::Array<Hotspot *>         _hotspots;
 	Common::Array<Text *>            _options;
 	Common::Array<Keyword *>         _keywords;
-	Common::Array<uint32 *>          _field_27;
+	Common::Array<Keyword *>         _subKeywords;
 	AssociativeArray<DialogList *>   _dialogs;
 	Text                            *_name;
-	ImageHandle                     *_imageKeywords;
-	uint32                           _field_37;
-	uint32                           _dialogId;
-	Common::String                   _dialogName;
+	ImageHandle                     *_background;
 	bool                             _isSetup;
-	Id                               _keywordId1;
-	Id                               _keywordId2;
-	Id                               _keywordId3;
-	Id                               _keywordId4;
 	Id                               _keywordId;
 	Common::Point                    _point;
-	bool                             _showOptions;
+	bool                             _isFirstTime;
 
 	bool hasImage() { return true; }
 	void reset();
 
 	void setupOptions();
-	void loadKeyword(Id keywordId);
+	Id loadKeyword(Id keywordId, bool addToSubTree = false);
 	void addHotspot(Text *text, uint32 keywordIndex);
-	void sub_4830A0(Id keywordId);
+	void loadSubKeyword(Id keywordId);
 	void playDialog(uint32 keywordIndex, Id keywordId);
-	void adjustOptions();
-	void ignoreKeyword();
+	void updateOptions();
+	void saveKeyword();
 	bool isKeywordLoaded(Id keywordId);
-
 };
 
 } // End of namespace Ring
