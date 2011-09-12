@@ -214,7 +214,32 @@ void VisualObjectBox::dealloc() {
 }
 
 void VisualObjectBox::saveLoadWithSerializer(Common::Serializer &s) {
-	error("[VisualObjectBox::saveLoadWithSerializer] Not implemented");
+	s.syncAsUint32LE(_keywordId);
+	s.syncAsSint16LE(_point.x);
+	s.syncAsSint16LE(_point.y);
+	s.syncAsByte(_isSetup);
+
+	// Save keyword list
+	uint32 count = _keywords.size();
+	s.syncAsUint32LE(count);
+
+	for (uint32 i = 0; i < count; i++) {
+		if (s.isLoading())
+			_keywords.push_back(new Keyword());
+
+		_keywords[i]->saveLoadWithSerializer(s);
+	}
+
+	// Save dialog list
+	count = _dialogs.size();
+	s.syncAsUint32LE(count);
+
+	for (uint32 i = 0; i < count; i++) {
+		if (s.isLoading())
+			_dialogs.push_back(new DialogList());
+
+		_dialogs[i]->saveLoadWithSerializer(s);
+	}
 }
 
 void VisualObjectBox::init(const Common::String &/*name*/, ArchiveType archiveType) {

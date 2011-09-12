@@ -55,7 +55,7 @@ public:
 	void saveLoadWithSerializer(Common::Serializer &s);
 
 private:
-	struct Keyword {
+	struct Keyword : public Common::Serializable {
 		Id id;
 		Common::String name;
 
@@ -67,9 +67,15 @@ private:
 			id   = keyword.id;
 			name = keyword.name;
 		}
+
+		// Serializable
+		void saveLoadWithSerializer(Common::Serializer &s) {
+			s.syncAsSint32LE(id);
+			s.syncString(name);
+		}
 	};
 
-	struct DialogList : BaseObject {
+	struct DialogList : public BaseObject, public Common::Serializable {
 		Common::Array<Keyword *> keywords;
 
 		DialogList() : BaseObject(0) {}
@@ -77,6 +83,21 @@ private:
 		DialogList(Id keywordId) : BaseObject(keywordId) {}
 
 		~DialogList();
+
+		// Serializable
+		void saveLoadWithSerializer(Common::Serializer &s) {
+			s.syncAsSint32LE(_id);
+
+			uint32 count = keywords.size();
+			s.syncAsUint32LE(count);
+
+			for (uint32 i = 0; i < count; i++) {
+				if (s.isLoading())
+					keywords.push_back(new Keyword());
+
+				keywords[i]->saveLoadWithSerializer(s);
+			}
+		}
 	};
 
 	Keyword                         *_keyword;
