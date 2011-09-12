@@ -30,6 +30,11 @@ class Hotspot;
 class ImageHandle;
 class Text;
 
+/**
+ * Visual object box
+ *
+ * This shows the dialog options when talking to people in the game
+ */
 class VisualObjectBox : public Visual {
 public:
 	VisualObjectBox(Id id);
@@ -43,48 +48,73 @@ public:
 	virtual void dealloc();
 
 	void init(const Common::String &name, ArchiveType archiveType);
-	void setParameters(uint32 a2, uint32 a3, uint32 a4);
+	void setParameters(Id keywordId, const Common::Point &point);
 	void hide();
 
 	// Serializable
 	void saveLoadWithSerializer(Common::Serializer &s);
 
 private:
-	struct Data {
-		uint32 size;
-		char   filename[255];
+	struct Keyword {
+		Id id;
+		Common::String name;
 
-		Data() {
-			size = 0;
-			memset(&filename, 0, sizeof(filename));
+		Keyword() {
+			id = 0;
+		}
+
+		Keyword(const Keyword& keyword) {
+			id   = keyword.id;
+			name = keyword.name;
 		}
 	};
 
-	Data                    *_data;
-	uint32                   _field_11;
-	uint32                   _field_15;
-	bool                     _isLoaded;
-	ArchiveType              _archiveType;
-	Common::Array<Hotspot *> _hotspots;
-	Common::Array<Text *>    _texts;
-	Common::Array<uint32 *>  _field_23;
-	Common::Array<uint32 *>  _field_27;
-	Common::Array<uint32 *>  _field_2B;
-	Text                    *_name;
-	ImageHandle             *_imageKeywords;
-	uint32                   _field_37;
-	uint32                   _size;
-	char                     _filename[255];
-	uint32                   _field_13E;
-	uint32                   _field_142;
-	uint32                   _field_146;
-	uint32                   _field_14A;
-	uint32                   _field_14E;
-	uint32                   _field_152;
-	Common::Point            _point;
-	bool                     _field_15E;
+	struct DialogList : BaseObject {
+		Common::Array<Keyword *> keywords;
+
+		DialogList() : BaseObject(0) {}
+
+		DialogList(Id keywordId) : BaseObject(keywordId) {}
+
+		~DialogList();
+	};
+
+	Keyword                         *_keyword;
+	Keyword                         *_currentKeyword;
+	uint32                           _field_15;
+	bool                             _isLoaded;
+	ArchiveType                      _archiveType;
+	Common::Array<Hotspot *>         _hotspots;
+	Common::Array<Text *>            _options;
+	Common::Array<Keyword *>         _keywords;
+	Common::Array<uint32 *>          _field_27;
+	AssociativeArray<DialogList *>   _dialogs;
+	Text                            *_name;
+	ImageHandle                     *_imageKeywords;
+	uint32                           _field_37;
+	uint32                           _dialogId;
+	Common::String                   _dialogName;
+	bool                             _isSetup;
+	Id                               _keywordId1;
+	Id                               _keywordId2;
+	Id                               _keywordId3;
+	Id                               _keywordId4;
+	Id                               _keywordId;
+	Common::Point                    _point;
+	bool                             _showOptions;
 
 	bool hasImage() { return true; }
+	void reset();
+
+	void setupOptions();
+	void loadKeyword(Id keywordId);
+	void addHotspot(Text *text, uint32 keywordIndex);
+	void sub_4830A0(Id keywordId);
+	void playDialog(uint32 keywordIndex, Id keywordId);
+	void adjustOptions();
+	void ignoreKeyword();
+	bool isKeywordLoaded(Id keywordId);
+
 };
 
 } // End of namespace Ring

@@ -359,7 +359,7 @@ public:
 
 	// VisualBox
 	void visualAddBoxToPuzzle(Id visualId, PuzzleId puzzleId, const Common::String &name, ArchiveType archiveType);
-	void visualBoxSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6);
+	void visualBoxSetParameters(Id visualId, PuzzleId puzzleId, Id keywordId, const Common::Point &point);
 	void visualBoxHide(Id visualId, PuzzleId puzzleId);
 
 	// VisualEncyclopedia

@@ -2574,7 +2574,7 @@ void Application::visualAddBoxToPuzzle(Id visualId, PuzzleId puzzleId, const Com
 	puzzle->addVisual(box);
 }
 
-void Application::visualBoxSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6) {
+void Application::visualBoxSetParameters(Id visualId, PuzzleId puzzleId, Id keywordId, const Common::Point &point) {
 	if (!_puzzles.has(puzzleId))
 		error("[Application::visualBoxSetParameters] Puzzle Id doesn't exist (%d)", puzzleId.id());
 
@@ -2582,7 +2582,7 @@ void Application::visualBoxSetParameters(Id visualId, PuzzleId puzzleId, uint32 
 	if (!puzzle->hasVisual(visualId))
 		error("[Application::visualBoxSetParameters] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
 
-	((VisualObjectBox *)puzzle->getVisual(visualId))->setParameters(a4, a5, a6);
+	((VisualObjectBox *)puzzle->getVisual(visualId))->setParameters(keywordId, point);
 }
 
 void Application::visualBoxHide(Id visualId, PuzzleId puzzleId) {
