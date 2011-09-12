@@ -80,6 +80,8 @@ public:
 	ImageHandle(Common::String nameId, const Common::Point &point, bool active, DrawType drawType, uint32 priority, byte imageCount, ZoneId zone, LoadFrom loadFrom, ImageType imageType, ArchiveType archiveType);
 	~ImageHandle();
 
+	void loadImage();
+
 	// Serializable
 	void saveLoadWithSerializer(Common::Serializer &s);
 

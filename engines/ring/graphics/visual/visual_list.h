@@ -133,7 +133,6 @@ private:
 	bool   _allocated;
 
 	Hotspot *getHotspot(const Common::Point &point);
-	void loadImage(ImageHandle *image) const;
 };
 
 } // End of namespace Ring

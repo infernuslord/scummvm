@@ -82,6 +82,17 @@ void ImageHandle::init(Common::String nameId, const Common::Point &point, bool a
 	_surface = NULL;
 }
 
+void ImageHandle::loadImage() {
+	if (_nameId.empty())
+		return;
+
+	// Compute file path
+	Common::String filename = Common::String::format("%s%s", _directory.c_str(), _nameId.c_str());
+
+	if (!load(filename, _archiveType, _zone, _loadFrom, _drawType))
+		error("[ImageHandle::load] Cannot load image (%s)", filename.c_str());
+}
+
 #pragma region Serializable
 
 void ImageHandle::saveLoadWithSerializer(Common::Serializer &s) {

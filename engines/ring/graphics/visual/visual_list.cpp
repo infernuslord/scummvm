@@ -112,29 +112,40 @@ void VisualObjectList::alloc() {
 	if (_allocated)
 		return;
 
-	loadImage(_backgroundImage);
-	loadImage(_upGun);
-	loadImage(_upGur);
-	loadImage(_upGus);
-	loadImage(_upGua);
-	loadImage(_downGun);
-	loadImage(_downGur);
-	loadImage(_downGus);
-	loadImage(_downGua);
-	loadImage(_cliImageP);
-	loadImage(_cliImageA);
+	if (_backgroundImage)
+		_backgroundImage->loadImage();
+
+	if (_upGun)
+		_upGun->loadImage();
+
+	if (_upGur)
+		_upGur->loadImage();
+
+	if (_upGus)
+		_upGus->loadImage();
+
+	if (_upGua)
+		_upGua->loadImage();
+
+	if (_downGun)
+		_downGun->loadImage();
+
+	if (_downGur)
+		_downGur->loadImage();
+
+	if (_downGus)
+		_downGus->loadImage();
+
+	if (_downGua)
+		_downGua->loadImage();
+
+	if (_cliImageP)
+		_cliImageP->loadImage();
+
+	if (_cliImageA)
+		_cliImageA->loadImage();
 
 	_allocated = true;
-}
-
-void VisualObjectList::loadImage(ImageHandle *image) const {
-	if (!image || image->getNameId().empty())
-		return;
-
-	// Compute file path
-	Common::String filename = Common::String::format("%s%s", image->getDirectory().c_str(), image->getNameId().c_str());
-
-	image->load(filename, image->getArchiveType(), image->getZone(), image->getLoadFrom(), image->getDrawType());
 }
 
 Hotspot *VisualObjectList::getHotspot(const Common::Point &point) {
