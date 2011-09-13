@@ -729,7 +729,7 @@ bool ImageLoaderCI2::readImage(Image *image, byte bitdepth, DrawType drawType) {
 
 	if (drawType == kDrawType3) {
 		// Create buffer to hold the data
-		byte *buffer = (byte *)malloc(_width * _stride + 64);
+		byte *buffer = (byte *)malloc(_height * _stride + 64);
 		if (!buffer) {
 			warning("[ImageLoaderCI2::readImage] Cannot create buffer for image %s", _filename.c_str());
 			return false;
@@ -743,7 +743,7 @@ bool ImageLoaderCI2::readImage(Image *image, byte bitdepth, DrawType drawType) {
 		}
 
 		// TODO Copy to image
-		warning("[ImageLoaderCI2::readImage] image copy for kDrawType3 not implemented");
+		error("[ImageLoaderCI2::readImage] image copy for kDrawType3 not implemented");
 
 		free(buffer);
 	} else {

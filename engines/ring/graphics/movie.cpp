@@ -54,10 +54,10 @@ Cinematic::Cinematic() {
 	_backBuffer = NULL;
 	_tControlBuffer = NULL;
 	_cacheBuffer = NULL;
-	_controlData = NULL;
-	_field_3A = 0;
-	_field_3E = 0;
-	_field_42 = 0;
+	_compressedData = NULL;
+	_field_3A = NULL;
+	_compressedBuffer = NULL;
+	_compressedBufferEnd = NULL;
 	_field_46 = 0;
 	_isStreaming = false;
 }
@@ -72,7 +72,7 @@ Cinematic::~Cinematic() {
 	free(_backBuffer);
 	free(_tControlBuffer);
 	free(_cacheBuffer);
-	free(_controlData);
+	free(_compressedData);
 }
 
 bool Cinematic::init(Common::String filename) {
@@ -102,10 +102,10 @@ bool Cinematic::init(Common::String filename) {
 	if (!_cacheBuffer)
 		error("[Cinematic::init] Error creating cache buffer!");
 
-	_controlData = NULL;
-	_field_3A = 0;
-	_field_3E = 0;
-	_field_42 = 0;
+	_compressedData = NULL;
+	_field_3A = NULL;
+	_compressedBuffer = NULL;
+	_compressedBufferEnd = NULL;
 	_field_46 = 0;
 
 	return true;
@@ -121,10 +121,10 @@ void Cinematic::deinit() {
 	free(_backBuffer);
 	free(_tControlBuffer);
 	free(_cacheBuffer);
-	free(_controlData);
-	_field_3A = 0;
-	_field_3E = 0;
-	_field_42 = 0;
+	free(_compressedData);
+	_field_3A = NULL;
+	_compressedBuffer = NULL;
+	_compressedBufferEnd = NULL;
 	_field_46 = 0;
 }
 
@@ -150,7 +150,7 @@ bool Cinematic::tControl() {
 	if (!_stream)
 		error("[Cinematic::tControl] Stream not initialized");
 
-	if (!_controlData)
+	if (!_compressedData)
 		error("[Cinematic::tControl] Control data not initialized");
 
 	// Reset tControl buffer
@@ -161,21 +161,22 @@ bool Cinematic::tControl() {
 
 	// Read data
 	uint32 dataSize = 2 * _tControlHeader.field_C + 2;
-	free(_controlData);
-	_controlData = (byte *)malloc(dataSize + _tControlHeader.field_0);
-	if (!_controlData)
+
+	free(_compressedData);
+	_compressedData = (byte *)malloc(dataSize + _tControlHeader.size);
+	if (!_compressedData)
 		error("[Cinematic::tControl] Cannot allocated memory for control data");
 
-	_stream->read(_controlData, dataSize + _tControlHeader.field_0);
+	_stream->read(_compressedData, dataSize + _tControlHeader.size);
 
 	// Process
-	_field_3A = READ_LE_UINT32(_controlData + dataSize);
+	_field_3A = _compressedData + dataSize;
 	_field_46 = _tControlHeader.field_8;
-	_field_42 = READ_LE_UINT32(_controlData + _tControlHeader.field_0 - _tControlHeader.field_4) + dataSize;
-	_field_3E = READ_LE_UINT32(_controlData + 2 * (_tControlHeader.field_8 * _tControlHeader.field_A) + dataSize);
+	_compressedBufferEnd = _compressedData + 1 * (_tControlHeader.size    - _tControlHeader.field_4) + dataSize;
+	_compressedBuffer    = _compressedData + 2 * (_tControlHeader.field_8 * _tControlHeader.field_A) + dataSize;
 
 	// Decompress data
-	uint32 decompressedSize = decompress(_field_3E, _backBuffer, _field_42 - _field_3E);
+	uint32 decompressedSize = decompress(_compressedBuffer, _backBuffer, _compressedBufferEnd - _compressedBuffer);
 	if (decompressedSize > CINEMATIC_BACKBUFFER_SIZE) {
 		warning("[Cinematic::tControl] Back buffer overrun");
 		return false;
@@ -205,7 +206,7 @@ bool Cinematic::sControl(byte* buffer) {
 	}
 
 
-	uint32 decompressedSize = decompress(_field_3E, buffer, _field_42 - _field_3E);
+	uint32 decompressedSize = decompress(_compressedBuffer, buffer, _compressedBufferEnd - _compressedBuffer);
 	if (decompressedSize >= 577536) {
 		warning("[Cinematic::sControl] Buffer overrun");
 		return false;
@@ -214,8 +215,174 @@ bool Cinematic::sControl(byte* buffer) {
 	return true;
 }
 
-uint32 Cinematic::decompress(uint32 a1, byte* buffer, uint32 a3) {
-	error("[Cinematic::decompress] Not implemented!");
+uint32 Cinematic::decompress(byte *data, byte *output, uint32 size) {
+	// TODO: Reduce code duplication
+
+#define UPDATE_BUFFER_CONTROL(index) { \
+	int *control = (int *)tControlBuffer[index]; \
+	uint32 count = tControlBuffer[index + 1] >> 2; \
+	do { \
+		*buffer = *control; \
+		++control; \
+		++buffer; \
+		--count; \
+	} while (count); \
+}
+
+#define UPDATE_BUFFER(index) { \
+	int *control = &field_3A[index]; \
+	uint32 count = 2; \
+	do { \
+		*buffer = *control; \
+		++control; \
+		++buffer; \
+		--count; \
+	} while (count); \
+}
+
+	// Get start and end of buffer
+	byte *start = data;
+	byte *end   = &data[size];
+
+	// Store buffers position
+	int *buffer           = (int *)output;
+	int *bufferStart      = buffer;
+	int *cacheBuffer      = (int *)_cacheBuffer;
+	int *cacheBufferStart = (int *)_cacheBuffer;
+	int *tControlBuffer   = (int *)_tControlBuffer;
+	int *field_3A         = (int *)_field_3A;
+
+	bool check = false;
+
+	while (end > start) {
+
+		// Get id value
+		byte val = *start++;
+
+		if (check) {
+
+			// Get state
+			byte state = val & 0xF;
+
+			if (state < 8) {
+
+				*cacheBuffer = *start++ + (state << 8);
+
+				if (*cacheBuffer > _field_46) {
+					if (*cacheBuffer >= 1920) {
+						UPDATE_BUFFER(2 * *cacheBuffer);
+					} else {
+
+						uint32 total = *cacheBuffer - _field_46 - 1;
+						byte *offset;
+						for (offset = _compressedBufferEnd; ; offset += *offset + 1) {
+							if (total-- < 1)
+								break;
+						}
+						total = *offset >> 1;
+
+						// Setup control buffer
+						uint32 index = 2 * *cacheBuffer;
+						tControlBuffer[index] = (int)buffer;
+						tControlBuffer[index + 1] = 8 * total;
+
+						int16 *index2 = (int16 *)(offset + 1);
+						while (true) {
+							if (total-- < 1)
+								break;
+
+							UPDATE_BUFFER(2 * *index2);
+
+							index2++;
+						}
+
+					}
+				} else {
+					if (tControlBuffer[2 * *cacheBuffer + 1]) {
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					} else {
+						UPDATE_BUFFER(2 * *cacheBuffer);
+
+						// Setup control buffer
+						uint32 index = 2 * *cacheBuffer;
+						tControlBuffer[index] = (int)&field_3A[index];
+						tControlBuffer[index + 1] = 8;
+					}
+				}
+
+				// Advance cache (and loop if necessary)
+				++cacheBuffer;
+
+				if ((cacheBuffer - cacheBufferStart) >= 128)
+					cacheBuffer = cacheBufferStart;
+
+				check = false;
+
+			} else {
+				UPDATE_BUFFER_CONTROL(2 * cacheBufferStart[(*start >> 4) + 16 * state - 128]);
+			}
+
+		} else {
+			if (val < 128) {
+
+				*cacheBuffer = 16 * val + (*start >> 4);
+
+				if (*cacheBuffer > _field_46) {
+					if (*cacheBuffer >= 1920) {
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					} else {
+
+						uint32 total = *cacheBuffer - _field_46 - 1;
+						byte *offset;
+						for (offset = _compressedBufferEnd; ; offset += *offset + 1) {
+							if (total-- < 1)
+								break;
+						}
+						total = *offset >> 1;
+
+						// Setup control buffer
+						uint32 index = 2 * *cacheBuffer;
+						tControlBuffer[index] = (int)buffer;
+						tControlBuffer[index + 1] = 8 * total;
+
+						int16 *index2 = (int16 *)(offset + 1);
+						while (true) {
+							if (total-- < 1)
+								break;
+
+							UPDATE_BUFFER(2 * *index2);
+
+							index2++;
+						}
+					}
+				} else {
+					if (tControlBuffer[2 * *cacheBuffer + 1]) {
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					} else {
+						UPDATE_BUFFER(2 * *cacheBuffer);
+
+						// Setup control buffer
+						uint32 index = 2 * *cacheBuffer;
+						tControlBuffer[index] = (int)&field_3A[index];
+						tControlBuffer[index + 1] = 8;
+					}
+				}
+
+				// Advance cache (and loop if necessary)
+				++cacheBuffer;
+
+				if ((cacheBuffer - cacheBufferStart) >= 128)
+					cacheBuffer = cacheBufferStart;
+
+				check = true;
+
+			} else {
+				UPDATE_BUFFER_CONTROL(2 * cacheBufferStart[val - 128]);
+			}
+		}
+	}
+
+	return (uint32)(buffer - bufferStart);
 }
 
 #pragma region ReadStream
@@ -398,7 +565,39 @@ bool Cinematic2::sControl(byte* buffer, uint32 bitdepth) {
 }
 
 void Cinematic2::decompressTControl(byte *buffer, uint32 bufferSize, uint16 decompressedSize) {
-	warning("[Cinematic2::decompressTControl] Not implemented");
+
+	memcpy(_buffer1, buffer, bufferSize);
+
+	if (bufferSize == 16) {
+		int *pBuffer = (int *)&_buffer1[16];
+
+		// Iterate over buffer
+		for (uint32 i = 0; i < decompressedSize; i++) {
+			for (uint32 j = 0; i < 9; j++) {
+
+
+				error("[Cinematic2::decompressTControl] Not implemented");
+
+				++pBuffer;
+			}
+
+			pBuffer += 12;
+		}
+
+	} else {
+		error("[Cinematic2::decompressTControl] Not implemented");
+	}
+
+	if (_field_5404C) {
+		for (uint32 i = 0; i < (uint32)decompressedSize * 4; i += 4) {
+			_buffer1[i]     = _buffer1[i]     * 2;
+			_buffer1[i + 1] = _buffer1[i + 1] * 2;
+			_buffer1[i + 2] = _buffer1[i + 2] * 2;
+			_buffer1[i + 3] = _buffer1[i + 3] * 2;
+		}
+	}
+
+
 }
 
 void Cinematic2::decompressSeq(byte *buffer) {

@@ -84,14 +84,14 @@ private:
 	};
 
 	struct TControlHeader {
-		uint32 field_0;
+		uint32 size;
 		uint32 field_4;
 		uint16 field_8;
 		uint16 field_A;
 		byte   field_C;
 
 		TControlHeader() {
-			field_0 = 0;
+			size = 0;
 			field_4 = 0;
 			field_8 = 0;
 			field_A = 0;
@@ -99,7 +99,7 @@ private:
 		}
 
 		void load(Common::SeekableReadStream *stream) {
-			field_0 = stream->readUint32LE();
+			size = stream->readUint32LE();
 			field_4 = stream->readUint32LE();
 			field_8 = stream->readUint16LE();
 			field_A = stream->readUint16LE();
@@ -115,14 +115,14 @@ private:
 	TControlHeader _tControlHeader;
 	byte   *_tControlBuffer;
 	byte   *_cacheBuffer;
-	byte   *_controlData;
-	uint32  _field_3A;
-	uint32  _field_3E;
-	uint32  _field_42;
-	uint32  _field_46;
+	byte   *_compressedData;
+	byte   *_field_3A;
+	byte   *_compressedBuffer;
+	byte   *_compressedBufferEnd;
+	int32   _field_46;
 	bool    _isStreaming;
 
-	uint32 decompress(uint32 a1, byte* buffer, uint32 a3);
+	uint32 decompress(byte *data, byte *buffer, uint32 size);
 };
 
 class Cinematic2 : public Common::SeekableReadStream {
@@ -222,6 +222,7 @@ private:
 
 	Common::SeekableReadStream *_stream;    ///< The movie file stream
 
+	byte            _buffer1[65536];
 	void           *_seqBuffer;
 	bool            _field_5404C;
 	byte           *_frameBuffer;
