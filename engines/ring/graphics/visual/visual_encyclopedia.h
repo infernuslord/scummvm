@@ -122,7 +122,7 @@ private:
 	uint32                              _field_A4;
 	Text                               *_text;
 	Hotspot                            *_hotspot;
-	Common::String                      _name;
+	Common::String                      _filename;
 	uint32                              _field_B4;
 	uint32                              _field_B8;
 	uint32                              _field_BC;

@@ -265,11 +265,24 @@ void VisualObjectEncyclopedia::setParameters(uint32 a2, uint32 a3, uint32 a4, ui
 }
 
 void VisualObjectEncyclopedia::showFile(const Common::String &filename) {
-	error("[VisualObjectEncyclopedia::showFile] Not implemented");
+	_filename = filename;
+
+	if (!_isLoaded)
+		return;
+
+	// Cleanup existing data
+	CLEAR_ARRAY(Hotspot,           _hotspots);
+	CLEAR_ARRAY(Text,              _texts);
+	CLEAR_ARRAY(EncyclopediaEntry, _entries);
+
+	SAFE_DELETE(_movie);
+
+	addHotspots();
+	load();
 }
 
 void VisualObjectEncyclopedia::saveLoadWithSerializer(Common::Serializer &s) {
-	s.syncString(_name);
+	s.syncString(_filename);
 }
 
 void VisualObjectEncyclopedia::addHotspots() {
@@ -283,6 +296,14 @@ void VisualObjectEncyclopedia::setHotspot() {
 }
 
 bool VisualObjectEncyclopedia::load() {
+	// Compute full path
+	Common::String path = "DATA/ENC/" + _filename;
+
+	if (!loadEntries(path)) {
+		warning("[VisualObjectEncyclopedia::load] Cannot load encyclopedia entries");
+		return false;
+	}
+
 	error("[VisualObjectEncyclopedia::load] Not implemented");
 }
 

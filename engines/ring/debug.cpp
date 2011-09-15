@@ -300,27 +300,34 @@ void Debugger::dumpFile(Common::String filename) {
 
 //////////////////////////////////////////////////////////////////////////
 bool Debugger::cmdEncyclopedia(int argc, const char **argv) {
-	if (argc == 2) {
-		Common::String filename(const_cast<char *>(argv[1]));
+	if (argc == 1 || argc == 2) {
+
+		Common::String filename = "E001.out";
+		if (argc == 2)
+			filename = const_cast<char *>(argv[1]);
 
 		// Create widget
 		VisualObjectEncyclopedia *enc = new VisualObjectEncyclopedia(5);
 		enc->init(filename, kArchiveFile);
-
 		enc->setType(5);
 		enc->setVisible(true);
 
 		// Setup
 		enc->setParameters(20, 20, 50, 428, 50, 580, 1);
 
-		// Show page
+		// Load page
 		enc->showFile(filename);
 
+		// Draw
+		enc->alloc();
+		enc->draw();
+
 		// Cleanup
+		enc->dealloc();
 		delete enc;
 
 	} else {
-		DebugPrintf("Syntax: enc <filename> - load the encyclopedia\n");
+		DebugPrintf("Syntax: %s <filename> - load the encyclopedia\n", argv[0]);
 	}
 
 	return true;
