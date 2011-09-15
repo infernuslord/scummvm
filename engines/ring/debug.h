@@ -55,6 +55,9 @@ private:
 	bool cmdClear(int argc, const char **argv);
 	bool cmdShow(int argc, const char **argv);
 
+	// Widgets
+	bool cmdEncyclopedia(int argc, const char **argv);
+
 #ifdef RING_DUMP
 	void dumpFile(Common::String filename);
 #endif

@@ -24,6 +24,7 @@
 #include "ring/base/application.h"
 #include "ring/base/art.h"
 
+#include "ring/graphics/visual/visual_encyclopedia.h"
 #include "ring/graphics/image.h"
 #include "ring/graphics/screen.h"
 
@@ -96,6 +97,9 @@ Debugger::Debugger(RingEngine *engine) : _engine(engine) {
 	DCmd_Register("dump",      WRAP_METHOD(Debugger, cmdDumpArchive));
 #endif
 
+	// Widgets
+	DCmd_Register("enc",       WRAP_METHOD(Debugger, cmdEncyclopedia));
+
 	// Graphics
 	DCmd_Register("clear",     WRAP_METHOD(Debugger, cmdClear));
 	DCmd_Register("show",      WRAP_METHOD(Debugger, cmdShow));
@@ -124,11 +128,15 @@ bool Debugger::cmdHelp(int, const char **) {
 	DebugPrintf(" ls   - list files in the archive\n");
 	DebugPrintf(" dump - dump the files from an archive\n");
 	DebugPrintf("\n");
+	DebugPrintf(" enc - load the encyclopedia");
+	DebugPrintf("\n");
 	DebugPrintf(" clear - clear the screen\n");
 	DebugPrintf(" show  - show an image\n");
 	DebugPrintf("\n");
 	return true;
 }
+
+#pragma region Data
 
 bool Debugger::cmdListFiles(int argc, const char **argv) {
 	if (argc == 2) {
@@ -286,6 +294,43 @@ void Debugger::dumpFile(Common::String filename) {
 }
 #endif
 
+#pragma endregion
+
+#pragma region Widgets
+
+//////////////////////////////////////////////////////////////////////////
+bool Debugger::cmdEncyclopedia(int argc, const char **argv) {
+	if (argc == 2) {
+		Common::String filename(const_cast<char *>(argv[1]));
+
+		// Create widget
+		VisualObjectEncyclopedia *enc = new VisualObjectEncyclopedia(5);
+		enc->init(filename, kArchiveFile);
+
+		enc->setType(5);
+		enc->setVisible(true);
+
+		// Setup
+		enc->setParameters(20, 20, 50, 428, 50, 580, 1);
+
+		// Show page
+		enc->showFile(filename);
+
+		// Cleanup
+		delete enc;
+
+	} else {
+		DebugPrintf("Syntax: enc <filename> - load the encyclopedia\n");
+	}
+
+	return true;
+}
+
+#pragma endregion
+
+#pragma region Graphics
+
+//////////////////////////////////////////////////////////////////////////
 bool Debugger::cmdClear(int argc, const char **) {
 	if (argc == 1) {
 		_engine->getApplication()->_screenManager->clear();
@@ -339,5 +384,7 @@ bool Debugger::cmdShow(int argc, const char ** argv) {
 
 	return true;
 }
+
+#pragma endregion
 
 } // End of namespace Ring

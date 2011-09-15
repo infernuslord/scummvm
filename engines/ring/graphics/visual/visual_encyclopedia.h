@@ -26,6 +26,42 @@
 
 namespace Ring {
 
+class Hotspot;
+class ImageHandle;
+class Movie2;
+class Text;
+
+class EncyclopediaEntry {
+public:
+	enum Facetype {
+		kFaceTypeArial   = 0,
+		kFaceTypeCourier = 1,
+		kFaceTypeImpact  = 2
+	};
+
+	EncyclopediaEntry();
+	~EncyclopediaEntry();
+
+	void load(byte *buffer);
+
+private:
+	bool           _underline;
+	Common::String _label;
+	Common::String _filename;
+
+
+	Facetype       _facetype;
+
+
+	uint32         _height;
+	bool           _smallWeight;
+	bool           _italic;
+
+
+
+
+};
+
 class VisualObjectEncyclopedia : public Visual {
 public:
 	VisualObjectEncyclopedia(Id id);
@@ -47,7 +83,70 @@ public:
 	void saveLoadWithSerializer(Common::Serializer &s);
 
 private:
+	bool                                _isLoaded;
+	ArchiveType                         _archiveType;
+	Common::Array<Hotspot *>            _hotspots;
+	Common::Array<Text *>               _texts;
+	uint32                              _field_17;
+	ImageHandle                        *_imageArrowDown_dis;
+	ImageHandle                        *_imageArrowDown_hlt;
+	ImageHandle                        *_imageArrowDown_nor;
+	ImageHandle                        *_imageArrowUp_dis;
+	ImageHandle                        *_imageArrowUp_hlt;
+	ImageHandle                        *_imageArrowUp_nor;
+	ImageHandle                        *_image7;
+	ImageHandle                        *_imageSlide;
+	ImageHandle                        *_imageSlider;
+	uint32                              _field_3F;
+	uint32                              _field_43;
+	uint32                              _field_47;
+	uint32                              _field_4B;
+	uint32                              _field_4F;
+	uint32                              _field_50;
+	uint32                              _field_54;
+	float                               _field_58;
+	float                               _top;
+	uint32                              _field_60;
+	uint32                              _field_64;
+	uint32                              _field_68;
+	uint32                              _field_6C;
+	/* missing fields */
+	uint32                              _field_80;
+	uint32                              _field_84;
+	uint32                              _tickCount;
+	uint32                              _field_90;
+	uint32                              _field_94;
+	Movie2                             *_movie;
+	uint32                              _field_9C;
+	uint32                              _field_A0;
+	uint32                              _field_A4;
+	Text                               *_text;
+	Hotspot                            *_hotspot;
+	Common::String                      _name;
+	uint32                              _field_B4;
+	uint32                              _field_B8;
+	uint32                              _field_BC;
+	uint32                              _field_C0;
+	uint32                              _field_C4;
+	uint32                              _field_C8;
+	bool                                _field_CC;
+	/* missing fields */
+	uint32                              _field_54D;
+	uint32                              _field_551;
+	Common::Array<EncyclopediaEntry *>  _entries;
 
+	void addHotspots();
+	void setHotspot();
+	bool load();
+	bool loadEntries(const Common::String &filename);
+	void previous(uint32 y);
+	void next(uint32 y);
+
+	void playMovie(uint32 entryIndex);
+	void stopMovie(uint32 soundIndex);
+
+	FontId getFontId(int faceType, int height, bool smallWeight, bool italic, bool underline);
+	void drawText(Text *text);
 };
 
 } // End of namespace Ring
