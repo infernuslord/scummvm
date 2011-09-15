@@ -28,6 +28,8 @@ MODULE_OBJS := \
 	graphics/imageLoader.o \
 	graphics/movie.o \
 	graphics/screen.o \
+	graphics/visual/visual_box.o \
+	graphics/visual/visual_encyclopedia.o \
 	graphics/visual/visual_list.o \
 	sound/soundentry.o \
 	sound/soundhandler.o \
