@@ -27,73 +27,8 @@
 
 #include "cge/cge.h"
 #include "cge/general.h"
-#include "cge/snddrv.h"
 
 namespace CGE {
-
-uint16 XCrypt(void *buf, uint16 siz) {
-	byte *b = static_cast<byte *>(buf);
-
-	for (uint16 i = 0; i < siz; i++)
-		*b++ ^= kCryptSeed;
-	
-	return kCryptSeed;
-}
-
-char *mergeExt(char *buf, const char *name, const char *ext) {
-	strcpy(buf, name);
-	char *dot = strrchr(buf, '.');
-	if (!dot)
-		strcat(buf, ext);
-
-	return buf;
-}
-
-char *forceExt(char *buf, const char *name, const char *ext) {
-	strcpy(buf, name);
-	char *dot = strrchr(buf, '.');
-	if (dot)
-		*dot = '\0';
-	strcat(buf, ext);
-
-	return buf;
-}
-
-void sndSetVolume() {
-	// USeless for ScummVM
-}
-
-DataCk *loadWave(EncryptedStream *file) {
-	byte *data = (byte *)malloc(file->size());
-	file->read(data, file->size());
-
-	return new DataCk(data, file->size());
-}
-
-int takeEnum(const char **tab, const char *text) {
-	const char **e;
-	if (text) {
-		for (e = tab; *e; e++) {
-			if (scumm_stricmp(text, *e) == 0) {
-				return e - tab;
-			}
-		}
-	}
-	return -1;
-}
-
-int newRandom(int range) {
-	return ((CGEEngine *)g_engine)->_randomSource.getRandomNumber(range - 1);
-}
-
-DataCk::DataCk(byte *buf, int bufSize) {
-	_buf = buf;
-	_ckSize = bufSize;
-}
-
-DataCk::~DataCk() {
-	free(_buf);
-}
 
 } // End of namespace CGE
 

@@ -25,7 +25,6 @@
  * Copyright (c) 1994-1995 Janus B. Wisniewski and L.K. Avalon
  */
 
-#include "cge/general.h"
 #include "cge/sound.h"
 #include "cge/text.h"
 #include "cge/cge_main.h"
@@ -35,6 +34,22 @@
 #include "audio/audiostream.h"
 
 namespace CGE {
+
+DataCk *loadWave(EncryptedStream *file) {
+	byte *data = (byte *)malloc(file->size());
+	file->read(data, file->size());
+
+	return new DataCk(data, file->size());
+}
+
+DataCk::DataCk(byte *buf, int bufSize) {
+	_buf = buf;
+	_ckSize = bufSize;
+}
+
+DataCk::~DataCk() {
+	free(_buf);
+}
 
 Sound::Sound(CGEEngine *vm) : _vm(vm) {
 	_audioStream = NULL;
@@ -215,7 +230,7 @@ void MusicPlayer::killMidi() {
 void MusicPlayer::loadMidi(int ref) {
 	// Work out the filename and check the given MIDI file exists
 	Common::String filename = Common::String::format("%.2d.MID", ref);
-	if (!_cat->exist(filename.c_str()))
+	if (!_resman->exist(filename.c_str()))
 		return;
 
 	// Stop any currently playing MIDI file

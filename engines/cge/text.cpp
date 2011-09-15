@@ -39,11 +39,12 @@ Text *_text;
 Talk *_talk = NULL;
 
 Text::Text(CGEEngine *vm, const char *fname) : _vm(vm) {
-	mergeExt(_fileName, fname, kSayExt);
-	if (!_cat->exist(_fileName))
+	_vm->mergeExt(_fileName, fname, kSayExt);
+	if (!_resman->exist(_fileName))
 		error("No talk (%s)\n", _fileName);
 	int16 txtCount = count() + 1;
-	warning("Number of texts: %d", txtCount);
+	if (!txtCount)
+		error("Unable to read dialog file %s", _fileName);
 
 	_cache = new Handler[txtCount];
 	for (_size = 0; _size < txtCount; _size++) {
@@ -61,15 +62,14 @@ Text::~Text() {
 int16 Text::count() {
 	EncryptedStream tf = _fileName;
 	if (tf.err())
-		return NULL;
+		return -1;
 
 	Common::String line;
 	char tmpStr[kLineMax + 1];
 	
-	int n, counter = 0;
+	int counter = 0;
 
 	for (line = tf.readLine(); !tf.eos(); line = tf.readLine()) {
-		n = line.size();
 		char *s;
 
 		strcpy(tmpStr, line.c_str());

@@ -40,14 +40,12 @@ namespace CGE {
 #define kBtLeafCount  ((kBtSize - 4 /*sizeof(Hea) */) / (kBtKeySize + 4 + 2 /*sizeof(BtKeypack) */))
 #define kBtValNone    0xFFFF
 #define kBtValRoot    0
-#define kLineMaxSize  512
-#define kBufferSize   2048
 #define kCatName      "VOL.CAT"
 #define kDatName      "VOL.DAT"
 
 struct BtKeypack {
 	char _key[kBtKeySize];
-	uint32 _mark;
+	uint32 _pos;
 	uint16 _size;
 };
 
@@ -61,48 +59,6 @@ struct Header {
 	uint16 _down;
 };
 
-class IoHand {
-protected:
-	uint16 _seed;
-	Crypt *_crypt;
-public:
-	Common::File *_file;
-	uint16 _error;
-
-	IoHand(const char *name, Crypt crypt);
-	IoHand(Crypt *crypt);
-	virtual ~IoHand();
-	uint16 read(void *buf, uint16 len);
-	long mark();
-	long size();
-	long seek(long pos);
-};
-
-class IoBuf : public IoHand {
-protected:
-	uint8 *_buff;
-	uint16 _ptr;
-	uint16 _lim;
-	long _bufMark;
-	virtual void readBuf();
-public:
-	IoBuf(Crypt *crpt);
-	IoBuf(const char *name, Crypt *crpt);
-	virtual ~IoBuf();
-	uint16 read(void *buf, uint16 len);
-	uint16 read(uint8 *buf);
-	int read();
-};
-
-
-class CFile : public IoBuf {
-public:
-	CFile(const char *name, Crypt *crpt);
-	virtual ~CFile();
-	long mark();
-	long seek(long pos);
-};
-
 struct BtPage {
 	Header _header;
 	union {
@@ -114,20 +70,28 @@ struct BtPage {
 		BtKeypack _leaf[kBtLeafCount];
 	};
 
-	void read(Common::ReadStream &s);
+	void readBTree(Common::ReadStream &s);
 };
 
-class BtFile : public IoHand {
+class ResourceManager {
 	struct {
 		BtPage *_page;
-		uint16 _pgNo;
-		int _indx;
+		uint16 _pageNo;
+		int _index;
 	} _buff[kBtLevel];
 
-	BtPage *getPage(int lev, uint16 pgn);
+	BtPage *getPage(int level, uint16 pageId);
+	uint16 catRead(void *buf, uint16 length);
+	Common::File *_catFile;
+	Common::File *_datFile;
+	uint16  XCrypt(void *buf, uint16 length);
 public:
-	BtFile(const char *name, Crypt *crpt);
-	virtual ~BtFile();
+
+	ResourceManager();
+	~ResourceManager();
+	uint16 read(void *buf, uint16 length);
+	bool seek(int32 offs, int whence = 0);
+
 	BtKeypack *find(const char *key);
 	bool exist(const char *name);
 };
@@ -148,8 +112,7 @@ public:
 	Common::String readLine();
 };
 
-extern CFile *_dat;
-extern BtFile *_cat;
+extern ResourceManager *_resman;
 
 } // End of namespace CGE
 

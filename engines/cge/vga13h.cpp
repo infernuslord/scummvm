@@ -72,9 +72,9 @@ Sprite *locate(int ref) {
 Sprite::Sprite(CGEEngine *vm, BitmapPtr *shpP)
 	: _x(0), _y(0), _z(0), _nearPtr(0), _takePtr(0),
 	  _next(NULL), _prev(NULL), _seqPtr(kNoSeq), _time(0),
-	  _ext(NULL), _ref(-1), _cave(0), _vm(vm) {
+	  _ext(NULL), _ref(-1), _scene(0), _vm(vm) {
 	memset(_file, 0, sizeof(_file));
-	*((uint16 *)&_flags) = 0;
+	memset(&_flags, 0, sizeof(_flags));
 	_ref = 0;
 	_x = _y = 0;
 	_w = _h = 0;
@@ -223,10 +223,10 @@ Sprite *Sprite::expand() {
 	    maxnow = 0,
 	    maxnxt = 0;
 
-	Snail::Com *near = NULL;
-	Snail::Com *take = NULL;
-	mergeExt(fname, _file, kSprExt);
-	if (_cat->exist(fname)) { // sprite description file exist
+	Snail::Com *nearList = NULL;
+	Snail::Com *takeList = NULL;
+	_vm->mergeExt(fname, _file, kSprExt);
+	if (_resman->exist(fname)) { // sprite description file exist
 		EncryptedStream sprf(fname);
 		if (sprf.err())
 			error("Bad SPR [%s]", fname);
@@ -242,7 +242,7 @@ Sprite *Sprite::expand() {
 				continue;
 
 			Snail::Com *c;
-			switch (takeEnum(Comd, strtok(tmpStr, " =\t"))) {
+			switch (_vm->takeEnum(Comd, strtok(tmpStr, " =\t"))) {
 			case 0:
 				// Name
 				setName(strtok(NULL, ""));
@@ -284,10 +284,10 @@ Sprite *Sprite::expand() {
 				// Near
 				if (_nearPtr == kNoPtr)
 					break;
-				near = (Snail::Com *)realloc(near, (nearCount + 1) * sizeof(*near));
-				assert(near != NULL);
-				c = &near[nearCount++];
-				if ((c->_com = (SnCom)takeEnum(Snail::_comText, strtok(NULL, " \t,;/"))) < 0)
+				nearList = (Snail::Com *)realloc(nearList, (nearCount + 1) * sizeof(*nearList));
+				assert(nearList != NULL);
+				c = &nearList[nearCount++];
+				if ((c->_com = (SnCom)_vm->takeEnum(Snail::_comText, strtok(NULL, " \t,;/"))) < 0)
 					error("Bad NEAR in %d [%s]", lcnt, fname);
 				c->_ref = atoi(strtok(NULL, " \t,;/"));
 				c->_val = atoi(strtok(NULL, " \t,;/"));
@@ -297,10 +297,10 @@ Sprite *Sprite::expand() {
 				// Take
 				if (_takePtr == kNoPtr)
 					break;
-				take = (Snail::Com *)realloc(take, (takeCount + 1) * sizeof(*take));
-				assert(take != NULL);
-				c = &take[takeCount++];
-				if ((c->_com = (SnCom)takeEnum(Snail::_comText, strtok(NULL, " \t,;/"))) < 0)
+				takeList = (Snail::Com *)realloc(takeList, (takeCount + 1) * sizeof(*takeList));
+				assert(takeList != NULL);
+				c = &takeList[takeCount++];
+				if ((c->_com = (SnCom)_vm->takeEnum(Snail::_comText, strtok(NULL, " \t,;/"))) < 0)
 					error("Bad NEAR in %d [%s]", lcnt, fname);
 				c->_ref = atoi(strtok(NULL, " \t,;/"));
 				c->_val = atoi(strtok(NULL, " \t,;/"));
@@ -330,12 +330,12 @@ Sprite *Sprite::expand() {
 
 	setShapeList(shapeList);
 
-	if (near)
-		near[nearCount - 1]._ptr = _ext->_near = near;
+	if (nearList)
+		nearList[nearCount - 1]._ptr = _ext->_near = nearList;
 	else
 		_nearPtr = kNoPtr;
-	if (take)
-		take[takeCount - 1]._ptr = _ext->_take = take;
+	if (takeList)
+		takeList[takeCount - 1]._ptr = _ext->_take = takeList;
 	else
 		_takePtr = kNoPtr;
 
@@ -496,7 +496,7 @@ void Sprite::sync(Common::Serializer &s) {
 	s.syncAsUint16LE(unused);
 	s.syncAsUint16LE(unused);	// _ext
 	s.syncAsUint16LE(_ref);
-	s.syncAsByte(_cave);
+	s.syncAsByte(_scene);
 
 	// bitfield in-memory storage is unpredictable, so to avoid
 	// any issues, pack/unpack everything manually
@@ -681,13 +681,15 @@ Vga::Vga() : _frmCnt(0), _msg(NULL), _name(NULL), _setPal(false), _mono(0) {
 		_page[idx]->create(320, 200, Graphics::PixelFormat::createFormatCLUT8());
 	}
 
+#if 0
+	// This part was used to display credits at the beginning of the game
 	for (int i = 10; i < 20; i++) {
 		char *text = _text->getText(i);
 		if (text) {
 			debugN(1, "%s\n", text);
 		}
 	}
-
+#endif
 	_oldColors = (Dac *)malloc(sizeof(Dac) * kPalCount);
 	_newColors = (Dac *)malloc(sizeof(Dac) * kPalCount);
 	getColors(_oldColors);
@@ -942,17 +944,6 @@ void Bitmap::show(int16 x, int16 y) {
 				srcP++;
 		}
 	}
-/*
-	DEBUG code to display image immediately
-	// Temporary
-	g_system->copyRectToScreen((const byte *)VGA::Page[1]->getBasePtr(0, 0), SCR_WID, 0, 0, SCR_WID, SCR_HIG);
-	byte palData[PAL_SIZ];
-	VGA::DAC2pal(VGA::SysPal, palData);
-	g_system->getPaletteManager()->setPalette(palData, 0, PAL_CNT);
-
-	g_system->updateScreen();
-	g_system->delayMillis(5000);
-*/
 }
 
 
@@ -978,7 +969,7 @@ HorizLine::HorizLine(CGEEngine *vm): Sprite(vm, NULL) {
 	setShapeList(HL);
 }
 
-CavLight::CavLight(CGEEngine *vm): Sprite(vm, NULL) {
+SceneLight::SceneLight(CGEEngine *vm): Sprite(vm, NULL) {
 	// Set the sprite list
 	BitmapPtr *PR = new BitmapPtr[2];
 	PR[0] = new Bitmap("PRESS");
