@@ -743,7 +743,7 @@ bool ImageLoaderCI2::readImage(Image *image, byte bitdepth, DrawType drawType) {
 		}
 
 		// TODO Copy to image
-		error("[ImageLoaderCI2::readImage] image copy for kDrawType3 not implemented");
+		warning("[ImageLoaderCI2::readImage] image copy for kDrawType3 not implemented");
 
 		free(buffer);
 	} else {

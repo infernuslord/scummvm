@@ -203,7 +203,7 @@ void ApplicationPompeii::draw() {
 	_screenManager->updateScreen();
 
 	// Update engine state
-	error("[ApplicationPompeii::draw] Engine state update not implemented!");
+	//error("[ApplicationPompeii::draw] Engine state update not implemented!");
 }
 
 #pragma endregion
@@ -293,23 +293,23 @@ void ApplicationPompeii::initZones() {
 #pragma region Event handling
 
 void ApplicationPompeii::onMouseLeftButtonUp(const Common::Event &evt, bool isControlPressed) {
-	error("[ApplicationPompeii::onMouseLeftButtonUp] Not implemented (evt: %d, CTRL pressed: %d)", evt.type, isControlPressed);
+	warning("[ApplicationPompeii::onMouseLeftButtonUp] Not implemented (evt: %d, CTRL pressed: %d)", evt.type, isControlPressed);
 }
 
 void ApplicationPompeii::onMouseLeftButtonDown(const Common::Event &evt) {
-	error("[ApplicationPompeii::onMouseLeftButtonDown] Not implemented (evt: %d)", evt.type);
+	warning("[ApplicationPompeii::onMouseLeftButtonDown] Not implemented (evt: %d)", evt.type);
 }
 
 void ApplicationPompeii::onMouseRightButtonUp(const Common::Event &evt) {
-	error("[ApplicationPompeii::onMouseRightButtonUp] Not implemented (evt: %d)", evt.type);
+	warning("[ApplicationPompeii::onMouseRightButtonUp] Not implemented (evt: %d)", evt.type);
 }
 
 void ApplicationPompeii::onKeyDown(Common::Event &evt) {
-	error("[ApplicationPompeii::onKeyDown] Not implemented (evt: %d)", evt.type);
+	warning("[ApplicationPompeii::onKeyDown] Not implemented (evt: %d)", evt.type);
 }
 
 void ApplicationPompeii::onTimer(TimerId timerId) {
-	error("[ApplicationPompeii::onTimer] Not implemented (id: %d)", timerId);
+	warning("[ApplicationPompeii::onTimer] Not implemented (id: %d)", timerId);
 }
 
 void ApplicationPompeii::onSetup(ZoneId zone, SetupType type) {

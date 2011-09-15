@@ -153,11 +153,14 @@ Common::Error RingEngine::run() {
 	// Init application
 	_application->init();
 	_application->setup();
+
+#ifndef RING_DEBUG_SKIPINIT
 	_application->initZones();
 
 	// Start application
 	_application->showStartupScreen();
 	_application->startMenu(false);
+#endif
 
 	while (!shouldQuit()) {
 		// Show the debugger if required
