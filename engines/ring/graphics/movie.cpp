@@ -573,10 +573,10 @@ void Cinematic2::decompressTControl(byte *buffer, uint32 bufferSize, uint16 deco
 
 		// Iterate over buffer
 		for (uint32 i = 0; i < decompressedSize; i++) {
-			for (uint32 j = 0; i < 9; j++) {
+			for (uint32 j = 0; j < 9; j++) {
 
 
-				error("[Cinematic2::decompressTControl] Not implemented");
+				//warning("[Cinematic2::decompressTControl] Not implemented");
 
 				++pBuffer;
 			}
@@ -585,7 +585,7 @@ void Cinematic2::decompressTControl(byte *buffer, uint32 bufferSize, uint16 deco
 		}
 
 	} else {
-		error("[Cinematic2::decompressTControl] Not implemented");
+		warning("[Cinematic2::decompressTControl] Not implemented");
 	}
 
 	if (_field_5404C) {
@@ -653,7 +653,6 @@ bool Cinematic2::seek(int32 offset, int whence) {
 
 Movie::Movie(ScreenManager *screen) : _screen(screen) {
 	_imageCIN = NULL;
-	_screen   = NULL;
 	_volume = 0.0f;
 	_isSoundInitialized = false;
 	_field_5B = false;
@@ -1006,5 +1005,22 @@ void Movie::setVolume(int32 volume) {
 #pragma endregion
 
 #pragma endregion
+
+#pragma region Movie2
+
+Movie2::Movie2(ScreenManager *screen) : _screen(screen) {
+	_imageCI2 = NULL;
+}
+
+Movie2::~Movie2() {
+	SAFE_DELETE(_imageCI2);
+	SAFE_DELETE(_cinematic2);
+
+	// Zero-out passed pointers
+	_screen = NULL;
+}
+
+#pragma endregion
+
 
 } // End of namespace Ring

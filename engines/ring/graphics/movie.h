@@ -31,6 +31,7 @@
 namespace Ring {
 
 class ImageLoaderCIN;
+class ImageLoaderCI2;
 class Movie;
 class ScreenManager;
 
@@ -266,6 +267,17 @@ private:
 	void setVolume(int32 volume);
 	void sub_46A4B0();
 	void setSoundBuffer(Common::SeekableReadStream *stream, uint32 offset);
+};
+
+class Movie2 {
+public:
+	Movie2(ScreenManager *screen);
+	~Movie2();
+
+private:
+	ImageLoaderCI2 *_imageCI2;
+	ScreenManager  *_screen;
+	Cinematic2     *_cinematic2;
 };
 
 } // End of namespace Ring
