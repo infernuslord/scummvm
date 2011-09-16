@@ -45,23 +45,30 @@ public:
 	~Debugger();
 
 private:
-	RingEngine *_engine;
+	enum ActionType {
+		kActionNone         = 0,
+		kActionEncyclopedia = 1
+	};
+
+	RingEngine     *_engine;
+	ActionType      _action;    //< Action type for postEnter event
+	Common::String  _filename;
+
+	virtual void postEnter();
 
 	bool cmdHelp(int argc, const char **argv);
-
 	bool cmdListFiles(int argc, const char **argv);
 	bool cmdDumpArchive(int argc, const char **argv);
-
 	bool cmdClear(int argc, const char **argv);
 	bool cmdShow(int argc, const char **argv);
 
 	// Widgets
 	bool cmdEncyclopedia(int argc, const char **argv);
 
+	// Helpers
 #ifdef RING_DUMP
 	void dumpFile(Common::String filename);
 #endif
-
 	int getNumber(const char *arg) const;
 };
 

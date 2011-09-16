@@ -82,7 +82,7 @@ static int recursive_mkdir(const char *dir) {
 
 namespace Ring {
 
-Debugger::Debugger(RingEngine *engine) : _engine(engine) {
+Debugger::Debugger(RingEngine *engine) : _engine(engine), _action(kActionNone) {
 
 	//////////////////////////////////////////////////////////////////////////
 	// Register the debugger commands
@@ -110,6 +110,82 @@ Debugger::~Debugger() {
 
 	// Zero passed pointers
 	_engine = NULL;
+}
+
+void Debugger::postEnter() {
+	switch (_action) {
+	default:
+	case kActionNone:
+		break;
+
+	case kActionEncyclopedia: {
+		// Create widget
+		VisualObjectEncyclopedia *enc = new VisualObjectEncyclopedia(5);
+		enc->init(_filename, kArchiveFile);
+		enc->setType(5);
+		enc->setVisible(true);
+
+		// Setup and load page
+		enc->alloc();
+		enc->setParameters(Common::Point(20, 20), 50, 428, 50, 580, 1);
+
+		// Draw
+		Common::Event ev;
+		bool play = true;
+		while (play) {
+
+			while (g_system->getEventManager()->pollEvent(ev)) {
+				switch (ev.type) {
+				default:
+					break;
+
+				case Common::EVENT_KEYDOWN:
+					// Exit on escape
+					if (ev.kbd.keycode == Common::KEYCODE_ESCAPE)
+						play = false;
+					else
+						enc->handleKey(ev.kbd.keycode);
+					break;
+
+				case Common::EVENT_MOUSEMOVE:
+					enc->handleUpdate(ev.mouse);
+					break;
+
+				case Common::EVENT_LBUTTONDOWN:
+					enc->handleLeftButtonDown(ev.mouse);
+					break;
+
+				case Common::EVENT_LBUTTONUP:
+					enc->handleLeftButtonUp(ev.mouse);
+					break;
+				}
+
+				// Skip remaining events when we need to exit
+				if (!play)
+					break;
+			}
+
+			enc->draw();
+
+			// Update the screen
+			g_system->updateScreen();
+			g_system->delayMillis(10);
+		}
+
+
+		// Cleanup
+		_filename.clear();
+		enc->dealloc();
+		delete enc;
+
+		}
+		break;
+	}
+
+	// Clear action
+	_action = kActionNone;
+
+	_engine->pauseEngine(false);
 }
 
 int Debugger::getNumber(const char *arg) const {
@@ -302,30 +378,15 @@ void Debugger::dumpFile(Common::String filename) {
 bool Debugger::cmdEncyclopedia(int argc, const char **argv) {
 	if (argc == 1 || argc == 2) {
 
-		Common::String filename = "E001.out";
+		// Setup action
+		_action = kActionEncyclopedia;
+
+		// Setup filename
+		_filename = "E001.out";
 		if (argc == 2)
-			filename = const_cast<char *>(argv[1]);
+			_filename = const_cast<char *>(argv[1]);
 
-		// Create widget
-		VisualObjectEncyclopedia *enc = new VisualObjectEncyclopedia(5);
-		enc->init(filename, kArchiveFile);
-		enc->setType(5);
-		enc->setVisible(true);
-
-		// Setup
-		enc->setParameters(Common::Point(20, 20), 50, 428, 50, 580, 1);
-
-		// Load page
-		enc->showFile(filename);
-
-		// Draw
-		enc->alloc();
-		enc->draw();
-
-		// Cleanup
-		enc->dealloc();
-		delete enc;
-
+		return Cmd_Exit(0, 0);
 	} else {
 		DebugPrintf("Syntax: %s <filename> - load the encyclopedia\n", argv[0]);
 	}
