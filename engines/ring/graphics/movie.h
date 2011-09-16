@@ -274,6 +274,13 @@ public:
 	Movie2(ScreenManager *screen);
 	~Movie2();
 
+	bool init(const Common::String &folder, const Common::String &filename);
+
+	uint32 playNextFrame(const Common::Point &point, DrawType drawType);
+	uint32 getNumberOfFrames();
+
+	void setSynchroOff();
+
 private:
 	ImageLoaderCI2 *_imageCI2;
 	ScreenManager  *_screen;

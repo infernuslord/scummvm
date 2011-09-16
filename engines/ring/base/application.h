@@ -364,7 +364,7 @@ public:
 
 	// VisualEncyclopedia
 	void visualAddEncyclopediaToPuzzle(Id visualId, PuzzleId puzzleId, const Common::String &name, ArchiveType archiveType);
-	void visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8, uint32 a9, uint32 a10);
+	void visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId, const Common::Point &point, uint32 a6, uint32 a7, uint32 a8, uint32 a9, uint32 a10);
 	void visualEncyclopediaShowFile(Id visualId, PuzzleId puzzleId, const Common::String &filename);
 
 	//////////////////////////////////////////////////////////////////////////

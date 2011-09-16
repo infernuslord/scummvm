@@ -1020,6 +1020,23 @@ Movie2::~Movie2() {
 	_screen = NULL;
 }
 
+bool Movie2::init(const Common::String &folder, const Common::String &filename) {
+	error("[Movie2::init] Not implemented!");
+}
+
+uint32  Movie2::playNextFrame(const Common::Point &point, DrawType drawType) {
+	error("[Movie2::playNextFrame] Not implemented!");
+}
+
+uint32  Movie2::getNumberOfFrames() {
+	error("[Movie2::getNumberOfFrames] Not implemented!");
+}
+
+void  Movie2::setSynchroOff() {
+	error("[Movie2::setSynchroOff] Not implemented!");
+}
+
+
 #pragma endregion
 
 

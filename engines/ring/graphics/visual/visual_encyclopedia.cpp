@@ -122,15 +122,14 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_90           = 0;
 	_field_94           = 0;
 	_movie              = NULL;
-	_field_9C           = 0;
+	_frameCount           = 0;
 	_field_A0           = 0;
 	_field_A4           = 0;
 	_text               = NULL;
 	_hotspot            = NULL;
 	_field_B4           = 20;
 	_field_B8           = 450;
-	_field_BC           = 10;
-	_field_C0           = 30;
+	_point              = Common::Point(10, 30);
 	_field_C4           = 320;
 	_field_C8           = 590;
 	_field_CC           = true;
@@ -291,11 +290,10 @@ void VisualObjectEncyclopedia::init(const Common::String &name, ArchiveType arch
 	_text = new Text();
 }
 
-void VisualObjectEncyclopedia::setParameters(uint32 a2, uint32 a3, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8) {
-	_field_BC = a2;
+void VisualObjectEncyclopedia::setParameters(const Common::Point &point, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8) {
+	_point = point;
 	_field_B8 = a5;
 	_field_CC = a8;
-	_field_C0 = a3;
 	_field_B4 = a4;
 	_field_C8 = a7;
 	_field_80 = (a5 - a4) / 2;
@@ -435,7 +433,29 @@ Id VisualObjectEncyclopedia::addSound(CursorId cursorId) {
 }
 
 void VisualObjectEncyclopedia::playMovie(uint32 entryIndex) {
-	error("[VisualObjectEncyclopedia::next] Not implemented");
+	if (entryIndex >= _entries.size())
+		error("[VisualObjectEncyclopedia::playMovie] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
+
+	// Get movie folder
+	Common::String folder;
+	if (_archiveType == kArchiveFile)
+		folder = Common::String::format("DATA/%s/PLA/", getApp()->getCurrentZoneFolder());
+	else
+		folder = "/PLA/";
+
+	SAFE_DELETE(_movie);
+
+	// Initialize movie
+	_movie = new Movie2(getApp()->getScreenManager());
+
+	if (!_movie->init(folder, _entries[entryIndex]->getFilename()))
+		error("[VisualObjectEncyclopedia::playMovie] Cannot initialize movie (%s%s)", folder.c_str(), _entries[entryIndex]->getFilename().c_str());
+
+	_frameCount = _movie->getNumberOfFrames();
+	_movie->setSynchroOff();
+	_field_A0 = 0;
+	_field_A4 = 1;
+	_field_64 = 0;
 }
 
 void VisualObjectEncyclopedia::stopMovie(uint32 soundIndex) {

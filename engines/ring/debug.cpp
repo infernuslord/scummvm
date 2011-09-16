@@ -313,7 +313,7 @@ bool Debugger::cmdEncyclopedia(int argc, const char **argv) {
 		enc->setVisible(true);
 
 		// Setup
-		enc->setParameters(20, 20, 50, 428, 50, 580, 1);
+		enc->setParameters(Common::Point(20, 20), 50, 428, 50, 580, 1);
 
 		// Load page
 		enc->showFile(filename);

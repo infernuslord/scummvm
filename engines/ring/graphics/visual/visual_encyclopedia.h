@@ -78,7 +78,7 @@ public:
 	virtual void dealloc();
 
 	void init(const Common::String &name, ArchiveType archiveType);
-	void setParameters(uint32 a2, uint32 a3, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8);
+	void setParameters(const Common::Point &point, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8);
 	void showFile(const Common::String &filename);
 
 	// Serializable
@@ -112,14 +112,17 @@ private:
 	uint32                              _field_64;
 	uint32                              _field_68;
 	uint32                              _field_6C;
-	/* missing fields */
+	uint32                              _field_70;
+	uint32                              _field_74;
+	uint32                              _field_78;
+	uint32                              _field_7C;
 	uint32                              _field_80;
 	uint32                              _field_84;
 	uint32                              _tickCount;
 	uint32                              _field_90;
 	uint32                              _field_94;
 	Movie2                             *_movie;
-	uint32                              _field_9C;
+	uint32                              _frameCount;
 	uint32                              _field_A0;
 	uint32                              _field_A4;
 	Text                               *_text;
@@ -127,8 +130,7 @@ private:
 	Common::String                      _filename;
 	uint32                              _field_B4;
 	uint32                              _field_B8;
-	uint32                              _field_BC;
-	uint32                              _field_C0;
+	Common::Point                       _point;
 	uint32                              _field_C4;
 	uint32                              _field_C8;
 	bool                                _field_CC;
