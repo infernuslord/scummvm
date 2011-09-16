@@ -31,35 +31,35 @@ class ImageHandle;
 class Movie2;
 class Text;
 
+enum Facetype {
+	kFaceTypeArial   = 0,
+	kFaceTypeCourier = 1,
+	kFaceTypeImpact  = 2
+};
+
 class EncyclopediaEntry {
 public:
-	enum Facetype {
-		kFaceTypeArial   = 0,
-		kFaceTypeCourier = 1,
-		kFaceTypeImpact  = 2
-	};
-
 	EncyclopediaEntry();
-	~EncyclopediaEntry();
+	~EncyclopediaEntry() {}
 
-	void load(byte *buffer);
+	uint32 load(const char *buffer, uint32 size);
 
 private:
-	bool           _underline;
+	uint32         _field_0;
 	Common::String _label;
 	Common::String _filename;
-
-
+	uint32         _field_C;
+	uint32         _field_10;
 	Facetype       _facetype;
-
-
+	uint32         _field_18;
+	uint32         _field_1C;
 	uint32         _height;
 	bool           _smallWeight;
 	bool           _italic;
-
-
-
-
+	uint32         _field_2C;
+	uint32         _field_30;
+	uint32         _field_34;
+	uint32         _field_38;
 };
 
 class VisualObjectEncyclopedia : public Visual {
@@ -130,7 +130,10 @@ private:
 	uint32                              _field_C4;
 	uint32                              _field_C8;
 	bool                                _field_CC;
-	/* missing fields */
+	bool                                _fonts[285];
+	uint32                              _field_541;
+	uint32                              _field_545;
+	uint32                              _field_549;
 	uint32                              _field_54D;
 	uint32                              _field_551;
 	Common::Array<EncyclopediaEntry *>  _entries;
@@ -145,7 +148,7 @@ private:
 	void playMovie(uint32 entryIndex);
 	void stopMovie(uint32 soundIndex);
 
-	FontId getFontId(int faceType, int height, bool smallWeight, bool italic, bool underline);
+	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, bool underline);
 	void drawText(Text *text);
 };
 

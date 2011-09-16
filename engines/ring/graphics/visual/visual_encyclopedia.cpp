@@ -38,15 +38,53 @@ namespace Ring {
 #pragma region VisualObjectEncyclopedia
 
 EncyclopediaEntry::EncyclopediaEntry() {
-	error("[EncyclopediaEntry::EncyclopediaEntry] Not implemented");
+	_field_0     = 0;
+	_field_C     = 0;
+	_field_10    = 0;
+	_facetype    = kFaceTypeArial;
+	_field_18    = 0;
+	_field_1C    = 0;
+	_height      = 0;
+	_smallWeight = false;
+	_italic      = false;
+	_field_2C    = 0;
+	_field_30    = 0;
+	_field_34    = 0;
+	_field_38    = 0;
 }
 
-EncyclopediaEntry::~EncyclopediaEntry() {
-	error("[EncyclopediaEntry::~EncyclopediaEntry] Not implemented");
+#define READ_VALUE(name, type) { \
+	const char *val = &buffer[offset]; \
+	offset += strlen(val) + 1; \
+	name = (type)atoi(val); \
 }
 
-void EncyclopediaEntry::load(byte *buffer) {
-	error("[EncyclopediaEntry::load] Not implemented");
+#define READ_STRING(name) { \
+	const char *val = &buffer[offset]; \
+	offset += strlen(val) + 1; \
+	name = Common::String(val); \
+}
+
+uint32 EncyclopediaEntry::load(const char *buffer, uint32 size) {
+	uint32 offset = 0;
+
+	READ_VALUE(_field_0, uint32);
+	READ_STRING(_label);
+	READ_STRING(_filename);
+	READ_VALUE(_field_C, uint32);
+	READ_VALUE(_field_10, uint32);
+	READ_VALUE(_facetype, Facetype);
+	READ_VALUE(_field_18, uint32);
+	READ_VALUE(_field_1C, uint32);
+	READ_VALUE(_height, uint32);
+	READ_VALUE(_smallWeight, bool);
+	READ_VALUE(_italic, bool);
+	READ_VALUE(_field_2C, uint32);
+	READ_VALUE(_field_30, uint32);
+	READ_VALUE(_field_34, uint32);
+	READ_VALUE(_field_38, uint32);
+
+	return offset;
 }
 
 VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
@@ -95,9 +133,10 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_C4           = 320;
 	_field_C8           = 590;
 	_field_CC           = true;
-
-	/* missing fields */
-
+	memset(_fonts, 0, sizeof(_fonts));
+	_field_541          = 0;
+	_field_545          = 0;
+	_field_549          = 0;
 	_field_54D          = 0;
 	_field_551          = 0;
 }
@@ -308,7 +347,44 @@ bool VisualObjectEncyclopedia::load() {
 }
 
 bool VisualObjectEncyclopedia::loadEntries(const Common::String &filename) {
-	error("[VisualObjectEncyclopedia::loadEntries] Not implemented");
+	// Open a stream to the OUT file
+	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember(filename);
+	if (!archive)
+		error("[VisualObjectEncyclopedia::loadEntries] Error opening encyclopedia file (%s)", filename.c_str());
+
+	// Clear the existing entries
+	CLEAR_ARRAY(EncyclopediaEntry, _entries);
+
+	// Read the archive contents into a buffer
+	uint32 size = archive->size();
+	if (size <= 1) {
+		delete archive;
+		return true;
+	}
+
+	byte *buffer = (byte *)malloc(size);
+	if (!buffer)
+		error("[VisualObjectEncyclopedia::loadEntries] Cannot allocate memory for encyclopedia buffer (%d)", size);
+
+	archive->read(buffer, size);
+	delete archive;
+
+	// Load entries
+	byte *pBuffer = buffer;
+	do {
+		EncyclopediaEntry *entry = new EncyclopediaEntry();
+
+		uint32 offset = entry->load((const char *)pBuffer, size);
+		pBuffer += offset;
+		size    -= offset;
+
+		_entries.push_back(entry);
+
+	} while (size > 0);
+
+	delete buffer;
+
+	return true;
 }
 
 void VisualObjectEncyclopedia::previous(uint32 y) {
@@ -330,8 +406,94 @@ void VisualObjectEncyclopedia::stopMovie(uint32 soundIndex) {
 	getApp()->soundPlay(soundIndex + 1000000);
 }
 
-FontId VisualObjectEncyclopedia::getFontId(int faceType, int height, bool smallWeight, bool italic, bool underline) {
-	error("[VisualObjectEncyclopedia::getFontId] Not implemented");
+FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool smallWeight, bool italic, bool underline) {
+	// Height
+	uint32 height_id = 0;
+	switch (height) {
+	default:
+		height_id = 5;
+		break;
+
+	case 6:
+		height_id = 1;
+		break;
+
+	case 8:
+		height_id = 2;
+		break;
+
+	case 10:
+		height_id = 3;
+		break;
+
+	case 11:
+		height_id = 4;
+		break;
+
+	case 14:
+		height_id = 6;
+		break;
+
+	case 16:
+		height_id = 7;
+		break;
+
+	case 18:
+		height_id = 8;
+		break;
+
+	case 24:
+		height_id = 9;
+		break;
+
+	case 32:
+		height_id = 10;
+		break;
+
+	case 64:
+		height_id = 11;
+		break;
+
+	case 72:
+		height_id = 12;
+		break;
+	}
+
+	if (height == 0)
+		height = 12;
+
+	// Facetype
+	Common::String facename;
+	switch(faceType) {
+	default:
+		facename = "Arial";
+		break;
+
+	case kFaceTypeCourier:
+		facename = "Courier";
+		break;
+
+	case kFaceTypeImpact:
+		facename = "Impact";
+		break;
+	}
+
+	// Compute font id
+	uint32 idPart = 2 * (italic + 2 * smallWeight);
+	if (underline)
+		idPart++;
+
+	uint32 id = 96 * faceType + height_id * (idPart + 1);
+	FontId fontId = (FontId)(id + 100);
+
+	if (_fonts[id] == true)
+		return fontId;
+
+	getApp()->fontAdd(fontId, "", facename, height, smallWeight, underline, italic, false, getApp()->getCurrentLanguage());
+
+	_fonts[id] = true;
+
+	return fontId;
 }
 
 void VisualObjectEncyclopedia::drawText(Text *text) {
