@@ -44,6 +44,8 @@ public:
 
 	uint32 load(const char *buffer, uint32 size);
 
+	const Common::String getFilename() { return _filename; }
+
 private:
 	uint32         _field_0;
 	Common::String _label;
@@ -134,16 +136,20 @@ private:
 	uint32                              _field_541;
 	uint32                              _field_545;
 	uint32                              _field_549;
-	uint32                              _field_54D;
+	uint32                              _soundId;
 	uint32                              _field_551;
 	Common::Array<EncyclopediaEntry *>  _entries;
 
-	void addHotspots();
-	void setHotspot();
 	bool load();
 	bool loadEntries(const Common::String &filename);
 	void previous(uint32 y);
 	void next(uint32 y);
+
+	void addHotspots();
+	void addHotspot(Id target, Text *text, CursorId cursorId);
+	void setHotspot();
+
+	Id addSound(CursorId cursorId);
 
 	void playMovie(uint32 entryIndex);
 	void stopMovie(uint32 soundIndex);

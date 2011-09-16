@@ -32,7 +32,7 @@ namespace Ring {
 class Hotspot : public Common::Serializable {
 public:
 	Hotspot();
-	Hotspot(const Common::Rect &rect, bool enabled, uint32 a2, CursorId cursorId, Id target);
+	Hotspot(const Common::Rect &rect, bool enabled, Id soundId, CursorId cursorId, Id target);
 	~Hotspot();
 
 	void update(const Common::Rect &rect) { _rect = rect;}
@@ -48,7 +48,7 @@ public:
 
 	// Accessors
 	void setKey(Common::KeyCode key) { _key = key; }
-
+	Common::Rect getRect() { return _rect; }
 	CursorId getCursorId() { return _cursorId; }
 	Id getTarget() { return _target; }
 	Common::KeyCode getKey() { return _key; }
@@ -56,7 +56,7 @@ public:
 private:
 	Common::Rect    _rect;
 	bool            _enabled;
-	uint32          _field_11;
+	uint32          _soundId;
 	CursorId        _cursorId;
 	Id              _target;
 	Common::KeyCode _key;
