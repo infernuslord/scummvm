@@ -270,12 +270,12 @@ Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, 
 	//////////////////////////////////////////////////////////////////////////
 
 	byte *src  = (byte*)_surface->getBasePtr(srcX, getHeight() - (srcHeight + (uint32)offset));
-	byte *dst = (byte *)surface->getBasePtr(640, 480);
+	byte *dst = (byte *)surface->getBasePtr(0, 0);
 	int16 height = destRect.height();
 
 	while (--height) {
-		memcpy(dst - (destRect.top * surface->pitch + destRect.left), src, (uint16)destRect.width() * _surface->format.bytesPerPixel);
-		dst -= surface->pitch;
+		memcpy(dst + (destRect.top * surface->pitch + destRect.left * _surface->format.bytesPerPixel), src, (uint16)destRect.width() * _surface->format.bytesPerPixel);
+		dst += surface->pitch;
 		src += _surface->pitch;
 	}
 
