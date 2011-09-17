@@ -68,7 +68,7 @@ void Text::set(Common::String text) {
 	_text = text;
 
 	// Get the text font and calculate text dimensions
-	Graphics::WinFont *font = getApp()->getFontHandler()->getFont(_fontId);
+	const Graphics::Font *font = getApp()->getFontHandler()->getFont(_fontId);
 	if (font) {
 		_width = (uint32)font->getStringWidth(text);
 		_height = (uint32)font->getFontHeight();

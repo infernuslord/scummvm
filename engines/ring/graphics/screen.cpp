@@ -124,7 +124,7 @@ void ScreenManager::drawRectangle(const Common::Rect &rect, uint32 color) {
 }
 
 void ScreenManager::drawText(Common::String text, const Common::Point &coords, Color color) {
-	Graphics::WinFont *font = getApp()->getFontHandler()->getFont(kFontDefault);
+	const Graphics::Font *font = getApp()->getFontHandler()->getFont(kFontDefault);
 	if (!font)
 		error("[ScreenManager::drawText] Cannot get the font to draw text (id: %d)", kFontDefault);
 
@@ -145,7 +145,7 @@ void ScreenManager::drawText(Text *text) {
 	if (!text->hasTransparentBackground())
 		_screen.fillRect(text->getBoundingBox(), text->getBackgroundColor());
 
-	Graphics::WinFont *font = getApp()->getFontHandler()->getFont(kFontDefault);
+	const Graphics::Font *font = getApp()->getFontHandler()->getFont(kFontDefault);
 	if (text->getFontId())
 		font = getApp()->getFontHandler()->getFont(text->getFontId());
 

@@ -25,7 +25,7 @@
 #include "ring/shared.h"
 
 namespace Graphics {
-	class WinFont;
+	class Font;
 }
 
 namespace Ring {
@@ -34,9 +34,10 @@ class Font : public BaseObject {
 public:
 	Font() : BaseObject(kFontInvalid), _font(NULL) {}
 	Font(FontId id, Common::String filename, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout, LanguageId langId);
+	Font(FontId id, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
 	~Font();
 
-	Graphics::WinFont *getFont() { return _font; }
+	const Graphics::Font *getFont() { return _font; }
 
 private:
 	// Font description (see Windows LOGFONT structure)
@@ -74,8 +75,10 @@ private:
 	};
 
 	FontDescription _description;
-	Graphics::WinFont *_font;
+	const Graphics::Font *_font;
 	Common::String _filename;
+
+	void setup(Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
 };
 
 class FontHandler {
@@ -84,8 +87,9 @@ public:
 	~FontHandler();
 
 	void add(FontId id, Common::String filename, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout, LanguageId langId);
+	void add(FontId id, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
 
-	Graphics::WinFont *getFont(FontId id);
+	const Graphics::Font *getFont(FontId id);
 
 private:
 	AssociativeArray<Font *> _fonts;

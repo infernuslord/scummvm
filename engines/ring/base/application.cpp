@@ -1013,6 +1013,13 @@ void Application::fontAdd(FontId id, Common::String filename, Common::String fac
 	_fontHandler->add(id, filename, facename, height, smallWeight, underline, italic, strikeout, langId);
 }
 
+void Application::fontAdd(FontId id, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout) {
+	if (!_fontHandler)
+		error("[Application::fontAdd] Font handler is not initialized properly");
+
+	_fontHandler->add(id, facename, height, smallWeight, underline, italic, strikeout);
+}
+
 void Application::cursorAdd(CursorId id, Common::String name, CursorType cursorType, byte imageCount, LoadFrom loadFrom, ArchiveType archiveType) {
 	if (!_cursorHandler)
 		error("[Application::cursorAdd] Cursor handler is not initialized properly");

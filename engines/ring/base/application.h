@@ -117,6 +117,7 @@ public:
 	bool hasLanguagePack();
 
 	void fontAdd(FontId id, Common::String filename, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout, LanguageId langId);
+	void fontAdd(FontId id, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
 
 	void subtitleSetColor(const Color &color);
 	void subtitleSetBackgroundColor(const Color &color);
