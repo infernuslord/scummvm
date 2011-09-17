@@ -179,6 +179,7 @@ ImageLoader *Image::getLoader(Common::String filename, ArchiveType type) const {
 	}
 
 	ImageLoader *loader = NULL;
+	filename.toLowercase();
 
 	// Special case for files with no extension
 	if (filename.size() < 4) {
