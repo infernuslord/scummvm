@@ -2619,7 +2619,7 @@ void Application::visualAddEncyclopediaToPuzzle(Id visualId, PuzzleId puzzleId, 
 	puzzle->addVisual(encyclopedia);
 }
 
-void Application::visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId, const Common::Point &point, uint32 clippingBottom, uint32 a7, uint32 clippingLeft, uint32 a9, uint32 a10) {
+void Application::visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId, const Common::Point &point, const Common::Rect &clippingRect, bool a10) {
 	if (!_puzzles.has(puzzleId))
 		error("[Application::visualEncyclopediaSetParameters] Puzzle Id doesn't exist (%d)", puzzleId.id());
 
@@ -2627,7 +2627,7 @@ void Application::visualEncyclopediaSetParameters(Id visualId, PuzzleId puzzleId
 	if (!puzzle->hasVisual(visualId))
 		error("[Application::visualEncyclopediaSetParameters] Visual (%d) is not on puzzle (%d)", visualId, puzzleId.id());
 
-	((VisualObjectEncyclopedia *)puzzle->getVisual(visualId))->setParameters(point, clippingBottom, a7, clippingLeft, a9, a10);
+	((VisualObjectEncyclopedia *)puzzle->getVisual(visualId))->setParameters(point, clippingRect, a10);
 }
 
 void Application::visualEncyclopediaShowFile(Id visualId, PuzzleId puzzleId, const Common::String &filename) {

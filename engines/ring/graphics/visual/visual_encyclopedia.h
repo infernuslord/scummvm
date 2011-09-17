@@ -89,7 +89,16 @@ public:
 	virtual void dealloc();
 
 	void init(const Common::String &name, ArchiveType archiveType);
-	void setParameters(const Common::Point &point, uint32 clippingBottom, uint32 a5, uint32 clippingLeft, uint32 a7, uint32 a8);
+
+	/**
+	 * Sets the encyclopedia parameters.
+	 *
+	 * @param	point			The coordinates.
+	 * @param	clippingRect	The clipping rectangle (original order is top/bottom/left/right)
+	 * @param	a8				???.
+	 */
+	void setParameters(const Common::Point &point, const Common::Rect &clippingRect, bool a8);
+
 	void showFile(const Common::String &filename);
 
 	// Serializable
@@ -110,13 +119,12 @@ private:
 	ImageHandle                        *_image7;
 	ImageHandle                        *_imageSlide;
 	ImageHandle                        *_imageSlider;
-	uint32                              _field_3F;
-	uint32                              _field_43;
+	uint32                              _imageArrowUpType;
+	uint32                              _imageArrowDownType;
 	uint32                              _field_47;
 	uint32                              _field_4B;
 	uint32                              _field_4F;
-	uint32                              _field_50;
-	uint32                              _field_54;
+	Common::Point                       _clippingCenter;
 	Common::Point                       _sliderCoordinates;
 	uint32                              _field_60;
 	uint32                              _field_64;
@@ -138,11 +146,8 @@ private:
 	Text                               *_text;
 	Hotspot                            *_hotspot;
 	Common::String                      _filename;
-	uint32                              _clippingBottom;
-	uint32                              _field_B8;
+	Common::Rect                        _clippingRect;
 	Common::Point                       _point;
-	uint32                              _clippingLeft;
-	uint32                              _field_C8;
 	bool                                _field_CC;
 	bool                                _fonts[285];
 	uint32                              _field_541;
@@ -167,7 +172,6 @@ private:
 	void stopMovie(uint32 soundIndex);
 
 	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target);
-	void drawText(Text *text);
 };
 
 } // End of namespace Ring

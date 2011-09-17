@@ -22,6 +22,7 @@
 #include "ring/graphics/visual/visual_encyclopedia.h"
 
 #include "ring/base/application.h"
+#include "ring/base/object.h"
 #include "ring/base/text.h"
 
 #include "ring/graphics/hotspot.h"
@@ -125,13 +126,12 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_image7             = NULL;
 	_imageSlide         = NULL;
 	_imageSlider        = NULL;
-	_field_3F           = 0;
-	_field_43           = 0;
+	_imageArrowUpType   = 0;
+	_imageArrowDownType = 0;
 	_field_47           = 0;
 	_field_4B           = 0;
 	_field_4F           = 0;
-	_field_50           = 455;
-	_field_54           = 235;
+	_clippingCenter     = Common::Point(455, 235);
 	_sliderCoordinates  = Common::Point(613, 49);
 	_field_60           = 0;
 	_field_64           = 0;
@@ -152,11 +152,8 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_A4           = 0;
 	_text               = NULL;
 	_hotspot            = NULL;
-	_clippingBottom     = 20;
-	_field_B8           = 450;
+	_clippingRect       = Common::Rect(320, 20, 590, 450);
 	_point              = Common::Point(10, 30);
-	_clippingLeft       = 320;
-	_field_C8           = 590;
 	_field_CC           = true;
 	memset(_fonts, 0, sizeof(_fonts));
 	_field_541          = 0;
@@ -193,7 +190,7 @@ void VisualObjectEncyclopedia::draw() {
 
 	if (!_field_4F) {
 		// Show arrow up image
-		switch (_field_3F) {
+		switch (_imageArrowUpType) {
 		default:
 			break;
 
@@ -214,7 +211,7 @@ void VisualObjectEncyclopedia::draw() {
 		}
 
 		// Show arrow down image
-		switch (_field_43) {
+		switch (_imageArrowDownType) {
 		default:
 			break;
 
@@ -242,21 +239,24 @@ void VisualObjectEncyclopedia::draw() {
 			getApp()->getScreenManager()->draw(_imageSlider, _sliderCoordinates, _imageSlider->getDrawType());
 
 		// Show text
+		Common::Rect exclude1(_clippingRect.left - 10, 0,                    639, _clippingRect.top);
+		Common::Rect exclude2(_clippingRect.left - 10, _clippingRect.bottom, 639, 480);
+
 		for (Common::Array<Text *>::iterator it = _texts.begin(); it != _texts.end(); it++)
-			drawText(*it);
+			getApp()->getScreenManager()->drawText(*it, exclude1, exclude2);
 
 		--_field_60;
 		if (_field_60 < 0)
 			_field_60 = 0;
 
 		if (_field_60 > 0 && _text)
-			drawText(_text);
+			getApp()->getScreenManager()->drawText(_text, exclude1, exclude2);
 	}
 
 	if (_field_64 && _image7->isInitialized()) {
 		// Adjust coordinates
-		_point.x = _field_50 - _image7->getWidth() / 2;
-		_point.y = _field_54 - _image7->getHeight() / 2;
+		_point.x = _clippingCenter.x - _image7->getWidth() / 2;
+		_point.y = _clippingCenter.y - _image7->getHeight() / 2;
 
 		getApp()->getScreenManager()->draw(_image7, _point, _image7->getDrawType());
 	}
@@ -271,6 +271,9 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonUp(const Common::Point &point) 
 }
 
 uint32 VisualObjectEncyclopedia::handleUpdate(const Common::Point &point) {
+	if (_visible)
+		return false;
+
 	error("[VisualObjectEncyclopedia::handleUpdate] Not implemented");
 }
 
@@ -392,16 +395,14 @@ void VisualObjectEncyclopedia::init(const Common::String &name, ArchiveType arch
 	_filename = name;
 }
 
-void VisualObjectEncyclopedia::setParameters(const Common::Point &point, uint32 clippingBottom, uint32 a5, uint32 clippingLeft, uint32 a7, uint32 a8) {
+void VisualObjectEncyclopedia::setParameters(const Common::Point &point, const Common::Rect &clippingRect, bool a8) {
 	_point = point;
-	_field_B8 = a5;
+	_clippingRect = clippingRect;
 	_field_CC = a8;
-	_clippingBottom = clippingBottom;
-	_field_C8 = a7;
-	_field_80 = (a5 - clippingBottom) / 2;
-	_clippingLeft = clippingLeft;
-	_field_50 = clippingLeft + abs((int)(a7 - clippingLeft)) / 2;
-	_field_54 = clippingBottom + abs((int)(a5 - clippingBottom)) / 2;
+
+	_field_80 = clippingRect.height() / 2;
+	_clippingCenter.x = clippingRect.left + abs((int)clippingRect.width()) / 2;
+	_clippingCenter.y = clippingRect.bottom + abs((int)clippingRect.height()) / 2;
 }
 
 void VisualObjectEncyclopedia::showFile(const Common::String &filename) {
@@ -437,8 +438,8 @@ bool VisualObjectEncyclopedia::load() {
 	// Prepare values
 	uint32 offset = 0;
 	uint32 textHeight = 12;
-	uint32 clippingLeft = _clippingLeft;
-	uint32 clippingBottom = _clippingBottom;
+	int16 clippingLeft = _clippingRect.left;
+	int16 clippingTop = _clippingRect.top;
 
 	// Process entries
 	for (uint32 i = 0; i < _entries.size(); i++) {
@@ -453,12 +454,12 @@ bool VisualObjectEncyclopedia::load() {
 		str += entry->getLabel();
 
 		// Adjust coordinates
-		Common::Point point(clippingLeft, clippingBottom);
+		Common::Point point(clippingLeft, clippingTop);
 		if (entry->getField2C() > offset) {
-			clippingBottom += textHeight + (entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset);
+			clippingTop += textHeight + (entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset);
 			textHeight = 0;
 			offset = entry->getField2C();
-			point.y = clippingBottom;
+			point.y = clippingTop;
 		}
 
 		// Init contents
@@ -478,7 +479,7 @@ bool VisualObjectEncyclopedia::load() {
 		// Compute text dimensions
 		if (i == 0) {
 			_field_6C = point.y;
-			_field_7C = point.y - _clippingBottom;
+			_field_7C = point.y - _clippingRect.top;
 		}
 
 		if (text->getHeight() > textHeight)
@@ -500,14 +501,14 @@ bool VisualObjectEncyclopedia::load() {
 			text->setCoordinates(coords);
 		}
 
-		if (text->getWidth() + clippingLeft > _field_C8) {
-			clippingLeft = _clippingLeft;
+		if ((int16)text->getWidth() + clippingLeft > _clippingRect.right) {
+			clippingLeft = _clippingRect.left;
 
 			Common::Point coords(clippingLeft, textHeight + point.y);
 			text->setCoordinates(coords);
 
 			textHeight = 12;
-			clippingBottom = coords.y + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
+			clippingTop = coords.y + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
 			offset = entry->getField2C();
 		}
 
@@ -522,8 +523,8 @@ bool VisualObjectEncyclopedia::load() {
 	}
 
 	_textHeight = textHeight;
-	_field_74 = textHeight + clippingBottom;
-	_field_78 = _field_B8 - _clippingBottom;
+	_field_74 = textHeight + clippingTop;
+	_field_78 = _clippingRect.height();
 
 	return true;
 }
@@ -597,11 +598,11 @@ void VisualObjectEncyclopedia::setHotspot() {
 
 	Text *text = _texts[0];
 
-	float y = (float)(text->getCoordinates().y - _field_7C - _clippingBottom);
+	float y = (float)(text->getCoordinates().y - _field_7C - _clippingRect.top);
 	if (y >= 0) {
 		_sliderCoordinates.x = 49;
 	} else {
-		_sliderCoordinates.x = (int16)(((float)text->getHeight() + abs(y)) / (float)(_field_74 - _field_B8) * 386.0f + 49.0f);
+		_sliderCoordinates.x = (int16)(((float)text->getHeight() + abs(y)) / (float)(_field_74 - _clippingRect.bottom) * 386.0f + 49.0f);
 		if (_sliderCoordinates.x > 421)
 			_sliderCoordinates.x = 421;
 
@@ -746,10 +747,6 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 	_fonts[id] = true;
 
 	return fontId;
-}
-
-void VisualObjectEncyclopedia::drawText(Text *text) {
-	error("[VisualObjectEncyclopedia::drawText] Not implemented");
 }
 
 #pragma endregion

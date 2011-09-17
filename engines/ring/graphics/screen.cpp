@@ -156,6 +156,12 @@ void ScreenManager::drawText(Text *text) {
 	font->drawString(&_screen, text->getString(), text->getCoordinates().x, text->getCoordinates().y, text->getWidth(), text->getForegroundColor());
 }
 
+void ScreenManager::drawText(Text *text, const Common::Rect &exclude, const Common::Rect &exclude2) {
+	warning("[ScreenManager::drawText] Excluding clipping rects not implemented");
+
+	drawText(text);
+}
+
 void ScreenManager::copySurface(Image *image, uint32, uint32) const {
 	// TODO use parameters?
 

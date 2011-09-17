@@ -127,7 +127,7 @@ void Debugger::postEnter() {
 
 		// Setup and load page
 		enc->alloc();
-		enc->setParameters(Common::Point(20, 20), 50, 428, 50, 580, 1);
+		enc->setParameters(Common::Point(20, 20), Common::Rect(50, 50, 580, 428), true);
 
 		// Draw
 		Common::Event ev;
@@ -165,7 +165,9 @@ void Debugger::postEnter() {
 					break;
 			}
 
+			// Draw the widget
 			enc->draw();
+			_engine->getApplication()->getScreenManager()->updateScreen();
 
 			// Update the screen
 			g_system->updateScreen();
