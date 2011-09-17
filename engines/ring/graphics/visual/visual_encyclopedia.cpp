@@ -27,6 +27,7 @@
 #include "ring/graphics/hotspot.h"
 #include "ring/graphics/image.h"
 #include "ring/graphics/movie.h"
+#include "ring/graphics/screen.h"
 
 #include "ring/helpers.h"
 #include "ring/ring.h"
@@ -131,11 +132,10 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_4F           = 0;
 	_field_50           = 455;
 	_field_54           = 235;
-	_field_58           = 613.0f;
-	_top                = 49.0f;
+	_sliderCoordinates  = Common::Point(613, 49);
 	_field_60           = 0;
 	_field_64           = 0;
-	_textHeight           = 0;
+	_textHeight         = 0;
 	_field_6C           = 0;
 	_field_70           = 0;
 	_field_74           = 0;
@@ -147,22 +147,22 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_90           = 0;
 	_field_94           = 0;
 	_movie              = NULL;
-	_frameCount           = 0;
+	_frameCount         = 0;
 	_field_A0           = 0;
 	_field_A4           = 0;
 	_text               = NULL;
 	_hotspot            = NULL;
-	_clippingBottom           = 20;
+	_clippingBottom     = 20;
 	_field_B8           = 450;
 	_point              = Common::Point(10, 30);
-	_clippingLeft           = 320;
+	_clippingLeft       = 320;
 	_field_C8           = 590;
 	_field_CC           = true;
 	memset(_fonts, 0, sizeof(_fonts));
 	_field_541          = 0;
 	_field_545          = 0;
 	_field_549          = 0;
-	_soundId          = 0;
+	_soundId            = 0;
 	_field_551          = 0;
 }
 
@@ -188,7 +188,82 @@ VisualObjectEncyclopedia::~VisualObjectEncyclopedia() {
 }
 
 void VisualObjectEncyclopedia::draw() {
-	error("[VisualObjectEncyclopedia::draw] Not implemented");
+	if (!_visible)
+		return;
+
+	if (!_field_4F) {
+		// Show arrow up image
+		switch (_field_3F) {
+		default:
+			break;
+
+		case 0:
+			if (_imageArrowUp_dis->isInitialized())
+				getApp()->getScreenManager()->draw(_imageArrowUp_dis, Common::Point(606, 20), _imageArrowUp_dis->getDrawType());
+			break;
+
+		case 1:
+			if (_imageArrowUp_nor->isInitialized())
+				getApp()->getScreenManager()->draw(_imageArrowUp_nor, Common::Point(606, 20), _imageArrowUp_nor->getDrawType());
+			break;
+
+		case 2:
+			if (_imageArrowUp_hlt->isInitialized())
+				getApp()->getScreenManager()->draw(_imageArrowUp_hlt, Common::Point(606, 20), _imageArrowUp_hlt->getDrawType());
+			break;
+		}
+
+		// Show arrow down image
+		switch (_field_43) {
+		default:
+			break;
+
+		case 0:
+			if (_imageArrowUp_dis->isInitialized())
+				getApp()->getScreenManager()->draw(_imageArrowDown_dis, Common::Point(606, 432), _imageArrowDown_dis->getDrawType());
+			break;
+
+		case 1:
+			if (_imageArrowUp_nor->isInitialized())
+				getApp()->getScreenManager()->draw(_imageArrowDown_nor, Common::Point(606, 432), _imageArrowDown_nor->getDrawType());
+			break;
+
+		case 2:
+			if (_imageArrowUp_hlt->isInitialized())
+				getApp()->getScreenManager()->draw(_imageArrowDown_hlt, Common::Point(606, 432), _imageArrowDown_hlt->getDrawType());
+			break;
+		}
+
+		// Show sliders
+		if (_imageSlide->isInitialized())
+			getApp()->getScreenManager()->draw(_imageSlide, Common::Point(610, 45), _imageSlide->getDrawType());
+
+		if (_imageSlider->isInitialized())
+			getApp()->getScreenManager()->draw(_imageSlider, _sliderCoordinates, _imageSlider->getDrawType());
+
+		// Show text
+		for (Common::Array<Text *>::iterator it = _texts.begin(); it != _texts.end(); it++)
+			drawText(*it);
+
+		--_field_60;
+		if (_field_60 < 0)
+			_field_60 = 0;
+
+		if (_field_60 > 0 && _text)
+			drawText(_text);
+	}
+
+	if (_field_64 && _image7->isInitialized()) {
+		// Adjust coordinates
+		_point.x = _field_50 - _image7->getWidth() / 2;
+		_point.y = _field_54 - _image7->getHeight() / 2;
+
+		getApp()->getScreenManager()->draw(_image7, _point, _image7->getDrawType());
+	}
+
+	// Cleanup after movie is done playing
+	if (_field_A4 && _movie->playNextFrame(_point, kDrawType3) == _frameCount)
+		SAFE_DELETE(_movie);
 }
 
 uint32 VisualObjectEncyclopedia::handleLeftButtonUp(const Common::Point &point) {
@@ -443,7 +518,7 @@ bool VisualObjectEncyclopedia::load() {
 
 		// Update hotspot
 		if (entry->getTarget())
-			addHotspot(entry->getTarget(), text, (CursorId)i);
+			addHotspot(entry->getTarget(), text, i);
 	}
 
 	_textHeight = textHeight;
@@ -508,12 +583,12 @@ void VisualObjectEncyclopedia::addHotspots() {
 	_hotspots.push_back(new Hotspot(Common::Rect(606, 49, 626, 57), true, 0, kCursorInvalid, 2));
 }
 
-void VisualObjectEncyclopedia::addHotspot(Id target, Text *text, CursorId cursorId) {
+void VisualObjectEncyclopedia::addHotspot(Id target, Text *text, uint32 entryIndex) {
 	Id soundId = 0;
-	if (target = 4 || target == 7)
-		soundId = addSound(cursorId);
+	if (target == 4 || target == 7)
+		soundId = addSound(entryIndex);
 
-	_hotspots.push_back(new Hotspot(text->getBoundingBox(), true, soundId, cursorId, target + 1));
+	_hotspots.push_back(new Hotspot(text->getBoundingBox(), true, soundId, (CursorId)entryIndex, target + 1));
 }
 
 void VisualObjectEncyclopedia::setHotspot() {
@@ -524,14 +599,14 @@ void VisualObjectEncyclopedia::setHotspot() {
 
 	float y = (float)(text->getCoordinates().y - _field_7C - _clippingBottom);
 	if (y >= 0) {
-		_top = 49.0f;
+		_sliderCoordinates.x = 49;
 	} else {
-		_top = (text->getHeight() + abs(y)) / (_field_74 - _field_B8) * 386.0f + 49.0f;
-		if (_top > 421.0f)
-			_top = 421.0f;
+		_sliderCoordinates.x = (int16)(((float)text->getHeight() + abs(y)) / (float)(_field_74 - _field_B8) * 386.0f + 49.0f);
+		if (_sliderCoordinates.x > 421)
+			_sliderCoordinates.x = 421;
 
-		if (_top < 49.0f)
-			_top = 49.0f;
+		if (_sliderCoordinates.x < 49)
+			_sliderCoordinates.x = 49;
 	}
 
 	if (_hotspots.size() <= 2)
@@ -539,13 +614,13 @@ void VisualObjectEncyclopedia::setHotspot() {
 
 	_hotspot = _hotspots[2];
 
-	_hotspot->update(Common::Rect(_hotspot->getRect().left, _top, _hotspot->getRect().right, _top + 10.0f));
+	_hotspot->update(Common::Rect(_hotspot->getRect().left, _sliderCoordinates.x, _hotspot->getRect().right, _sliderCoordinates.x + 10));
 }
 
-Id VisualObjectEncyclopedia::addSound(CursorId cursorId) {
+Id VisualObjectEncyclopedia::addSound(uint32 entryIndex) {
 	++_soundId;
 
-	getApp()->soundAdd(_soundId + 10000000, kSoundTypeAmbientMusic, _entries[cursorId]->getFilename(), kLoadFromCd);
+	getApp()->soundAdd(_soundId + 10000000, kSoundTypeAmbientMusic, _entries[entryIndex]->getFilename(), kLoadFromCd);
 
 	return _soundId;
 }
@@ -666,8 +741,7 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 	if (_fonts[id] == true)
 		return fontId;
 
-	// FIXME: We need to get replacement fonts...
-	getApp()->fontAdd(fontId, "", facename, height, smallWeight, target != 0, italic, false, getApp()->getCurrentLanguage());
+	getApp()->fontAdd(fontId, facename, height, smallWeight, target != 0, italic, false);
 
 	_fonts[id] = true;
 

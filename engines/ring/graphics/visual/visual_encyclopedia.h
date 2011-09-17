@@ -117,8 +117,7 @@ private:
 	uint32                              _field_4F;
 	uint32                              _field_50;
 	uint32                              _field_54;
-	float                               _field_58;
-	float                               _top;
+	Common::Point                       _sliderCoordinates;
 	uint32                              _field_60;
 	uint32                              _field_64;
 	uint32                              _textHeight;
@@ -159,10 +158,10 @@ private:
 	void next(uint32 y);
 
 	void addHotspots();
-	void addHotspot(Id target, Text *text, CursorId cursorId);
+	void addHotspot(Id target, Text *text, uint32 entryIndex);
 	void setHotspot();
 
-	Id addSound(CursorId cursorId);
+	Id addSound(uint32 entryIndex);
 
 	void playMovie(uint32 entryIndex);
 	void stopMovie(uint32 soundIndex);
