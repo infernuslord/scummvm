@@ -154,7 +154,7 @@ Common::Error RingEngine::run() {
 	_application->init();
 	_application->setup();
 
-#ifndef RING_DEBUG_SKIPINIT
+#if RING_DEBUG_SKIPINIT != 1
 	_application->initZones();
 
 	// Start application

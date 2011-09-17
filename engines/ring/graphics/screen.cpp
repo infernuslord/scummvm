@@ -50,6 +50,8 @@ void ScreenManager::init() {
 void ScreenManager::clear() {
 	_screen.fillRect(Common::Rect(0, 0, 640, 480), 0);
 	g_system->fillScreen(0);
+
+	debugDrawing();
 }
 
 void ScreenManager::drawAndUpdate(Image *image) {
@@ -63,6 +65,8 @@ void ScreenManager::drawAndUpdate(Image *image, const Common::Point &point) {
 
 void ScreenManager::draw(Image *image, DrawType type) {
 	draw(image, Common::Point(0, 0), type);
+
+	debugDrawing();
 }
 
 void ScreenManager::draw(Image *image, const Common::Point &point, DrawType type) {
@@ -111,16 +115,22 @@ void ScreenManager::draw(Image *image, const Common::Point &point, DrawType type
 		}
 		break;
 	}
+
+	debugDrawing();
 }
 
 void ScreenManager::drawImage(Image *image, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset) {
 	image->draw(&_screen, dest, srcWidth, srcHeight, srcX, offset);
 
 	updateScreen();
+
+	debugDrawing();
 }
 
 void ScreenManager::drawRectangle(const Common::Rect &rect, uint32 color) {
 	_screen.frameRect(rect, color);
+
+	debugDrawing();
 }
 
 void ScreenManager::drawText(Common::String text, const Common::Point &coords, Color color) {
@@ -131,6 +141,8 @@ void ScreenManager::drawText(Common::String text, const Common::Point &coords, C
 	// Draw text
 	int width = font->getStringWidth(text);
 	font->drawString(&_screen, text, coords.x, coords.y, width, color.getColor());
+
+	debugDrawing();
 }
 
 void ScreenManager::drawText(Text *text) {
@@ -154,6 +166,8 @@ void ScreenManager::drawText(Text *text) {
 
 	// Draw text
 	font->drawString(&_screen, text->getString(), text->getCoordinates().x, text->getCoordinates().y, text->getWidth(), text->getForegroundColor());
+
+	debugDrawing();
 }
 
 void ScreenManager::drawText(Text *text, const Common::Rect &exclude, const Common::Rect &exclude2) {
@@ -171,6 +185,13 @@ void ScreenManager::copySurface(Image *image, uint32, uint32) const {
 void ScreenManager::updateScreen() {
 	g_system->fillScreen(0);
 	g_system->copyRectToScreen((byte *)_screen.getBasePtr(0, 0), 640 * 2, 0, 0, 640, 480);
+}
+
+void ScreenManager::debugDrawing() {
+#if RING_DEBUG_DRAWING == 1
+	updateScreen();
+	g_system->updateScreen();
+#endif
 }
 
 } // End of namespace Ring

@@ -63,6 +63,8 @@ private:
 	Graphics::Surface _screen;
 
 	Common::Point _offset;
+
+	void debugDrawing();
 };
 
 } // End of namespace Ring

@@ -158,6 +158,10 @@ void Debugger::postEnter() {
 				case Common::EVENT_LBUTTONUP:
 					enc->handleLeftButtonUp(ev.mouse);
 					break;
+
+				case Common::EVENT_QUIT:
+					play = false;
+					break;
 				}
 
 				// Skip remaining events when we need to exit
@@ -166,12 +170,13 @@ void Debugger::postEnter() {
 			}
 
 			// Draw the widget
+			_engine->getApplication()->getScreenManager()->clear();
 			enc->draw();
 			_engine->getApplication()->getScreenManager()->updateScreen();
 
 			// Update the screen
 			g_system->updateScreen();
-			g_system->delayMillis(10);
+			g_system->delayMillis(100);
 		}
 
 
