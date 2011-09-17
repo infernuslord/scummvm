@@ -44,24 +44,35 @@ public:
 
 	uint32 load(const char *buffer, uint32 size);
 
-	const Common::String getFilename() { return _filename; }
+	Id                   getTarget()       { return _target; }
+	const Common::String getLabel()        { return _label; }
+	const Common::String getFilename()     { return _filename; }
+	Facetype             getFaceType()     { return _facetype; }
+	Color                getForegroundColor();
+	Color                getBackgroundColor();
+	uint32               getHeight()        { return _height; }
+	uint32               getSmallWeight()   { return _smallWeight; }
+	uint32               getItalic()        { return _italic; }
+	uint32               getField2C()       { return _field_2C; }
+	uint32               getPadding()       { return _padding; }
+
+	void                 setPoint(const Common::Point &point) { _point = point; }
 
 private:
-	uint32         _field_0;
+	Id             _target;
 	Common::String _label;
 	Common::String _filename;
 	uint32         _field_C;
 	uint32         _field_10;
 	Facetype       _facetype;
-	uint32         _field_18;
-	uint32         _field_1C;
+	int32          _foregroundColor;
+	int32          _backgroundColor;
 	uint32         _height;
 	bool           _smallWeight;
 	bool           _italic;
 	uint32         _field_2C;
-	uint32         _field_30;
-	uint32         _field_34;
-	uint32         _field_38;
+	uint32         _padding;
+	Common::Point  _point;
 };
 
 class VisualObjectEncyclopedia : public Visual {
@@ -78,7 +89,7 @@ public:
 	virtual void dealloc();
 
 	void init(const Common::String &name, ArchiveType archiveType);
-	void setParameters(const Common::Point &point, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8);
+	void setParameters(const Common::Point &point, uint32 clippingBottom, uint32 a5, uint32 clippingLeft, uint32 a7, uint32 a8);
 	void showFile(const Common::String &filename);
 
 	// Serializable
@@ -110,7 +121,7 @@ private:
 	float                               _top;
 	uint32                              _field_60;
 	uint32                              _field_64;
-	uint32                              _field_68;
+	uint32                              _textHeight;
 	uint32                              _field_6C;
 	uint32                              _field_70;
 	uint32                              _field_74;
@@ -128,10 +139,10 @@ private:
 	Text                               *_text;
 	Hotspot                            *_hotspot;
 	Common::String                      _filename;
-	uint32                              _field_B4;
+	uint32                              _clippingBottom;
 	uint32                              _field_B8;
 	Common::Point                       _point;
-	uint32                              _field_C4;
+	uint32                              _clippingLeft;
 	uint32                              _field_C8;
 	bool                                _field_CC;
 	bool                                _fonts[285];
@@ -156,7 +167,7 @@ private:
 	void playMovie(uint32 entryIndex);
 	void stopMovie(uint32 soundIndex);
 
-	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, bool underline);
+	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target);
 	void drawText(Text *text);
 };
 

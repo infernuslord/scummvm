@@ -35,22 +35,18 @@ namespace Ring {
 
 #pragma region EncyclopediaEntry
 
-#pragma region VisualObjectEncyclopedia
-
 EncyclopediaEntry::EncyclopediaEntry() {
-	_field_0     = 0;
+	_target      = 0;
 	_field_C     = 0;
 	_field_10    = 0;
 	_facetype    = kFaceTypeArial;
-	_field_18    = 0;
-	_field_1C    = 0;
+	_foregroundColor    = 0;
+	_backgroundColor    = 0;
 	_height      = 0;
 	_smallWeight = false;
 	_italic      = false;
 	_field_2C    = 0;
-	_field_30    = 0;
-	_field_34    = 0;
-	_field_38    = 0;
+	_padding     = 0;
 }
 
 #define READ_VALUE(name, type) { \
@@ -68,24 +64,53 @@ EncyclopediaEntry::EncyclopediaEntry() {
 uint32 EncyclopediaEntry::load(const char *buffer, uint32 size) {
 	uint32 offset = 0;
 
-	READ_VALUE(_field_0, uint32);
+	READ_VALUE(_target, Id);
 	READ_STRING(_label);
 	READ_STRING(_filename);
 	READ_VALUE(_field_C, uint32);
 	READ_VALUE(_field_10, uint32);
 	READ_VALUE(_facetype, Facetype);
-	READ_VALUE(_field_18, uint32);
-	READ_VALUE(_field_1C, uint32);
+	READ_VALUE(_foregroundColor, int32);
+	READ_VALUE(_backgroundColor, int32);
 	READ_VALUE(_height, uint32);
 	READ_VALUE(_smallWeight, bool);
 	READ_VALUE(_italic, bool);
 	READ_VALUE(_field_2C, uint32);
-	READ_VALUE(_field_30, uint32);
-	READ_VALUE(_field_34, uint32);
-	READ_VALUE(_field_38, uint32);
+	READ_VALUE(_padding, uint32);
+	READ_VALUE(_point.x, int16);
+	READ_VALUE(_point.y, int16);
 
 	return offset;
 }
+
+Color EncyclopediaEntry::getForegroundColor() {
+	if (_foregroundColor == -1)
+		return Color(-1, -1, -1);
+
+	if (_foregroundColor == 0) {
+		if (_target > 0)
+			return Color(255, -7, -48);
+		else
+			return Color(255, -29, 32);
+	}
+
+	return Color(_foregroundColor & 0xFF,
+	             (_foregroundColor >> 8) & 0xFF,
+	             (_foregroundColor >> 16) & 0xFF);
+}
+
+Color EncyclopediaEntry::getBackgroundColor() {
+	if (_backgroundColor == -1 || _backgroundColor == 0)
+		return Color(-1, -1, -1);
+
+	return Color(_backgroundColor & 0xFF,
+	             (_backgroundColor >> 8) & 0xFF,
+	             (_backgroundColor >> 16) & 0xFF);
+}
+
+#pragma endregion
+
+#pragma region VisualObjectEncyclopedia
 
 VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_isLoaded           = false;
@@ -110,7 +135,7 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_top                = 49.0f;
 	_field_60           = 0;
 	_field_64           = 0;
-	_field_68           = 0;
+	_textHeight           = 0;
 	_field_6C           = 0;
 	_field_70           = 0;
 	_field_74           = 0;
@@ -127,10 +152,10 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_A4           = 0;
 	_text               = NULL;
 	_hotspot            = NULL;
-	_field_B4           = 20;
+	_clippingBottom           = 20;
 	_field_B8           = 450;
 	_point              = Common::Point(10, 30);
-	_field_C4           = 320;
+	_clippingLeft           = 320;
 	_field_C8           = 590;
 	_field_CC           = true;
 	memset(_fonts, 0, sizeof(_fonts));
@@ -288,18 +313,20 @@ void VisualObjectEncyclopedia::init(const Common::String &name, ArchiveType arch
 	_imageSlider->setDirectory(path);
 
 	_text = new Text();
+
+	_filename = name;
 }
 
-void VisualObjectEncyclopedia::setParameters(const Common::Point &point, uint32 a4, uint32 a5, uint32 a6, uint32 a7, uint32 a8) {
+void VisualObjectEncyclopedia::setParameters(const Common::Point &point, uint32 clippingBottom, uint32 a5, uint32 clippingLeft, uint32 a7, uint32 a8) {
 	_point = point;
 	_field_B8 = a5;
 	_field_CC = a8;
-	_field_B4 = a4;
+	_clippingBottom = clippingBottom;
 	_field_C8 = a7;
-	_field_80 = (a5 - a4) / 2;
-	_field_C4 = a6;
-	_field_50 = a6 + abs((int)(a7 - a6)) / 2;
-	_field_54 = a4 + abs((int)(a5 - a4)) / 2;
+	_field_80 = (a5 - clippingBottom) / 2;
+	_clippingLeft = clippingLeft;
+	_field_50 = clippingLeft + abs((int)(a7 - clippingLeft)) / 2;
+	_field_54 = clippingBottom + abs((int)(a5 - clippingBottom)) / 2;
 }
 
 void VisualObjectEncyclopedia::showFile(const Common::String &filename) {
@@ -332,7 +359,98 @@ bool VisualObjectEncyclopedia::load() {
 		return false;
 	}
 
-	error("[VisualObjectEncyclopedia::load] Not implemented");
+	// Prepare values
+	uint32 offset = 0;
+	uint32 textHeight = 12;
+	uint32 clippingLeft = _clippingLeft;
+	uint32 clippingBottom = _clippingBottom;
+
+	// Process entries
+	for (uint32 i = 0; i < _entries.size(); i++) {
+		EncyclopediaEntry *entry = _entries[i];
+
+		// Padding
+		Common::String str;
+		for (uint32 i = 0; i < entry->getPadding(); i++)
+			str += " ";
+
+		// Label
+		str += entry->getLabel();
+
+		// Adjust coordinates
+		Common::Point point(clippingLeft, clippingBottom);
+		if (entry->getField2C() > offset) {
+			clippingBottom += textHeight + (entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset);
+			textHeight = 0;
+			offset = entry->getField2C();
+			point.y = clippingBottom;
+		}
+
+		// Init contents
+		Text *text = new Text();
+		text->init(str, point, kFontDefault, Color(255, -1, -1), Color(-1, -1, -1));
+		text->set(str);
+
+		// Adjust colors
+		text->setForegroundColor(entry->getForegroundColor());
+		text->setBackgroundColor(entry->getBackgroundColor());
+
+		// Set font
+		FontId fontId = getFontId(entry->getFaceType(), entry->getHeight(), entry->getSmallWeight(), entry->getItalic(), entry->getTarget());
+		text->setFontId(fontId);
+		text->set(str);
+
+		// Compute text dimensions
+		if (i == 0) {
+			_field_6C = point.y;
+			_field_7C = point.y - _clippingBottom;
+		}
+
+		if (text->getHeight() > textHeight)
+			textHeight = text->getHeight();
+
+		entry->setPoint(point);
+
+		// Adjust text width
+		uint32 spaceWidth = 0;
+		if (entry->getTarget()) {
+			Common::Point coords(clippingLeft, point.y);
+
+			Text *space = new Text();
+			space->init(" ", coords, fontId, Color(255, -1, -1), Color(-1, -1, -1));
+			spaceWidth = space->getWidth();
+			delete space;
+
+			coords.x += spaceWidth;
+			text->setCoordinates(coords);
+		}
+
+		if (text->getWidth() + clippingLeft > _field_C8) {
+			clippingLeft = _clippingLeft;
+
+			Common::Point coords(clippingLeft, textHeight + point.y);
+			text->setCoordinates(coords);
+
+			textHeight = 12;
+			clippingBottom = coords.y + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
+			offset = entry->getField2C();
+		}
+
+		// Adjust clipping
+		clippingLeft += text->getWidth() + spaceWidth;
+
+		_texts.push_back(text);
+
+		// Update hotspot
+		if (entry->getTarget())
+			addHotspot(entry->getTarget(), text, (CursorId)i);
+	}
+
+	_textHeight = textHeight;
+	_field_74 = textHeight + clippingBottom;
+	_field_78 = _field_B8 - _clippingBottom;
+
+	return true;
 }
 
 bool VisualObjectEncyclopedia::loadEntries(const Common::String &filename) {
@@ -404,7 +522,7 @@ void VisualObjectEncyclopedia::setHotspot() {
 
 	Text *text = _texts[0];
 
-	float y = (float)(text->getCoordinates().y - _field_7C - _field_B4);
+	float y = (float)(text->getCoordinates().y - _field_7C - _clippingBottom);
 	if (y >= 0) {
 		_top = 49.0f;
 	} else {
@@ -465,7 +583,7 @@ void VisualObjectEncyclopedia::stopMovie(uint32 soundIndex) {
 	getApp()->soundPlay(soundIndex + 1000000);
 }
 
-FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool smallWeight, bool italic, bool underline) {
+FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target) {
 	// Height
 	uint32 height_id = 0;
 	switch (height) {
@@ -539,7 +657,7 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 
 	// Compute font id
 	uint32 idPart = 2 * (italic + 2 * smallWeight);
-	if (underline)
+	if (target)
 		idPart++;
 
 	uint32 id = 96 * faceType + height_id * (idPart + 1);
@@ -548,7 +666,8 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 	if (_fonts[id] == true)
 		return fontId;
 
-	getApp()->fontAdd(fontId, "", facename, height, smallWeight, underline, italic, false, getApp()->getCurrentLanguage());
+	// FIXME: We need to get replacement fonts...
+	getApp()->fontAdd(fontId, "", facename, height, smallWeight, target != 0, italic, false, getApp()->getCurrentLanguage());
 
 	_fonts[id] = true;
 
@@ -558,5 +677,7 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 void VisualObjectEncyclopedia::drawText(Text *text) {
 	error("[VisualObjectEncyclopedia::drawText] Not implemented");
 }
+
+#pragma endregion
 
 } // End of namespace Ring
