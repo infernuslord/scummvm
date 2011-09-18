@@ -136,7 +136,7 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_60           = 0;
 	_field_64           = 0;
 	_textHeight         = 0;
-	_field_6C           = 0;
+	_textTop            = 0;
 	_field_70           = 0;
 	_field_74           = 0;
 	_field_78           = 0;
@@ -625,7 +625,7 @@ bool VisualObjectEncyclopedia::load() {
 
 		// Compute text dimensions
 		if (i == 0) {
-			_field_6C = point.y;
+			_textTop = point.y;
 			_field_7C = point.y - _clippingRect.top;
 		}
 
@@ -717,12 +717,75 @@ bool VisualObjectEncyclopedia::loadEntries(const Common::String &filename) {
 	return true;
 }
 
-void VisualObjectEncyclopedia::scrollUp(uint32 y) {
-	error("[VisualObjectEncyclopedia::previous] Not implemented");
+void VisualObjectEncyclopedia::scrollUp(uint32 offset) {
+	if (_texts.empty())
+		return;
+
+	Text *text = _texts[0];
+	if (text->getCoordinates().y >= (int16)_textTop)
+		return;
+
+	uint32 maxOffset = abs((int)(_textTop - text->getCoordinates().y));
+	if (offset > maxOffset)
+		offset = maxOffset;
+
+	// Adjust coordinates of all texts and hotspots
+	for (Common::Array<Text *>::iterator it = _texts.begin(); it != _texts.end(); it++) {
+		Common::Point point = (*it)->getCoordinates();
+		point.y += offset;
+
+		(*it)->setCoordinates(point);
+	}
+
+	for (Common::Array<Hotspot *>::iterator it = _hotspots.begin() + 3; it != _hotspots.end(); it++) {
+		Common::Rect rect = (*it)->getRect();
+		rect.top    += offset;
+		rect.bottom += offset;
+
+		(*it)->update(rect);
+	}
+
+	setHotspot();
+
+	if (_field_CC)
+		sub_487580();
 }
 
-void VisualObjectEncyclopedia::scrollDown(uint32 y) {
-	error("[VisualObjectEncyclopedia::next] Not implemented");
+void VisualObjectEncyclopedia::scrollDown(uint32 offset) {
+	if (_texts.empty())
+		return;
+
+	if (_field_78 <= _field_74)
+		return;
+
+	Text *text = _texts[0];
+	if (text->getCoordinates().y <= _clippingRect.bottom)
+		return;
+
+	uint32 maxOffset = abs((int)(text->getCoordinates().y - _clippingRect.bottom));
+	if (offset > maxOffset)
+		offset = maxOffset;
+
+	// Adjust coordinates of all texts and hotspots
+	for (Common::Array<Text *>::iterator it = _texts.begin(); it != _texts.end(); it++) {
+		Common::Point point = (*it)->getCoordinates();
+		point.y -= offset;
+
+		(*it)->setCoordinates(point);
+	}
+
+	for (Common::Array<Hotspot *>::iterator it = _hotspots.begin() + 3; it != _hotspots.end(); it++) {
+		Common::Rect rect = (*it)->getRect();
+		rect.top    -= offset;
+		rect.bottom -= offset;
+
+		(*it)->update(rect);
+	}
+
+	setHotspot();
+
+	if (_field_CC)
+		sub_487580();
 }
 
 void VisualObjectEncyclopedia::addHotspots() {

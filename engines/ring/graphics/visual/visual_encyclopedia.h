@@ -131,7 +131,7 @@ private:
 	uint32                              _field_60;
 	uint32                              _field_64;
 	uint32                              _textHeight;
-	uint32                              _field_6C;
+	uint32                              _textTop;
 	uint32                              _field_70;
 	uint32                              _field_74;
 	uint32                              _field_78;
@@ -162,8 +162,8 @@ private:
 
 	bool load();
 	bool loadEntries(const Common::String &filename);
-	void scrollUp(uint32 y);
-	void scrollDown(uint32 y);
+	void scrollUp(uint32 offset);
+	void scrollDown(uint32 offset);
 
 	void addHotspots();
 	void addHotspot(Id target, Text *text, uint32 entryIndex);
