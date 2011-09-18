@@ -48,6 +48,8 @@ public:
 	const Common::String getLabel()        { return _label; }
 	const Common::String getFilename()     { return _filename; }
 	Facetype             getFaceType()     { return _facetype; }
+	uint32               getFieldC()       { return _field_C; }
+	uint32               getField10()      { return _field_10; }
 	Color                getForegroundColor();
 	Color                getBackgroundColor();
 	uint32               getHeight()        { return _height; }
@@ -136,6 +138,7 @@ private:
 	uint32                              _field_7C;
 	uint32                              _field_80;
 	uint32                              _field_84;
+	uint32                              _field_88;
 	uint32                              _tickCount;
 	uint32                              _field_90;
 	uint32                              _field_94;
@@ -159,8 +162,8 @@ private:
 
 	bool load();
 	bool loadEntries(const Common::String &filename);
-	void previous(uint32 y);
-	void next(uint32 y);
+	void scrollUp(uint32 y);
+	void scrollDown(uint32 y);
 
 	void addHotspots();
 	void addHotspot(Id target, Text *text, uint32 entryIndex);
@@ -174,6 +177,10 @@ private:
 	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target);
 
 	void sub_484040(const Common::Point &point);
+	void loadImage7(uint32 entryIndex);
+	void handleTarget9(uint32 entryIndex);
+	void handleTarget10(uint32 entryIndex);
+	void sub_487580();
 };
 
 } // End of namespace Ring

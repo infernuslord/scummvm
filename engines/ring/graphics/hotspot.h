@@ -49,6 +49,7 @@ public:
 	// Accessors
 	void setKey(Common::KeyCode key) { _key = key; }
 	Common::Rect getRect() { return _rect; }
+	Id getSoundId() { return _soundId; }
 	CursorId getCursorId() { return _cursorId; }
 	Id getTarget() { return _target; }
 	Common::KeyCode getKey() { return _key; }
@@ -56,7 +57,7 @@ public:
 private:
 	Common::Rect    _rect;
 	bool            _enabled;
-	uint32          _soundId;
+	Id              _soundId;
 	CursorId        _cursorId;
 	Id              _target;
 	Common::KeyCode _key;

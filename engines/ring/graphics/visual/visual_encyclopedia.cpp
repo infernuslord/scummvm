@@ -143,6 +143,7 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_7C           = 0;
 	_field_80           = 215;
 	_field_84           = 0;
+	_field_88           = 0;
 	_tickCount          = 0;
 	_field_90           = 0;
 	_field_94           = 0;
@@ -267,7 +268,29 @@ void VisualObjectEncyclopedia::draw() {
 }
 
 uint32 VisualObjectEncyclopedia::handleLeftButtonUp(const Common::Point &point) {
-	error("[VisualObjectEncyclopedia::handleLeftButtonUp] Not implemented");
+	if (!_visible)
+		return false;
+
+	_tickCount = g_system->getMillis();
+	_field_90 = _tickCount - _field_88;
+
+	if (_imageArrowUpType || _imageArrowDownType) {
+		if (_field_90 && _field_90 < 400) {
+			if (_imageArrowUpType > 0)
+				scrollUp(50);
+			else
+				scrollDown(50);
+		}
+	}
+
+	_field_47 = 0;
+	_field_4B = 0;
+
+	getApp()->onVisualList(_id, 1, point);
+
+	_field_94 = 0;
+
+	return 0;
 }
 
 uint32 VisualObjectEncyclopedia::handleUpdate(const Common::Point &point) {
@@ -314,7 +337,95 @@ uint32 VisualObjectEncyclopedia::handleUpdate(const Common::Point &point) {
 }
 
 uint32 VisualObjectEncyclopedia::handleLeftButtonDown(Common::Point point) {
-	error("[VisualObjectEncyclopedia::handleLeftButtonDown] Not implemented");
+	if (!_visible)
+		return false;
+
+	if (_field_4F) {
+		_field_4F = 0;
+
+		return 0;
+	}
+
+	_field_88 = g_system->getMillis();
+	_field_47 = 1;
+	_field_94 = 1;
+
+	if (_field_4F || _hotspots.empty())
+		return 0;
+
+	for (uint32 i = 0; i < _hotspots.size(); i++) {
+		Hotspot *hotspot = _hotspots[i];
+
+		if (hotspot->contains(point)) {
+			switch (hotspot->getTarget()) {
+			default:
+				break;
+
+			case 0:
+				if (!i)
+					_imageArrowUpType = 2;
+
+				if (i || _field_94)
+					break;
+
+				scrollUp(10);
+				break;
+
+			case 1:
+				if (i == 1)
+					_imageArrowDownType = 2;
+
+				if (i != 1 || _field_94)
+					break;
+
+				scrollDown(10);
+				break;
+
+			case 2:
+				if (i != 2)
+					break;
+
+				_field_60 = 20;
+				_field_4B = 1;
+				break;
+
+			case 3:
+				_field_4F = 1;
+				break;
+
+			case 6:
+				loadImage7(hotspot->getCursorId());
+				_field_60 = 20;
+				break;
+
+			case 4:
+			case 7:
+				playMovie(hotspot->getCursorId());
+				_field_60 = 20;
+				break;
+
+			case 5:
+			case 8:
+				stopMovie(hotspot->getSoundId());
+				_field_60 = 20;
+				break;
+
+			case 9:
+				handleTarget9(hotspot->getCursorId());
+				_field_60 = 20;
+				break;
+
+			case 10:
+				handleTarget10(hotspot->getCursorId());
+				_field_60 = 20;
+				break;
+			}
+
+			break;
+		}
+	}
+
+	return 0;
 }
 
 bool VisualObjectEncyclopedia::handleKey(Common::KeyCode key) {
@@ -323,12 +434,12 @@ bool VisualObjectEncyclopedia::handleKey(Common::KeyCode key) {
 		break;
 
 	case Common::KEYCODE_PAGEUP:
-		previous(50);
+		scrollUp(50);
 		setHotspot();
 		break;
 
 	case Common::KEYCODE_PAGEDOWN:
-		next(50);
+		scrollDown(50);
 		setHotspot();
 		break;
 	}
@@ -606,11 +717,11 @@ bool VisualObjectEncyclopedia::loadEntries(const Common::String &filename) {
 	return true;
 }
 
-void VisualObjectEncyclopedia::previous(uint32 y) {
+void VisualObjectEncyclopedia::scrollUp(uint32 y) {
 	error("[VisualObjectEncyclopedia::previous] Not implemented");
 }
 
-void VisualObjectEncyclopedia::next(uint32 y) {
+void VisualObjectEncyclopedia::scrollDown(uint32 y) {
 	error("[VisualObjectEncyclopedia::next] Not implemented");
 }
 
@@ -787,6 +898,46 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 
 void VisualObjectEncyclopedia::sub_484040(const Common::Point &point) {
 	error("[VisualObjectEncyclopedia::sub_484040] Not implemented");
+}
+
+void VisualObjectEncyclopedia::loadImage7(uint32 entryIndex) {
+	if (entryIndex >= _entries.size())
+		error("[VisualObjectEncyclopedia::loadImage7] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
+
+	error("[VisualObjectEncyclopedia::loadImage7] Not implemented");
+}
+
+void VisualObjectEncyclopedia::handleTarget9(uint32 entryIndex) {
+	if (entryIndex >= _entries.size())
+		error("[VisualObjectEncyclopedia::handleTarget9] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
+
+	uint32 field_C = _entries[entryIndex]->getFieldC();
+
+	for (uint32 i = 0; i < _entries.size(); i++) {
+		if (_entries[i]->getField10() == field_C) {
+
+			uint32 offset = _texts[i]->getCoordinates().y - _clippingRect.bottom;
+
+			if (offset > 0)
+				scrollDown(offset);
+			else
+				scrollUp(offset);
+
+			break;
+		}
+	}
+}
+
+void VisualObjectEncyclopedia::handleTarget10(uint32 entryIndex) {
+	if (entryIndex >= _entries.size())
+		error("[VisualObjectEncyclopedia::handleTarget10] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
+
+
+	error("[VisualObjectEncyclopedia::sub_486F50] Not implemented");
+}
+
+void VisualObjectEncyclopedia::sub_487580() {
+	error("[VisualObjectEncyclopedia::sub_487580] Not implemented");
 }
 
 #pragma endregion
