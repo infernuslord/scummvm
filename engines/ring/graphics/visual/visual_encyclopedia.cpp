@@ -271,10 +271,46 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonUp(const Common::Point &point) 
 }
 
 uint32 VisualObjectEncyclopedia::handleUpdate(const Common::Point &point) {
-	if (_visible)
+	if (!_visible)
 		return false;
 
-	error("[VisualObjectEncyclopedia::handleUpdate] Not implemented");
+	if (_field_47 == 1) {
+		sub_484040(point);
+
+		getApp()->onVisualList(_id, 1, point);
+
+		return 0;
+	}
+
+	_imageArrowUpType = 0;
+	_imageArrowDownType = 0;
+
+	for (uint32 i = 0; i < _hotspots.size(); i++) {
+		if (_hotspots[i]->contains(point)) {
+			Hotspot *hotspot = _hotspots[i];
+
+			switch (hotspot->getTarget()) {
+			default:
+				break;
+
+			case 0:
+				if (i == 0)
+					_imageArrowUpType = 1;
+				break;
+
+			case 1:
+				if (i == 1)
+					_imageArrowDownType = 1;
+				break;
+			}
+
+			break;
+		}
+	}
+
+	getApp()->onVisualList(_id, 1, point);
+
+	return 0;
 }
 
 uint32 VisualObjectEncyclopedia::handleLeftButtonDown(Common::Point point) {
@@ -747,6 +783,10 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 	_fonts[id] = true;
 
 	return fontId;
+}
+
+void VisualObjectEncyclopedia::sub_484040(const Common::Point &point) {
+	error("[VisualObjectEncyclopedia::sub_484040] Not implemented");
 }
 
 #pragma endregion

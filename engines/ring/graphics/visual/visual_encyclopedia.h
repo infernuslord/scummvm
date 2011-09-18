@@ -172,6 +172,8 @@ private:
 	void stopMovie(uint32 soundIndex);
 
 	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target);
+
+	void sub_484040(const Common::Point &point);
 };
 
 } // End of namespace Ring
