@@ -75,12 +75,12 @@ Font::Font(FontId id, Common::String facename, uint32 height, bool smallWeight, 
 
 	// Try getting font replacement
 	if (!fontName.empty())
-		_font = FontMan.getFontByName(fontName);
+		_font = const_cast<Graphics::Font *>(FontMan.getFontByName(fontName));
 
 	if (!_font) {
 		warning("[Font::Font] Font replacement for \"%s\" not available, using default GUI font", facename.c_str());
 
-		_font = FontMan.getFontByUsage(Graphics::FontManager::kGUIFont);
+		_font = const_cast<Graphics::Font *>(FontMan.getFontByUsage(Graphics::FontManager::kGUIFont));
 	}
 }
 
@@ -123,7 +123,7 @@ void FontHandler::add(FontId id, Common::String facename, uint32 height, bool sm
 	_fonts.push_back(new Font(id, facename, height, smallWeight, underline, italic, strikeout));
 }
 
-const Graphics::Font *FontHandler::getFont(FontId id) {
+Graphics::Font *FontHandler::getFont(FontId id) {
 	if (!_fonts.has(id))
 		error("[FontHandler::getFont] ID doesn't exists (%d)", id);
 

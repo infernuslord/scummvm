@@ -215,7 +215,7 @@ bool Cinematic::sControl(byte* buffer) {
 	return true;
 }
 
-uint32 Cinematic::decompress(byte *data, byte *output, uint32 size) {
+uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 	// TODO: Reduce code duplication
 
 #define UPDATE_BUFFER_CONTROL(index) { \
@@ -242,7 +242,7 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 size) {
 
 	// Get start and end of buffer
 	byte *start = data;
-	byte *end   = &data[size];
+	byte *end   = &data[dataSize];
 
 	// Store buffers position
 	int *buffer           = (int *)output;

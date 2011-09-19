@@ -37,7 +37,7 @@ public:
 	Font(FontId id, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
 	~Font();
 
-	const Graphics::Font *getFont() { return _font; }
+	Graphics::Font *getFont() { return _font; }
 
 private:
 	// Font description (see Windows LOGFONT structure)
@@ -75,7 +75,7 @@ private:
 	};
 
 	FontDescription _description;
-	const Graphics::Font *_font;
+	Graphics::Font *_font;
 	Common::String _filename;
 
 	void setup(Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
@@ -89,7 +89,7 @@ public:
 	void add(FontId id, Common::String filename, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout, LanguageId langId);
 	void add(FontId id, Common::String facename, uint32 height, bool smallWeight, bool underline, bool italic, bool strikeout);
 
-	const Graphics::Font *getFont(FontId id);
+	Graphics::Font *getFont(FontId id);
 
 private:
 	AssociativeArray<Font *> _fonts;

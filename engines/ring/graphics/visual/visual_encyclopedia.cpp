@@ -594,7 +594,7 @@ bool VisualObjectEncyclopedia::load() {
 
 		// Padding
 		Common::String str;
-		for (uint32 i = 0; i < entry->getPadding(); i++)
+		for (uint32 j = 0; j < entry->getPadding(); j++)
 			str += " ";
 
 		// Label
@@ -843,7 +843,7 @@ void VisualObjectEncyclopedia::playMovie(uint32 entryIndex) {
 	// Get movie folder
 	Common::String folder;
 	if (_archiveType == kArchiveFile)
-		folder = Common::String::format("DATA/%s/PLA/", getApp()->getCurrentZoneFolder());
+		folder = Common::String::format("DATA/%s/PLA/", getApp()->getCurrentZoneFolder().c_str());
 	else
 		folder = "/PLA/";
 
