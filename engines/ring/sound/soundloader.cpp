@@ -110,7 +110,7 @@ void SoundResource::getBuffer(SoundBuffer *buffer, uint32 size) {
 	} else {
 		cleanup();
 		buffer->buffer = NULL;
-		buffer->size   = NULL;
+		buffer->size   = 0;
 	}
 }
 

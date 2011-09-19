@@ -128,7 +128,7 @@ private:
 	uint32                              _field_4F;
 	Common::Point                       _clippingCenter;
 	Common::Point                       _sliderCoordinates;
-	uint32                              _field_60;
+	int32                               _field_60;
 	uint32                              _field_64;
 	uint32                              _textHeight;
 	uint32                              _textTop;
