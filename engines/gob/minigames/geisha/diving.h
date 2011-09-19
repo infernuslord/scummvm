@@ -25,6 +25,8 @@
 
 #include "common/system.h"
 
+#include "gob/util.h"
+
 #include "gob/sound/sounddesc.h"
 
 namespace Gob {
@@ -34,8 +36,6 @@ class Surface;
 class DECFile;
 class ANIFile;
 class ANIObject;
-
-enum MouseButtons;
 
 namespace Geisha {
 
@@ -50,8 +50,23 @@ public:
 	bool play(uint16 playerCount, bool hasPearlLocation);
 
 private:
-	static const uint kEvilFishCount =  3;
-	static const uint kMaxShotCount  = 10;
+	static const uint kEvilFishCount  =  3;
+	static const uint kDecorFishCount =  3;
+	static const uint kMaxShotCount   = 10;
+
+	struct ManagedEvilFish {
+		EvilFish *evilFish;
+
+		uint32 enterAt;
+		uint32 leaveAt;
+	};
+
+	struct ManagedDecorFish {
+		ANIObject *decorFish;
+
+		uint32 enterAt;
+		int8 deltaX;
+	};
 
 	GobEngine *_vm;
 
@@ -64,7 +79,8 @@ private:
 	ANIObject *_lungs;
 	ANIObject *_heart;
 
-	EvilFish *_evilFish[kEvilFishCount];
+	ManagedEvilFish  _evilFish[kEvilFishCount];
+	ManagedDecorFish _decorFish[kDecorFishCount];
 
 	ANIObject *_shot[kMaxShotCount];
 
@@ -91,11 +107,11 @@ private:
 	void initScreen();
 	void initCursor();
 
-	void evilFishEnter();
-
 	void foundBlackPearl();
 	void foundWhitePearl();
 
+	void updateEvilFish();
+	void updateDecorFish();
 	void updateAnims();
 
 	int16 checkInput(int16 &mouseX, int16 &mouseY, MouseButtons &mouseButtons);

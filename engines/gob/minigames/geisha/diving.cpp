@@ -23,7 +23,6 @@
 #include "common/list.h"
 
 #include "gob/global.h"
-#include "gob/util.h"
 #include "gob/draw.h"
 #include "gob/video.h"
 #include "gob/decfile.h"
@@ -69,10 +68,9 @@ bool Diving::play(uint16 playerCount, bool hasPearlLocation) {
 	_vm->_video->retrace();
 
 	while (!_vm->shouldQuit()) {
-		evilFishEnter();
-
 		checkShots();
-
+		updateEvilFish();
+		updateDecorFish();
 		updateAnims();
 
 		_vm->_draw->animateCursor(1);
@@ -124,8 +122,27 @@ void Diving::init() {
 	_heart->setVisible(true);
 	_heart->setPause(true);
 
-	for (uint i = 0; i < kEvilFishCount; i++)
-		_evilFish[i] = new EvilFish(*_objects, 320, 0, 0, 0, 0, 0);
+	for (uint i = 0; i < kEvilFishCount; i++) {
+		_evilFish[i].enterAt = 0;
+		_evilFish[i].leaveAt = 0;
+
+		_evilFish[i].evilFish = new EvilFish(*_objects, 320, 0, 0, 0, 0, 0);
+	}
+
+	for (uint i = 0; i < kDecorFishCount; i++) {
+		_decorFish[i].enterAt = 0;
+
+		_decorFish[i].decorFish = new ANIObject(*_objects);
+	}
+
+	_decorFish[0].decorFish->setAnimation( 6); // Jellyfish
+	_decorFish[0].deltaX = 0;
+
+	_decorFish[1].decorFish->setAnimation(32); // Swarm of red/green fish
+	_decorFish[1].deltaX = -6;
+
+	_decorFish[2].decorFish->setAnimation(33); // Swarm of orange fish
+	_decorFish[2].deltaX = -6;
 
 	for (uint i = 0; i < kMaxShotCount; i++) {
 		_shot[i] = new ANIObject(*_objects);
@@ -147,8 +164,10 @@ void Diving::init() {
 	_anims.push_back(_water);
 	for (uint i = 0; i < kMaxShotCount; i++)
 		_anims.push_back(_shot[i]);
+	for (uint i = 0; i < kDecorFishCount; i++)
+		_anims.push_back(_decorFish[i].decorFish);
 	for (uint i = 0; i < kEvilFishCount; i++)
-		_anims.push_back(_evilFish[i]);
+		_anims.push_back(_evilFish[i].evilFish);
 	_anims.push_back(_lungs);
 	_anims.push_back(_heart);
 
@@ -178,9 +197,15 @@ void Diving::deinit() {
 	}
 
 	for (uint i = 0; i < kEvilFishCount; i++) {
-		delete _evilFish[i];
+		delete _evilFish[i].evilFish;
 
-		_evilFish[i] = 0;
+		_evilFish[i].evilFish = 0;
+	}
+
+	for (uint i = 0; i < kDecorFishCount; i++) {
+		delete _decorFish[i].decorFish;
+
+		_decorFish[i].decorFish = 0;
 	}
 
 	delete _heart;
@@ -234,19 +259,77 @@ void Diving::initCursor() {
 	_vm->_draw->_cursorHotspotY = 8;
 }
 
-void Diving::evilFishEnter() {
+void Diving::updateEvilFish() {
 	for (uint i = 0; i < kEvilFishCount; i++) {
-		EvilFish &fish = *_evilFish[i];
+		ManagedEvilFish &fish = _evilFish[i];
 
-		if (fish.isVisible())
-			continue;
+		if (fish.evilFish->isVisible()) {
+			// Evil fishes leave on their own after 30s - 40s
 
-		int fishType = _vm->_util->getRandom(kEvilFishTypeCount);
-		fish.mutate(kEvilFishTypes[fishType][0], kEvilFishTypes[fishType][1],
-		            kEvilFishTypes[fishType][2], kEvilFishTypes[fishType][3],
-		            kEvilFishTypes[fishType][4]);
+			fish.enterAt = 0;
 
-		fish.enter((EvilFish::Direction)_vm->_util->getRandom(2), 90 + i * 20);
+			if (fish.leaveAt == 0)
+				fish.leaveAt = _vm->_util->getTimeKey() + 30000 + _vm->_util->getRandom(10000);
+
+			if (_vm->_util->getTimeKey() >= fish.leaveAt)
+				fish.evilFish->leave();
+
+		} else {
+			// Evil fishes enter the screen in 2s - 10s
+
+			fish.leaveAt = 0;
+
+			if (fish.enterAt == 0)
+				fish.enterAt = _vm->_util->getTimeKey() + 2000 + _vm->_util->getRandom(8000);
+
+			if (_vm->_util->getTimeKey() >= fish.enterAt) {
+				int fishType = _vm->_util->getRandom(kEvilFishTypeCount);
+				fish.evilFish->mutate(kEvilFishTypes[fishType][0], kEvilFishTypes[fishType][1],
+				                      kEvilFishTypes[fishType][2], kEvilFishTypes[fishType][3],
+				                      kEvilFishTypes[fishType][4]);
+
+				fish.evilFish->enter((EvilFish::Direction)_vm->_util->getRandom(2),
+				                     36 + _vm->_util->getRandom(3) * 40);
+			}
+		}
+	}
+}
+
+void Diving::updateDecorFish() {
+	for (uint i = 0; i < kDecorFishCount; i++) {
+		ManagedDecorFish &fish = _decorFish[i];
+
+		if (fish.decorFish->isVisible()) {
+			// Move the fish
+			int16 x, y;
+			fish.decorFish->getPosition(x, y);
+			fish.decorFish->setPosition(x + fish.deltaX, y);
+
+			// Check if the fish has left the screen
+			int16 width, height;
+			fish.decorFish->getFramePosition(x, y);
+			fish.decorFish->getFrameSize(width, height);
+
+			if ((x + width) <= 0) {
+				fish.decorFish->setVisible(false);
+				fish.decorFish->setPause(true);
+
+				fish.enterAt = 0;
+			}
+
+		} else {
+			// Decor fishes enter the screen every 0s - 10s
+
+			if (fish.enterAt == 0)
+				fish.enterAt = _vm->_util->getTimeKey() + _vm->_util->getRandom(10000);
+
+			if (_vm->_util->getTimeKey() >= fish.enterAt) {
+				fish.decorFish->rewind();
+				fish.decorFish->setPosition(320, 30 + _vm->_util->getRandom(100));
+				fish.decorFish->setVisible(true);
+				fish.decorFish->setPause(false);
+			}
+		}
 	}
 }
 
@@ -336,7 +419,7 @@ void Diving::checkShots() {
 			shot.getPosition(x, y);
 
 			for (uint i = 0; i < kEvilFishCount; i++) {
-				EvilFish &evilFish = *_evilFish[i];
+				EvilFish &evilFish = *_evilFish[i].evilFish;
 
 				if (evilFish.isIn(x + 8, y + 8)) {
 					evilFish.die();

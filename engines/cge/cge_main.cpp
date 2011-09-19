@@ -34,45 +34,21 @@
 #include "graphics/palette.h"
 #include "graphics/scaler.h"
 #include "graphics/thumbnail.h"
+#include "cge/vga13h.h"
+#include "cge/cge.h"
+#include "cge/cge_main.h"
 #include "cge/general.h"
 #include "cge/sound.h"
-#include "cge/vga13h.h"
 #include "cge/snail.h"
 #include "cge/text.h"
 #include "cge/game.h"
 #include "cge/events.h"
 #include "cge/talk.h"
 #include "cge/vmenu.h"
-#include "cge/cge_main.h"
-#include "cge/cge.h"
 #include "cge/walk.h"
 #include "cge/sound.h"
 
 namespace CGE {
-
-uint16  _stklen = (kStackSize * 2);
-
-Vga *_vga;
-System *_sys;
-Sprite *_pocLight;
-EventManager *_eventManager;
-Keyboard *_keyboard;
-Mouse *_mouse;
-Sprite *_pocket[kPocketNX];
-Sprite *_sprite;
-Sprite *_miniScene;
-Sprite *_shadow;
-HorizLine *_horzLine;
-InfoLine *_infoLine;
-SceneLight *_sceneLight;
-InfoLine *_debugLine;
-
-Snail *_snail;
-Snail *_snail_;
-
-Fx *_fx;
-Sound *_sound;
-ResourceManager *_resman;
 
 const char *savegameStr = "SCUMMVM_CGE";
 
@@ -164,7 +140,7 @@ int CGEEngine::newRandom(int range) {
 	if (!range)
 		return 0;
 
-	return ((CGEEngine *)g_engine)->_randomSource.getRandomNumber(range - 1);
+	return _randomSource.getRandomNumber(range - 1);
 }
 
 void CGEEngine::sndSetVolume() {
@@ -224,7 +200,7 @@ bool CGEEngine::loadGame(int slotNumber, SavegameHeader *header, bool tiny) {
 
 	if (slotNumber == -1) {
 		// Loading the data for the initial game state
-		kSavegame0File file = kSavegame0File(kSavegame0Name);
+		kSavegame0File file = kSavegame0File(this, kSavegame0Name);
 		int size = file.size();
 		byte *dataBuffer = (byte *)malloc(size);
 		file.read(dataBuffer, size);
@@ -305,7 +281,7 @@ Common::Error CGEEngine::loadGameState(int slot) {
 
 	// Load the game
 	loadGame(slot, NULL);
-	_snail->addCom(kSnLevel, -1, _oldLev, &_sceneLight);
+	_commandHandler->addCommand(kCmdLevel, -1, _oldLev, &_sceneLight);
 	_sceneLight->gotoxy(kSceneX + ((_now - 1) % kSceneNx) * kSceneDx + kSceneSX,
 	                  kSceneY + ((_now - 1) / kSceneNx) * kSceneDy + kSceneSY);
 	sceneUp();
@@ -466,18 +442,18 @@ bool CGEEngine::readSavegameHeader(Common::InSaveFile *in, SavegameHeader &heade
 void CGEEngine::heroCover(int cvr) {
 	debugC(1, kCGEDebugEngine, "CGEEngine::heroCover(%d)", cvr);
 
-	_snail->addCom(kSnCover, 1, cvr, NULL);
+	_commandHandler->addCommand(kCmdCover, 1, cvr, NULL);
 }
 
 void CGEEngine::trouble(int seq, int text) {
 	debugC(1, kCGEDebugEngine, "CGEEngine::trouble(%d, %d)", seq, text);
 
 	_hero->park();
-	_snail->addCom(kSnWait, -1, -1, _hero);
-	_snail->addCom(kSnSeq, -1, seq, _hero);
-	_snail->addCom(kSnSound, -1, 2, _hero);
-	_snail->addCom(kSnWait, -1, -1, _hero);
-	_snail->addCom(kSnSay,  1, text, _hero);
+	_commandHandler->addCommand(kCmdWait, -1, -1, _hero);
+	_commandHandler->addCommand(kCmdSeq, -1, seq, _hero);
+	_commandHandler->addCommand(kCmdSound, -1, 2, _hero);
+	_commandHandler->addCommand(kCmdWait, -1, -1, _hero);
+	_commandHandler->addCommand(kCmdSay,  1, text, _hero);
 }
 
 void CGEEngine::offUse() {
@@ -495,7 +471,7 @@ void CGEEngine::tooFar() {
 void CGEEngine::loadHeroXY() {
 	debugC(1, kCGEDebugEngine, "CGEEngine::loadHeroXY()");
 
-	EncryptedStream cf("CGE.HXY");
+	EncryptedStream cf(this, "CGE.HXY");
 	uint16 x, y;
 
 	memset(_heroXY, 0, sizeof(_heroXY));
@@ -514,14 +490,14 @@ void CGEEngine::loadMapping() {
 	debugC(1, kCGEDebugEngine, "CGEEngine::loadMapping()");
 
 	if (_now <= kSceneMax) {
-		EncryptedStream cf("CGE.TAB");
+		EncryptedStream cf(this, "CGE.TAB");
 		if (!cf.err()) {
 			// Move to the data for the given room
 			cf.seek((_now - 1) * kMapArrSize);
 			
 			// Read in the data
 			for (int z = 0; z < kMapZCnt; ++z) {
-				cf.read(&Cluster::_map[z][0], kMapXCnt);
+				cf.read(&_clusterMap[z][0], kMapXCnt);
 			}
 		}
 	}
@@ -532,7 +508,7 @@ Square::Square(CGEEngine *vm) : Sprite(vm, NULL), _vm(vm) {
 	_flags._bDel = false;
 
 	BitmapPtr *MB = new BitmapPtr[2];
-	MB[0] = new Bitmap("BRICK");
+	MB[0] = new Bitmap(_vm, "BRICK");
 	MB[1] = NULL;
 	setShapeList(MB);
 }
@@ -540,8 +516,8 @@ Square::Square(CGEEngine *vm) : Sprite(vm, NULL), _vm(vm) {
 void Square::touch(uint16 mask, int x, int y) {
 	Sprite::touch(mask, x, y);
 	if (mask & kMouseLeftUp) {
-		XZ(_x + x, _y + y).cell() = 0;
-		_snail_->addCom(kSnKill, -1, 0, this);
+		_vm->XZ(_x + x, _y + y).cell() = 0;
+		_vm->_commandHandlerTurbo->addCommand(kCmdKill, -1, 0, this);
 	}
 }
 
@@ -553,7 +529,7 @@ void CGEEngine::setMapBrick(int x, int z) {
 		char n[6];
 		s->gotoxy(x * kMapGridX, kMapTop + z * kMapGridZ);
 		sprintf(n, "%02d:%02d", x, z);
-		Cluster::_map[z][x] = 1;
+		_clusterMap[z][x] = 1;
 		s->setName(n);
 		_vga->_showQ->insert(s, _vga->_showQ->first());
 	}
@@ -562,13 +538,13 @@ void CGEEngine::setMapBrick(int x, int z) {
 void CGEEngine::keyClick() {
 	debugC(1, kCGEDebugEngine, "CGEEngine::keyClick()");
 
-	_snail_->addCom(kSnSound, -1, 5, NULL);
+	_commandHandlerTurbo->addCommand(kCmdSound, -1, 5, NULL);
 }
 
 void CGEEngine::resetQSwitch() {
 	debugC(1, kCGEDebugEngine, "CGEEngine::resetQSwitch()");
 
-	_snail_->addCom(kSnSeq, 123,  0, NULL);
+	_commandHandlerTurbo->addCommand(kCmdSeq, 123,  0, NULL);
 	keyClick();
 }
 
@@ -581,15 +557,15 @@ void CGEEngine::quit() {
 		{ NULL, &CGEEngine::dummy          }
 	};
 
-	if (_snail->idle() && !_hero->_flags._hide) {
+	if (_commandHandler->idle() && !_hero->_flags._hide) {
 		if (Vmenu::_addr) {
-			_snail_->addCom(kSnKill, -1, 0, Vmenu::_addr);
+			_commandHandlerTurbo->addCommand(kCmdKill, -1, 0, Vmenu::_addr);
 			resetQSwitch();
 		} else {
 			QuitMenu[0]._text = _text->getText(kQuit);
 			QuitMenu[1]._text = _text->getText(kNoQuit);
 			(new Vmenu(this, QuitMenu, -1, -1))->setName(_text->getText(kQuitTitle));
-			_snail_->addCom(kSnSeq, 123, 1, NULL);
+			_commandHandlerTurbo->addCommand(kCmdSeq, 123, 1, NULL);
 			keyClick();
 		}
 	}
@@ -610,7 +586,7 @@ void CGEEngine::postMiniStep(int step) {
 	debugC(6, kCGEDebugEngine, "CGEEngine::postMiniStep(%d)", step);
 
 	if (_miniScene && step != _recentStep)
-		_snail_->addCom2(kSnExec, -1, _recentStep = step, kMiniStep);
+		_commandHandlerTurbo->addCallback(kCmdExec, -1, _recentStep = step, kMiniStep);
 }
 
 void CGEEngine::showBak(int ref) {
@@ -620,9 +596,9 @@ void CGEEngine::showBak(int ref) {
 	if (!spr)
 		return;
 
-	Bitmap::_pal = _vga->_sysPal;
+	_bitmapPalette = _vga->_sysPal;
 	spr->expand();
-	Bitmap::_pal = NULL;
+	_bitmapPalette = NULL;
 	spr->show(2);
 	_vga->copyPage(1, 2);
 	_sys->setPal();
@@ -634,7 +610,7 @@ void CGEEngine::sceneUp() {
 
 	const int BakRef = 1000 * _now;
 	if (_music)
-		_midiPlayer.loadMidi(_now);
+		_midiPlayer->loadMidi(_now);
 
 	showBak(BakRef);
 	loadMapping();
@@ -674,7 +650,7 @@ void CGEEngine::sceneUp() {
 
 	if (_shadow) {
 		_vga->_showQ->remove(_shadow);
-		_shadow->makeXlat(glass(_vga->_sysPal, 204, 204, 204));
+		_shadow->makeXlat(_vga->glass(_vga->_sysPal, 204, 204, 204));
 		_vga->_showQ->insert(_shadow, _hero);
 		_shadow->_z = _hero->_z;
 	}
@@ -732,8 +708,8 @@ void CGEEngine::switchScene(int newScene) {
 		return;
 
 	if (newScene < 0) {
-		_snail->addCom(kSnLabel, -1, 0, NULL);  // wait for repaint
-		_snail->addCom2(kSnExec,  -1, 0, kQGame); // switch scene
+		_commandHandler->addCommand(kCmdLabel, -1, 0, NULL);  // wait for repaint
+		_commandHandler->addCallback(kCmdExec,  -1, 0, kQGame); // quit game
 	} else {
 		_now = newScene;
 		_mouse->off();
@@ -747,8 +723,8 @@ void CGEEngine::switchScene(int newScene) {
 		killText();
 		if (!_startupMode)
 			keyClick();
-		_snail->addCom(kSnLabel, -1, 0, NULL);  // wait for repaint
-		_snail->addCom2(kSnExec,  0, 0, kXScene); // switch scene
+		_commandHandler->addCommand(kCmdLabel, -1, 0, NULL);  // wait for repaint
+		_commandHandler->addCallback(kCmdExec,  0, 0, kXScene); // switch scene
 	}
 }
 
@@ -759,7 +735,7 @@ System::System(CGEEngine *vm) : Sprite(vm, NULL), _vm(vm) {
 }
 
 void System::setPal() {
-	Dac *p = _vga->_sysPal + 256 - ARRAYSIZE(g_stdPal);
+	Dac *p = _vm->_vga->_sysPal + 256 - ARRAYSIZE(g_stdPal);
 	for (uint i = 0; i < ARRAYSIZE(g_stdPal); i++) {
 		p[i]._r = g_stdPal[i]._r >> 2;
 		p[i]._g = g_stdPal[i]._g >> 2;
@@ -769,7 +745,7 @@ void System::setPal() {
 
 void System::funTouch() {
 	uint16 n = (_vm->_flag[0]) ? kHeroFun1 : kHeroFun0; // PAIN flag
-	if (_talk == NULL || n > _funDel)
+	if (_vm->_talk == NULL || n > _funDel)
 		_funDel = n;
 }
 
@@ -778,14 +754,14 @@ void System::touch(uint16 mask, int x, int y) {
 
 	if (mask & kEventKeyb) {
 		_vm->keyClick();
-		killText();
+		_vm->killText();
 		if (_vm->_startupMode == 1) {
-			_snail->addCom(kSnClear, -1, 0, NULL);
+			_vm->_commandHandler->addCommand(kCmdClear, -1, 0, NULL);
 			return;
 		}
 		switch (x) {
 		case 'X':
-			if (_keyboard->_key[kKeyAlt])
+			if (_vm->_keyboard->_key[kKeyAlt])
 				_vm->quit();
 			break;
 		case '0':
@@ -793,8 +769,8 @@ void System::touch(uint16 mask, int x, int y) {
 		case '2':
 		case '3':
 		case '4':
-			if (_keyboard->_key[kKeyAlt]) {
-				_snail->addCom(kSnLevel, -1, x - '0', NULL);
+			if (_vm->_keyboard->_key[kKeyAlt]) {
+				_vm->_commandHandler->addCommand(kCmdLevel, -1, x - '0', NULL);
 				break;
 			}
 			break;
@@ -803,7 +779,7 @@ void System::touch(uint16 mask, int x, int y) {
 		if (_vm->_startupMode)
 			return;
 		int selectedScene = 0;
-		_infoLine->update(NULL);
+		_vm->_infoLine->update(NULL);
 		if (y >= kWorldHeight ) {
 			if (x < kButtonX) {                           // select scene?
 				if (y >= kSceneY && y < kSceneY + kSceneNy * kSceneDy &&
@@ -826,21 +802,21 @@ void System::touch(uint16 mask, int x, int y) {
 		_vm->postMiniStep(selectedScene - 1);
 
 		if (mask & kMouseLeftUp) {
-			if (selectedScene && _snail->idle() && _hero->_tracePtr < 0)
+			if (selectedScene && _vm->_commandHandler->idle() && _vm->_hero->_tracePtr < 0)
 				_vm->switchScene(selectedScene);
 
-			if (_horzLine && !_horzLine->_flags._hide) {
+			if (_vm->_horzLine && !_vm->_horzLine->_flags._hide) {
 				if (y >= kMapTop && y < kMapTop + kMapHig) {
-					Cluster tmpCluster = XZ(x, y);
+					Cluster tmpCluster = _vm->XZ(x, y);
 					int16 x1 = tmpCluster._pt.x;
 					int16 z1 = tmpCluster._pt.y;
-					Cluster::_map[z1][x1] = 1;
+					_vm->_clusterMap[z1][x1] = 1;
 					_vm->setMapBrick(x1, z1);
 				}
 			} else {
-				if (!_talk && _snail->idle() && _hero
+				if (!_vm->_talk && _vm->_commandHandler->idle() && _vm->_hero
 				        && y >= kMapTop && y < kMapTop + kMapHig && !_vm->_game) {
-					_hero->findWay(XZ(x, y));
+					_vm->_hero->findWay(_vm->XZ(x, y));
 				}
 			}
 		}
@@ -850,14 +826,14 @@ void System::touch(uint16 mask, int x, int y) {
 void System::tick() {
 	if (!_vm->_startupMode)
 		if (--_funDel == 0) {
-			killText();
-			if (_snail->idle()) {
+			_vm->killText();
+			if (_vm->_commandHandler->idle()) {
 				if (_vm->_flag[0]) // Pain flag
 					_vm->heroCover(9);
 				else { // CHECKME: Before, was: if (Startup::_core >= CORE_MID) {
 					int n = _vm->newRandom(100);
 					if (n > 96)
-						_vm->heroCover(6 + (_hero->_x + _hero->_w / 2 < kScrWidth / 2));
+						_vm->heroCover(6 + (_vm->_hero->_x + _vm->_hero->_w / 2 < kScrWidth / 2));
 					else if (n > 90)
 						_vm->heroCover(5);
 					else if (n > 60)
@@ -874,7 +850,7 @@ void System::tick() {
 void CGEEngine::switchColorMode() {
 	debugC(1, kCGEDebugEngine, "CGEEngine::switchColorMode()");
 
-	_snail_->addCom(kSnSeq, 121, _vga->_mono = !_vga->_mono, NULL);
+	_commandHandlerTurbo->addCommand(kCmdSeq, 121, _vga->_mono = !_vga->_mono, NULL);
 	keyClick();
 	_vga->setColors(_vga->_sysPal, 64);
 }
@@ -882,13 +858,13 @@ void CGEEngine::switchColorMode() {
 void CGEEngine::switchMusic() {
 	debugC(1, kCGEDebugEngine, "CGEEngine::switchMusic()");
 
-	_snail_->addCom(kSnSeq, 122, (_music = !_music), NULL);
+	_commandHandlerTurbo->addCommand(kCmdSeq, 122, (_music = !_music), NULL);
 	keyClick();
 
 	if (_music)
-		_midiPlayer.loadMidi(_now);
+		_midiPlayer->loadMidi(_now);
 	else
-		_midiPlayer.killMidi();
+		_midiPlayer->killMidi();
 }
 
 void CGEEngine::startCountDown() {
@@ -904,14 +880,14 @@ void CGEEngine::switchMapping() {
 	if (_horzLine && _horzLine->_flags._hide) {
 		for (int i = 0; i < kMapZCnt; i++) {
 			for (int j = 0; j < kMapXCnt; j++) {
-				if (Cluster::_map[i][j])
+				if (_clusterMap[i][j])
 					setMapBrick(j, i);
 			}
 		}
 	} else {
 		for (Sprite *s = _vga->_showQ->first(); s; s = s->_next)
 			if (s->_w == kMapGridX && s->_h == kMapGridZ)
-				_snail_->addCom(kSnKill, -1, 0, s);
+				_commandHandlerTurbo->addCommand(kCmdKill, -1, 0, s);
 	}
 	_horzLine->_flags._hide = !_horzLine->_flags._hide;
 }
@@ -921,7 +897,7 @@ void CGEEngine::killSprite() {
 
 	_sprite->_flags._kill = true;
 	_sprite->_flags._bDel = true;
-	_snail_->addCom(kSnKill, -1, 0, _sprite);
+	_commandHandlerTurbo->addCommand(kCmdKill, -1, 0, _sprite);
 	_sprite = NULL;
 }
 
@@ -946,15 +922,15 @@ void CGEEngine::optionTouch(int opt, uint16 mask) {
 
 #pragma argsused
 void Sprite::touch(uint16 mask, int x, int y) {
-	_sys->funTouch();
+	_vm->_sys->funTouch();
 
 	if ((mask & kEventAttn) != 0)
 		return;
 
-	_infoLine->update(name());
+	_vm->_infoLine->update(name());
 
 	if (mask & (kMouseRightDown | kMouseLeftDown))
-		_sprite = this;
+		_vm->_sprite = this;
 
 	if (_ref / 10 == 12) {
 		_vm->optionTouch(_ref % 10, mask);
@@ -970,10 +946,10 @@ void Sprite::touch(uint16 mask, int x, int y) {
 			mask |= kMouseRightUp;
 		}
 
-	if ((mask & kMouseRightUp) && _snail->idle()) {
-		Sprite *ps = (_pocLight->_seqPtr) ? _pocket[_vm->_pocPtr] : NULL;
+	if ((mask & kMouseRightUp) && _vm->_commandHandler->idle()) {
+		Sprite *ps = (_vm->_pocLight->_seqPtr) ? _vm->_pocket[_vm->_pocPtr] : NULL;
 		if (ps) {
-			if (_flags._kept || _hero->distance(this) < kDistMax) {
+			if (_flags._kept || _vm->_hero->distance(this) < kDistMax) {
 				if (works(ps)) {
 					_vm->feedSnail(ps, kTake);
 				} else
@@ -985,18 +961,18 @@ void Sprite::touch(uint16 mask, int x, int y) {
 			if (_flags._kept) {
 				mask |= kMouseLeftUp;
 			} else {
-				if (_hero->distance(this) < kDistMax) {
+				if (_vm->_hero->distance(this) < kDistMax) {
 					if (_flags._port) {
 						if (_vm->findPocket(NULL) < 0) {
 							_vm->pocFul();
 						} else {
-							_snail->addCom(kSnReach, -1, -1, this);
-							_snail->addCom(kSnKeep, -1, -1, this);
+							_vm->_commandHandler->addCommand(kCmdReach, -1, -1, this);
+							_vm->_commandHandler->addCommand(kCmdKeep, -1, -1, this);
 							_flags._port = false;
 						}
 					} else {
 						if (_takePtr != kNoPtr) {
-							if (snList(kTake)[_takePtr]._com == kSnNext)
+							if (snList(kTake)[_takePtr]._commandType == kCmdNext)
 								_vm->offUse();
 							else
 								_vm->feedSnail(this, kTake);
@@ -1011,16 +987,16 @@ void Sprite::touch(uint16 mask, int x, int y) {
 		}
 	}
 
-	if ((mask & kMouseLeftUp) && _snail->idle()) {
+	if ((mask & kMouseLeftUp) && _vm->_commandHandler->idle()) {
 		if (_flags._kept) {
 			for (int n = 0; n < kPocketNX; n++) {
-				if (_pocket[n] == this) {
+				if (_vm->_pocket[n] == this) {
 					_vm->selectPocket(n);
 					break;
 				}
 			}
 		} else {
-			_snail->addCom(kSnWalk, -1, -1, this); // Hero->FindWay(this);
+			_vm->_commandHandler->addCommand(kCmdWalk, -1, -1, this); // Hero->FindWay(this);
 		}
 	}
 }
@@ -1048,7 +1024,7 @@ void CGEEngine::loadSprite(const char *fname, int ref, int scene, int col = 0, i
 	mergeExt(tmpStr, fname, kSprExt);
 
 	if (_resman->exist(tmpStr)) {      // sprite description file exist
-		EncryptedStream sprf(tmpStr);
+		EncryptedStream sprf(this, tmpStr);
 		if (sprf.err())
 			error("Bad SPR [%s]", tmpStr);
 
@@ -1153,7 +1129,7 @@ void CGEEngine::loadSprite(const char *fname, int ref, int scene, int col = 0, i
 }
 
 void CGEEngine::loadScript(const char *fname) {
-	EncryptedStream scrf(fname);
+	EncryptedStream scrf(this, fname);
 
 	if (scrf.err())
 		return;
@@ -1221,10 +1197,46 @@ void CGEEngine::loadScript(const char *fname) {
 		error("Bad INI line %d [%s]", lcnt, fname);
 }
 
+Sprite *CGEEngine::locate(int ref) {
+	Sprite *spr = _vga->_showQ->locate(ref);
+	return (spr) ? spr : _vga->_spareQ->locate(ref);
+}
+
+Sprite *CGEEngine::spriteAt(int x, int y) {
+	Sprite *spr = NULL, * tail = _vga->_showQ->last();
+	if (tail) {
+		for (spr = tail->_prev; spr; spr = spr->_prev) {
+			if (! spr->_flags._hide && ! spr->_flags._tran) {
+				if (spr->shp()->solidAt(x - spr->_x, y - spr->_y))
+					break;
+			}
+		}
+	}
+	return spr;
+}
+
+Cluster CGEEngine::XZ(int16 x, int16 y) {
+	if (y < kMapTop)
+		y = kMapTop;
+
+	if (y > kMapTop + kMapHig - kMapGridZ)
+		y = kMapTop + kMapHig - kMapGridZ;
+
+	return Cluster(this, x / kMapGridX, (y - kMapTop) / kMapGridZ);
+}
+
+void CGEEngine::killText() {
+	if (!_talk)
+		return;
+
+	_commandHandlerTurbo->addCommand(kCmdKill, -1, 0, _talk);
+	_talk = NULL;
+}
+
 void CGEEngine::mainLoop() {
 	_vga->show();
-	_snail_->runCom();
-	_snail->runCom();
+	_commandHandlerTurbo->runCommand();
+	_commandHandler->runCommand();
 
 	// Handle a delay between game frames
 	handleFrame();
@@ -1320,12 +1332,12 @@ void CGEEngine::runGame() {
 //    ~~~~~~~~~~~
 
 	if ((_sprite = _vga->_spareQ->locate(121)) != NULL)
-		_snail_->addCom(kSnSeq, -1, _vga->_mono, _sprite);
+		_commandHandlerTurbo->addCommand(kCmdSeq, -1, _vga->_mono, _sprite);
 	if ((_sprite = _vga->_spareQ->locate(122)) != NULL)
 		_sprite->step(_music);
-	_snail_->addCom(kSnSeq, -1, _music, _sprite);
+	_commandHandlerTurbo->addCommand(kCmdSeq, -1, _music, _sprite);
 	if (!_music)
-		_midiPlayer.killMidi();
+		_midiPlayer->killMidi();
 
 	if (_resman->exist("MINI.SPR")) {
 		_miniShp = new BitmapPtr[2];
@@ -1336,7 +1348,7 @@ void CGEEngine::runGame() {
 		if (_miniScene) {
 			_miniScene->_flags._kill = false;
 			_miniScene->_flags._hide = true;
-			_miniShp[0] = new Bitmap(*_miniScene->shp());
+			_miniShp[0] = new Bitmap(this, *_miniScene->shp());
 			_miniShpList = _miniScene->setShapeList(_miniShp);
 			postMiniStep(-1);
 		}
@@ -1378,7 +1390,7 @@ void CGEEngine::runGame() {
 
 	_startupMode = 0;
 
-	_snail->addCom(kSnLevel, -1, _oldLev, &_sceneLight);
+	_commandHandler->addCommand(kCmdLevel, -1, _oldLev, &_sceneLight);
 	_sceneLight->gotoxy(kSceneX + ((_now - 1) % kSceneNx) * kSceneDx + kSceneSX,
 	                  kSceneY + ((_now - 1) / kSceneNx) * kSceneDy + kSceneSY);
 	sceneUp();
@@ -1387,7 +1399,7 @@ void CGEEngine::runGame() {
 	// main loop
 	while (!_finis && !_eventManager->_quitFlag) {
 		if (_flag[3])
-			_snail->addCom2(kSnExec,  -1, 0, kQGame);
+			_commandHandler->addCallback(kCmdExec,  -1, 0, kQGame);
 		mainLoop();
 	}
 
@@ -1396,8 +1408,8 @@ void CGEEngine::runGame() {
 		qGame();
 
 	_keyboard->setClient(NULL);
-	_snail->addCom(kSnClear, -1, 0, NULL);
-	_snail_->addCom(kSnClear, -1, 0, NULL);
+	_commandHandler->addCommand(kCmdClear, -1, 0, NULL);
+	_commandHandlerTurbo->addCommand(kCmdClear, -1, 0, NULL);
 	_mouse->off();
 	_vga->_showQ->clear();
 	_vga->_spareQ->clear();
@@ -1420,12 +1432,12 @@ void CGEEngine::movie(const char *ext) {
 		feedSnail(_vga->_showQ->locate(999), kTake);
 		_vga->_showQ->append(_mouse);
 		_keyboard->setClient(_sys);
-		while (!_snail->idle() && !_eventManager->_quitFlag)
+		while (!_commandHandler->idle() && !_eventManager->_quitFlag)
 			mainLoop();
 
 		_keyboard->setClient(NULL);
-		_snail->addCom(kSnClear, -1, 0, NULL);
-		_snail_->addCom(kSnClear, -1, 0, NULL);
+		_commandHandler->addCommand(kCmdClear, -1, 0, NULL);
+		_commandHandlerTurbo->addCommand(kCmdClear, -1, 0, NULL);
 		_vga->_showQ->clear();
 		_vga->_spareQ->clear();
 	}
@@ -1435,11 +1447,11 @@ bool CGEEngine::showTitle(const char *name) {
 	if (_eventManager->_quitFlag)
 		return false;
 
-	Bitmap::_pal = _vga->_sysPal;
+	_bitmapPalette = _vga->_sysPal;
 	BitmapPtr *LB = new BitmapPtr[2];
-	LB[0] = new Bitmap(name);
+	LB[0] = new Bitmap(this, name);
 	LB[1] = NULL;
-	Bitmap::_pal = NULL;
+	_bitmapPalette = NULL;
 
 	Sprite D(this, LB);
 	D._flags._kill = true;
@@ -1463,7 +1475,7 @@ bool CGEEngine::showTitle(const char *name) {
 		_vga->copyPage(0, 1);
 		_vga->_showQ->append(_mouse);
 		_mouse->on();
-		for (; !_snail->idle() || Vmenu::_addr;) {
+		for (; !_commandHandler->idle() || Vmenu::_addr;) {
 			mainLoop();
 			if (_eventManager->_quitFlag)
 				return false;
@@ -1474,7 +1486,7 @@ bool CGEEngine::showTitle(const char *name) {
 		_vga->copyPage(0, 2);
 		_soundOk = 2;
 		if (_music)
-			_midiPlayer.loadMidi(0);
+			_midiPlayer->loadMidi(0);
 	}
 
 	if (_mode < 2) {
@@ -1529,7 +1541,7 @@ void CGEEngine::cge_main() {
 		_horzLine->_flags._hide = true;
 
 	if (_music && _soundOk)
-		_midiPlayer.loadMidi(0);
+		_midiPlayer->loadMidi(0);
 
 	if (_startGameSlot != -1) {
 		// Starting up a savegame from the launcher

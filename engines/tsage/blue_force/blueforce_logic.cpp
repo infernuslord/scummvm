@@ -103,13 +103,25 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Marina, Normal
 		return new Scene342();
 	case 350:
+		// Marina, Outside Boat
+		return new Scene350();
 	case 355:
-	case 360:
-	case 370:
-	case 380:
-	case 385:
-	case 390:
 		error("Scene group 3 not implemented");
+	case 360:
+		// Future Wave Interior
+		return new Scene360();
+	case 370:
+		// Future Wave Bedroom
+		return new Scene370();
+	case 380:
+		// Outside City Hall & Jail
+		return new Scene380();
+	case 385:
+		// City Hall
+		return new Scene385();
+	case 390:
+		// City Jail
+		return new Scene390();
 	case 410:
 	case 415:
 	case 440:
@@ -140,6 +152,8 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Outside Boat Rentals
 		return new Scene830();
 	case 840:
+		// Boat Rentals
+		return new Scene840();
 	case 850:
 	case 860:
 	case 870:
@@ -404,7 +418,7 @@ bool NamedObject::startAction(CursorType action, Event &event) {
 	}
 
 	if (!handled)
-		((SceneExt *)BF_GLOBALS._sceneManager._scene)->display(action);
+		handled = ((SceneExt *)BF_GLOBALS._sceneManager._scene)->display(action);
 	return handled;
 }
 
@@ -430,6 +444,12 @@ void NamedObject::setDetails(int resNum, int lookLineNum, int talkLineNum, int u
 	}
 }
 
+void NamedObject::setDetails(int resNum, int lookLineNum, int talkLineNum, int useLineNum) {
+	_resNum = resNum;
+	_lookLineNum = lookLineNum;
+	_talkLineNum = talkLineNum;
+	_useLineNum = useLineNum;
+}
 
 /*--------------------------------------------------------------------------*/
 
@@ -510,6 +530,62 @@ void FollowerObject::setup(SceneObject *object, int visage, int frameNum, int yD
 	setFrame(frameNum);
 
 	dispatch();
+}
+
+/*--------------------------------------------------------------------------*/
+
+FocusObject::FocusObject(): NamedObject() {
+	_img = surfaceFromRes(1, 5, 7);
+}
+
+void FocusObject::postInit(SceneObjectList *OwnerList) {
+	NamedObject::postInit(OwnerList);
+	_resNum = 560;
+	_lookLineNum = 43;
+	_talkLineNum = 44;
+	_useLineNum = -1;
+	_v90 = 0;
+	_v92 = 1;
+
+	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
+	scene->_eventHandler = this;
+	BF_GLOBALS._sceneItems.push_front(this);
+}
+
+void FocusObject::synchronize(Serializer &s) {
+	NamedObject::synchronize(s);
+	s.syncAsSint16LE(_v90);
+	s.syncAsSint16LE(_v92);
+}
+
+void FocusObject::remove() {
+	BF_GLOBALS._sceneItems.remove(this);
+
+	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
+	if (scene->_eventHandler == this)
+		scene->_eventHandler = NULL;
+
+	BF_GLOBALS._events.setCursor(BF_GLOBALS._events.getCursor());
+	NamedObject::remove();
+}
+
+void FocusObject::process(Event &event) {
+	if (BF_GLOBALS._player._enabled) {
+		if (_bounds.contains(event.mousePos)) {
+			BF_GLOBALS._events.setCursor(BF_GLOBALS._events.getCursor());
+			if ((event.eventType == EVENT_BUTTON_DOWN) && (BF_GLOBALS._events.getCursor() == CURSOR_WALK) &&
+					(event.btnState == 3)) {
+				BF_GLOBALS._events.setCursor(CURSOR_USE);
+				event.handled = true;
+			}
+		} else if (event.mousePos.y < 168) {
+			BF_GLOBALS._events.setCursor(_img);
+			if (event.eventType == EVENT_BUTTON_DOWN) {
+				event.handled = true;
+				remove();
+			}
+		}
+	}
 }
 
 /*--------------------------------------------------------------------------*/
@@ -913,7 +989,7 @@ void BlueForceInvObjectList::reset() {
 	setObjectScene(INV_FBI_TELETYPE, 320);
 	setObjectScene(INV_DA_NOTE, 320);
 	setObjectScene(INV_PRINT_OUT, 570);
-	setObjectScene(INV_WHAREHOUSE_KEYS, 360);
+	setObjectScene(INV_WAREHOUSE_KEYS, 360);
 	setObjectScene(INV_CENTER_PUNCH, 0);
 	setObjectScene(INV_TRANQ_GUN, 830);
 	setObjectScene(INV_HOOK, 350);
