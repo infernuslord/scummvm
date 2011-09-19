@@ -37,6 +37,11 @@ class ScreenManager;
 
 class Cinematic : public Common::SeekableReadStream {
 public:
+	struct TControl {
+		int    *pBuffer;
+		uint32  count;
+	};
+
 	Cinematic();
 	~Cinematic();
 
@@ -114,7 +119,7 @@ private:
 	bool    _field_10;
 	byte   *_backBuffer;
 	TControlHeader _tControlHeader;
-	byte   *_tControlBuffer;
+	TControl      *_tControlBuffer;
 	byte   *_cacheBuffer;
 	byte   *_compressedData;
 	byte   *_field_3A;

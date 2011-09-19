@@ -39,10 +39,10 @@
 
 namespace Ring {
 
-#define CINEMATIC_BUFFER_SIZE         1024
-#define CINEMATIC_BACKBUFFER_SIZE     1200000
-#define CINEMATIC_TCONTROLBUFFER_SIZE 16384
-#define CINEMATIC_CACHEBUFFER_SIZE    512
+#define CINEMATIC_BUFFER_SIZE          1024
+#define CINEMATIC_BACKBUFFER_SIZE      1200000
+#define CINEMATIC_TCONTROLBUFFER_SIZE  8192
+#define CINEMATIC_CACHEBUFFER_SIZE     512
 
 #pragma region Cinematic
 
@@ -94,7 +94,7 @@ bool Cinematic::init(Common::String filename) {
 	if (!_backBuffer)
 		error("[Cinematic::init] Error creating back buffer!");
 
-	_tControlBuffer = (byte *)malloc(CINEMATIC_TCONTROLBUFFER_SIZE);
+	_tControlBuffer = (TControl *)malloc(CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
 	if (!_tControlBuffer)
 		error("[Cinematic::init] Error creating control buffer!");
 
@@ -133,7 +133,7 @@ void Cinematic::skipFrame() {
 		error("[Cinematic::skipFrame] Control buffer not initialized");
 
 	// Reset tControl buffer
-	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE);
+	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
 
 	// Read frame header
 	FrameHeader header;
@@ -154,7 +154,7 @@ bool Cinematic::tControl() {
 		error("[Cinematic::tControl] Control data not initialized");
 
 	// Reset tControl buffer
-	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE);
+	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
 
 	// Read tControl header
 	_tControlHeader.load(_stream);
@@ -190,7 +190,7 @@ bool Cinematic::sControl(byte* buffer) {
 		error("[Cinematic::readFrameHeader] Control buffer not initialized");
 
 	// Reset tControl buffer
-	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE);
+	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
 
 	// Read frame header
 	FrameHeader header;
@@ -200,7 +200,7 @@ bool Cinematic::sControl(byte* buffer) {
 	error("[Cinematic::sControl] Not implemented!");
 
 
-	if (!(uint32)_tControlBuffer[15364]) {
+	if (!_tControlBuffer[7682].pBuffer) {
 		// TODO update from backbuffer
 		error("[Cinematic::sControl] Not implemented!");
 	}
@@ -219,11 +219,11 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 	// TODO: Reduce code duplication
 
 #define UPDATE_BUFFER_CONTROL(index) { \
-	int *control = (int *)tControlBuffer[index]; \
-	uint32 count = tControlBuffer[index + 1] >> 2; \
+	int    *pBuffer = _tControlBuffer[index].pBuffer; \
+	uint32  count   = _tControlBuffer[index].count >> 2; \
 	do { \
-		*buffer = *control; \
-		++control; \
+		*buffer = *pBuffer; \
+		++pBuffer; \
 		++buffer; \
 		--count; \
 	} while (count); \
@@ -249,7 +249,6 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 	int *bufferStart      = buffer;
 	int *cacheBuffer      = (int *)_cacheBuffer;
 	int *cacheBufferStart = (int *)_cacheBuffer;
-	int *tControlBuffer   = (int *)_tControlBuffer;
 	int *field_3A         = (int *)_field_3A;
 
 	bool check = false;
@@ -270,7 +269,7 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 
 				if (*cacheBuffer > _field_46) {
 					if (*cacheBuffer >= 1920) {
-						UPDATE_BUFFER(2 * *cacheBuffer);
+						UPDATE_BUFFER(*cacheBuffer);
 					} else {
 
 						uint32 total = *cacheBuffer - _field_46 - 1;
@@ -282,9 +281,8 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 						total = *offset >> 1;
 
 						// Setup control buffer
-						uint32 index = 2 * *cacheBuffer;
-						tControlBuffer[index] = (int)buffer;
-						tControlBuffer[index + 1] = 8 * total;
+						_tControlBuffer[*cacheBuffer].pBuffer = buffer;
+						_tControlBuffer[*cacheBuffer].count   = 8 * total;
 
 						int16 *index2 = (int16 *)(offset + 1);
 						while (true) {
@@ -298,15 +296,14 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 
 					}
 				} else {
-					if (tControlBuffer[2 * *cacheBuffer + 1]) {
-						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					if (_tControlBuffer[*cacheBuffer].count) {
+						UPDATE_BUFFER_CONTROL(*cacheBuffer);
 					} else {
 						UPDATE_BUFFER(2 * *cacheBuffer);
 
 						// Setup control buffer
-						uint32 index = 2 * *cacheBuffer;
-						tControlBuffer[index] = (int)&field_3A[index];
-						tControlBuffer[index + 1] = 8;
+						_tControlBuffer[*cacheBuffer].pBuffer = &field_3A[*cacheBuffer];
+						_tControlBuffer[*cacheBuffer].count   = 8;
 					}
 				}
 
@@ -319,7 +316,7 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 				check = false;
 
 			} else {
-				UPDATE_BUFFER_CONTROL(2 * cacheBufferStart[(*start >> 4) + 16 * state - 128]);
+				UPDATE_BUFFER_CONTROL(cacheBufferStart[(*start >> 4) + 16 * state - 128]);
 			}
 
 		} else {
@@ -329,7 +326,7 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 
 				if (*cacheBuffer > _field_46) {
 					if (*cacheBuffer >= 1920) {
-						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+						UPDATE_BUFFER_CONTROL(*cacheBuffer);
 					} else {
 
 						uint32 total = *cacheBuffer - _field_46 - 1;
@@ -341,30 +338,28 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 						total = *offset >> 1;
 
 						// Setup control buffer
-						uint32 index = 2 * *cacheBuffer;
-						tControlBuffer[index] = (int)buffer;
-						tControlBuffer[index + 1] = 8 * total;
+						_tControlBuffer[*cacheBuffer].pBuffer = buffer;
+						_tControlBuffer[*cacheBuffer].count   = 8 * total;
 
 						int16 *index2 = (int16 *)(offset + 1);
 						while (true) {
 							if (total-- < 1)
 								break;
 
-							UPDATE_BUFFER(2 * *index2);
+							UPDATE_BUFFER(*index2);
 
 							index2++;
 						}
 					}
 				} else {
-					if (tControlBuffer[2 * *cacheBuffer + 1]) {
-						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					if (_tControlBuffer[*cacheBuffer].count) {
+						UPDATE_BUFFER_CONTROL(*cacheBuffer);
 					} else {
-						UPDATE_BUFFER(2 * *cacheBuffer);
+						UPDATE_BUFFER(*cacheBuffer);
 
 						// Setup control buffer
-						uint32 index = 2 * *cacheBuffer;
-						tControlBuffer[index] = (int)&field_3A[index];
-						tControlBuffer[index + 1] = 8;
+						_tControlBuffer[*cacheBuffer].pBuffer = &field_3A[*cacheBuffer];
+						_tControlBuffer[*cacheBuffer].count = 8;
 					}
 				}
 
@@ -377,7 +372,7 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 				check = true;
 
 			} else {
-				UPDATE_BUFFER_CONTROL(2 * cacheBufferStart[val - 128]);
+				UPDATE_BUFFER_CONTROL(cacheBufferStart[val - 128]);
 			}
 		}
 	}
@@ -688,7 +683,7 @@ bool Movie::init(Common::String path, Common::String filename, uint32 a3, uint32
 	_isSoundInitialized = true;
 
 	// Setup sound
-	sub_46A0E0(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A, -CINEMATIC_TCONTROLBUFFER_SIZE);
+	sub_46A0E0(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A, -(int32)(CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(Cinematic::TControl)));
 	setVolume(getApp()->getPreferenceHandler()->getVolume());
 
 	// Setup framerate
