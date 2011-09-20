@@ -136,7 +136,6 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 		error("[CompressedStream::decompressIndexed] Cannot allocate buffer");
 
 	memset(buffer, 0, bufferSize + 1024);
-	byte *pBuffer = buffer;
 
 	// Decompress seq
 	byte *seqBuffer = (byte *)malloc(seqDataSize + 1024);
@@ -147,35 +146,34 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 
 	uint32 decompressSize = decode(stream, blockSize, 6, 608, 8 * seqSize + 608, seqBuffer);
 	if (decompressSize > (seqDataSize + 64))
-		warning("[CompressedStream::decompressIndexed] Error during SEQ decompression (buffer overrun)!");
+		error("[CompressedStream::decompressIndexed] Error during SEQ decompression (buffer overrun)!");
 
 	// Decompress core
-	byte *coreBuffer = (byte *)malloc(coreDataSize + 1024);
+	CoreEntry *coreBuffer = (CoreEntry *)malloc(coreDataSize + 1024);
 	if (!coreBuffer)
 		error("[CompressedStream::decompressIndexed] Cannot allocate core buffer");
 
 	memset(coreBuffer, 0, coreDataSize + 1024);
 
 	uint32 start = 8 * seqSize + 640;
-	decompressSize = decode(stream, 16, 6, start, start + 8 * coreSize, coreBuffer);
+	decompressSize = decode(stream, 16, 6, start, start + 8 * coreSize, (byte *)coreBuffer);
 	if (decompressSize > (coreDataSize + 64))
-		warning("[CompressedStream::decompressIndexed] Error during COR decompression (buffer overrun)!");
+		error("[CompressedStream::decompressIndexed] Error during COR decompression (buffer overrun)!");
 
 	// Store data into buffer
-	byte *pSeqBuffer = seqBuffer;
-	for (uint32 i = 0; i < seqDataSize; i += 2) {
-		uint16 index = READ_UINT16(pSeqBuffer);
-		pSeqBuffer += 2;
+	int16 *pBuffer = (int16 *)buffer;
+	int16 *pSeqBuffer = (int16 *)seqBuffer;
+	for (uint32 i = 0; i < seqDataSize / 2; i++) {
+		uint16 index = pSeqBuffer[i];
 
-		WRITE_UINT16(pBuffer,     READ_UINT16(coreBuffer + index * 6));
-		WRITE_UINT16(pBuffer + 2, READ_UINT16(coreBuffer + index * 6 + 2));
-		WRITE_UINT16(pBuffer + 4, READ_UINT16(coreBuffer + index * 6 + 4));
-
-		pBuffer += 6;
+		pBuffer[0] = coreBuffer[index].a1;
+		pBuffer[1] = coreBuffer[index].a2;
+		pBuffer[2] = coreBuffer[index].a3;
+		pBuffer += 3;
 	}
 
-	WRITE_UINT32(buffer + indexEnd, field_C);
-	WRITE_UINT16(buffer + indexEnd + 2, field_10);
+	buffer[indexEnd]     = field_C;
+	buffer[indexEnd + 2] = field_10;
 
 	// Cleanup buffers
 	free(seqBuffer);

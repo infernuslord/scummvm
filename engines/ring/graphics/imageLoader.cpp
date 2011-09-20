@@ -156,12 +156,12 @@ bool ImageLoaderBMA::readHeader() {
 	_header.field_10 = data->readUint16LE();
 
 	// Read core size
-	data->seek(_seqSize + 76);
+	data->seek(_seqSize + 76, SEEK_SET);
 	_coreSize = data->readUint32LE();
 
 	// Compute block size
 	_blockSize = 0;
-	uint32 val = _header.coreWidth;
+	uint16 val = _header.coreWidth;
 	if (val) {
 		do {
 			val >>= 1;
@@ -177,11 +177,14 @@ bool ImageLoaderBMA::readImage(Image *image) {
 		error("[ImageLoaderBMA::readImage] Stream not initialized");
 
 	Common::MemoryReadStream *imageData = _stream->decompressIndexed(_blockSize,
-	                                                                 _seqSize,  (2 * _header.seqWidth * _header.seqHeight) / _header.coreHeight,
-	                                                                 _coreSize, 2 * _header.coreWidth * _header.coreHeight,
-	                                                                 _header.seqWidth * _header.seqHeight * 16,
+	                                                                 _seqSize,
+	                                                                 (2 * _header.seqWidth * _header.seqHeight) / _header.coreHeight,
+	                                                                 _coreSize,
+	                                                                 2 * _header.coreWidth * _header.coreHeight,
+	                                                                 _header.seqWidth * _header.seqHeight * 2,
 	                                                                 2 * _header.seqWidth * _header.seqHeight - 6,
-	                                                                 _header.field_C, _header.field_10);
+	                                                                 _header.field_C,
+	                                                                 _header.field_10);
 
 	// Create surface to hold the data
 	Graphics::PixelFormat format = g_system->getScreenFormat();

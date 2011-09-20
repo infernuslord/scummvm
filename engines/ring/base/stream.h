@@ -47,6 +47,12 @@ public:
 	Common::MemoryReadStream *decompressChannel();
 
 private:
+	struct CoreEntry {
+		uint16 a1;
+		uint16 a2;
+		uint16 a3;
+	};
+
 	Common::SeekableReadStream *_fileStream;    ///< The file stream
 	Common::SeekableReadStream *_artStream;     ///< The art stream
 
