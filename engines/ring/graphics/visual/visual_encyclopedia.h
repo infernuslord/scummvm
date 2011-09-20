@@ -37,6 +37,20 @@ enum Facetype {
 	kFaceTypeImpact  = 2
 };
 
+enum EncyclopediaTarget {
+	kTargetScrollUp   = 0,
+	kTargetScrollDown = 1,
+	kTarget2          = 2,
+	kTarget3          = 3,
+	kTarget4          = 4,
+	kTarget5          = 5,
+	kTargetLoadImage  = 6,
+	kTargetPlayMovie  = 7,
+	kTargetStopMovie  = 8,
+	kTarget9          = 9,
+	kTargetLoadPage   = 10
+};
+
 class EncyclopediaEntry {
 public:
 	EncyclopediaEntry();
@@ -85,6 +99,7 @@ public:
 	virtual void draw();
 	virtual uint32 handleLeftButtonUp(const Common::Point &point);
 	virtual uint32 handleUpdate(const Common::Point &point);
+
 	virtual uint32 handleLeftButtonDown(Common::Point point);
 	virtual bool handleKey(Common::KeyCode key);
 	virtual void alloc();
@@ -138,16 +153,14 @@ private:
 	uint32                              _field_7C;
 	uint32                              _field_80;
 	uint32                              _field_84;
-	uint32                              _field_88;
 	uint32                              _tickCount;
-	uint32                              _field_90;
 	uint32                              _field_94;
 	Movie2                             *_movie;
 	uint32                              _frameCount;
 	uint32                              _field_A0;
 	uint32                              _field_A4;
 	Text                               *_text;
-	Hotspot                            *_hotspot;
+	// Original uses _hotspot as a temporary variable
 	Common::String                      _filename;
 	Common::Rect                        _clippingRect;
 	Common::Point                       _point;
@@ -177,10 +190,11 @@ private:
 	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target);
 
 	void sub_484040(const Common::Point &point);
-	void loadImage7(uint32 entryIndex);
+	void loadImage(uint32 entryIndex);
 	void handleTarget9(uint32 entryIndex);
-	void handleTarget10(uint32 entryIndex);
+	void loadPage(uint32 entryIndex);
 	void sub_487580();
+	void setupArrowType( const Common::Point & point );
 };
 
 } // End of namespace Ring

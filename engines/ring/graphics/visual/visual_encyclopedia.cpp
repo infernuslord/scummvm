@@ -143,16 +143,13 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_7C           = 0;
 	_field_80           = 215;
 	_field_84           = 0;
-	_field_88           = 0;
-	_tickCount          = 0;
-	_field_90           = 0;
+	_tickCount           = 0;
 	_field_94           = 0;
 	_movie              = NULL;
 	_frameCount         = 0;
 	_field_A0           = 0;
 	_field_A4           = 0;
 	_text               = NULL;
-	_hotspot            = NULL;
 	_clippingRect       = Common::Rect(320, 20, 590, 450);
 	_point              = Common::Point(10, 30);
 	_field_CC           = true;
@@ -181,7 +178,6 @@ VisualObjectEncyclopedia::~VisualObjectEncyclopedia() {
 	SAFE_DELETE(_imageSlide);
 	SAFE_DELETE(_imageSlider);
 
-	_hotspot = NULL;
 	SAFE_DELETE(_text);
 }
 
@@ -271,11 +267,10 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonUp(const Common::Point &point) 
 	if (!_visible)
 		return false;
 
-	_tickCount = g_system->getMillis();
-	_field_90 = _tickCount - _field_88;
+	uint32 tickDelta = g_system->getMillis() - _tickCount;
 
 	if (_imageArrowUpType || _imageArrowDownType) {
-		if (_field_90 && _field_90 < 400) {
+		if (tickDelta && tickDelta < 400) {
 			if (_imageArrowUpType > 0)
 				scrollUp(50);
 			else
@@ -316,12 +311,12 @@ uint32 VisualObjectEncyclopedia::handleUpdate(const Common::Point &point) {
 			default:
 				break;
 
-			case 0:
+			case kTargetScrollUp:
 				if (i == 0)
 					_imageArrowUpType = 1;
 				break;
 
-			case 1:
+			case kTargetScrollDown:
 				if (i == 1)
 					_imageArrowDownType = 1;
 				break;
@@ -346,7 +341,7 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonDown(Common::Point point) {
 		return 0;
 	}
 
-	_field_88 = g_system->getMillis();
+	_tickCount = g_system->getMillis();
 	_field_47 = 1;
 	_field_94 = 1;
 
@@ -361,27 +356,25 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonDown(Common::Point point) {
 			default:
 				break;
 
-			case 0:
-				if (!i)
+			case kTargetScrollUp:
+				if (i == 0) {
 					_imageArrowUpType = 2;
 
-				if (i || _field_94)
-					break;
-
-				scrollUp(10);
+					if (!_field_94)
+						scrollUp(10);
+				}
 				break;
 
-			case 1:
-				if (i == 1)
+			case kTargetScrollDown:
+				if (i == 1) {
 					_imageArrowDownType = 2;
 
-				if (i != 1 || _field_94)
-					break;
-
-				scrollDown(10);
+					if (!_field_94)
+						scrollDown(10);
+				}
 				break;
 
-			case 2:
+			case kTarget2:
 				if (i != 2)
 					break;
 
@@ -389,34 +382,34 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonDown(Common::Point point) {
 				_field_4B = 1;
 				break;
 
-			case 3:
+			case kTarget3:
 				_field_4F = 1;
 				break;
 
-			case 6:
-				loadImage7(hotspot->getCursorId());
+			case kTargetLoadImage:
+				loadImage(hotspot->getCursorId());
 				_field_60 = 20;
 				break;
 
-			case 4:
-			case 7:
+			case kTarget4:
+			case kTargetPlayMovie:
 				playMovie(hotspot->getCursorId());
 				_field_60 = 20;
 				break;
 
-			case 5:
-			case 8:
+			case kTarget5:
+			case kTargetStopMovie:
 				stopMovie(hotspot->getSoundId());
 				_field_60 = 20;
 				break;
 
-			case 9:
+			case kTarget9:
 				handleTarget9(hotspot->getCursorId());
 				_field_60 = 20;
 				break;
 
-			case 10:
-				handleTarget10(hotspot->getCursorId());
+			case kTargetLoadPage:
+				loadPage(hotspot->getCursorId());
 				_field_60 = 20;
 				break;
 			}
@@ -796,7 +789,7 @@ void VisualObjectEncyclopedia::addHotspots() {
 
 void VisualObjectEncyclopedia::addHotspot(Id target, Text *text, uint32 entryIndex) {
 	Id soundId = 0;
-	if (target == 4 || target == 7)
+	if (target == kTarget4 || target == kTargetPlayMovie)
 		soundId = addSound(entryIndex);
 
 	_hotspots.push_back(new Hotspot(text->getBoundingBox(), true, soundId, (CursorId)entryIndex, target + 1));
@@ -823,9 +816,7 @@ void VisualObjectEncyclopedia::setHotspot() {
 	if (_hotspots.size() <= 2)
 		return;
 
-	_hotspot = _hotspots[2];
-
-	_hotspot->update(Common::Rect(_hotspot->getRect().left, _sliderCoordinates.x, _hotspot->getRect().right, _sliderCoordinates.x + 10));
+	_hotspots[2]->update(Common::Rect(_hotspots[2]->getRect().left, _sliderCoordinates.x, _hotspots[2]->getRect().right, _sliderCoordinates.x + 10));
 }
 
 Id VisualObjectEncyclopedia::addSound(uint32 entryIndex) {
@@ -960,14 +951,110 @@ FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool s
 }
 
 void VisualObjectEncyclopedia::sub_484040(const Common::Point &point) {
-	error("[VisualObjectEncyclopedia::sub_484040] Not implemented");
+	setHotspot();
+
+	uint32 tickDelta = g_system->getMillis() - _tickCount;
+	if ((_imageArrowUpType || _imageArrowDownType) && tickDelta > 400)
+		_field_94 = 0;
+
+	if (_hotspots.empty())
+		return;
+
+	// Process hotspots
+	for (uint32 i = 0; i < _hotspots.size(); i++) {
+		Hotspot *hotspot = _hotspots[i];
+
+		if (hotspot->contains(point)) {
+			switch (hotspot->getTarget()) {
+			default:
+				break;
+
+			case kTargetScrollUp:
+				if (i == 0) {
+					_imageArrowUpType = 2;
+
+					if (!_field_94)
+						scrollUp(10);
+				}
+				break;
+
+			case kTargetScrollDown:
+				if (i == 1) {
+					_imageArrowDownType = 2;
+
+					if (!_field_94)
+						scrollDown(10);
+				}
+				break;
+			}
+
+			// Stop processing hotspots
+			break;
+		}
+	}
+
+	if (!_field_4B || _hotspots.size() <= 2)
+		return;
+
+	// Check coordinates and scroll up/down
+	Hotspot *hotspot2 = _hotspots[2];
+
+	if (point.y <= hotspot2->getRect().top) {
+		uint32 diff = hotspot2->getRect().top - point.y;
+
+		if (diff <= 20)
+			scrollUp(20);
+		else if (diff < 30)
+			scrollUp(40);
+		else if (diff < 40)
+			scrollUp(60);
+		else if (diff < 60)
+			scrollUp(80);
+		else if (diff < 1000)
+			scrollUp(120);
+		else if (diff < 2000)
+			scrollUp(220);
+
+	} else {
+		uint32 diff = point.y - hotspot2->getRect().top;
+
+		if (diff <= 20)
+			scrollDown(20);
+		else if (diff < 30)
+			scrollDown(40);
+		else if (diff < 40)
+			scrollDown(60);
+		else if (diff < 60)
+			scrollDown(80);
+		else if (diff < 1000)
+			scrollDown(120);
+		else if (diff < 2000)
+			scrollDown(220);
+	}
 }
 
-void VisualObjectEncyclopedia::loadImage7(uint32 entryIndex) {
+void VisualObjectEncyclopedia::loadImage(uint32 entryIndex) {
 	if (entryIndex >= _entries.size())
 		error("[VisualObjectEncyclopedia::loadImage7] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
 
-	error("[VisualObjectEncyclopedia::loadImage7] Not implemented");
+	// Stop movie and cleanup previous image
+	SAFE_DELETE(_movie);
+	SAFE_DELETE(_image7);
+
+	// Compute path
+	Common::String path;
+	if (_archiveType == kArchiveFile)
+		path = Common::String::format("DATA/%s/IMAGE/", getApp()->getCurrentZoneFolder().c_str());
+	else
+		path = "/IMAGE/";
+
+	_image7 = new ImageHandle(_entries[entryIndex]->getFilename(), Common::Point(10, 10), true, kDrawType1, 1000, 0, getApp()->getCurrentGameZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_image7->setDirectory(path);
+
+	if (!_image7->getNameId().empty())
+		_image7->loadImage();
+
+	_field_64 = 1;
 }
 
 void VisualObjectEncyclopedia::handleTarget9(uint32 entryIndex) {
@@ -991,16 +1078,70 @@ void VisualObjectEncyclopedia::handleTarget9(uint32 entryIndex) {
 	}
 }
 
-void VisualObjectEncyclopedia::handleTarget10(uint32 entryIndex) {
+void VisualObjectEncyclopedia::loadPage(uint32 entryIndex) {
 	if (entryIndex >= _entries.size())
-		error("[VisualObjectEncyclopedia::handleTarget10] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
+		error("[VisualObjectEncyclopedia::loadPage] Invalid entry index (was: %d, valid:[0-%d])", entryIndex, _entries.size() - 1);
 
+	_filename = _entries[entryIndex]->getFilename();
 
-	error("[VisualObjectEncyclopedia::sub_486F50] Not implemented");
+	// Cleanup
+	CLEAR_ARRAY(EncyclopediaEntry, _entries);
+	CLEAR_ARRAY(Hotspot,           _hotspots);
+	CLEAR_ARRAY(Text,              _texts);
+	SAFE_DELETE(_movie);
+	_field_64 = 0;
+
+	// Reload new page
+	addHotspots();
+	load();
 }
 
 void VisualObjectEncyclopedia::sub_487580() {
-	error("[VisualObjectEncyclopedia::sub_487580] Not implemented");
+	if (_hotspots.size() <= 3)
+		return;
+
+	uint32 delta = 1410065407;
+	uint32 index = 0;
+	uint32 target = 0;
+
+	// Get index and target from hotspots
+	for (uint32 i = 3; i < _hotspots.size(); i++) {
+		Hotspot *hotspot = _hotspots[i];
+
+		if (hotspot->getTarget() == kTargetLoadImage || hotspot->getTarget() == kTargetPlayMovie || hotspot->getTarget() == kTargetStopMovie) {
+			uint32 currentDelta = abs((int)(hotspot->getRect().top - _field_80));
+			if (currentDelta < delta) {
+				index = i;
+				delta = currentDelta;
+				target = hotspot->getTarget();
+			}
+		}
+	}
+
+	if (_field_84 == index)
+		return;
+
+	_field_84 = index;
+
+	Hotspot *hotspot = _hotspots[index];
+	if (hotspot->getRect().top >= _clippingRect.top && hotspot->getRect().bottom <= _clippingRect.bottom) {
+		switch (target) {
+		default:
+			break;
+
+		case kTargetLoadImage:
+			loadImage(hotspot->getCursorId());
+			break;
+
+		case kTargetPlayMovie:
+			playMovie(hotspot->getCursorId());
+			break;
+
+		case kTargetStopMovie:
+			stopMovie(hotspot->getSoundId());
+			break;
+		}
+	}
 }
 
 #pragma endregion
