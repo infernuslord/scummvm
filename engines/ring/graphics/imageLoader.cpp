@@ -363,8 +363,21 @@ bool ImageLoaderTGA::readImage(Common::SeekableReadStream *stream, Image *image)
 	if (_header.imagetype != kImageTypeRGB || _header.bits <= 16)
 		error("[ImageLoaderTGA::readImage] Unsupported image type (%s)!", _filename.c_str());
 
-	Graphics::PixelFormat format = g_system->getScreenFormat();
-	format.bytesPerPixel = _header.bits / 8;
+	Graphics::PixelFormat format;
+
+	switch (_header.bits) {
+	default:
+		error("[ImageLoaderTGA::readImage] Unsupported pixel depth - only 24bpp and 32bpp supported(%s)!", _filename.c_str());
+		break;
+
+	case 24:
+		format = Graphics::PixelFormat(3, 8, 8, 8, 0, 16, 8, 0, 0);  // RGB888
+		break;
+
+	case 32:
+		format = Graphics::PixelFormat(4, 8, 8, 8, 8, 16, 8, 0, 24); // ARGB8888
+		break;
+	}
 
 	Graphics::Surface *surface = new Graphics::Surface();
 	surface->create(_header.width, _header.height, format);

@@ -207,11 +207,63 @@ void CursorImage::draw() {
 	if (!_image->isInitialized())
 		alloc();
 
+	// Easy case: 16bpp cursors
+	if (_image->getBPP() == 16) {
+		CursorMan.replaceCursor((byte *)_image->getSurface()->pixels, _image->getWidth(), _image->getHeight(), -_offset.x, -_offset.y, 0, 1, &_image->getSurface()->format);
+		CursorMan.disableCursorPalette(true);
+		CursorMan.showMouse(true);
+
+		return;
+	}
+
+	// 24bpp & 32bpp cases
+	if (_image->getBPP() != 24 && _image->getBPP() != 32)
+		error("[CursorImage::draw] Cursor conversion is only supported for 24 & 32bpp images");
+
+	//////////////////////////////////////////////////////////////////////////
+	// HACK: Convert to 16bpp for display
+	Graphics::PixelFormat formatCursor = _image->getSurface()->format;
+	Graphics::PixelFormat formatScreen = g_system->getScreenFormat();
+
+	// Prepare buffer to hold new cursor data
+	uint32 size = _image->getWidth() * _image->getHeight();
+	int16 *buf = (int16 *)malloc(size * 2);
+	if (!buf)
+		error("[CursorImage::draw] Cannot allocate cursor buffer (size: %d)", size);
+
+	// Copy data (and mirror image)
+	byte *src = (byte *)_image->getSurface()->getBasePtr(0, _image->getHeight() - 1);
+	int16 *dst = buf;
+	for (uint32 j = 0; j < _image->getHeight(); j++) {
+		// Read pixel data
+		uint8 a = 0, r = 0, g = 0, b = 0;
+
+		for (uint32 i = 0; i < _image->getWidth(); i++) {
+			switch (_image->getBPP()) {
+			case 24:
+				formatCursor.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
+				break;
+
+			case 32:
+				formatCursor.colorToARGB(READ_LE_UINT32(src + i * 4), a, r, g, b);
+				break;
+			}
+
+			dst[i] = formatScreen.ARGBToColor(a, r, g, b);
+		}
+
+		// Advance buffers
+		dst += _image->getWidth();        //pitch for 16bpp buffer
+		src -= _image->getSurface()->pitch;
+	}
+
 	// Replace cursor
-	Graphics::PixelFormat format = g_system->getScreenFormat(); //Graphics::PixelFormat(4, 8, 8, 8, 8, 8, 16, 24, 0);
-	CursorMan.replaceCursor((byte *)_image->getSurface()->pixels, _image->getWidth(), _image->getHeight(), _offset.x, _offset.y, 0, 1, &format);
+	CursorMan.replaceCursor((byte *)buf, _image->getWidth(), _image->getHeight(), -_offset.x, -_offset.y, 0, 1, &formatScreen);
 	CursorMan.disableCursorPalette(true);
 	CursorMan.showMouse(true);
+
+	// Cleanup
+	delete buf;
 }
 
 #pragma endregion
