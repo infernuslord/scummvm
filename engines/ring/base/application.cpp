@@ -501,8 +501,8 @@ void Application::update(const Common::Point &point) {
 	}
 
 	// Menu
-	if (getPuzzle(kPuzzleMenu)) {
-		Puzzle *puzzleMenu = getPuzzle(kPuzzleMenu);
+	Puzzle *puzzleMenu = getPuzzle(kPuzzleMenu);
+	if (puzzleMenu) {
 
 		if (puzzleMenu->visualHandleUpdate(point))
 			return;
@@ -516,7 +516,7 @@ void Application::update(const Common::Point &point) {
 			bool handle = true;
 
 			if (puzzleMenu->getField24() == 2)
-				if (object->getId()	!= puzzleMenu->getSelectedId())
+				if (object->getId() != puzzleMenu->getSelectedId())
 					handle = false;
 
 			if (handle) {

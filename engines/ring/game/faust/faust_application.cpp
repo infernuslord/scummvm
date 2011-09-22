@@ -1195,9 +1195,9 @@ void ApplicationFaust::onSetup(ZoneId zone, SetupType type) {
 	}
 }
 
-void ApplicationFaust::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, uint32 a4, const Common::Point &point) {
-	if (movabilityIndex == 1 || a4 == 1) {
-		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+void ApplicationFaust::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	if (movabilityIndex == 1 || target == 1) {
+		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		return;
 	}
 
@@ -1206,39 +1206,39 @@ void ApplicationFaust::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32
 		break;
 
 	case kZoneSY:
-		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone3:
-		_zone3->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone3->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone4:
-		_zone4->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone4->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone6:
-		_zone6->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone6->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone8:
-		_zone8->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone8->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone12:
-		_zone12->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone12->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone14:
-		_zone14->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone14->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone15:
-		_zone15->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone15->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZone16:
-		_zone16->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zone16->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 	}
 }

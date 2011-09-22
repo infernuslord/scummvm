@@ -130,17 +130,17 @@ void ZoneSystemRing::onInit() {
 	_app->objectAddPresentation(kObject7);
 	_app->objectPresentationAddImageToPuzzle(kObject7, 0, kPuzzleMenu, "SY_ISHA.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
 
-	_app->objectAdd(kObject2, "", "", 1);
-	_app->objectAddPresentation(kObject2);
-	_app->objectPresentationAddImageToPuzzle(kObject2, 0, kPuzzleMenu, "Exit.bmp", Common::Point(160, 165), true, kDrawType1, 1000);
-	_app->objectAddPuzzleAccessibility(kObject2, kPuzzleMenu, Common::Rect(262, 270, 321, 306), false, kCursorMenuActive, 1);
-	_app->objectAddPuzzleAccessibility(kObject2, kPuzzleMenu, Common::Rect(310, 270, 370, 306), false, kCursorMenuActive, 0);
-	_app->objectSetPuzzleAccessibilityKey(kObject2, 0, Common::KEYCODE_RETURN);
-	_app->objectSetPuzzleAccessibilityKey(kObject2, 1, Common::KEYCODE_ESCAPE);
-	_app->objectAddPresentation(kObject2);
-	_app->objectPresentationAddImageToPuzzle(kObject2, 1, kPuzzleMenu, "ex_yes.bmp", Common::Point(261, 279), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject2);
-	_app->objectPresentationAddImageToPuzzle(kObject2, 2, kPuzzleMenu, "ex_no.bmp", Common::Point(318, 279), true, kDrawType1, 1000);
+	_app->objectAdd(kObjectYesNo, "", "", 1);
+	_app->objectAddPresentation(kObjectYesNo);
+	_app->objectPresentationAddImageToPuzzle(kObjectYesNo, 0, kPuzzleMenu, "Exit.bmp", Common::Point(160, 165), true, kDrawType1, 1000);
+	_app->objectAddPuzzleAccessibility(kObjectYesNo, kPuzzleMenu, Common::Rect(262, 270, 321, 306), false, kCursorMenuActive, 1);
+	_app->objectAddPuzzleAccessibility(kObjectYesNo, kPuzzleMenu, Common::Rect(310, 270, 370, 306), false, kCursorMenuActive, 0);
+	_app->objectSetPuzzleAccessibilityKey(kObjectYesNo, 0, Common::KEYCODE_RETURN);
+	_app->objectSetPuzzleAccessibilityKey(kObjectYesNo, 1, Common::KEYCODE_ESCAPE);
+	_app->objectAddPresentation(kObjectYesNo);
+	_app->objectPresentationAddImageToPuzzle(kObjectYesNo, 1, kPuzzleMenu, "ex_yes.bmp", Common::Point(261, 279), true, kDrawType1, 1000);
+	_app->objectAddPresentation(kObjectYesNo);
+	_app->objectPresentationAddImageToPuzzle(kObjectYesNo, 2, kPuzzleMenu, "ex_no.bmp", Common::Point(318, 279), true, kDrawType1, 1000);
 
 	_app->objectAdd(kObject3, "", "", 1);
 	_app->objectAddPresentation(kObject3);
@@ -454,14 +454,14 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uin
 		}
 		break;
 
-	case kObject2:
+	case kObjectYesNo:
 		switch (target) {
 		default:
 			break;
 
 		case 0:
-			_app->objectPresentationHideAndRemove(kObject2);
-			_app->objectSetAccessibilityOff(kObject2);
+			_app->objectPresentationHideAndRemove(kObjectYesNo);
+			_app->objectSetAccessibilityOff(kObjectYesNo);
 			_app->puzzleSetMod(kPuzzleMenu, 1, 0);
 			break;
 
@@ -746,8 +746,8 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uin
 
 	case kObjectMenuExit:
 		if (_app->puzzleSetMod(kPuzzleMenu, 2, 2)) {
-			_app->objectPresentationShow(kObject2, 0);
-			_app->objectSetAccessibilityOn(kObject2);
+			_app->objectPresentationShow(kObjectYesNo, 0);
+			_app->objectSetAccessibilityOn(kObjectYesNo);
 		}
 		break;
 
@@ -858,8 +858,8 @@ void ZoneSystemRing::onUpdateBag(const Common::Point &point) {
 	_app->objectPresentationHide(kObjectSaveCancel, 0);
 	_app->objectPresentationHide(kObjectMenuStatus, 0);
 	_app->objectPresentationHide(kObjectStatusOk, 0);
-	_app->objectPresentationHide(kObject2, 1);
-	_app->objectPresentationHide(kObject2, 2);
+	_app->objectPresentationHide(kObjectYesNo, 1);
+	_app->objectPresentationHide(kObjectYesNo, 2);
 	_app->objectPresentationHide(kObject4, 1);
 	_app->objectPresentationHide(kObject4, 2);
 	_app->objectPresentationHide(kObject3, 1);
@@ -873,28 +873,28 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 	default:
 		break;
 
-	case 2:
+	case kObjectYesNo:
 		switch (movabilityTo) {
 		default:
 			break;
 
 		case 0:
-			_app->objectPresentationHide(kObject2, 1);
-			_app->objectPresentationShow(kObject2, 2);
+			_app->objectPresentationHide(kObjectYesNo, 1);
+			_app->objectPresentationShow(kObjectYesNo, 2);
 			break;
 
 		case 1:
-			_app->objectPresentationHide(kObject2, 2);
-			_app->objectPresentationShow(kObject2, 1);
+			_app->objectPresentationHide(kObjectYesNo, 2);
+			_app->objectPresentationShow(kObjectYesNo, 1);
 			break;
 		}
 		break;
 
-	case 3:
+	case kObject3:
 		_app->objectPresentationShow(kObject3, 1);
 		break;
 
-	case 4: {
+	case kObject4: {
 		int32 val = (uint32)(movabilityTo) & 0x80000001;
 		bool state = (val < 0 ? ((int32)((val - 1) | 0xFFFFFFFE)) == -1 : val == 0);
 
@@ -908,7 +908,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		}
 		break;
 
-	case 90000:
+	case kObjectMenuNewGame:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -918,7 +918,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuNewGame, 0);
 		break;
 
-	case 90001:
+	case kObjectMenuPreferences:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -929,7 +929,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuPreferences, 0);
 		break;
 
-	case 90002:
+	case kObjectMenuLoad:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -940,7 +940,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuLoad, 0);
 		break;
 
-	case 90003:
+	case kObjectMenuSave:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -951,7 +951,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuSave, 0);
 		break;
 
-	case 90005:
+	case kObjectMenuStatus:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -962,7 +962,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuStatus, 0);
 		break;
 
-	case 90004:
+	case kObjectMenuContinue:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -973,7 +973,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuContinue, 0);
 		break;
 
-	case 90006:
+	case kObjectMenuExit:
 		_app->objectPresentationHide(kObjectMenuNewGame, 0);
 		_app->objectPresentationHide(kObjectMenuPreferences, 0);
 		_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -984,45 +984,45 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObjectMenuExit, 0);
 		break;
 
-	case 90101:
+	case kObjectPreferencesCancel:
 		_app->objectPresentationShow(kObjectPreferencesCancel, 0);
 		_app->objectPresentationHide(kObjectPreferencesOk, 0);
 		break;
 
-	case 90102:
+	case kObjectPreferencesOk:
 		_app->objectPresentationHide(kObjectPreferencesCancel, 0);
 		_app->objectPresentationShow(kObjectPreferencesOk, 0);
 		break;
 
-	case 90104:
+	case kObjectPreferences3dSound:
 		_app->objectPresentationShow(kObjectPreferences3dSound, 2);
 		break;
 
-	case 90207:
+	case kObjectLoadCancel:
 		_app->objectPresentationHide(kObjectLoadOk, 0);
 		_app->objectPresentationShow(kObjectLoadCancel, 0);
 		break;
 
-	case 90208:
+	case kObjectLoadOk:
 		_app->objectPresentationShow(kObjectLoadOk, 0);
 		_app->objectPresentationHide(kObjectLoadCancel, 0);
 		break;
 
-	case 90401:
+	case kObjectStatusOk:
 		_app->objectPresentationShow(kObjectStatusOk, 0);
 		break;
 
-	case 90309:
+	case kObjectSaveOk:
 		_app->objectPresentationShow(kObjectSaveOk, 0);
 		_app->objectPresentationHide(kObjectSaveCancel, 0);
 		break;
 
-	case 90310:
+	case kObjectSaveCancel:
 		_app->objectPresentationHide(kObjectSaveOk, 0);
 		_app->objectPresentationShow(kObjectSaveCancel, 0);
 		break;
 
-	case 90912:
+	case kObject90912:
 		_app->objectPresentationShow(kObject90912, 0);
 		break;
 	}

@@ -1402,9 +1402,9 @@ void ApplicationRing::onSwitchZone(ZoneId zone, uint32 type) {
 	}
 }
 
-void ApplicationRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, uint32 a4, const Common::Point &point) {
-	if (movabilityIndex == 1 || a4 == 1) {
-		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+void ApplicationRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	if (movabilityIndex == 1 || target == 1) {
+		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		return;
 	}
 
@@ -1413,15 +1413,15 @@ void ApplicationRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 
 		break;
 
 	case kZoneSY:
-		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZoneNI:
-		_zoneNI->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zoneNI->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 
 	case kZoneN2:
-		_zoneN2->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, a4, point);
+		_zoneN2->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		break;
 	}
 }
