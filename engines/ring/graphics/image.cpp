@@ -270,14 +270,60 @@ Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, 
 	//////////////////////////////////////////////////////////////////////////
 
 	byte *src  = (byte*)_surface->getBasePtr(srcX, getHeight() - offset - 1);
-	byte *dst = (byte *)surface->getBasePtr(0, 0);
+	byte *dst = (byte *)surface->getBasePtr(dest.x, dest.y);
 	int16 height = destRect.height();
+	uint16 stride = (uint16)destRect.width() * _surface->format.bytesPerPixel;
 
-	do {
-		memcpy(dst + (destRect.top * surface->pitch + destRect.left * _surface->format.bytesPerPixel), src, (uint16)destRect.width() * _surface->format.bytesPerPixel);
-		dst += surface->pitch;
-		src -= _surface->pitch;
-	} while (--height);
+	// Handle different bit depth
+	switch (getBPP()) {
+	default:
+		error("[Image::draw] Invalid image bpp (%d)!", getBPP());
+
+	case 8:
+		error("[Image::draw] Drawing not implemented (bpp: %d)!", getBPP());
+
+	// Fast case
+	case 16:
+		do {
+			memcpy(dst, src, stride);
+			dst += surface->pitch;
+			src -= _surface->pitch;
+		} while (--height);
+		break;
+
+	// Downsample to 16bpp
+	case 24:
+	case 32: {
+		Graphics::PixelFormat formatImage  = _surface->format;
+		Graphics::PixelFormat formatScreen = g_system->getScreenFormat();
+
+		int16 *dstBuffer = (int16 *)dst;
+		// Copy data (and mirror image)
+		for (uint32 j = offset; j < _surface->h; j++) {
+			// Read pixel data
+			uint8 a = 0, r = 0, g = 0, b = 0;
+
+			for (uint32 i = 0; i < _surface->w; i++) {
+				switch (getBPP()) {
+				case 24:
+					formatImage.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
+					break;
+
+				case 32:
+					formatImage.colorToARGB(READ_LE_UINT32(src + i * 4), a, r, g, b);
+					break;
+				}
+
+				dstBuffer[i] = formatScreen.ARGBToColor(a, r, g, b);
+			}
+
+			// Advance buffers
+			dstBuffer += surface->w;        //pitch for 16bpp buffer
+			src -= _surface->pitch;
+		}
+		}
+		break;
+	}
 
 	return destRect;
 }
