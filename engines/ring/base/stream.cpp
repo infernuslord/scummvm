@@ -165,6 +165,8 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 	int16 *pSeqBuffer = (int16 *)seqBuffer;
 	for (uint32 i = 0; i < seqDataSize / 2; i++) {
 		uint16 index = pSeqBuffer[i];
+		if (index > 2000)
+			error("[CompressedStream::decompressIndexed] Invalid index (was: %d, max: 2000)", index);
 
 		pBuffer[0] = coreBuffer[index].a1;
 		pBuffer[1] = coreBuffer[index].a2;
@@ -301,6 +303,7 @@ uint32 CompressedStream::decode(Common::SeekableReadStream *stream, uint32 a2, u
 			if (index1 == index0) {
 				uint32 minVal = READ_UINT32(&_decBuffer[2]);
 
+				index1 = 0;
 				for (uint32 i = 1; i < 64; i++) {
 					uint32 current = READ_UINT32(&_decBuffer[i * 8 + 2]);
 
