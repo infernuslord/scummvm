@@ -30,7 +30,9 @@
 #include "ring/graphics/imageLoader.h"
 #include "ring/graphics/screen.h"
 
+#include "ring/sound/soundentry.h"
 #include "ring/sound/soundhandler.h"
+#include "ring/sound/soundmanager.h"
 
 #include "ring/ring.h"
 #include "ring/helpers.h"
@@ -644,24 +646,69 @@ bool Cinematic2::seek(int32 offset, int whence) {
 
 #pragma endregion
 
+#pragma region CinematicSound
+
+CinematicSound::CinematicSound() {
+	_volume = 1.0f;
+}
+
+CinematicSound::~CinematicSound() {
+	CLEAR_ARRAY(Common::SeekableReadStream, _buffers);
+}
+
+void CinematicSound::init(uint32 a1, uint32 a2, uint32 a3, int32 a4) {
+	error("[CinematicSound::init] Not implemented!");
+}
+
+void CinematicSound::deinit() {
+	error("[CinematicSound::deinit] Not implemented!");
+}
+
+void CinematicSound::play() {
+	error("[CinematicSound::play] Not implemented!");
+}
+
+void CinematicSound::sub_46A4B0() {
+	error("[CinematicSound::sub_46A4B0] Not implemented!");
+}
+
+void CinematicSound::setVolume(int32 volume) {
+	_volume = volume * 0.01f;
+
+	if (_volume < 0.0f)
+		_volume = 0.0f;
+
+	if (_volume > 1.0f)
+		_volume = 1.0f;
+
+	int32 vol = (int32)(_volume * -10000.0f);
+	SoundEntry::convertVolumeFrom(vol);
+
+	getSound()->getMixer()->setChannelVolume(_handle, (byte)volume);
+}
+
+void CinematicSound::addBuffer(Common::SeekableReadStream *stream) {
+	_buffers.push_back(stream);
+}
+
+#pragma endregion
+
 #pragma region Movie
 
 Movie::Movie(ScreenManager *screen) : _screen(screen) {
 	_imageCIN = NULL;
-	_volume = 0.0f;
 	_isSoundInitialized = false;
 	_field_5B = false;
 	_framerate = 0.0f;
 	_hasDialog = false;
 	_channel = 0;
 
-
-	_cinematic = new Cinematic();
+	_sound = new CinematicSound();
 }
 
 Movie::~Movie() {
 	SAFE_DELETE(_imageCIN);
-	SAFE_DELETE(_cinematic);
+	SAFE_DELETE(_sound);
 
 	// Zero-out passed pointers
 	_screen = NULL;
@@ -685,8 +732,8 @@ bool Movie::init(Common::String path, Common::String filename, uint32 a3, uint32
 	_isSoundInitialized = true;
 
 	// Setup sound
-	sub_46A0E0(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A, -(int32)(CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(Cinematic::TControl)));
-	setVolume(getApp()->getPreferenceHandler()->getVolume());
+	_sound->init(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A, -(int32)(CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(Cinematic::TControl)));
+	_sound->setVolume(getApp()->getPreferenceHandler()->getVolume());
 
 	// Setup framerate
 	_field_5B = true;
@@ -724,8 +771,8 @@ void Movie::deinit() {
 }
 
 void Movie::play(const Common::Point &point) {
-	if (!_cinematic)
-		error("[Movie::play] cinematic not initialized properly");
+	if (!_sound)
+		error("[Movie::play] sound not initialized properly");
 
 	if (!_imageCIN)
 		error("[Movie::play] image not initialized properly");
@@ -734,6 +781,7 @@ void Movie::play(const Common::Point &point) {
 	ScreenManager *screen = getApp()->getScreenManager();
 
 	// Setup
+	Cinematic *cinematic = _imageCIN->getCinematic();
 	Image *image = new Image();
 	bool setupSound = true;
 	bool readFrame = false;
@@ -742,12 +790,12 @@ void Movie::play(const Common::Point &point) {
 	uint32 ticks = g_system->getMillis();
 
 	// Setup header and state
-	_cinematic->setField10(false);
+	cinematic->setField10(false);
 	uint32 chunkCount = _imageCIN->getHeader()->chunkCount;
 
 	// Parse cinematic
 	if (chunkCount) {
-		while (!_cinematic->eos() && !_cinematic->err()) {
+		while (!cinematic->eos() && !cinematic->err()) {
 
 			// Interrupt playing on escape
 			if (checkEscape()) {
@@ -759,8 +807,8 @@ void Movie::play(const Common::Point &point) {
 			}
 
 			// Read chunk type
-			byte chunkType = _cinematic->readByte();
-			if (_cinematic->eos() || _cinematic->err())
+			byte chunkType = cinematic->readByte();
+			if (cinematic->eos() || cinematic->err())
 				error("[Movie::play] Cannot read chunk type");
 
 			switch (chunkType) {
@@ -780,7 +828,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (setupSound) {
 						if (_isSoundInitialized)
-							sub_46A4B0();
+							_sound->sub_46A4B0();
 
 						setupSound = false;
 					}
@@ -801,7 +849,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (setupSound) {
 						if (_isSoundInitialized)
-							sub_46A4B0();
+							_sound->sub_46A4B0();
 
 						setupSound = false;
 					}
@@ -815,7 +863,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (((chunkIndex + 1) * _framerate) < tickInterval) {
 						if (readFrame) {
-							_cinematic->skipFrame();
+							cinematic->skipFrame();
 
 							// Process sound
 							if (soundHandler->getField0()) {
@@ -866,7 +914,7 @@ void Movie::play(const Common::Point &point) {
 				break;
 
 			case 84:
-				if (!_cinematic->tControl())
+				if (!cinematic->tControl())
 					error("[Movie::play] Error reading T control (index: %d)", chunkIndex);
 				break;
 
@@ -884,7 +932,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (setupSound) {
 						if (_isSoundInitialized)
-							sub_46A4B0();
+							_sound->sub_46A4B0();
 
 						setupSound = false;
 					}
@@ -903,7 +951,7 @@ void Movie::play(const Common::Point &point) {
 	delete image;
 
 	if (_isSoundInitialized)
-		_cinematic->deinit();
+		_sound->deinit();
 
 	if (_hasDialog)
 		getApp()->getDialogHandler()->removeDialog(500001);
@@ -912,12 +960,13 @@ void Movie::play(const Common::Point &point) {
 #pragma region Sound
 
 bool Movie::readSound() {
-	if (!_cinematic)
+	Cinematic *cinematic = _imageCIN->getCinematic();
+	if (!cinematic)
 		error("[Movie::readSound] Cinematic not initialized properly");
 
 	// Read sound data offset
-	uint32 offset = _cinematic->readUint32LE();
-	if (_cinematic->err() || _cinematic->eos()) {
+	uint32 offset = cinematic->readUint32LE();
+	if (cinematic->err() || cinematic->eos()) {
 		warning("[Movie::readSound] Error reading from file");
 		deinit();
 		return false;
@@ -928,33 +977,34 @@ bool Movie::readSound() {
 		return true;
 
 	if (offset > 10000000) {
-		warning("[Movie::readSound] Invalid sound offset (was:%d, max:10000000)", offset);
+		warning("[Movie::readSound] Invalid sound offset (was: %d, max: 10000000)", offset);
 		return false;
 	}
 
 	// Check remaining file size
-	if (((uint32)_cinematic->pos() + offset) >= (uint32)_cinematic->size()) {
+	if (((uint32)cinematic->pos() + offset) >= (uint32)cinematic->size()) {
 		warning("[Movie::readSound] Invalid sound offset (would read after end of file: %d)", offset);
 		deinit();
 		return false;
 	}
 
-	// Create a substream and initialize cinematic sound buffer
+	// Add buffer to queue
 	if (!_isSoundInitialized)
 		return true;
 
-	setSoundBuffer(new Common::SeekableSubReadStream(_cinematic, (uint32)_cinematic->pos(), (uint32)_cinematic->pos() + offset), offset);
+	_sound->addBuffer(new Common::SeekableSubReadStream(cinematic, (uint32)cinematic->pos(), (uint32)cinematic->pos() + offset));
 
 	return true;
 }
 
 bool Movie::skipSound() {
-	if (!_cinematic)
+	Cinematic *cinematic = _imageCIN->getCinematic();
+	if (!cinematic)
 		error("[Movie::skipSound] Cinematic not initialized properly");
 
 	// Read sound data offset
-	uint32 offset = _cinematic->readUint32LE();
-	if (_cinematic->err() || _cinematic->eos()) {
+	uint32 offset = cinematic->readUint32LE();
+	if (cinematic->err() || cinematic->eos()) {
 		warning("[Movie::skipSound] Error reading from file");
 		deinit();
 		return false;
@@ -965,38 +1015,14 @@ bool Movie::skipSound() {
 		return true;
 
 	// Skip sound data
-	_cinematic->seek(offset, SEEK_CUR);
-	if (_cinematic->err() || _cinematic->eos()) {
+	cinematic->seek(offset, SEEK_CUR);
+	if (cinematic->err() || cinematic->eos()) {
 		warning("[Movie::skipSound] Error reading from file");
 		deinit();
 		return false;
 	}
 
 	return true;
-}
-
-void Movie::sub_46A0E0(uint32 a1, uint32 a2, uint32 a3, int32 a4) {
-	error("[Cinematic::sub_46A0E0] Not implemented!");
-}
-
-void Movie::sub_46A4B0() {
-	error("[Cinematic::sub_46A4B0] Not implemented!");
-}
-
-void Movie::setSoundBuffer(Common::SeekableReadStream *stream, uint32 offset) {
-	error("[Cinematic::setSoundBuffer] Not implemented!");
-}
-
-void Movie::setVolume(int32 volume) {
-	_volume = volume * 0.01f;
-
-	if (_volume < 0.0f)
-		_volume = 0.0f;
-
-	if (_volume > 1.0f)
-		_volume = 1.0f;
-
-	error("[Movie::setVolume] Not implemented!");
 }
 
 #pragma endregion

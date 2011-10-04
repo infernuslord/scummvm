@@ -24,6 +24,9 @@
 
 #include "ring/shared.h"
 
+#include "audio/audiostream.h"
+#include "audio/mixer.h"
+
 #include "common/rect.h"
 #include "common/stream.h"
 #include "common/substream.h"
@@ -241,6 +244,27 @@ private:
 	void decompressSeq(byte *buffer);
 };
 
+class CinematicSound {
+public:
+	CinematicSound();
+	~CinematicSound();
+
+	void init(uint32 a1, uint32 a2, uint32 a3, int32 a4);
+    void deinit();
+
+	void setVolume(int32 volume);
+	void sub_46A4B0();
+	void addBuffer(Common::SeekableReadStream *stream);
+
+private:
+	Audio::SoundHandle _handle;
+
+	Common::Array<Common::SeekableReadStream *> _buffers;
+	float _volume;
+
+	void play();
+};
+
 class Movie {
 public:
 	Movie(ScreenManager *screen);
@@ -256,8 +280,7 @@ public:
 private:
 	ImageLoaderCIN *_imageCIN;
 	ScreenManager  *_screen;
-	Cinematic      *_cinematic;
-	float           _volume;
+	CinematicSound *_sound;
 	bool            _isSoundInitialized;
 	bool            _field_5B;
 	float           _framerate;
@@ -267,11 +290,6 @@ private:
 	// Sound
 	bool readSound();
 	bool skipSound();
-
-	void sub_46A0E0(uint32 a1, uint32 a2, uint32 a3, int32 a4);
-	void setVolume(int32 volume);
-	void sub_46A4B0();
-	void setSoundBuffer(Common::SeekableReadStream *stream, uint32 offset);
 };
 
 class Movie2 {

@@ -173,6 +173,7 @@ public:
 	bool init(Common::String filename);
 
 	Header *getHeader() { return &_header; }
+	Cinematic *getCinematic() { return _cinematic; }
 
 private:
 	Cinematic *_cinematic;

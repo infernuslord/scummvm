@@ -44,7 +44,7 @@ public:
 	virtual bool isPreloaded() { return false; }
 	bool isPlaying() const ;
 
-    void setVolume(int32 volume);
+	void setVolume(int32 volume);
 	void setMultiplier(int32 multiplier);
 	void setPan(int32 pan);
 
@@ -63,22 +63,6 @@ public:
 	void setSoundInfo(int32 volume, int32 multiplier, int32 pan) { _volume = volume; _multiplier = multiplier; _pan = pan; }
 
 	static SoundFormat getFormat(Common::String filename);
-
-protected:
-	SoundType      _type;
-	Common::String _name;
-	bool           _isPlaying;
-	LoadFrom       _loadFrom;
-	int32          _volume;
-	int32          _multiplier;
-	int32          _pan;
-	bool           _loop;
-	SoundFormat    _format;
-	uint32         _field_125;
-
-	Audio::SoundHandle _handle;
-
-	void setVolumeAndPan() const ;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Conversion functions
@@ -104,6 +88,22 @@ protected:
 	 * @param [in,out] pan The pan.
 	 */
 	static void convertPan(int32 &pan);
+
+protected:
+	SoundType      _type;
+	Common::String _name;
+	bool           _isPlaying;
+	LoadFrom       _loadFrom;
+	int32          _volume;
+	int32          _multiplier;
+	int32          _pan;
+	bool           _loop;
+	SoundFormat    _format;
+	uint32         _field_125;
+
+	Audio::SoundHandle _handle;
+
+	void setVolumeAndPan() const ;
 };
 
 class SoundEntryStream : public SoundEntry {
