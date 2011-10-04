@@ -669,9 +669,11 @@ Movie::~Movie() {
 
 bool Movie::init(Common::String path, Common::String filename, uint32 a3, uint32 channel) {
 	// Compute and check path
-	Common::String filePath = path + '/' + filename;
-	if (!Common::File::exists(filePath))
+	Common::String filePath = path + filename;
+	if (!Common::File::exists(filePath)) {
+		warning("[Movie::init] Cannot find movie file: %s", filePath.c_str());
 		return false;
+	}
 
 	// Initialize movie stream
 	_imageCIN = new ImageLoaderCIN();
