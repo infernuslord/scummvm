@@ -97,14 +97,14 @@ public:
 	void dispatchSounds();
 };
 
-extern Globals *_globals;
+extern Globals *g_globals;
 
-#define GLOBALS (*_globals)
-#define BF_GLOBALS (*((::TsAGE::BlueForce::BlueForceGlobals *)_globals))
+#define GLOBALS (*g_globals)
+#define BF_GLOBALS (*((::TsAGE::BlueForce::BlueForceGlobals *)g_globals))
 
-// Note: Currently this can't be part of the _globals structure, since it needs to be constructed
+// Note: Currently this can't be part of the g_globals structure, since it needs to be constructed
 // prior to many of the fields in Globals execute their constructors
-extern ResourceManager *_resourceManager;
+extern ResourceManager *g_resourceManager;
 
 
 namespace BlueForce {
@@ -169,8 +169,12 @@ public:
 	StripProxy _stripProxy;
 	int _dayNumber;
 	int _v4CEA4;
-	int _v4CEB4;
+	int _marinaWomanCtr;
 	int _v4CEB6;
+	int _safeCombination;
+	int _v4CEC0;
+	int _v4CEC2;
+	int _v4CEC8;
 	int _deziTopic;
 	int _deathReason;
 	int _driveFromScene;
@@ -179,6 +183,10 @@ public:
 	int _v50696;
 	uint8 _v5098C;
 	uint8 _v5098D;
+	int _v50CC2;
+	int _v50CC4;
+	int _v50CC6;
+	int _v50CC8;
 	int _v51C42;
 	int _v51C44;
 	int _interfaceY;

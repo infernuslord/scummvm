@@ -279,7 +279,7 @@ void Scene50::Tooltip::highlight(bool btnDown) {
 				BF_GLOBALS._player.disableControl();
 				BF_GLOBALS._mapLocationId = _locationId;
 
-				if (BF_GLOBALS._driveToScene == 330) {
+				if (BF_GLOBALS._driveToScene != 330) {
 					scene->_sceneNumber = 330;
 				} else {
 					scene->_sceneNumber = (BF_GLOBALS._dayNumber != 1) || (BF_GLOBALS._bookmark < bStartOfGame) ||
@@ -312,11 +312,11 @@ void Scene50::Tooltip::highlight(bool btnDown) {
 				scene->_sceneNumber = _newSceneNumber;
 				break;
 			}
-
-			// Signal the scene to change to the new scene
-			scene->_sceneMode = 1;
-			scene->signal();
 		}
+
+		// Signal the scene to change to the new scene
+		scene->_sceneMode = 1;
+		scene->signal();
 	}
 }
 
@@ -337,8 +337,7 @@ void Scene50::postInit(SceneObjectList *OwnerList) {
 	BF_GLOBALS._player.setStrip(3);
 	BF_GLOBALS._player.setPosition(Common::Point(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
 	BF_GLOBALS._player.hide();
-	BF_GLOBALS._player.enableControl();
-	BF_GLOBALS._player._uiEnabled = false;
+	BF_GLOBALS._player.disableControl();
 
 	BF_GLOBALS._scrollFollower = NULL;
 	_text._color1 = 19;
@@ -358,7 +357,7 @@ void Scene50::postInit(SceneObjectList *OwnerList) {
 	_location6.set(Rect(242, 131, 264, 144), 440, ALLEY_CAT, 64);
 	_location5.set(Rect(383, 57, 402, 70), 380, CITY_HALL_JAIL, 32);
 	_location7.set(Rect(128, 32, 143, 42), 800, JAMISON_RYAN, 128);
-	_location9.set(Rect(349, 125, 359, 132), 
+	_location9.set(Rect(349, 125, 359, 132),
 		(BF_GLOBALS._bookmark == bInspectionDone) || (BF_GLOBALS._bookmark == bCalledToDrunkStop) ? 551 : 550,
 		BIKINI_HUT, 16);
 
@@ -420,7 +419,7 @@ void Scene50::postInit(SceneObjectList *OwnerList) {
 
 void Scene50::remove() {
 	// Blank out the screen
-	BF_GLOBALS._screenSurface.fillRect(BF_GLOBALS._screenSurface.getBounds(), 0);
+	clearScreen();
 
 	SceneExt::remove();
 	BF_GLOBALS._uiElements._active = true;
@@ -430,11 +429,11 @@ void Scene50::signal() {
 	if (_sceneMode == 1) {
 		// Destination selected
 		if ((BF_GLOBALS._driveFromScene == 551) && (_sceneNumber != BF_GLOBALS._driveFromScene)) {
-			BF_GLOBALS.setFlag(109);
-			BF_GLOBALS.setFlag(115);
-			BF_GLOBALS.setFlag(121);
-			BF_GLOBALS.setFlag(127);
-			BF_GLOBALS.setFlag(133);
+			BF_GLOBALS.clearFlag(f1015Drunk);
+			BF_GLOBALS.clearFlag(f1027Drunk);
+			BF_GLOBALS.clearFlag(f1035Drunk);
+			BF_GLOBALS.clearFlag(f1097Drunk);
+			BF_GLOBALS.clearFlag(f1098Drunk);
 		}
 
 		if ((BF_GLOBALS._driveFromScene == 410) && (_sceneNumber != BF_GLOBALS._driveFromScene)) {
@@ -447,16 +446,16 @@ void Scene50::signal() {
 
 		if ((BF_GLOBALS._driveFromScene == 380) && (_sceneNumber != BF_GLOBALS._driveFromScene)) {
 			if (BF_GLOBALS._bookmark >= bLauraToParamedics)
-				BF_GLOBALS.setFlag(129);
+				BF_GLOBALS.setFlag(f1098Marina);
 			if (BF_GLOBALS._bookmark >= bStoppedFrankie)
-				BF_GLOBALS.setFlag(131);
+				BF_GLOBALS.setFlag(f1098Frankie);
 			if (BF_GLOBALS._bookmark == bArrestedGreen) {
 				BF_GLOBALS._deathReason = 19;
 				_sceneNumber = 666;
 			}
 		}
 
-		if ((_sceneNumber == 551) && BF_GLOBALS.getFlag(147))
+		if ((_sceneNumber == 551) && BF_GLOBALS.getFlag(fHasDrivenFromDrunk))
 			_sceneNumber = 550;
 
 		BF_GLOBALS._sound1.fadeOut2(NULL);
@@ -466,6 +465,7 @@ void Scene50::signal() {
 		// Initial delay complete, time to switch to interactive mode
 		_text.remove();
 		BF_GLOBALS._player.enableControl();
+		BF_GLOBALS._events.setCursor(CURSOR_WALK);
 		_sceneMode = 0;
 		_field380 = 0;
 	}
@@ -522,7 +522,7 @@ bool Scene60::Ignition::startAction(CursorType action, Event &event) {
 			if (BF_GLOBALS.getFlag(onDuty) && check2())
 				return true;
 		}
-		
+
 		BF_GLOBALS._sound1.play(BF_GLOBALS.getFlag(fWithLyle) ? 80 : 31);
 		BF_GLOBALS._sound1.holdAt(1);
 		scene->fadeOut();
@@ -597,7 +597,7 @@ bool Scene60::Ignition::check2() {
 	default:
 		break;
 	}
-	
+
 	BF_GLOBALS._v5098C |= 0x80;
 	return false;
 }
@@ -638,7 +638,7 @@ bool Scene60::Compartment::startAction(CursorType action, Event &event) {
 		SceneItem::display2(60, 8);
 		break;
 	case CURSOR_USE:
-		if ((BF_INVENTORY.getObjectScene(INV_TICKET_BOOK) == 1) && 
+		if ((BF_INVENTORY.getObjectScene(INV_TICKET_BOOK) == 1) &&
 				(BF_INVENTORY.getObjectScene(INV_MIRANDA_CARD) == 1)) {
 			SceneItem::display2(60, 9);
 		}
@@ -998,8 +998,8 @@ void Scene60::postInit(SceneObjectList *OwnerList) {
 
 	loadScene(_sceneNumber);
 
-	if ((_sceneNumber == 1810) && (BF_GLOBALS._dayNumber > 1) && 
-			(BF_GLOBALS._dayNumber < 5) && !BF_GLOBALS.getFlag(fWithLyle) && 
+	if ((_sceneNumber == 1810) && (BF_GLOBALS._dayNumber > 1) &&
+			(BF_GLOBALS._dayNumber < 5) && !BF_GLOBALS.getFlag(fWithLyle) &&
 			((BF_GLOBALS._dayNumber != 4) && (BF_GLOBALS._bookmark >= bEndDayThree))) {
 		_car.setup(1810, 1, 1, 164, 131, 1);
 	}
@@ -1024,7 +1024,7 @@ void Scene60::postInit(SceneObjectList *OwnerList) {
 	}
 	_dashboard.setup(_visage, 1, 1, 160, 168, 100);
 	_cursorId = CURSOR_USE;
-	
+
 	if (_visage == 63) {
 		_compartmentDoor.postInit();
 		_compartmentDoor.setVisage(60);
@@ -1095,6 +1095,14 @@ void Scene60::postInit(SceneObjectList *OwnerList) {
 			setAction(&_action3);
 		}
 	}
+}
+
+void Scene60::remove() {
+	BF_GLOBALS._player.enableControl();
+	BF_GLOBALS._events.setCursor(_cursorId);
+
+	if (_cursorId == CURSOR_EXIT)
+		BF_GLOBALS._events.setCursor(CURSOR_USE);
 }
 
 void Scene60::signal() {

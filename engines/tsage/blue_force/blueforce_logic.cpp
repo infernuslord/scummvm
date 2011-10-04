@@ -24,9 +24,14 @@
 #include "tsage/blue_force/blueforce_dialogs.h"
 #include "tsage/blue_force/blueforce_scenes0.h"
 #include "tsage/blue_force/blueforce_scenes1.h"
+#include "tsage/blue_force/blueforce_scenes2.h"
 #include "tsage/blue_force/blueforce_scenes3.h"
+#include "tsage/blue_force/blueforce_scenes4.h"
+#include "tsage/blue_force/blueforce_scenes5.h"
 #include "tsage/blue_force/blueforce_scenes6.h"
+#include "tsage/blue_force/blueforce_scenes7.h"
 #include "tsage/blue_force/blueforce_scenes8.h"
+#include "tsage/blue_force/blueforce_scenes9.h"
 #include "tsage/scenes.h"
 #include "tsage/tsage.h"
 #include "tsage/graphics.h"
@@ -38,9 +43,9 @@ namespace BlueForce {
 
 void BlueForceGame::start() {
 	// Start the game
-	_globals->_sceneManager.changeScene(300);
+	g_globals->_sceneManager.changeScene(300);
 
-	_globals->_events.setCursor(CURSOR_WALK);
+	g_globals->_events.setCursor(CURSOR_WALK);
 }
 
 Scene *BlueForceGame::createScene(int sceneNumber) {
@@ -63,7 +68,6 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Introduction Bar Room
 		return new Scene109();
 	case 110:
-
 	case 114:
 	case 115:
 	case 125:
@@ -76,11 +80,23 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Front of Police Station
 		return new Scene190();
 	case 200:
+		// Credits - Motorcycle Training
+		return new Scene200();
 	case 210:
+		// Credits - Car Training
+		return new Scene210();
 	case 220:
+		// Credits - Martial Arts
+		return new Scene220();
 	case 225:
+		// Credits - Gun Training
+		return new Scene225();
 	case 265:
+		// Graduation Article
+		return new Scene265();
 	case 270:
+		// Grandma's Living Room
+		return new Scene270();
 	case 271:
 	case 280:
 		error("Scene group 2 not implemented");
@@ -106,7 +122,8 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Marina, Outside Boat
 		return new Scene350();
 	case 355:
-		error("Scene group 3 not implemented");
+		// Future Wave Exterior
+		return new Scene355();
 	case 360:
 		// Future Wave Interior
 		return new Scene360();
@@ -123,31 +140,55 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// City Jail
 		return new Scene390();
 	case 410:
+		// Traffic Stop Gang Members
+		return new Scene410();
 	case 415:
+		// Searching Truck
+		return new Scene415();
 	case 440:
+		// Outside Alleycat Bowl
+		return new Scene440();
 	case 450:
-		error("Scene group 4 not implemented");
+		// Inside Alleycat Bowl
+		return new Scene450();
 	case 550:
+		// Outside Bikini Hut
+		return new Scene550();
 	case 551:
+		// Outside Bikini Hut (Drunk Stop)
+		return new Scene551();
 	case 560:
+		// Study
+		return new Scene560();
 	case 570:
+		// Computer
+		return new Scene570();
 	case 580:
+		// Child Protective Services Parking Lot
+		return new Scene580();
 	case 590:
-		error("Scene group 5 not implemented");
+		// Child Protective Services
+		return new Scene590();
 	case 600:
+		// Crash cut-scene
+		return new Scene600();
 	case 620:
+		// Hospital cut-scene
+		return new Scene620();
 	case 666:
 		// Death scene
 		return new Scene666();
 	case 690:
-		error("Scene group 6 not implemented");
+		// Decking
+		return new Scene690();
 	case 710:
-		error("Scene group 7 not implemented");
+		return new Scene710();
 	case 800:
 		// Jamison & Ryan
 		return new Scene800();
 	case 810:
 	case 820:
+		error("Scene group 8 not implemented");
 	case 830:
 		// Outside Boat Rentals
 		return new Scene830();
@@ -160,12 +201,21 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 	case 880:
 		error("Scene group 8 not implemented");
 	case 900:
+		// Outside Warehouse
+		return new Scene900();
 	case 910:
-	case 920:
-	case 930:
-	case 935:
-	case 940:
 		error("Scene group 9 not implemented");
+	case 920:
+		// Inside Warehouse: Secret room
+		return new Scene920();
+	case 930:
+		// Inside the caravan
+		return new Scene930();
+	case 935:
+		// Hidden in the wardrobe
+		return new Scene935();
+	case 940:
+		return new Scene940();
 	default:
 		error("Unknown scene number - %d", sceneNumber);
 		break;
@@ -200,20 +250,20 @@ void BlueForceGame::processEvent(Event &event) {
 		case Common::KEYCODE_F4:
 			// F4 - Restart
 			restartGame();
-			_globals->_events.setCursorFromFlag();
+			g_globals->_events.setCursorFromFlag();
 			break;
 
 		case Common::KEYCODE_F7:
 			// F7 - Restore
 			restoreGame();
-			_globals->_events.setCursorFromFlag();
+			g_globals->_events.setCursorFromFlag();
 			break;
 
 		case Common::KEYCODE_F10:
 			// F10 - Pause
 			GfxDialog::setPalette();
 			MessageDialog::show(GAME_PAUSED_MSG, OK_BTN_STRING);
-			_globals->_events.setCursorFromFlag();
+			g_globals->_events.setCursorFromFlag();
 			break;
 
 		default:
@@ -237,7 +287,7 @@ void AObjectArray::clear() {
 void AObjectArray::synchronize(Serializer &s) {
 	EventHandler::synchronize(s);
 	for (int i = 0; i < OBJ_ARRAY_SIZE; ++i)
-		SYNC_POINTER(_objList[i]);	
+		SYNC_POINTER(_objList[i]);
 }
 
 void AObjectArray::process(Event &event) {
@@ -430,16 +480,16 @@ void NamedObject::setDetails(int resNum, int lookLineNum, int talkLineNum, int u
 
 	switch (mode) {
 	case 2:
-		_globals->_sceneItems.push_front(this);
+		g_globals->_sceneItems.push_front(this);
 		break;
 	case 4:
-		_globals->_sceneItems.addBefore(item, this);
+		g_globals->_sceneItems.addBefore(item, this);
 		break;
 	case 5:
-		_globals->_sceneItems.addAfter(item, this);
+		g_globals->_sceneItems.addAfter(item, this);
 		break;
 	default:
-		_globals->_sceneItems.push_back(this);
+		g_globals->_sceneItems.push_back(this);
 		break;
 	}
 }
@@ -548,7 +598,7 @@ void FocusObject::postInit(SceneObjectList *OwnerList) {
 	_v92 = 1;
 
 	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
-	scene->_eventHandler = this;
+	scene->_focusObject = this;
 	BF_GLOBALS._sceneItems.push_front(this);
 }
 
@@ -562,8 +612,8 @@ void FocusObject::remove() {
 	BF_GLOBALS._sceneItems.remove(this);
 
 	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
-	if (scene->_eventHandler == this)
-		scene->_eventHandler = NULL;
+	if (scene->_focusObject == this)
+		scene->_focusObject = NULL;
 
 	BF_GLOBALS._events.setCursor(BF_GLOBALS._events.getCursor());
 	NamedObject::remove();
@@ -572,20 +622,27 @@ void FocusObject::remove() {
 void FocusObject::process(Event &event) {
 	if (BF_GLOBALS._player._enabled) {
 		if (_bounds.contains(event.mousePos)) {
+			// Reset the cursor back to normal
 			BF_GLOBALS._events.setCursor(BF_GLOBALS._events.getCursor());
+
 			if ((event.eventType == EVENT_BUTTON_DOWN) && (BF_GLOBALS._events.getCursor() == CURSOR_WALK) &&
 					(event.btnState == 3)) {
 				BF_GLOBALS._events.setCursor(CURSOR_USE);
 				event.handled = true;
 			}
 		} else if (event.mousePos.y < 168) {
+			// Change the cursor to an 'Exit' image
 			BF_GLOBALS._events.setCursor(_img);
 			if (event.eventType == EVENT_BUTTON_DOWN) {
+				// Remove the object from display
 				event.handled = true;
 				remove();
 			}
 		}
 	}
+
+	if (_action)
+		_action->process(event);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -598,7 +655,7 @@ SceneExt::SceneExt(): Scene() {
 	_savedPlayerEnabled = false;
 	_savedUiEnabled = false;
 	_savedCanWalk = false;
-	_eventHandler = NULL;
+	_focusObject = NULL;
 	_cursorVisage.setVisage(1, 8);
 }
 
@@ -627,7 +684,7 @@ void SceneExt::dispatch() {
 			if (BF_GLOBALS._uiElements._active && BF_GLOBALS._player._enabled) {
 				BF_GLOBALS._uiElements.show();
 			}
-			
+
 			_field37A = 0;
 		}
 	}
@@ -637,7 +694,7 @@ void SceneExt::dispatch() {
 
 void SceneExt::loadScene(int sceneNum) {
 	Scene::loadScene(sceneNum);
-	
+
 	_v51C34.top = 0;
 	_v51C34.bottom = 300;
 }
@@ -708,7 +765,7 @@ void SceneExt::startStrip() {
 	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
 	scene->_field372 = 1;
 	scene->_savedPlayerEnabled = BF_GLOBALS._player._enabled;
-	
+
 	if (scene->_savedPlayerEnabled) {
 		scene->_savedUiEnabled = BF_GLOBALS._player._uiEnabled;
 		scene->_savedCanWalk = BF_GLOBALS._player._canWalk;
@@ -731,6 +788,10 @@ void SceneExt::endStrip() {
 		if (!BF_GLOBALS._v50696 && BF_GLOBALS._uiElements._active)
 			BF_GLOBALS._uiElements.show();
 	}
+}
+
+void SceneExt::clearScreen() {
+	BF_GLOBALS._screenSurface.fillRect(BF_GLOBALS._screenSurface.getBounds(), 0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -756,7 +817,7 @@ void PalettedScene::remove() {
 		for (SynchronizedList<SceneObject *>::iterator i = BF_GLOBALS._sceneObjects->begin();
 				i != BF_GLOBALS._sceneObjects->end(); ++i)
 			(*i)->remove();
-		
+
 		BF_GLOBALS._sceneObjects->draw();
 		BF_GLOBALS._scenePalette.loadPalette(2);
 		BF_GLOBALS._v51C44 = 1;
@@ -771,6 +832,42 @@ PaletteFader *PalettedScene::addFader(const byte *arrBufferRGB, int step, Action
 	return BF_GLOBALS._scenePalette.addFader(arrBufferRGB, 1, step, action);
 }
 
+void PalettedScene::sub15DD6(const byte *arrBufferRGB, int step, int paletteNum, Action *action) {
+	BF_GLOBALS._scenePalette.addFader(arrBufferRGB, 1, 100, NULL);
+	_palette.loadPalette(paletteNum);
+	_palette.loadPalette(2);
+	BF_GLOBALS._scenePalette.addFader(_palette._palette, 256, step, action);
+}
+
+void PalettedScene::sub15E4F(const byte *arrBufferRGB, int arg8, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag) {
+	byte tmpPalette[768];
+
+	_palette.loadPalette(paletteNum);
+	_palette.loadPalette(2);
+	if (!flag) {
+		for (int i = fromColor1; i <= fromColor2; i++) {
+			tmpPalette[(3 * i)]     = BF_GLOBALS._scenePalette._palette[(3 * i)];
+			tmpPalette[(3 * i) + 1] = BF_GLOBALS._scenePalette._palette[(3 * i) + 1];
+			tmpPalette[(3 * i) + 2] = BF_GLOBALS._scenePalette._palette[(3 * i) + 2];
+		}
+	} else {
+		for (int i = fromColor1; i <= fromColor2; i++) {
+			tmpPalette[(3 * i)]     = _palette._palette[(3 * i)];
+			tmpPalette[(3 * i) + 1] = _palette._palette[(3 * i) + 1];
+			tmpPalette[(3 * i) + 2] = _palette._palette[(3 * i) + 2];
+		}
+	}
+
+	for (int i = toColor1; i <= toColor2; i++) {
+		tmpPalette[i] = _palette._palette[i] - ((_palette._palette[i] - arrBufferRGB[0]) * (100 - arg8)) / 100;
+		tmpPalette[i + 1] = _palette._palette[i + 1] - ((_palette._palette[i + 1] - arrBufferRGB[1]) * (100 - arg8)) / 100;
+		tmpPalette[i + 2] = _palette._palette[i + 2] - ((_palette._palette[i + 2] - arrBufferRGB[2]) * (100 - arg8)) / 100;
+	}
+
+	BF_GLOBALS._scenePalette.addFader((const byte *)tmpPalette, 256, 100, action);
+}
+
+
 /*--------------------------------------------------------------------------*/
 
 void SceneHandlerExt::postInit(SceneObjectList *OwnerList) {
@@ -782,13 +879,17 @@ void SceneHandlerExt::postInit(SceneObjectList *OwnerList) {
 }
 
 void SceneHandlerExt::process(Event &event) {
+	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
+	if (scene && scene->_focusObject)
+		scene->_focusObject->process(event);
+
 	if (BF_GLOBALS._uiElements._active) {
 		BF_GLOBALS._uiElements.process(event);
 		if (event.handled)
 			return;
 	}
 
-	// If the strip proxy is currently being controlled by the strip manager, 
+	// If the strip proxy is currently being controlled by the strip manager,
 	// then pass all events to it first
 	if (BF_GLOBALS._stripProxy._action) {
 		BF_GLOBALS._stripProxy._action->process(event);
@@ -1028,10 +1129,10 @@ void BlueForceInvObjectList::reset() {
 void BlueForceInvObjectList::setObjectScene(int objectNum, int sceneNumber) {
 	// Find the appropriate object
 	int num = objectNum;
-	SynchronizedList<InvObject *>::iterator i = _itemList.begin(); 
+	SynchronizedList<InvObject *>::iterator i = _itemList.begin();
 	while (num-- > 0) ++i;
 	(*i)->_sceneNumber = sceneNumber;
-	
+
 	// If the item is the currently active one, default back to the use cursor
 	if (BF_GLOBALS._events.getCursor() == objectNum)
 		BF_GLOBALS._events.setCursor(CURSOR_USE);

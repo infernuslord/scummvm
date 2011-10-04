@@ -33,7 +33,7 @@ namespace TsAGE {
 
 class Scene : public StripCallback {
 private:
-	void drawAltObjects();
+	void drawBackgroundObjects();
 public:
 	int _field12;
 	int _screenNumber;
@@ -48,6 +48,7 @@ public:
 	int _enabledSections[256];
 	int _zoomPercents[256];
 	ScenePriorities _priorities;
+	SceneObjectList _bgSceneObjects;
 
 	int _fieldA;
 	int _fieldE;
@@ -71,8 +72,8 @@ public:
 
 class SceneManager : public GameHandler, public SaveListener {
 private:
-	void disposeRegions() { 
-		// No need to do anything, since regions will be freed automatically when the scene is	
+	void disposeRegions() {
+		// No need to do anything, since regions will be freed automatically when the scene is
 	}
 	Scene *getNewScene();
 public:
@@ -86,7 +87,6 @@ public:
 	Common::Point _sceneBgOffset;
 	int _sceneLoadCount;
 	Rect _scrollerRect;
-	SceneObjectList _altSceneObjects;
 	int _objectCount;
 public:
 	SceneManager();

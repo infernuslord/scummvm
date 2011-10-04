@@ -42,7 +42,7 @@ void Scene100::Text::dispatch() {
 	// Keep the second text string below the first one
 	Scene100 *scene = (Scene100 *)BF_GLOBALS._sceneManager._scene;
 	Common::Point &pt = scene->_action1._sceneText1._position;
-	scene->_action1._sceneText2.setPosition(Common::Point(pt.x, 
+	scene->_action1._sceneText2.setPosition(Common::Point(pt.x,
 		pt.y + scene->_action1._textHeight));
 }
 
@@ -56,14 +56,14 @@ void Scene100::Action1::signal() {
 		setDelay(6);
 		break;
 	case 1: {
-		Common::String msg1 = _resourceManager->getMessage(100, _state++);
+		Common::String msg1 = g_resourceManager->getMessage(100, _state++);
 		if (msg1.compareTo("LASTCREDIT")) {
-			Common::String msg2 = _resourceManager->getMessage(100, _state++);
+			Common::String msg2 = g_resourceManager->getMessage(100, _state++);
 			setTextStrings(msg1, msg2, this);
 			--_actionIndex;
 		} else {
 			setTextStrings(BF_NAME, BF_ALL_RIGHTS_RESERVED, this);
-			
+
 			Common::Point pt(_sceneText1._position.x, 80);
 			NpcMover *mover = new NpcMover();
 			_sceneText1.addMover(mover, &pt, this);
@@ -111,17 +111,17 @@ void Scene100::Action1::setTextStrings(const Common::String &msg1, const Common:
 	_sceneText2.setPosition(Common::Point((SCREEN_WIDTH - textSurface.getBounds().width()) / 2, 202));
 	_sceneText2._moveRate = 30;
 	_sceneText2._moveDiff.y = 1;
-	
+
 	_textHeight = textSurface.getBounds().height();
 	int yp = -(_textHeight * 2);
 
-	Common::Point pt(_sceneText1._position.x, yp); 
+	Common::Point pt(_sceneText1._position.x, yp);
 	NpcMover *mover = new NpcMover();
-	_sceneText1.addMover(mover, &pt, action); 
+	_sceneText1.addMover(mover, &pt, action);
 }
 
 void Scene100::Action2::signal() {
-	Scene100 *scene = (Scene100 *)_globals->_sceneManager._scene;
+	Scene100 *scene = (Scene100 *)g_globals->_sceneManager._scene;
 	static byte black[3] = {0, 0, 0};
 
 	switch (_actionIndex++) {
@@ -139,7 +139,7 @@ void Scene100::Action2::signal() {
 			ConfMan.flushToDisk();
 		} else {
 			// Prompt user for whether to start play or watch introduction
-			_globals->_player.enableControl();
+			g_globals->_player.enableControl();
 
 			if (MessageDialog::show2(WATCH_INTRO_MSG, START_PLAY_BTN_STRING, INTRODUCTION_BTN_STRING) == 0) {
 				// Signal to start the game
@@ -150,7 +150,7 @@ void Scene100::Action2::signal() {
 		}
 
 		// At this point the introduction needs to start
-		_globals->_scenePalette.addFader(black, 1, 2, this);
+		g_globals->_scenePalette.addFader(black, 1, 2, this);
 		break;
 	}
 	case 3:
@@ -166,24 +166,29 @@ Scene100::Scene100(): SceneExt() {
 }
 
 void Scene100::postInit(SceneObjectList *OwnerList) {
+	SceneExt::postInit();
+	if (BF_GLOBALS._dayNumber < 6) {
+		// Title
+		loadScene(100);
+	} else {
+		// Credits
+		loadScene(101);
+	}
 	BF_GLOBALS._scenePalette.loadPalette(2);
 	BF_GLOBALS._v51C44 = 1;
-	Scene::postInit();
 	BF_GLOBALS._interfaceY = SCREEN_HEIGHT;
 
-	_globals->_player.enableControl();
-	_globals->_player.hide();
-	_globals->_player.disableControl();
+	g_globals->_player.postInit();
+	g_globals->_player.hide();
+	g_globals->_player.disableControl();
 	_index = 109;
 
 	if (BF_GLOBALS._dayNumber < 6) {
 		// Title
-		loadScene(100);
 		BF_GLOBALS._sound1.play(2);
 		setAction(&_action2, this);
 	} else {
 		// Credits
-		loadScene(101);
 		BF_GLOBALS._sound1.play(118);
 		setAction(&_action1, this);
 	}
@@ -566,7 +571,7 @@ void Scene190::postInit(SceneObjectList *OwnerList) {
 		_object4.setFrame(2);
 		_object4.setPosition(Common::Point(54, 114));
 		_object4.setDetails(190, -1, -1, -1, 1, NULL);
-		
+
 		switch (BF_GLOBALS._sceneManager._previousScene) {
 		case 300: {
 			_sceneMode = 12;
@@ -675,7 +680,7 @@ void Scene190::signal() {
 void Scene190::process(Event &event) {
 	SceneExt::process(event);
 
-	if (BF_GLOBALS._player._enabled && !_eventHandler && (event.mousePos.y < (BF_INTERFACE_Y - 1))) {
+	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < (BF_INTERFACE_Y - 1))) {
 		// Check if the cursor is on an exit
 		if (_exit.contains(event.mousePos)) {
 			GfxSurface surface = _cursorVisage.getFrame(3);
@@ -691,7 +696,7 @@ void Scene190::process(Event &event) {
 void Scene190::dispatch() {
 	SceneExt::dispatch();
 
-	if (!_action && !_fieldB52 && (BF_GLOBALS._player._position.x >= 310) 
+	if (!_action && !_fieldB52 && (BF_GLOBALS._player._position.x >= 310)
 			&& !BF_GLOBALS.getFlag(onBike)) {
 		// Handle walking off to the right side of the screen
 		BF_GLOBALS._player.disableControl();

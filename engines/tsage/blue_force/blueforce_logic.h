@@ -35,7 +35,7 @@ namespace BlueForce {
 
 using namespace TsAGE;
 
-#define BF_INVENTORY (*((::TsAGE::BlueForce::BlueForceInvObjectList *)_globals->_inventory))
+#define BF_INVENTORY (*((::TsAGE::BlueForce::BlueForceInvObjectList *)g_globals->_inventory))
 
 class BlueForceGame: public Game {
 public:
@@ -83,7 +83,7 @@ public:
 class TimerExt: public Timer {
 public:
 	Action *_newAction;
-public:	
+public:
 	TimerExt();
 	void set(uint32 delay, EventHandler *endHandler, Action *action);
 
@@ -91,7 +91,20 @@ public:
 	virtual void synchronize(Serializer &s);
 	virtual void remove();
 	virtual void signal();
-};	
+};
+
+
+class SceneHotspotExt: public SceneHotspot {
+public:
+	int _state;
+
+	SceneHotspotExt() { _state = 0; }
+	virtual Common::String getClassName() { return "SceneHotspotExt"; }
+	virtual void synchronize(Serializer &s) {
+		SceneHotspot::synchronize(s);
+		s.syncAsSint16LE(_state);
+	}
+};
 
 class SceneItemType2: public SceneHotspot {
 public:
@@ -168,13 +181,13 @@ public:
 	GfxSurface _img;
 
 	FocusObject();
-	virtual void postInit(SceneObjectList *OwnerList);
+	virtual void postInit(SceneObjectList *OwnerList = NULL);
 	virtual void synchronize(Serializer &s);
 	virtual void remove();
 	virtual void process(Event &event);
 };
 
-enum ExitFrame { EXITFRAME_N = 1, EXITFRAME_NE = 2, EXITFRAME_E = 3, EXITFRAME_SE = 4, 
+enum ExitFrame { EXITFRAME_N = 1, EXITFRAME_NE = 2, EXITFRAME_E = 3, EXITFRAME_SE = 4,
 		EXITFRAME_S = 5, EXITFRAME_SW = 6, EXITFRAME_W = 7, EXITFRAME_NW = 8 };
 
 class SceneExt: public Scene {
@@ -189,7 +202,7 @@ public:
 	bool _savedCanWalk;
 	int _field37A;
 
-	EventHandler *_eventHandler;
+	FocusObject *_focusObject;
 	Visage _cursorVisage;
 
 	Rect _v51C34;
@@ -208,6 +221,7 @@ public:
 	bool display(CursorType action);
 	void fadeOut();
 	void gunDisplay();
+	void clearScreen();
 };
 
 class PalettedScene: public SceneExt {
@@ -221,6 +235,8 @@ public:
 	virtual void postInit(SceneObjectList *OwnerList = NULL);
 	virtual void remove();
 	PaletteFader *addFader(const byte *arrBufferRGB, int step, Action *action);
+	void sub15DD6(const byte *arrBufferRGB, int step, int paletteNum, Action *action);
+	void sub15E4F(const byte *arrBufferRGB, int arg8, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag);
 };
 
 class SceneHandlerExt: public SceneHandler {

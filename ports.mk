@@ -129,8 +129,7 @@ scummvm-static: $(OBJS)
 		-framework CoreMIDI \
 		$(OSX_STATIC_LIBS) \
 		$(OSX_ZLIB) \
-		$(OSX_ICONV) \
-		-lSystemStubs
+		$(OSX_ICONV)
 
 # Special target to create a static linked binary for the iPhone
 iphone: $(OBJS)
@@ -255,6 +254,12 @@ endif
 	sfo.py -f $(srcdir)/dists/ps3/sfo.xml ps3pkg/PARAM.SFO
 	pkg.py --contentid UP0001-SCUM12000_00-0000000000000000 ps3pkg/ scummvm-ps3.pkg
 	package_finalize scummvm-ps3.pkg
+
+ps3run: $(EXECUTABLE)
+	$(STRIP) $(EXECUTABLE)
+	sprxlinker $(EXECUTABLE)
+	make_self $(EXECUTABLE) $(EXECUTABLE).self
+	ps3load $(EXECUTABLE).self
 
 # Mark special targets as phony
 .PHONY: deb bundle osxsnap win32dist install uninstall ps3pkg

@@ -20,32 +20,29 @@
  *
  */
 
-#ifndef GPH_H
-#define GPH_H
+#if defined(MAEMO)
 
-#if defined(GPH_DEVICE)
+#if !defined(BACKEND_EVENTS_SDL_MAEMO_H) && !defined(DISABLE_DEFAULT_EVENTMANAGER)
+#define BACKEND_EVENTS_SDL_MAEMO_H
 
-#include "backends/base-backend.h"
+#include "backends/events/sdl/sdl-events.h"
 #include "backends/platform/sdl/sdl.h"
-#include "backends/platform/sdl/posix/posix.h"
-#include "backends/events/gph/gph-events.h"
-#include "backends/graphics/gph/gph-graphics.h"
+#include "backends/graphics/surfacesdl/surfacesdl-graphics.h"
 
-#define __GP2XWIZ__
-
-#ifndef PATH_MAX
-	#define PATH_MAX 255
-#endif
-
-class OSystem_GPH : public OSystem_POSIX {
+/**
+ * SDL events manager for Maemo
+ */
+class MaemoSdlEventSource : public SdlEventSource {
 public:
-	OSystem_GPH();
+	MaemoSdlEventSource();
+protected:
+	virtual bool remapKey(SDL_Event &ev, Common::Event &event);
+	virtual bool handleMouseButtonDown(SDL_Event &ev, Common::Event &event);
+	virtual bool handleMouseButtonUp(SDL_Event &ev, Common::Event &event);
 
-	/* Platform Setup Stuff */
-	void addSysArchivesToSearchSet(Common::SearchSet &s, int priority);
-	void initBackend();
-	void quit();
+	bool _clickEnabled;
 };
 
 #endif
-#endif //GPH_H
+
+#endif
