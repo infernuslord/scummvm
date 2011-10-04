@@ -105,7 +105,7 @@ public:
 
 	// Buffer
 	void prepareBuffer();
-	void drawBuffer();
+	void drawBuffer(Graphics::Surface *surface);
 	void computeCoordinates(Common::Point *point);
 	void adjustCoordinates(Common::Point *point);
 
@@ -146,6 +146,7 @@ private:
 	void reset();
 	void *allocBuffer(bool hasAdditionnalData) const;
 	void initData();
+	void copyToSurface(int16 *data, int width, int height, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, byte *surface, int pitch);
 };
 
 class ImageHeader {

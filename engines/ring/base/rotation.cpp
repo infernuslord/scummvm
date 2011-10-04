@@ -269,7 +269,7 @@ void Rotation::draw() {
 		return;
 
 	_stream->getEntry()->prepareBuffer();
-	_stream->getEntry()->drawBuffer();
+	_stream->getEntry()->drawBuffer(getApp()->getScreenManager()->getSurface());
 }
 
 void Rotation::drawText() {

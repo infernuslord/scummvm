@@ -59,6 +59,7 @@ public:
 	void updateScreen();
 
 	void setOffset(Common::Point offset) { _offset = offset; }
+	Graphics::Surface *getSurface() { return &_screen; }
 private:
 	Graphics::Surface _screen;
 

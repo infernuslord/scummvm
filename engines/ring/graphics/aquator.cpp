@@ -26,6 +26,7 @@
 #include "ring/helpers.h"
 
 #include "common/archive.h"
+#include "graphics/surface.h"
 
 namespace Ring {
 
@@ -247,11 +248,68 @@ void ImageHeaderEntry::update(ImageHeaderEntry *entry, bool updateCaller) {
 }
 
 void ImageHeaderEntry::prepareBuffer() {
-	error("[ImageHeaderEntry::prepareBuffer] Not implemented");
+	int32 *buffer = (int32 *)_bufferData;
+	if (!buffer)
+		error("[ImageHeaderEntry::prepareBuffer] Buffer not initialized properly");
+
+	int count = buffer[8203];
+	if (count < 0)
+		return;
+
+	// Prepare buffer chunks
+	int32 *bufferPtr = buffer + 4098;
+	do {
+		for (int i = 0; i < buffer[8202]; i++)
+			Pixel::set(&bufferPtr[i], bufferPtr[i], buffer[8231], buffer[8232]);
+
+		bufferPtr += 64;
+		--count;
+	} while (count > 0);
 }
 
-void ImageHeaderEntry::drawBuffer() {
+void ImageHeaderEntry::drawBuffer(Graphics::Surface *surface) {
+	int32 *buffer = (int32 *)_bufferData;
+	if (!buffer)
+		error("[ImageHeaderEntry::prepareBuffer] Buffer not initialized properly");
+
+	int count = buffer[8203];
+	if (count < 0)
+		return;
+
+	// Setup buffers
+	byte  *surfacePtr = (byte *)surface->pixels;
+	int32 *bufferPtr  = buffer;
+
+	// Draw buffer to surface
+	do {
+
+		for (int i = 0; i < buffer[8202]; i++) {
+			copyToSurface((int16 *)(buffer + 1),
+			              16,
+			              16,
+			              bufferPtr[i + 2],
+			              bufferPtr[i + 4098],
+			              bufferPtr[i + 3],
+			              bufferPtr[i + 4099],
+			              bufferPtr[i + 66],
+			              bufferPtr[i + 4162],
+			              bufferPtr[i + 67],
+			              bufferPtr[i + 41636],
+			              surfacePtr,
+			              surface->pitch - 32);
+
+			surfacePtr += 32;
+		}
+
+		surfacePtr += surface->pitch * 16; // TODO handle any type of bpp
+		bufferPtr  += 64;
+		--count;
+	} while (count > 0);
 	error("[ImageHeaderEntry::drawBuffer] Not implemented");
+}
+
+void ImageHeaderEntry::copyToSurface(int16 *data, int width, int height, int a4, int a5, int a6, int a7, int a8, int a9, int a10, int a11, byte *surface, int pitch) {
+	error("[ImageHeaderEntry::copyToSurface] Not implemented");
 }
 
 void ImageHeaderEntry::computeCoordinates(Common::Point *point) {
@@ -423,9 +481,9 @@ AquatorImageHeader::~AquatorImageHeader() {
 
 void AquatorImageHeader::setChannel(uint32 channel) {
 	if (_channel != channel) {
- 		_channel = channel;
- 		_field_4 = 1;
- 	}
+		_channel = channel;
+		_field_4 = 1;
+	}
 }
 
 #pragma endregion
