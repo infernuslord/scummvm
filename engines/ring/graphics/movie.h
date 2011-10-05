@@ -255,42 +255,25 @@ public:
 	CinematicSound();
 	~CinematicSound();
 
-	void init(uint32 a1, uint32 a2, uint32 a3, int32 bufferOffset);
+	void init(uint32 channel, uint32 bitsPerSample, uint32 samplesPerSec);
 	void deinit();
 
-	void setVolume(int32 volume);
 	void play();
-	void addBuffer(Common::SeekableReadStream *stream);
+	void setVolume(int32 volume);
+	void queueBuffer(Common::SeekableReadStream *stream);
 
 private:
-	Common::Mutex                                 _mutex;
 	Audio::SoundHandle                            _handle;
 
-	int16                                         _field_0;
-	int16                                         _field_2;
-	int32                                         _field_4;
-	int32                                         _field_8;
-	int16                                         _field_C;
-	int16                                         _field_E;
-	int16                                         _field_10;
-	Audio::RewindableAudioStream                 *_audioStream;
-	int32                                         _bufferSize;
-	int32                                         _bufferSize2;
-	int32                                         _field_22;
-	int32                                         _field_26;
-	int32                                         _field_2A;
-	int32                                         _field_2E;
+	int16                                         _channels;
+	int32                                         _samplesPerSec;
+	int32                                         _avgBytesPerSec;
+	int16                                         _blockAlign;
+	int16                                         _bitsPerSample;
+	Audio::QueuingAudioStream                    *_audioStream;
 	bool                                          _isPlaying;
-	bool                                          _shouldPlay;
-	Common::Array<Common::SeekableReadStream *>   _buffers;
 	float                                         _volume;
 
-	void copyToBuffer();
-
-	void createTimer();
-	void stopTimer();
-	void handle();
-	static void handler(void *ptr);
 };
 
 class Movie {

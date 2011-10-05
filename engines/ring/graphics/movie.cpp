@@ -37,7 +37,11 @@
 #include "ring/ring.h"
 #include "ring/helpers.h"
 
+#include "audio/decoders/adpcm.h"
+
 #include "common/file.h"
+#include "common/memstream.h"
+#include "common/timer.h"
 
 namespace Ring {
 
@@ -702,55 +706,37 @@ bool Cinematic2::seek(int32 offset, int whence) {
 #pragma region CinematicSound
 
 CinematicSound::CinematicSound() {
-	_field_0     = 0;
-	_field_2     = 0;
-	_field_4     = 0;
-	_field_8     = 0;
-	_field_C     = 0;
-	_field_E     = 0;
-	_field_10    = 0;
-	_audioStream = NULL;
-	_bufferSize  = 0;
-	_bufferSize2 = 0;
-	_field_22    = 0;
-	_field_26    = 0;
-	_field_2A    = 0;
-	_field_2E    = 0;
-	_isPlaying   = false;
-	_shouldPlay  = false;
-	_volume      = 1.0f;
+	_channels       = 0;
+	_samplesPerSec  = 0;
+	_avgBytesPerSec = 0;
+	_blockAlign     = 0;
+	_bitsPerSample  = 0;
+	_audioStream    = NULL;
+	_isPlaying      = false;
+	_volume         = 1.0f;
 }
 
 CinematicSound::~CinematicSound() {
 	deinit();
 }
 
-void CinematicSound::init(uint32 a1, uint32 a2, uint32 a3, int32 bufferOffset) {
+void CinematicSound::init(uint32 channels, uint32 bitsPerSample, uint32 samplesPerSec) {
 	deinit();
 
-	_field_2 = a1;
-	_field_E = a2;
-	_field_C = a2 * a1 / 8;
-	_shouldPlay = false;
-	_field_10 = 1;
-	_field_4 = a3;
-	_field_0 = 1;
-	_field_8 = a3 * _field_C;
+	_channels       = channels;
+	_bitsPerSample  = bitsPerSample;
+	_blockAlign     = bitsPerSample * channels / 8;
+	_samplesPerSec  = samplesPerSec;
+	_avgBytesPerSec = samplesPerSec * _blockAlign;
 
-	if (bufferOffset <= 0)
-		_bufferSize2 = -bufferOffset;
-	else
-		_bufferSize2 = bufferOffset * _field_8;
+	_isPlaying      = false;
+	_volume         = 1.0f;
 
-	_bufferSize2 >>= 2;
+	debugC(kRingDebugMovie, "Setting up movie sound (channels: %d, bitsPerSample: %d, blockAlign: %d, samplesPerSec: %d, avgBytesPerSec: %d)",
+	       _channels, _bitsPerSample, _blockAlign, _samplesPerSec, _avgBytesPerSec);
 
-	if (_bufferSize2 % _field_C)
-		_bufferSize2 += _field_C - (_bufferSize2 % _field_C);
-
-	_bufferSize = _bufferSize2 * 4;
-
-	// Original setups the sound buffer
-	_field_22 = 0;
+	// Create an audio stream where the decoded chunks will be appended
+	_audioStream = Audio::makeQueuingAudioStream(22050 /*samplesPerSec * 1000*/, channels == 1 ? false : true);
 }
 
 void CinematicSound::deinit() {
@@ -758,48 +744,32 @@ void CinematicSound::deinit() {
 		return;
 
 	if (_isPlaying) {
-		play();
 		_isPlaying = false;
 
 		// Stop sound
 		getSound()->getMixer()->stopHandle(_handle);
 	}
 
-	// TODO wait until the sound thread is done processing the buffer
-
-	// Close the audio stream and cleanup buffers
-	SAFE_DELETE(_audioStream);
-
-	CLEAR_ARRAY(Common::SeekableReadStream, _buffers);
+	// Close the audio stream
+	_audioStream = NULL;
 }
 
 void CinematicSound::play() {
-	if (!_audioStream || _isPlaying)
+	if (_isPlaying)
 		return;
 
+	if (!_audioStream)
+		error("[CinematicSound::play] Audiostream not initialized properly");
+
+	// Get sound volume
 	int32 vol = (int32)(_volume * -10000.0f);
 	SoundEntry::convertVolumeFrom(vol);
 
-	_field_2A = 0;
-	_field_26 = _bufferSize;
-
-	// Lock buffer and copy data
-	copyToBuffer();
-
-	// Setup buffer filling thread
-	createTimer();
-
 	// Play sound
-	_audioStream->rewind();
 	getSound()->getMixer()->setChannelVolume(_handle, (byte)vol);
+	getSound()->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, _audioStream);
 
-	// TODO Reset thread event
-
-	_field_2E = 0;
 	_isPlaying = true;
-	_shouldPlay = false;
-
-	getSound()->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, makeLoopingAudioStream(_audioStream, 1));
 }
 
 void CinematicSound::setVolume(int32 volume) {
@@ -817,26 +787,18 @@ void CinematicSound::setVolume(int32 volume) {
 	getSound()->getMixer()->setChannelVolume(_handle, (byte)vol);
 }
 
-void CinematicSound::addBuffer(Common::SeekableReadStream *stream) {
-	_buffers.push_back(stream);
-}
+void CinematicSound::queueBuffer(Common::SeekableReadStream *stream) {
+	if (!_audioStream)
+		error("[CinematicSound::play] Audiostream not initialized properly");
 
-void CinematicSound::copyToBuffer() {
-	Common::StackLock stackLock(_mutex);
+	Audio::RewindableAudioStream *adpcm = Audio::makeADPCMStream(stream, DisposeAfterUse::YES, stream->size(), Audio::kADPCMMS, 22050/*_samplesPerSec * 1000*/, _channels, _blockAlign);
+	if (!adpcm) {
+		warning("[CinematicSound::queueBuffer] Cannot decode sound stream");
+		return;
+	}
 
-	error("[CinematicSound::copyToBuffer] Not implemented!");
-}
-
-void CinematicSound::createTimer() {
-	error("[CinematicSound::createTimer] Not implemented!");
-}
-
-void CinematicSound::handle() {
-	error("[CinematicSound::soundTimer] Not implemented!");
-}
-
-void CinematicSound::handler(void *refCon) {
-	((CinematicSound *)refCon)->handle();
+	// TODO Queue the stream
+	//_audioStream->queueAudioStream(adpcm);
 }
 
 #pragma endregion
@@ -882,7 +844,7 @@ bool Movie::init(Common::String path, Common::String filename, uint32, uint32 ch
 	_isSoundInitialized = true;
 
 	// Setup sound
-	_sound->init(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A, -(int32)(CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(Cinematic::TControl)));
+	_sound->init(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A);
 	_sound->setVolume(getApp()->getPreferenceHandler()->getVolume());
 
 	// Setup framerate
@@ -1120,39 +1082,43 @@ bool Movie::readSound() {
 	if (!cinematic)
 		error("[Movie::readSound] Cinematic not initialized properly");
 
-	// Read sound data offset
-	uint32 offset = cinematic->readUint32LE();
+	// Read sound data size
+	uint32 soundSize = cinematic->readUint32LE();
 	if (cinematic->err() || cinematic->eos()) {
 		warning("[Movie::readSound] Error reading from file");
 		deinit();
 		return false;
 	}
 
-	debugC(kRingDebugMovie, "    Reading sound data (size: %d)", offset);
+	debugC(kRingDebugMovie, "    Reading sound data (size: %d)", soundSize);
 
 	// Check if there is any sound data
-	if (!offset)
+	if (!soundSize)
 		return true;
 
-	if (offset > 10000000) {
-		warning("[Movie::readSound] Invalid sound offset (was: %d, max: 10000000)", offset);
+	if (soundSize > 10000000) {
+		warning("[Movie::readSound] Invalid sound data size (was: %d, max: 10000000)", soundSize);
 		return false;
 	}
 
 	// Check remaining file size
-	if (((uint32)cinematic->pos() + offset) >= (uint32)cinematic->size()) {
-		warning("[Movie::readSound] Invalid sound offset (would read after end of file: %d)", offset);
+	if (((uint32)cinematic->pos() + soundSize) >= (uint32)cinematic->size()) {
+		warning("[Movie::readSound] Invalid sound data size (would read after end of file: %d)", soundSize);
 		deinit();
 		return false;
 	}
 
-	// Add buffer to queue
 	if (!_isSoundInitialized)
 		return true;
 
-	_sound->addBuffer(new Common::SeekableSubReadStream(cinematic, (uint32)cinematic->pos(), (uint32)cinematic->pos() + offset));
+	// Read sound data
+	byte *soundBuffer = (byte *)calloc(soundSize, 1);
+	if (!soundBuffer)
+		error("[Movie::readSound] Cannot allocate sound buffer");
 
-	cinematic->seek(offset, SEEK_CUR);
+	cinematic->read(soundBuffer, soundSize);
+
+	_sound->queueBuffer(new Common::MemoryReadStream(soundBuffer, soundSize, DisposeAfterUse::YES));
 
 	return true;
 }
