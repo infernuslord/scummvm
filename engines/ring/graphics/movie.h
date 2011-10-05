@@ -27,6 +27,7 @@
 #include "audio/audiostream.h"
 #include "audio/mixer.h"
 
+#include "common/mutex.h"
 #include "common/rect.h"
 #include "common/stream.h"
 #include "common/substream.h"
@@ -249,20 +250,42 @@ public:
 	CinematicSound();
 	~CinematicSound();
 
-	void init(uint32 a1, uint32 a2, uint32 a3, int32 a4);
-    void deinit();
+	void init(uint32 a1, uint32 a2, uint32 a3, int32 bufferOffset);
+	void deinit();
 
 	void setVolume(int32 volume);
-	void sub_46A4B0();
+	void play();
 	void addBuffer(Common::SeekableReadStream *stream);
 
 private:
-	Audio::SoundHandle _handle;
+	Common::Mutex                                 _mutex;
+	Audio::SoundHandle                            _handle;
 
-	Common::Array<Common::SeekableReadStream *> _buffers;
-	float _volume;
+	int16                                         _field_0;
+	int16                                         _field_2;
+	int32                                         _field_4;
+	int32                                         _field_8;
+	int16                                         _field_C;
+	int16                                         _field_E;
+	int16                                         _field_10;
+	Audio::RewindableAudioStream                 *_audioStream;
+	int32                                         _bufferSize;
+	int32                                         _bufferSize2;
+	int32                                         _field_22;
+	int32                                         _field_26;
+	int32                                         _field_2A;
+	int32                                         _field_2E;
+	bool                                          _isPlaying;
+	bool                                          _shouldPlay;
+	Common::Array<Common::SeekableReadStream *>   _buffers;
+	float                                         _volume;
 
-	void play();
+	void copyToBuffer();
+
+	void createTimer();
+	void stopTimer();
+	void handle();
+	static void handler(void *ptr);
 };
 
 class Movie {

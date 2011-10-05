@@ -79,7 +79,7 @@ Cinematic::~Cinematic() {
 
 bool Cinematic::init(Common::String filename) {
 	_stream = SearchMan.createReadStreamForMember(filename);
-	if (!_stream) {
+	if (!_stream || _stream->err()) {
 		warning("[Cinematic::init] Error opening file (%s)", filename.c_str());
 		return false;
 	}
@@ -151,9 +151,6 @@ bool Cinematic::tControl() {
 
 	if (!_stream)
 		error("[Cinematic::tControl] Stream not initialized");
-
-	if (!_compressedData)
-		error("[Cinematic::tControl] Control data not initialized");
 
 	// Reset tControl buffer
 	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
@@ -649,27 +646,104 @@ bool Cinematic2::seek(int32 offset, int whence) {
 #pragma region CinematicSound
 
 CinematicSound::CinematicSound() {
-	_volume = 1.0f;
+	_field_0     = 0;
+	_field_2     = 0;
+	_field_4     = 0;
+	_field_8     = 0;
+	_field_C     = 0;
+	_field_E     = 0;
+	_field_10    = 0;
+	_audioStream = NULL;
+	_bufferSize  = 0;
+	_bufferSize2 = 0;
+	_field_22    = 0;
+	_field_26    = 0;
+	_field_2A    = 0;
+	_field_2E    = 0;
+	_isPlaying   = false;
+	_shouldPlay  = false;
+	_volume      = 1.0f;
 }
 
 CinematicSound::~CinematicSound() {
-	CLEAR_ARRAY(Common::SeekableReadStream, _buffers);
+	deinit();
 }
 
-void CinematicSound::init(uint32 a1, uint32 a2, uint32 a3, int32 a4) {
-	error("[CinematicSound::init] Not implemented!");
+void CinematicSound::init(uint32 a1, uint32 a2, uint32 a3, int32 bufferOffset) {
+	deinit();
+
+	_field_2 = a1;
+	_field_E = a2;
+	_field_C = a2 * a1 / 8;
+	_shouldPlay = false;
+	_field_10 = 1;
+	_field_4 = a3;
+	_field_0 = 1;
+	_field_8 = a3 * _field_C;
+
+	if (bufferOffset <= 0)
+		_bufferSize2 = -bufferOffset;
+	else
+		_bufferSize2 = bufferOffset * _field_8;
+
+	_bufferSize2 >>= 2;
+
+	if (_bufferSize2 % _field_C)
+		_bufferSize2 += _field_C - (_bufferSize2 % _field_C);
+
+	_bufferSize = _bufferSize2 * 4;
+
+	// Original setups the sound buffer
+	_field_22 = 0;
 }
 
 void CinematicSound::deinit() {
-	error("[CinematicSound::deinit] Not implemented!");
+	if (!_audioStream)
+		return;
+
+	if (_isPlaying) {
+		play();
+		_isPlaying = false;
+
+		// Stop sound
+		getSound()->getMixer()->stopHandle(_handle);
+	}
+
+	// TODO wait until the sound thread is done processing the buffer
+
+	// Close the audio stream and cleanup buffers
+	SAFE_DELETE(_audioStream);
+
+	CLEAR_ARRAY(Common::SeekableReadStream, _buffers);
 }
 
 void CinematicSound::play() {
-	error("[CinematicSound::play] Not implemented!");
-}
+	if (!_audioStream || _isPlaying)
+		return;
 
-void CinematicSound::sub_46A4B0() {
-	error("[CinematicSound::sub_46A4B0] Not implemented!");
+	int32 vol = (int32)(_volume * -10000.0f);
+	SoundEntry::convertVolumeFrom(vol);
+
+	_field_2A = 0;
+	_field_26 = _bufferSize;
+
+	// Lock buffer and copy data
+	copyToBuffer();
+
+	// Setup buffer filling thread
+	createTimer();
+
+	// Play sound
+	_audioStream->rewind();
+	getSound()->getMixer()->setChannelVolume(_handle, (byte)vol);
+
+	// TODO Reset thread event
+
+	_field_2E = 0;
+	_isPlaying = true;
+	_shouldPlay = false;
+
+	getSound()->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, makeLoopingAudioStream(_audioStream, 1));
 }
 
 void CinematicSound::setVolume(int32 volume) {
@@ -684,11 +758,29 @@ void CinematicSound::setVolume(int32 volume) {
 	int32 vol = (int32)(_volume * -10000.0f);
 	SoundEntry::convertVolumeFrom(vol);
 
-	getSound()->getMixer()->setChannelVolume(_handle, (byte)volume);
+	getSound()->getMixer()->setChannelVolume(_handle, (byte)vol);
 }
 
 void CinematicSound::addBuffer(Common::SeekableReadStream *stream) {
 	_buffers.push_back(stream);
+}
+
+void CinematicSound::copyToBuffer() {
+	Common::StackLock stackLock(_mutex);
+
+	error("[CinematicSound::copyToBuffer] Not implemented!");
+}
+
+void CinematicSound::createTimer() {
+	error("[CinematicSound::createTimer] Not implemented!");
+}
+
+void CinematicSound::handle() {
+	error("[CinematicSound::soundTimer] Not implemented!");
+}
+
+void CinematicSound::handler(void *refCon) {
+	((CinematicSound *)refCon)->handle();
 }
 
 #pragma endregion
@@ -828,7 +920,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (setupSound) {
 						if (_isSoundInitialized)
-							_sound->sub_46A4B0();
+							_sound->play();
 
 						setupSound = false;
 					}
@@ -849,7 +941,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (setupSound) {
 						if (_isSoundInitialized)
-							_sound->sub_46A4B0();
+							_sound->play();
 
 						setupSound = false;
 					}
@@ -932,7 +1024,7 @@ void Movie::play(const Common::Point &point) {
 
 					if (setupSound) {
 						if (_isSoundInitialized)
-							_sound->sub_46A4B0();
+							_sound->play();
 
 						setupSound = false;
 					}
@@ -993,6 +1085,8 @@ bool Movie::readSound() {
 		return true;
 
 	_sound->addBuffer(new Common::SeekableSubReadStream(cinematic, (uint32)cinematic->pos(), (uint32)cinematic->pos() + offset));
+
+	cinematic->seek(offset, SEEK_CUR);
 
 	return true;
 }

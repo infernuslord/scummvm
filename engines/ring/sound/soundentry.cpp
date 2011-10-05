@@ -226,7 +226,7 @@ void SoundEntryStream::play(bool loop) {
 
 	if (_audioStream) {
 		_audioStream->rewind();
-		g_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, makeLoopingAudioStream(_audioStream, loop ? 0 : 1));
+		getSound()->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, makeLoopingAudioStream(_audioStream, loop ? 0 : 1));
 
 		setVolumeAndPan();
 		_isPlaying = true;
@@ -345,7 +345,7 @@ void SoundEntryData::play(bool loop) {
 
 	// Rewind and play sound
 	_audioStream->rewind();
-	g_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, makeLoopingAudioStream(_audioStream, loop ? 0 : 1));
+	getSound()->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_handle, makeLoopingAudioStream(_audioStream, loop ? 0 : 1));
 
 	setVolumeAndPan();
 	_isPlaying = !loop;
