@@ -141,15 +141,14 @@ private:
 class ImageLoaderCIN : public ImageLoader {
 public:
 	struct Header {
-		uint32 field_0;
-		uint32 field_4;
+		char   signature[8];
 		byte   field_8;
 		byte   field_9;
 		byte   field_A;
 		byte   field_B;
 		uint16 field_C;
 		uint32 chunkCount;
-		uint16 field_12;
+		uint32 field_12;
 		byte   field_16;
 		uint32 width;
 		uint32 height;

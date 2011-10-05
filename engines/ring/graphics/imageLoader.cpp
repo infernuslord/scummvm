@@ -484,15 +484,14 @@ bool ImageLoaderCIN::readHeader() {
 	memset(&_header, 0, sizeof(_header));
 
 	// Read header (size: 0x40)
-	_header.field_0    = _cinematic->readUint32LE();
-	_header.field_4    = _cinematic->readUint32LE();
+	_cinematic->read(&_header.signature, sizeof(_header.signature));
 	_header.field_8    = _cinematic->readByte();
 	_header.field_9    = _cinematic->readByte();
 	_header.field_A    = _cinematic->readByte();
 	_header.field_B    = _cinematic->readByte();
 	_header.field_C    = _cinematic->readUint16LE();
 	_header.chunkCount = _cinematic->readUint32LE();
-	_header.field_12   = _cinematic->readUint16LE();
+	_header.field_12   = _cinematic->readUint32LE();
 	_header.field_16   = _cinematic->readByte();
 	_header.width      = _cinematic->readUint32LE();
 	_header.height     = _cinematic->readUint32LE();
@@ -520,9 +519,6 @@ bool ImageLoaderCIN::readImage(Image *image) {
 	if (!image)
 		error("[ImageLoaderCNM::readImage] Invalid image pointer!");
 
-	if (!image->isInitialized())
-		error("[ImageLoaderCNM::readImage] Invalid image!");
-
 	Graphics::PixelFormat format = g_system->getScreenFormat();
 	format.bytesPerPixel = 2;
 
@@ -538,7 +534,8 @@ bool ImageLoaderCIN::readImage(Image *image) {
 	if (!_cinematic->sControl((byte *)surface->pixels))
 		error("[ImageLoaderCIN::readImage] Cannot read image");
 
-	delete surface;
+	// Store surface into image
+	image->setSurface(surface);
 
 	return true;
 }
