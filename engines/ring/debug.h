@@ -33,7 +33,8 @@ enum {
 	kRingDebugSound       = 1 << 3,
 	kRingDebugSavegame    = 1 << 4,
 	kRingDebugLogic       = 1 << 5,
-	kRingDebugUnknown     = 1 << 6
+	kRingDebugMovie       = 1 << 6,
+	kRingDebugUnknown     = 1 << 7
 	// the current limitation is 32 debug levels (1 << 31 is the last one)
 };
 

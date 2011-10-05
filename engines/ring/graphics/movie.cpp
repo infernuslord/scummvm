@@ -57,7 +57,7 @@ Cinematic::Cinematic() {
 	_tControlBuffer = NULL;
 	_cacheBuffer = NULL;
 	_compressedData = NULL;
-	_field_3A = NULL;
+	_compressedDataEnd = NULL;
 	_compressedBuffer = NULL;
 	_compressedBufferEnd = NULL;
 	_field_46 = 0;
@@ -85,27 +85,27 @@ bool Cinematic::init(Common::String filename) {
 	}
 
 	// Create buffers
-	_buffer = (byte *)malloc(CINEMATIC_BUFFER_SIZE);
+	_buffer = (byte *)calloc(CINEMATIC_BUFFER_SIZE, 1);
 	if (!_buffer)
 		error("[Cinematic::init] Error creating main buffer!");
 
 	_buffer2 = _buffer;
 	_field_10 = false;
 
-	_backBuffer = (byte *)malloc(CINEMATIC_BACKBUFFER_SIZE);
+	_backBuffer = (byte *)calloc(CINEMATIC_BACKBUFFER_SIZE, 1);
 	if (!_backBuffer)
 		error("[Cinematic::init] Error creating back buffer!");
 
-	_tControlBuffer = (TControl *)malloc(CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
+	_tControlBuffer = (TControl *)calloc(CINEMATIC_TCONTROLBUFFER_SIZE, sizeof(TControl));
 	if (!_tControlBuffer)
 		error("[Cinematic::init] Error creating control buffer!");
 
-	_cacheBuffer = (byte *)malloc(CINEMATIC_CACHEBUFFER_SIZE);
+	_cacheBuffer = (byte *)calloc(CINEMATIC_CACHEBUFFER_SIZE, 1);
 	if (!_cacheBuffer)
 		error("[Cinematic::init] Error creating cache buffer!");
 
 	_compressedData = NULL;
-	_field_3A = NULL;
+	_compressedDataEnd = NULL;
 	_compressedBuffer = NULL;
 	_compressedBufferEnd = NULL;
 	_field_46 = 0;
@@ -124,7 +124,7 @@ void Cinematic::deinit() {
 	free(_tControlBuffer);
 	free(_cacheBuffer);
 	free(_compressedData);
-	_field_3A = NULL;
+	_compressedDataEnd = NULL;
 	_compressedBuffer = NULL;
 	_compressedBufferEnd = NULL;
 	_field_46 = 0;
@@ -140,6 +140,10 @@ void Cinematic::skipFrame() {
 	// Read frame header
 	FrameHeader header;
 	header.read(_stream);
+
+	debugC(kRingDebugMovie, "    Reading Frame header (size: %d, field_4: %d, field_8: %d, field_A: %d, width: %d, height: %d)",
+	       header.size, header.field_4, header.field_8, header.field_A, header.width, header.height);
+	debugC(kRingDebugMovie, "    Skipping frame data (size: %d)", header.size);
 
 	// Skip frame
 	seek(header.size, SEEK_CUR);
@@ -158,21 +162,24 @@ bool Cinematic::tControl() {
 	// Read tControl header
 	_tControlHeader.load(_stream);
 
+	debugC(kRingDebugMovie, "    Reading T control header (size: %d, field_4: %d, field_8: %d, field_A: %d, field_C: %d)",
+	       _tControlHeader.size, _tControlHeader.field_4, _tControlHeader.field_8, _tControlHeader.field_A, _tControlHeader.field_C);
+
 	// Read data
 	uint32 dataSize = 2 * _tControlHeader.field_C + 2;
 
 	free(_compressedData);
 	_compressedData = (byte *)malloc(dataSize + _tControlHeader.size);
 	if (!_compressedData)
-		error("[Cinematic::tControl] Cannot allocated memory for control data");
+		error("[Cinematic::tControl] Cannot allocate memory for control data");
 
 	_stream->read(_compressedData, dataSize + _tControlHeader.size);
 
 	// Process
-	_field_3A = _compressedData + dataSize;
-	_field_46 = _tControlHeader.field_8;
-	_compressedBufferEnd = _compressedData + 1 * (_tControlHeader.size    - _tControlHeader.field_4) + dataSize;
+	_compressedDataEnd   = _compressedData + dataSize;
+	_field_46            = _tControlHeader.field_8;
 	_compressedBuffer    = _compressedData + 2 * (_tControlHeader.field_8 * _tControlHeader.field_A) + dataSize;
+	_compressedBufferEnd = _compressedData + 1 * (_tControlHeader.size    - _tControlHeader.field_4) + dataSize;
 
 	// Decompress data
 	uint32 decompressedSize = decompress(_compressedBuffer, _backBuffer, _compressedBufferEnd - _compressedBuffer);
@@ -180,6 +187,8 @@ bool Cinematic::tControl() {
 		warning("[Cinematic::tControl] Back buffer overrun");
 		return false;
 	}
+
+	debugC(kRingDebugMovie, "    Decompressed %d bytes of data", decompressedSize);
 
 	return true;
 }
@@ -195,21 +204,57 @@ bool Cinematic::sControl(byte* buffer) {
 	FrameHeader header;
 	header.read(_stream);
 
-	// Read data
-	error("[Cinematic::sControl] Not implemented!");
+	debugC(kRingDebugMovie, "    Reading Frame header (size: %d, field_4: %d, field_8: %d, field_A: %d, width: %d, height: %d)",
+	       header.size, header.field_4, header.field_8, header.field_A, header.width, header.height);
 
+	// FIXME This is broken (crashes scummvm), so disable for now
+	seek(header.size, SEEK_CUR);
+	return true;
 
-	if (!_tControlBuffer[7682].pBuffer) {
-		// TODO update from backbuffer
-		error("[Cinematic::sControl] Not implemented!");
+	// Read stream
+	uint32 dataSize = 2 * _tControlHeader.field_C + 2;
+
+	free(_compressedData);
+	_compressedData = (byte *)malloc(dataSize + header.size);
+	if (!_compressedData)
+		error("[Cinematic::sControl] Cannot allocate memory for control data");
+
+	_stream->read(_compressedData, dataSize + header.size);
+
+	// Process
+	_compressedDataEnd   = _compressedData + dataSize;
+	_field_46            = header.field_8;
+	_compressedBuffer    = _compressedData + 2 * (header.field_8 * header.field_A) + dataSize;
+	_compressedBufferEnd = _compressedData + 1 * (header.size    - header.field_4) + dataSize;
+
+	// Update control buffer
+	if (!_tControlBuffer[1920].count) {
+		byte *compressedData = _compressedData;
+		byte *backBuffer     = _backBuffer;
+
+		if (compressedData < _compressedDataEnd) {
+			int index = 1920;
+			do {
+				uint32 offset = *compressedData * 8;
+
+				_tControlBuffer[index].pBuffer = (int *)backBuffer;
+				_tControlBuffer[index].count   = offset;
+
+				compressedData += 2;
+				backBuffer += offset;
+				++index;
+			} while (compressedData < _compressedDataEnd);
+		}
 	}
 
-
+	// Decompress data
 	uint32 decompressedSize = decompress(_compressedBuffer, buffer, _compressedBufferEnd - _compressedBuffer);
 	if (decompressedSize >= 577536) {
 		warning("[Cinematic::sControl] Buffer overrun");
 		return false;
 	}
+
+	debugC(kRingDebugMovie, "    Decompressed %d bytes of data", decompressedSize);
 
 	return true;
 }
@@ -217,38 +262,19 @@ bool Cinematic::sControl(byte* buffer) {
 uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 	// TODO: Reduce code duplication
 
-#define UPDATE_BUFFER_CONTROL(index) { \
-	int    *pBuffer = _tControlBuffer[index].pBuffer; \
-	uint32  count   = _tControlBuffer[index].count >> 2; \
-	do { \
-		*buffer = *pBuffer; \
-		++pBuffer; \
-		++buffer; \
-		--count; \
-	} while (count); \
-}
-
-#define UPDATE_BUFFER(index) { \
-	int *control = &field_3A[index]; \
-	uint32 count = 2; \
-	do { \
-		*buffer = *control; \
-		++control; \
-		++buffer; \
-		--count; \
-	} while (count); \
-}
+#define UPDATE_BUFFER_CONTROL(index) updateBufferControl(index, &buffer);
+#define UPDATE_BUFFER(index) updateBuffer(index, compressedDataEnd, &buffer);
 
 	// Get start and end of buffer
 	byte *start = data;
 	byte *end   = &data[dataSize];
 
 	// Store buffers position
-	int *buffer           = (int *)output;
-	int *bufferStart      = buffer;
-	int *cacheBuffer      = (int *)_cacheBuffer;
-	int *cacheBufferStart = (int *)_cacheBuffer;
-	int *field_3A         = (int *)_field_3A;
+	int *buffer            = (int *)output;
+	int *bufferStart       = buffer;
+	int *cacheBuffer       = (int *)_cacheBuffer;
+	int *cacheBufferStart  = (int *)_cacheBuffer;
+	int *compressedDataEnd = (int *)_compressedDataEnd;
 
 	bool check = false;
 
@@ -268,7 +294,64 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 
 				if (*cacheBuffer > _field_46) {
 					if (*cacheBuffer >= 1920) {
-						UPDATE_BUFFER(*cacheBuffer);
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					} else {
+
+						uint32 total = *cacheBuffer - _field_46 - 1;
+						byte *offset;
+						for (offset = _compressedBufferEnd; ; offset += *offset + 1) {
+							if (total-- < 1)
+								break;
+						}
+						total = *offset >> 1;
+
+						// Setup control buffer
+						_tControlBuffer[2 * *cacheBuffer].pBuffer = buffer;
+						_tControlBuffer[2 * *cacheBuffer].count   = 8 * total;
+
+						int16 *index2 = (int16 *)(offset + 1);
+						while (true) {
+							if (total-- < 1)
+								break;
+
+							UPDATE_BUFFER(2 * *index2);
+
+							index2++;
+						}
+
+					}
+				} else {
+					if (_tControlBuffer[*cacheBuffer].count) {
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
+					} else {
+						UPDATE_BUFFER(2 * *cacheBuffer);
+
+						// Setup control buffer
+						_tControlBuffer[2 * *cacheBuffer].pBuffer = &compressedDataEnd[*cacheBuffer];
+						_tControlBuffer[2 * *cacheBuffer].count   = 8;
+					}
+				}
+
+				// Advance cache (and loop if necessary)
+				++cacheBuffer;
+
+				if ((cacheBuffer - cacheBufferStart) >= 128)
+					cacheBuffer = cacheBufferStart;
+
+				check = false;
+
+			} else {
+				UPDATE_BUFFER_CONTROL(2 * cacheBufferStart[(*start >> 4) + 16 * state - 128]);
+			}
+
+		} else {
+			if (val < 128) {
+
+				*cacheBuffer = 16 * val + (*start >> 4);
+
+				if (*cacheBuffer > _field_46) {
+					if (*cacheBuffer >= 1920) {
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
 					} else {
 
 						uint32 total = *cacheBuffer - _field_46 - 1;
@@ -292,73 +375,16 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 
 							index2++;
 						}
-
 					}
 				} else {
 					if (_tControlBuffer[*cacheBuffer].count) {
-						UPDATE_BUFFER_CONTROL(*cacheBuffer);
+						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
 					} else {
 						UPDATE_BUFFER(2 * *cacheBuffer);
 
 						// Setup control buffer
-						_tControlBuffer[*cacheBuffer].pBuffer = &field_3A[*cacheBuffer];
-						_tControlBuffer[*cacheBuffer].count   = 8;
-					}
-				}
-
-				// Advance cache (and loop if necessary)
-				++cacheBuffer;
-
-				if ((cacheBuffer - cacheBufferStart) >= 128)
-					cacheBuffer = cacheBufferStart;
-
-				check = false;
-
-			} else {
-				UPDATE_BUFFER_CONTROL(cacheBufferStart[(*start >> 4) + 16 * state - 128]);
-			}
-
-		} else {
-			if (val < 128) {
-
-				*cacheBuffer = 16 * val + (*start >> 4);
-
-				if (*cacheBuffer > _field_46) {
-					if (*cacheBuffer >= 1920) {
-						UPDATE_BUFFER_CONTROL(*cacheBuffer);
-					} else {
-
-						uint32 total = *cacheBuffer - _field_46 - 1;
-						byte *offset;
-						for (offset = _compressedBufferEnd; ; offset += *offset + 1) {
-							if (total-- < 1)
-								break;
-						}
-						total = *offset >> 1;
-
-						// Setup control buffer
-						_tControlBuffer[*cacheBuffer].pBuffer = buffer;
-						_tControlBuffer[*cacheBuffer].count   = 8 * total;
-
-						int16 *index2 = (int16 *)(offset + 1);
-						while (true) {
-							if (total-- < 1)
-								break;
-
-							UPDATE_BUFFER(*index2);
-
-							index2++;
-						}
-					}
-				} else {
-					if (_tControlBuffer[*cacheBuffer].count) {
-						UPDATE_BUFFER_CONTROL(*cacheBuffer);
-					} else {
-						UPDATE_BUFFER(*cacheBuffer);
-
-						// Setup control buffer
-						_tControlBuffer[*cacheBuffer].pBuffer = &field_3A[*cacheBuffer];
-						_tControlBuffer[*cacheBuffer].count = 8;
+						_tControlBuffer[2 * *cacheBuffer].pBuffer = &compressedDataEnd[*cacheBuffer];
+						_tControlBuffer[2 * *cacheBuffer].count = 8;
 					}
 				}
 
@@ -371,12 +397,42 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 				check = true;
 
 			} else {
-				UPDATE_BUFFER_CONTROL(cacheBufferStart[val - 128]);
+				UPDATE_BUFFER_CONTROL(2 * cacheBufferStart[val - 128]);
 			}
 		}
 	}
 
 	return (uint32)(buffer - bufferStart);
+}
+
+void Cinematic::updateBuffer(int index, int *compressedDataEnd, int **buffer) {
+	int *control = &compressedDataEnd[index];
+	uint32 count = 2;
+
+	do {
+		**buffer = *control;
+		++control;
+		++*buffer;
+		--count;
+	} while (count);
+}
+
+void Cinematic::updateBufferControl(int index, int **buffer) {
+	int    *pBuffer = _tControlBuffer[index].pBuffer;
+	uint32  count   = _tControlBuffer[index].count >> 2;
+
+	if (count == 0)
+		return;
+
+	if (pBuffer == NULL)
+		error("[Cinematic::updateBufferControl] Invalid control buffer");
+
+	do {
+		**buffer = *pBuffer;
+		++pBuffer;
+		++*buffer;
+		--count;
+	} while (count);
 }
 
 #pragma region ReadStream
@@ -806,7 +862,9 @@ Movie::~Movie() {
 	_screen = NULL;
 }
 
-bool Movie::init(Common::String path, Common::String filename, uint32 a3, uint32 channel) {
+bool Movie::init(Common::String path, Common::String filename, uint32, uint32 channel) {
+	debugC(kRingDebugMovie, "Loading movie %s%s with channel %d", path.c_str(), filename.c_str(), channel);
+
 	// Compute and check path
 	Common::String filePath = path + filename;
 	if (!Common::File::exists(filePath)) {
@@ -863,6 +921,8 @@ void Movie::deinit() {
 }
 
 void Movie::play(const Common::Point &point) {
+	debugC(kRingDebugMovie, "Playing movie at coordinates (%d, %d)", point.x, point.y);
+
 	if (!_sound)
 		error("[Movie::play] sound not initialized properly");
 
@@ -899,24 +959,26 @@ void Movie::play(const Common::Point &point) {
 			}
 
 			// Read chunk type
-			byte chunkType = cinematic->readByte();
+			ChunkType chunkType = (ChunkType)cinematic->readByte();
 			if (cinematic->eos() || cinematic->err())
 				error("[Movie::play] Cannot read chunk type");
 
+			debugC(kRingDebugMovie, " Reading chunk %c", chunkType);
+
 			switch (chunkType) {
 			default:
-				error("[Movie::play] Invalid chunk type (%d)", chunkType);
+				error("[Movie::play] Invalid chunk type %d (index: %d)", chunkType, chunkIndex);
 
-			case 65:
+			case kChunkA:
 				switch (_channel) {
 				default:
 					if (!skipSound())
-						error("[Movie::play] Cannot skip sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk 65: Cannot skip sound (index: %d)", chunkIndex);
 					break;
 
 				case 2:
 					if (!readSound())
-						error("[Movie::play] Cannot read sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk 65: Cannot read sound (index: %d)", chunkIndex);
 
 					if (setupSound) {
 						if (_isSoundInitialized)
@@ -928,16 +990,16 @@ void Movie::play(const Common::Point &point) {
 				}
 				break;
 
-			case 66:
+			case kChunkB:
 				switch (_channel) {
 				default:
 					if (!skipSound())
-						error("[Movie::play] Cannot skip sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk 66: Cannot skip sound (index: %d)", chunkIndex);
 					break;
 
 				case 3:
 					if (!readSound())
-						error("[Movie::play] Cannot read sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk 66: Cannot read sound (index: %d)", chunkIndex);
 
 					if (setupSound) {
 						if (_isSoundInitialized)
@@ -949,7 +1011,7 @@ void Movie::play(const Common::Point &point) {
 				}
 				break;
 
-			case 83:
+			case kChunkS:
 				if (_field_5B) {
 					uint32 tickInterval = (g_system->getMillis() - ticks);
 
@@ -977,14 +1039,16 @@ void Movie::play(const Common::Point &point) {
 							ticks = g_system->getMillis();
 						} else {
 							// Wait for tick interval
-							while ((waitChunk * _framerate) > (tickInterval + 50))
+							while ((waitChunk * _framerate) > (tickInterval + 50)) {
 								checkEvents();
+								tickInterval = (g_system->getMillis() - ticks);
+							}
 						}
 					}
 				}
 
 				if (!_imageCIN->readImage(image))
-					error("[Movie::play] Error reading image (index: %d)", chunkIndex);
+					error("[Movie::play] Chunk 83: Error reading image (index: %d)", chunkIndex);
 
 				if (_hasDialog) {
 					screen->draw(image, point, kDrawType1);
@@ -1005,22 +1069,22 @@ void Movie::play(const Common::Point &point) {
 				waitChunk = chunkIndex;
 				break;
 
-			case 84:
+			case kChunkT:
 				if (!cinematic->tControl())
-					error("[Movie::play] Error reading T control (index: %d)", chunkIndex);
+					error("[Movie::play] Chunk 84: Error reading T control (index: %d)", chunkIndex);
 				break;
 
-			case 90:
+			case kChunkZ:
 				switch (_channel) {
 				default:
 					if (!skipSound())
-						error("[Movie::play] Cannot skip sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk Z: Cannot skip sound (index: %d)", chunkIndex);
 					break;
 
 				case 0:
 				case 1:
 					if (!readSound())
-						error("[Movie::play] Cannot read sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk Z: Cannot read sound (index: %d)", chunkIndex);
 
 					if (setupSound) {
 						if (_isSoundInitialized)
@@ -1064,6 +1128,8 @@ bool Movie::readSound() {
 		return false;
 	}
 
+	debugC(kRingDebugMovie, "    Reading sound data (size: %d)", offset);
+
 	// Check if there is any sound data
 	if (!offset)
 		return true;
@@ -1103,6 +1169,8 @@ bool Movie::skipSound() {
 		deinit();
 		return false;
 	}
+
+	debugC(kRingDebugMovie, "    Skipping sound data (size: %d)", offset);
 
 	// Check if there is any sound data
 	if (!offset)

@@ -72,24 +72,27 @@ private:
 	struct FrameHeader {
 		uint32 size;
 		uint32 field_4;
-		uint32 field_8;
-		uint32 field_C;
-		uint32 field_10;
+		uint16 field_8;
+		uint16 field_A;
+		uint32 width;
+		uint32 height;
 
 		FrameHeader() {
 			size     = 0;
 			field_4  = 0;
 			field_8  = 0;
-			field_C  = 0;
-			field_10 = 0;
+			field_A  = 0;
+			width  = 0;
+			height = 0;
 		}
 
 		void read(Common::SeekableReadStream *stream) {
 			size     = stream->readUint32LE();
 			field_4  = stream->readUint32LE();
-			field_8  = stream->readUint32LE();
-			field_C  = stream->readUint32LE();
-			field_10 = stream->readUint32LE();
+			field_8  = stream->readUint16LE();
+			field_A  = stream->readUint16LE();
+			width  = stream->readUint32LE();
+			height = stream->readUint32LE();
 		}
 	};
 
@@ -126,13 +129,15 @@ private:
 	TControl      *_tControlBuffer;
 	byte   *_cacheBuffer;
 	byte   *_compressedData;
-	byte   *_field_3A;
+	byte   *_compressedDataEnd;
 	byte   *_compressedBuffer;
 	byte   *_compressedBufferEnd;
 	int32   _field_46;
 	bool    _isStreaming;
 
 	uint32 decompress(byte *data, byte *buffer, uint32 size);
+	void updateBuffer(int index, int *compressedDataEnd, int **buffer);
+	void updateBufferControl(int index, int **buffer);
 };
 
 class Cinematic2 : public Common::SeekableReadStream {
@@ -301,6 +306,14 @@ public:
 	void setFramerate(float rate) { _framerate = rate; }
 
 private:
+	enum ChunkType {
+		kChunkA = 65,
+		kChunkB = 66,
+		kChunkS = 83,
+		kChunkT = 84,
+		kChunkZ = 90
+	};
+
 	ImageLoaderCIN *_imageCIN;
 	ScreenManager  *_screen;
 	CinematicSound *_sound;
