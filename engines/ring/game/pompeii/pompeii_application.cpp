@@ -23,6 +23,7 @@
 
 #include "ring/base/art.h"
 #include "ring/base/bag.h"
+#include "ring/base/cursor.h"
 #include "ring/base/preferences.h"
 #include "ring/base/rotation.h"
 #include "ring/base/saveload.h"
@@ -50,7 +51,7 @@
 #include "ring/helpers.h"
 #include "ring/ring.h"
 
-//using namespace PompeiiGame;
+using namespace PompeiiGame;
 
 namespace Ring {
 
@@ -305,11 +306,191 @@ void ApplicationPompeii::onMouseRightButtonUp(const Common::Event &evt) {
 }
 
 void ApplicationPompeii::onKeyDown(Common::Event &evt) {
-	warning("[ApplicationPompeii::onKeyDown] Not implemented (evt: %d)", evt.type);
+	error("[ApplicationPompeii::onKeyDown] Not implemented (evt: %d)", evt.type);
+}
+
+void ApplicationPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
+	debugC(kRingDebugLogic, "onButtonUp (ObjectId: %d, target: %d, coords: (%d, %d))", id.id(), target, point.x, point.y);
+
+	if (puzzleRotationId == 1 && a4 == 1) {
+		_zoneSystem->onButtonUp(id, target, puzzleRotationId, a4, point);
+		return;
+	}
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone100:
+		_zoneSystem->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone1:
+		_zone1->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone2:
+		_zone2->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone3:
+		_zone3->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone4:
+		_zone4->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone5:
+		_zone5->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone6:
+		_zone6->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone7:
+		_zone7->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone8:
+		_zone8->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone9:
+		_zone9->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone10:
+		_zone10->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone11:
+		_zone11->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+
+	case kZone12:
+		_zone12->onButtonUp(id, target, puzzleRotationId, a4, point);
+		break;
+	}
+
+	if (!sub_42F7B0()) {
+		bagRemove(kObjectItemList);
+		bagAdd(kObjectItemListCompleted);
+	}
 }
 
 void ApplicationPompeii::onTimer(TimerId timerId) {
-	warning("[ApplicationPompeii::onTimer] Not implemented (id: %d)", timerId);
+	debugC(kRingDebugLogic, "onTimer (id: %d)", timerId);
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone1:
+		_zone1->onTimer(timerId);
+		break;
+
+	case kZone2:
+		_zone2->onTimer(timerId);
+		break;
+
+	case kZone3:
+		_zone3->onTimer(timerId);
+		break;
+
+	case kZone4:
+		_zone4->onTimer(timerId);
+		break;
+
+	case kZone5:
+		_zone5->onTimer(timerId);
+		break;
+
+	case kZone6:
+		_zone6->onTimer(timerId);
+		break;
+
+	case kZone8:
+		_zone8->onTimer(timerId);
+		break;
+
+	case kZone9:
+		_zone9->onTimer(timerId);
+		break;
+
+	case kZone10:
+		_zone10->onTimer(timerId);
+		break;
+
+	case kZone11:
+		_zone11->onTimer(timerId);
+		break;
+
+	case kZone12:
+		_zone12->onTimer(timerId);
+		break;
+	}
+}
+
+void ApplicationPompeii::onSound(Id id, SoundType type, uint32 a3) {
+	debugC(kRingDebugLogic, "onSound (id: %d, type: %d)", id, type);
+
+	bool process = (a3 & 0x1000) != 0;
+	a3 &= 239;
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone100:
+		_zoneSystem->onSound(id, type, a3, process);
+		break;
+
+	case kZone1:
+		_zone1->onSound(id, type, a3, process);
+		break;
+
+	case kZone2:
+		_zone2->onSound(id, type, a3, process);
+		break;
+
+	case kZone3:
+		_zone3->onSound(id, type, a3, process);
+		break;
+
+	case kZone4:
+		_zone4->onSound(id, type, a3, process);
+		break;
+
+	case kZone5:
+		_zone5->onSound(id, type, a3, process);
+		break;
+
+	case kZone6:
+		_zone6->onSound(id, type, a3, process);
+		break;
+
+	case kZone7:
+		_zone7->onSound(id, type, a3, process);
+		break;
+
+	case kZone8:
+		_zone8->onSound(id, type, a3, process);
+		break;
+
+	case kZone10:
+		_zone10->onSound(id, type, a3, process);
+		break;
+
+	case kZone11:
+		_zone11->onSound(id, type, a3, process);
+		break;
+
+	case kZone12:
+		_zone12->onSound(id, type, a3, process);
+		break;
+	}
 }
 
 void ApplicationPompeii::onSetup(ZoneId zone, SetupType type) {
@@ -331,6 +512,285 @@ void ApplicationPompeii::onSetup(ZoneId zone, SetupType type) {
 		_zone4->onSetup(type);
 		break;
 	}
+}
+
+void ApplicationPompeii::onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte type) {
+	if (getCurrentZone() == kZone100)
+		_zoneSystem->onBag(id, target, puzzleRotationId, a4, dragControl, type);
+}
+
+void ApplicationPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	if (movabilityIndex == 1 && target == 1) {
+		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		return;
+	}
+
+	if (hasCurrentRotation())
+		varSetWord(99028, getCurrentRotationId());
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone100:
+		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone1:
+		_zone1->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone2:
+		_zone2->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone3:
+		_zone3->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone4:
+		_zone4->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone6:
+		_zone6->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone7:
+		_zone7->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone8:
+		_zone8->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone9:
+		_zone9->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone11:
+		_zone11->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+
+	case kZone12:
+		_zone12->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
+		break;
+	}
+}
+
+void ApplicationPompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+	if (movabilityFrom == 1)
+		return;
+
+	visualBoxHide(6, kPuzzleMenu);
+}
+
+void ApplicationPompeii::onUpdateBag(const Common::Point &point) {
+	if (getCurrentZone() == kZone100)
+		_cursorHandler->select(kCursorMenuIdle);
+
+	if (_bag->isInitialized()) {
+		_cursorHandler->select(kCursorMenuIdle);
+		objectPresentationHide(kObjectItemList);
+		objectSetAccessibilityOff(kObjectItemList);
+	}
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone100:
+		_zoneSystem->onUpdateBag(point);
+		break;
+
+	case kZone1:
+		_zone1->onUpdateBag(point);
+		break;
+
+	case kZone2:
+		_zone2->onUpdateBag(point);
+		break;
+
+	case kZone3:
+		_zone3->onUpdateBag(point);
+		break;
+
+	case kZone4:
+		_zone4->onUpdateBag(point);
+		break;
+
+	case kZone6:
+		_zone6->onUpdateBag(point);
+		break;
+
+	case kZone7:
+		_zone7->onUpdateBag(point);
+		break;
+
+	case kZone8:
+		_zone8->onUpdateBag(point);
+		break;
+
+	case kZone11:
+		_zone11->onUpdateBag(point);
+		break;
+
+	case kZone12:
+		_zone12->onUpdateBag(point);
+		break;
+	}
+}
+
+void ApplicationPompeii::onBagClickedObject(ObjectId id) {
+	if (hasCurrentRotation())
+		varSetDword(99028, getCurrentRotationId());
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone1:
+		_zone1->onBagClickedObject(id);
+		break;
+
+	case kZone2:
+	case kZone3:
+		_zone2->onBagClickedObject(id);
+		break;
+	}
+
+	// All zones also use the system event
+	_zoneSystem->onBagClickedObject(id);
+}
+
+void ApplicationPompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+	if (movabilityFrom == 1)
+		return;
+
+	if (hasCurrentRotation())
+		varSetDword(99027, getCurrentRotationId());
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone1:
+		_zone1->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+
+	case kZone2:
+		_zone2->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+
+	case kZone4:
+		_zone4->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+
+	case kZone10:
+		_zone10->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+	}
+}
+
+void ApplicationPompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+	if (movabilityFrom == 1)
+		return;
+
+	if (!varGetByte(90001))
+		return;
+
+	if (!sub_42F7B0()) {
+		bagRemove(kObjectItemList);
+		bagAdd(kObjectItemListCompleted);
+	}
+
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone1:
+		_zone1->onAfterRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+
+	case kZone2:
+		_zone2->onAfterRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+
+	case kZone6:
+		_zone6->onAfterRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+
+	case kZone11:
+		_zone11->onAfterRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
+		break;
+	}
+}
+
+void ApplicationPompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+	switch (getCurrentZone()) {
+	default:
+		break;
+
+	case kZone1:
+		_zone1->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone2:
+		_zone2->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone3:
+		_zone3->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone4:
+		_zone4->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone5:
+		_zone5->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone6:
+		_zone6->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone7:
+		_zone7->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone8:
+		_zone8->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone9:
+		_zone9->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone10:
+		_zone10->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone11:
+		_zone11->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+
+	case kZone12:
+		_zone12->onAnimationNextFrame(animationId, name, frame, frameCount);
+		break;
+	}
+}
+
+void ApplicationPompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+	error("[ApplicationPompeii::onVisualList] Not implemented");
+}
+
+#pragma endregion
+
+#pragma region Helpers
+
+bool ApplicationPompeii::sub_42F7B0() {
+	error("[ApplicationPompeii::sub_42F7B0] Not implemented");
 }
 
 #pragma endregion

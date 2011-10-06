@@ -42,7 +42,7 @@ public:
 
 	virtual void onSound(Id id, SoundType type, uint32 a3) {}
 	virtual void onSetup(ZoneId zone, SetupType type) {}
-	virtual void onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte a6) {}
+	virtual void onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte type) {}
 	virtual void onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {}
 	virtual void onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {}
 	virtual void onUpdateBag(const Common::Point &point) {}
@@ -77,6 +77,7 @@ public:
 	virtual void onUpdateBag(const Common::Point &point) {}
 	virtual void onBagClickedObject(ObjectId objectId) {}
 	virtual void onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {}
+	virtual void onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {}
 	virtual void onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {}
 	virtual void onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {}
 	virtual void onVisualList(Id id, uint32 type, const Common::Point &point) {}

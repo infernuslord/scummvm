@@ -294,7 +294,7 @@ enum ObjectIdEnum {
 	kObjectNone                     = -1,
 	kObjectInvalid                  = 0,
 	kObject1                        = 1,
-	kObjectYesNo                        = 2,
+	kObjectYesNo                    = 2,
 	kObject3                        = 3,
 	kObject4                        = 4,
 	kObject5                        = 5,
