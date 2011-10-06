@@ -1196,7 +1196,7 @@ void ApplicationFaust::onSetup(ZoneId zone, SetupType type) {
 }
 
 void ApplicationFaust::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	if (movabilityIndex == 1 || target == 1) {
+	if (movabilityIndex == 1 && target == 1) {
 		_zoneSystem->onUpdateBefore(movabilityFrom, movabilityTo, movabilityIndex, target, point);
 		return;
 	}
