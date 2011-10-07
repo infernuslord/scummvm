@@ -192,7 +192,7 @@ void ApplicationRing::setup() {
 	cursorAdd(kCursorMove,          "cur_muv",         kCursorTypeAnimated, 1, 20, 12.5f, 4, kLoadFromCursor, archiveType);
 	cursorAdd(kCursorHotspot,       "cur_hotspot",     kCursorTypeAnimated, 1, 19, 12.5f, 4, kLoadFromCursor, archiveType);
 	cursorAdd(kCursorBack,          "cur_back",        kCursorTypeImage,    1, kLoadFromCursor, archiveType);
-	cursorAdd(kCursorMenuIdle,      "cur_menuidle",    kCursorTypeNormal,   1, kLoadFromCursor, archiveType);
+	cursorAdd(kCursorMenuIdle,      "cur_menuidle",    kCursorTypeImage,    1, kLoadFromCursor, archiveType);
 	cursorAdd(kCursorMenuActive,    "cur_menuactive",  kCursorTypeImage,    1, kLoadFromCursor, archiveType);
 
 	// Adjust offsets
@@ -463,6 +463,8 @@ void ApplicationRing::draw() {
 	// Update animated cursors
 	if (_cursorHandler->getType() == kCursorTypeImage || _cursorHandler->getType() == kCursorTypeAnimated)
 		_cursorHandler->draw();
+	else
+		_cursorHandler->hide();
 }
 
 #pragma endregion

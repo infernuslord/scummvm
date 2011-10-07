@@ -32,37 +32,6 @@
 
 namespace Ring {
 
-static const byte defaultCursorPalette[] = {
-	0x00, 0x00, 0x00,	// Black
-	0xFF, 0xFF, 0xFF	// White
-};
-
-/**
- * A black and white Windows-style arrow cursor (12x20).
- */
-static const byte defaultCursor[] = {
-	1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-	1, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0,
-	1, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0,
-	1, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0,
-	1, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0,
-	1, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0,
-	1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0,
-	1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1,
-	1, 2, 2, 2, 1, 2, 2, 1, 0, 0, 0, 0,
-	1, 2, 2, 1, 1, 2, 2, 1, 0, 0, 0, 0,
-	1, 2, 1, 0, 1, 1, 2, 2, 1, 0, 0, 0,
-	1, 1, 0, 0, 0, 1, 2, 2, 1, 0, 0, 0,
-	1, 0, 0, 0, 0, 0, 1, 2, 2, 1, 0, 0,
-	0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 0,
-	0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0
-};
-
 #pragma region CursorBase
 
 CursorBase::CursorBase() : BaseObject(kCursorInvalid) {
@@ -78,81 +47,6 @@ void CursorBase::init(CursorId id, Common::String name, CursorType cursorType, b
 	_name = name;
 	_type  = cursorType;
 	_frameCount = frameCount;
-}
-
-#pragma endregion
-
-#pragma region Cursor
-
-Cursor::Cursor() {
-	_field_19 = 0;
-	_isDefaultCursor = false;
-}
-
-Cursor::~Cursor() {
-}
-
-void Cursor::init(CursorId id, Common::String name, CursorType cursorType, byte frameCount) {
-	CursorBase::init(id, name, cursorType, frameCount);
-
-	if (frameCount == 1)
-		alloc();
-}
-
-void Cursor::alloc() {
-	// Default arrow cursor
-	if (_name.empty() || _name == "IDC_ARROW") {
-		_isDefaultCursor = true;
-
-		return;
-	}
-
-	// Check default win32 cursors
-	if (_name == "IDC_APPSTARTING"
-	 || _name == "IDC_CROSS"
-	 || _name == "IDC_IBEAM"
-	 || _name == "IDC_ICON"
-	 || _name == "IDC_NO"
-	 || _name == "IDC_SIZE"
-	 || _name == "IDC_SIZEALL"
-	 || _name == "IDC_SIZENESW"
-	 || _name == "IDC_SIZENS"
-	 || _name == "IDC_SIZENWSE"
-	 || _name == "IDC_SIZEWE"
-	 || _name == "IDC_UPARROW"
-	 || _name == "IDC_WAIT") {
-		 warning("[Cursor::alloc] Not implemented (win32 default cursors: %s)", _name.c_str());
-	}
-
-	// Load cursor from exe
-	warning("[Cursor::alloc] Not implemented (win32 resource: %s)", _name.c_str());
-
-	// TODO Check if the cursor is loaded from the executable resources or is a default windows cursor
-	//if (true /* || _neCursor */)
-	_isDefaultCursor = true;
-}
-
-void Cursor::dealloc() {
-	_isDefaultCursor = false;
-}
-
-void Cursor::draw() {
-	error("[Cursor::draw] Normal cursors are not drawn through the draw method!");
-}
-
-void Cursor::set() {
-	if (_name.empty() || _name == "IDC_ARROW") {
-		CursorMan.replaceCursor(defaultCursor, 12, 20, _offset.x, _offset.y, 0);
-		CursorMan.replaceCursorPalette(defaultCursorPalette, 1, 2);
-		CursorMan.disableCursorPalette(false);
-		return;
-	}
-
-	//warning("[Cursor::set] Only the arrow cursor is supported for now (wanted: %s)!", _name.c_str());
-	CursorMan.replaceCursor(defaultCursor, 12, 20, _offset.x, _offset.y, 0);
-	CursorMan.replaceCursorPalette(defaultCursorPalette, 1, 2);
-	CursorMan.disableCursorPalette(false);
-	CursorMan.showMouse(true);
 }
 
 #pragma endregion
@@ -325,7 +219,7 @@ void CursorHandler::add(CursorId id, Common::String name, CursorType cursorType,
 
 	case kCursorTypeNormal:
 	case kCursorType2:
-		cursor = new Cursor();
+		cursor = new CursorBase();
 		cursor->init(id, name, cursorType, imageCount);
 		break;
 
@@ -385,14 +279,15 @@ void CursorHandler::draw() {
 	_cursors[_index]->draw();
 }
 
+void CursorHandler::hide() {
+
+}
+
 void CursorHandler::select(CursorId id) {
 	if (!_cursors.has(id))
 		error("[CursorHandler::select] ID doesn't exist (%d)", id);
 
 	_index = _cursors.getIndex(id);
-
-	// FIXME Find where this is done in the original
-	_cursors.get(id)->set();
 }
 
 void CursorHandler::setOffset(CursorId id, const Common::Point &offset) {

@@ -37,10 +37,7 @@ public:
 	virtual ~CursorBase();
 
 	virtual void init(CursorId id, Common::String name, CursorType cursorType, byte frameCount);
-	virtual void alloc() = 0;
-	virtual void dealloc() = 0;
-	virtual void draw() = 0;
-	virtual void set() {}
+	virtual void draw() { error("[CursorBase::draw] Invalid call to base cursor draw method"); }
 
 	// Accessors
 	void setName(Common::String name) { _name = name; }
@@ -56,25 +53,9 @@ protected:
 	CursorType _type;
 	Common::Point _offset;
 	byte _frameCount;
-};
 
-//////////////////////////////////////////////////////////////////////////
-class Cursor : public CursorBase {
-public:
-	Cursor();
-	~Cursor();
-
-	virtual void init(CursorId id, Common::String name, CursorType cursorType, byte a4);
-	virtual void alloc();
-	virtual void dealloc();
-	virtual void draw();
-	virtual void set();
-
-private:
-	uint32 _field_19; // HCURSOR
-	bool _isDefaultCursor;
-
-	void load();
+	virtual void alloc() {};
+	virtual void dealloc() {};
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -118,6 +99,7 @@ public:
 	void removeByType(CursorType cursorType);
 
 	void draw();
+	void hide();
 	void select(CursorId id);
 	void setOffset(CursorId id, const Common::Point &offset);
 	CursorType getType();
