@@ -1002,7 +1002,10 @@ void Movie::play(const Common::Point &point) {
 						} else {
 							// Wait for tick interval
 							while ((waitChunk * _framerate) > (tickInterval + 50)) {
-								checkEvents();
+								// If escape was pressed, bail out of the movie playing
+								if (checkEvents())
+									goto cleanup;
+
 								tickInterval = (g_system->getMillis() - ticks);
 							}
 						}
@@ -1066,6 +1069,7 @@ void Movie::play(const Common::Point &point) {
 	}
 
 	// Cleanup
+cleanup:
 	delete image;
 
 	if (_isSoundInitialized)
