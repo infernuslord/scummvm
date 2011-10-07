@@ -252,11 +252,11 @@ Image *Image::zoom(float xZoom, float yZoom) {
 	return image;
 }
 
-Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest) {
-	return draw(surface, dest, _surface->w, _surface->h, 0, 0);
+Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest) {
+	return draw(screen, dest, _surface->w, _surface->h, 0, 0);
 }
 
-Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset) {
+Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset) {
 	if (!_surface)
 		error("[Image::draw] Image surface not initialized properly");
 
@@ -266,11 +266,11 @@ Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, 
 
 	//////////////////////////////////////////////////////////////////////////
 	// DEBUG: Draw destination rect
-	surface->fillRect(destRect, Color(255, 0, 0).getColor());
+	screen->fillRect(destRect, Color(255, 0, 0).getColor());
 	//////////////////////////////////////////////////////////////////////////
 
 	byte *src  = (byte*)_surface->getBasePtr(srcX, getHeight() - offset - 1);
-	byte *dst = (byte *)surface->getBasePtr(dest.x, dest.y);
+	byte *dst  = (byte *)screen->getBasePtr(dest.x, dest.y);
 	int16 height = destRect.height();
 	uint16 stride = (uint16)destRect.width() * _surface->format.bytesPerPixel;
 
@@ -286,7 +286,7 @@ Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, 
 	case 16:
 		do {
 			memcpy(dst, src, stride);
-			dst += surface->pitch;
+			dst += screen->pitch;
 			src -= _surface->pitch;
 		} while (--height);
 		break;
@@ -299,11 +299,11 @@ Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, 
 
 		int16 *dstBuffer = (int16 *)dst;
 		// Copy data (and mirror image)
-		for (uint32 j = offset; j < _surface->h; j++) {
+		for (uint32 j = offset; j < destRect.height(); j++) {
 			// Read pixel data
 			uint8 a = 0, r = 0, g = 0, b = 0;
 
-			for (uint32 i = 0; i < _surface->w; i++) {
+			for (uint32 i = 0; i < destRect.width(); i++) {
 				switch (getBPP()) {
 				case 24:
 					formatImage.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
@@ -318,7 +318,7 @@ Common::Rect Image::draw(Graphics::Surface *surface, const Common::Point &dest, 
 			}
 
 			// Advance buffers
-			dstBuffer += surface->w;        //pitch for 16bpp buffer
+			dstBuffer += screen->w;        //pitch for 16bpp buffer
 			src -= _surface->pitch;
 		}
 		}

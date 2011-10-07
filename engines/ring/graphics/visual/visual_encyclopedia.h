@@ -28,7 +28,7 @@ namespace Ring {
 
 class Hotspot;
 class ImageHandle;
-class Movie2;
+class Movie;
 class Text;
 
 enum Facetype {
@@ -155,7 +155,7 @@ private:
 	uint32                              _field_84;
 	uint32                              _tickCount;
 	uint32                              _field_94;
-	Movie2                             *_movie;
+	Movie                              *_movie;
 	uint32                              _frameCount;
 	uint32                              _field_A0;
 	uint32                              _field_A4;

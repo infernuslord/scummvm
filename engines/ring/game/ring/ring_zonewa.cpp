@@ -1315,7 +1315,7 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 					}
 				}
 			} else {
-				_app->playMovie("1859", 0.0);
+				_app->playMovie("1859");
 			}
 		}
 

@@ -25,6 +25,7 @@
 #include "ring/base/art.h"
 #include "ring/base/dialog.h"
 #include "ring/base/preferences.h"
+#include "ring/base/puzzle.h"
 
 #include "ring/graphics/image.h"
 #include "ring/graphics/imageLoader.h"
@@ -52,11 +53,58 @@ namespace Ring {
 
 #pragma region Cinematic
 
-Cinematic::Cinematic() {
+#pragma region ReadStream
+
+bool Cinematic::eos() const {
+	if (!_stream)
+		error("[Cinematic::eos] Not initialized properly!");
+
+	return _stream->eos();
+}
+
+uint32 Cinematic::read(void *dataPtr, uint32 dataSize) {
+	if (!_stream)
+		error("[Cinematic::read] Not initialized properly!");
+
+	return _stream->read(dataPtr, dataSize);
+}
+
+#pragma endregion
+
+#pragma region SeekableReadStream
+
+int32 Cinematic::pos() const {
+	if (!_stream)
+		error("[Cinematic::pos] Not initialized properly!");
+
+	return _stream->pos();
+}
+
+int32 Cinematic::size() const {
+	if (!_stream)
+		error("[Cinematic::size] Not initialized properly!");
+
+	return _stream->size();
+}
+
+bool Cinematic::seek(int32 offset, int whence) {
+	if (!_stream)
+		error("[Cinematic::seek] Not initialized properly!");
+
+	return _stream->seek(offset, whence);
+}
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Cinematic1
+
+Cinematic1::Cinematic1() {
 	_stream = NULL;
 	_buffer = NULL;
 	_buffer2 = NULL;
-	_field_10 = false;
+	_state = false;
 	_backBuffer = NULL;
 	_tControlBuffer = NULL;
 	_cacheBuffer = NULL;
@@ -68,7 +116,7 @@ Cinematic::Cinematic() {
 	_isStreaming = false;
 }
 
-Cinematic::~Cinematic() {
+Cinematic1::~Cinematic1() {
 	SAFE_DELETE(_stream);
 
 	// Free buffers
@@ -81,32 +129,32 @@ Cinematic::~Cinematic() {
 	free(_compressedData);
 }
 
-bool Cinematic::init(Common::String filename) {
+bool Cinematic1::init(Common::String filename) {
 	_stream = SearchMan.createReadStreamForMember(filename);
 	if (!_stream || _stream->err()) {
-		warning("[Cinematic::init] Error opening file (%s)", filename.c_str());
+		warning("[Cinematic1::init] Error opening file (%s)", filename.c_str());
 		return false;
 	}
 
 	// Create buffers
 	_buffer = (byte *)calloc(CINEMATIC_BUFFER_SIZE, 1);
 	if (!_buffer)
-		error("[Cinematic::init] Error creating main buffer!");
+		error("[Cinematic1::init] Error creating main buffer!");
 
 	_buffer2 = _buffer;
-	_field_10 = false;
+	_state = false;
 
 	_backBuffer = (byte *)calloc(CINEMATIC_BACKBUFFER_SIZE, 1);
 	if (!_backBuffer)
-		error("[Cinematic::init] Error creating back buffer!");
+		error("[Cinematic1::init] Error creating back buffer!");
 
 	_tControlBuffer = (TControl *)calloc(CINEMATIC_TCONTROLBUFFER_SIZE, sizeof(TControl));
 	if (!_tControlBuffer)
-		error("[Cinematic::init] Error creating control buffer!");
+		error("[Cinematic1::init] Error creating control buffer!");
 
 	_cacheBuffer = (byte *)calloc(CINEMATIC_CACHEBUFFER_SIZE, 1);
 	if (!_cacheBuffer)
-		error("[Cinematic::init] Error creating cache buffer!");
+		error("[Cinematic1::init] Error creating cache buffer!");
 
 	_compressedData = NULL;
 	_compressedDataEnd = NULL;
@@ -117,7 +165,7 @@ bool Cinematic::init(Common::String filename) {
 	return true;
 }
 
-void Cinematic::deinit() {
+void Cinematic1::deinit() {
 	SAFE_DELETE(_stream);
 
 	// Free buffers
@@ -134,9 +182,9 @@ void Cinematic::deinit() {
 	_field_46 = 0;
 }
 
-void Cinematic::skipFrame() {
+void Cinematic1::skipFrame() {
 	if (!_tControlBuffer)
-		error("[Cinematic::skipFrame] Control buffer not initialized");
+		error("[Cinematic1::skipFrame] Control buffer not initialized");
 
 	// Reset tControl buffer
 	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
@@ -153,12 +201,12 @@ void Cinematic::skipFrame() {
 	seek(header.size, SEEK_CUR);
 }
 
-bool Cinematic::tControl() {
+bool Cinematic1::tControl() {
 	if (!_tControlBuffer)
-		error("[Cinematic::tControl] Control buffer not initialized");
+		error("[Cinematic1::tControl] Control buffer not initialized");
 
 	if (!_stream)
-		error("[Cinematic::tControl] Stream not initialized");
+		error("[Cinematic1::tControl] Stream not initialized");
 
 	// Reset tControl buffer
 	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
@@ -175,7 +223,7 @@ bool Cinematic::tControl() {
 	free(_compressedData);
 	_compressedData = (byte *)malloc(dataSize + _tControlHeader.size);
 	if (!_compressedData)
-		error("[Cinematic::tControl] Cannot allocate memory for control data");
+		error("[Cinematic1::tControl] Cannot allocate memory for control data");
 
 	_stream->read(_compressedData, dataSize + _tControlHeader.size);
 
@@ -188,7 +236,7 @@ bool Cinematic::tControl() {
 	// Decompress data
 	uint32 decompressedSize = decompress(_compressedBuffer, _backBuffer, _compressedBufferEnd - _compressedBuffer);
 	if (decompressedSize > CINEMATIC_BACKBUFFER_SIZE) {
-		warning("[Cinematic::tControl] Back buffer overrun");
+		warning("[Cinematic1::tControl] Back buffer overrun");
 		return false;
 	}
 
@@ -197,9 +245,9 @@ bool Cinematic::tControl() {
 	return true;
 }
 
-bool Cinematic::sControl(byte* buffer) {
+bool Cinematic1::sControl(byte* buffer) {
 	if (!_tControlBuffer)
-		error("[Cinematic::readFrameHeader] Control buffer not initialized");
+		error("[Cinematic1::readFrameHeader] Control buffer not initialized");
 
 	// Reset tControl buffer
 	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
@@ -221,7 +269,7 @@ bool Cinematic::sControl(byte* buffer) {
 	free(_compressedData);
 	_compressedData = (byte *)malloc(dataSize + header.size);
 	if (!_compressedData)
-		error("[Cinematic::sControl] Cannot allocate memory for control data");
+		error("[Cinematic1::sControl] Cannot allocate memory for control data");
 
 	_stream->read(_compressedData, dataSize + header.size);
 
@@ -254,7 +302,7 @@ bool Cinematic::sControl(byte* buffer) {
 	// Decompress data
 	uint32 decompressedSize = decompress(_compressedBuffer, buffer, _compressedBufferEnd - _compressedBuffer);
 	if (decompressedSize >= 577536) {
-		warning("[Cinematic::sControl] Buffer overrun");
+		warning("[Cinematic1::sControl] Buffer overrun");
 		return false;
 	}
 
@@ -263,7 +311,7 @@ bool Cinematic::sControl(byte* buffer) {
 	return true;
 }
 
-uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
+uint32 Cinematic1::decompress(byte *data, byte *output, uint32 dataSize) {
 	// TODO: Reduce code duplication
 
 #define UPDATE_BUFFER_CONTROL(index) updateBufferControl(index, &buffer);
@@ -409,7 +457,7 @@ uint32 Cinematic::decompress(byte *data, byte *output, uint32 dataSize) {
 	return (uint32)(buffer - bufferStart);
 }
 
-void Cinematic::updateBuffer(int index, int *compressedDataEnd, int **buffer) {
+void Cinematic1::updateBuffer(int index, int *compressedDataEnd, int **buffer) {
 	int *control = &compressedDataEnd[index];
 	uint32 count = 2;
 
@@ -421,7 +469,7 @@ void Cinematic::updateBuffer(int index, int *compressedDataEnd, int **buffer) {
 	} while (count);
 }
 
-void Cinematic::updateBufferControl(int index, int **buffer) {
+void Cinematic1::updateBufferControl(int index, int **buffer) {
 	int    *pBuffer = _tControlBuffer[index].pBuffer;
 	uint32  count   = _tControlBuffer[index].count >> 2;
 
@@ -429,7 +477,7 @@ void Cinematic::updateBufferControl(int index, int **buffer) {
 		return;
 
 	if (pBuffer == NULL)
-		error("[Cinematic::updateBufferControl] Invalid control buffer");
+		error("[Cinematic1::updateBufferControl] Invalid control buffer");
 
 	do {
 		**buffer = *pBuffer;
@@ -439,49 +487,6 @@ void Cinematic::updateBufferControl(int index, int **buffer) {
 	} while (count);
 }
 
-#pragma region ReadStream
-
-bool Cinematic::eos() const {
-	if (!_stream)
-		error("[Cinematic::eos] Not initialized properly!");
-
-	return _stream->eos();
-}
-
-uint32 Cinematic::read(void *dataPtr, uint32 dataSize) {
-	if (!_stream)
-		error("[Cinematic::read] Not initialized properly!");
-
-	return _stream->read(dataPtr, dataSize);
-}
-
-#pragma endregion
-
-#pragma region SeekableReadStream
-
-int32 Cinematic::pos() const {
-	if (!_stream)
-		error("[Cinematic::pos] Not initialized properly!");
-
-	return _stream->pos();
-}
-
-int32 Cinematic::size() const {
-	if (!_stream)
-		error("[Cinematic::size] Not initialized properly!");
-
-	return _stream->size();
-}
-
-bool Cinematic::seek(int32 offset, int whence) {
-	if (!_stream)
-		error("[Cinematic::seek] Not initialized properly!");
-
-	return _stream->seek(offset, whence);
-}
-
-#pragma endregion
-
 #pragma endregion
 
 #pragma region Cinematic2
@@ -490,7 +495,7 @@ Cinematic2::Cinematic2() {
 	_stream = NULL;
 	_seqBuffer = NULL;
 
-	_field_5404C = false;
+	_state = false;
 
 	_frameBuffer = NULL;
 	_tControlBuffer = NULL;
@@ -528,7 +533,7 @@ bool Cinematic2::init(Common::String filename, ArchiveType type, ZoneId zone, Lo
 	if (_stream == NULL)
 		return false;
 
-	_field_5404C = false;
+	_state = false;
 	_seqBuffer = NULL;
 
 	return true;
@@ -544,6 +549,10 @@ void Cinematic2::skipFrame() {
 	// Read frame header
 	if (!_frameHeader.read(_stream))
 		error("[Cinematic2::skipFrame] Cannot read frame header");
+
+	debugC(kRingDebugMovie, "    Reading Frame header (size: %d, offset: %d, decompressedSize: %d, bufferSize: %d, width: %d, height: %d)",
+	       _frameHeader.size, _frameHeader.offset, _frameHeader.decompressedSize, _frameHeader.bufferSize, _frameHeader.width, _frameHeader.height);
+	debugC(kRingDebugMovie, "    Skipping frame data (size: %d)", _frameHeader.size);
 
 	// Skip frame
 	seek(_frameHeader.size, SEEK_CUR);
@@ -591,6 +600,13 @@ bool Cinematic2::sControl(byte* buffer, uint32 bitdepth) {
 		warning("[Cinematic2::sControl] Cannot read frame header");
 		return false;
 	}
+
+	debugC(kRingDebugMovie, "    Reading Frame header (size: %d, offset: %d, decompressedSize: %d, bufferSize: %d, width: %d, height: %d)",
+	       _frameHeader.size, _frameHeader.offset, _frameHeader.decompressedSize, _frameHeader.bufferSize, _frameHeader.width, _frameHeader.height);
+
+	// FIXME This is broken (crashes scummvm), so disable for now
+	seek(_frameHeader.size, SEEK_CUR);
+	return true;
 
 	// Reset buffer
 	if (_frameBuffer)
@@ -642,7 +658,7 @@ void Cinematic2::decompressTControl(byte *buffer, uint32 bufferSize, uint16 deco
 		warning("[Cinematic2::decompressTControl] Not implemented");
 	}
 
-	if (_field_5404C) {
+	if (_state) {
 		for (uint32 i = 0; i < (uint32)decompressedSize * 4; i += 4) {
 			_buffer1[i]     = _buffer1[i]     * 2;
 			_buffer1[i + 1] = _buffer1[i + 1] * 2;
@@ -657,49 +673,6 @@ void Cinematic2::decompressTControl(byte *buffer, uint32 bufferSize, uint16 deco
 void Cinematic2::decompressSeq(byte *buffer) {
 	warning("[Cinematic2::decompressSeq] Not implemented");
 }
-
-#pragma region ReadStream
-
-bool Cinematic2::eos() const {
-	if (!_stream)
-		error("[Cinematic2::eos] Not initialized properly");
-
-	return _stream->eos();
-}
-
-uint32 Cinematic2::read(void *dataPtr, uint32 dataSize) {
-	if (!_stream)
-		error("[Cinematic2::read] Not initialized properly");
-
-	return _stream->read(dataPtr, dataSize);
-}
-
-#pragma endregion
-
-#pragma region SeekableReadStream
-
-int32 Cinematic2::pos() const {
-	if (!_stream)
-		error("[Cinematic2::pos] Not initialized properly");
-
-	return _stream->pos();
-}
-
-int32 Cinematic2::size() const {
-	if (!_stream)
-		error("[Cinematic2::size] Not initialized properly");
-
-	return _stream->size();
-}
-
-bool Cinematic2::seek(int32 offset, int whence) {
-	if (!_stream)
-		error("[Cinematic2::seek] Not initialized properly");
-
-	return _stream->seek(offset, whence);
-}
-
-#pragma endregion
 
 #pragma endregion
 
@@ -806,57 +779,84 @@ void CinematicSound::queueBuffer(Common::SeekableReadStream *stream) {
 #pragma region Movie
 
 Movie::Movie(ScreenManager *screen) : _screen(screen) {
-	_imageCIN = NULL;
+	_image     = NULL;
 	_isSoundInitialized = false;
-	_field_5B = false;
+	_field_5B  = false;
 	_framerate = 0.0f;
 	_hasDialog = false;
-	_channel = 0;
+	_channel   = 0;
+	_isCI2     = false;
 
 	_sound = new CinematicSound();
 }
 
 Movie::~Movie() {
-	SAFE_DELETE(_imageCIN);
+	SAFE_DELETE(_image);
 	SAFE_DELETE(_sound);
 
 	// Zero-out passed pointers
 	_screen = NULL;
 }
 
-bool Movie::init(Common::String path, Common::String filename, uint32, uint32 channel) {
+bool Movie::init(const Common::String &path, Common::String filename, const Common::String &languageFolder, uint32 channel) {
 	debugC(kRingDebugMovie, "Loading movie %s%s with channel %d", path.c_str(), filename.c_str(), channel);
 
-	// Compute and check path
-	Common::String filePath = path + filename;
-	if (!Common::File::exists(filePath)) {
-		warning("[Movie::init] Cannot find movie file: %s", filePath.c_str());
-		return false;
+	// Find the proper path to the movie file
+	Common::String filePath = Common::String::format("%s%s%s", path.c_str(), filename.c_str(), ".cnm");
+	if (Common::File::exists(filePath))
+		goto load_movie;
+
+	// Try with language subfolder
+	filePath = Common::String::format("%s%s/%s%s", path.c_str(), languageFolder.c_str(), filename.c_str(), ".cnm");
+	if (Common::File::exists(filePath))
+		goto load_movie;
+
+	// Try with .ci2 suffix
+	filePath = Common::String::format("%s%s%s", path.c_str(), filename.c_str(), ".ci2");
+	if (Common::File::exists(filePath))
+		goto load_movie;
+
+	// Try with .ci2 suffix and language subfolder
+	filePath = Common::String::format("%s%s/%s%s", path.c_str(), languageFolder.c_str(), filename.c_str(), ".ci2");
+	if (Common::File::exists(filePath))
+		goto load_movie;
+
+	// Cannot find movie
+	warning("[Movie::init] Cannot find movie file: %s", filename.c_str());
+	return false;
+
+load_movie:
+	// Initialize movie stream
+	if (filePath.hasSuffix("cnm")) {
+		_image = new ImageLoaderCIN();
+	} else {
+		_image = new ImageLoaderCI2();
+		_isCI2 = true;
 	}
 
-	// Initialize movie stream
-	_imageCIN = new ImageLoaderCIN();
-	if (!_imageCIN->init(filePath))
+	if (!_image->init(filePath, kArchiveFile, kZoneNone, kLoadFromCd))
 		error("[Movie::init] Cannot read cinematic frame size");
 
 	// Set channel and sound state
 	_channel = channel;
 	_isSoundInitialized = true;
 
+	uint32 index = (channel < 1 || channel > 3) ? 0 : channel - 1;
+
 	// Setup sound
-	_sound->init(_imageCIN->getHeader()->field_8 + 1, _imageCIN->getHeader()->field_9, _imageCIN->getHeader()->field_A);
+	_sound->init(_image->getChannels(index) + 1, _image->getBitsPerSample(index), _image->getSamplesPerSec(index));
 	_sound->setVolume(getApp()->getPreferenceHandler()->getVolume());
 
 	// Setup framerate
 	_field_5B = true;
-	_framerate = 1000.0f / (_imageCIN->getHeader()->field_12 * 0.01f);
+	_framerate = 1000.0f / (_image->getFrameRate() * 0.01f);
 
 	// Setup sound handler
 	SoundHandler *soundHandler = getApp()->getSoundHandler();
 	if (soundHandler->getField0()) {
 		soundHandler->turnOffItems1();
 
-		if (!soundHandler->updateItems(_imageCIN->getHeader()->chunkCount)) {
+		if (!soundHandler->updateItems(_image->getChunkCount())) {
 			soundHandler->turnOffSounds1(true);
 			soundHandler->setField0(false);
 		}
@@ -876,7 +876,7 @@ bool Movie::init(Common::String path, Common::String filename, uint32, uint32 ch
 }
 
 void Movie::deinit() {
-	SAFE_DELETE(_imageCIN);
+	SAFE_DELETE(_image);
 
 	_screen = NULL;
 	_field_5B = true;
@@ -888,14 +888,14 @@ void Movie::play(const Common::Point &point) {
 	if (!_sound)
 		error("[Movie::play] sound not initialized properly");
 
-	if (!_imageCIN)
+	if (!_image)
 		error("[Movie::play] image not initialized properly");
 
 	SoundHandler *soundHandler = getApp()->getSoundHandler();
 	ScreenManager *screen = getApp()->getScreenManager();
 
 	// Setup
-	Cinematic *cinematic = _imageCIN->getCinematic();
+	Cinematic *cinematic = _image->getCinematic();
 	Image *image = new Image();
 	bool setupSound = true;
 	bool readFrame = false;
@@ -904,8 +904,8 @@ void Movie::play(const Common::Point &point) {
 	uint32 ticks = g_system->getMillis();
 
 	// Setup header and state
-	cinematic->setField10(false);
-	uint32 chunkCount = _imageCIN->getHeader()->chunkCount;
+	cinematic->setState(false);
+	uint32 chunkCount = _image->getChunkCount();
 
 	// Parse cinematic
 	if (chunkCount) {
@@ -935,12 +935,12 @@ void Movie::play(const Common::Point &point) {
 				switch (_channel) {
 				default:
 					if (!skipSound())
-						error("[Movie::play] Chunk 65: Cannot skip sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk A: Cannot skip sound (index: %d)", chunkIndex);
 					break;
 
 				case 2:
 					if (!readSound())
-						error("[Movie::play] Chunk 65: Cannot read sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk A: Cannot read sound (index: %d)", chunkIndex);
 
 					if (setupSound) {
 						if (_isSoundInitialized)
@@ -956,12 +956,12 @@ void Movie::play(const Common::Point &point) {
 				switch (_channel) {
 				default:
 					if (!skipSound())
-						error("[Movie::play] Chunk 66: Cannot skip sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk B: Cannot skip sound (index: %d)", chunkIndex);
 					break;
 
 				case 3:
 					if (!readSound())
-						error("[Movie::play] Chunk 66: Cannot read sound (index: %d)", chunkIndex);
+						error("[Movie::play] Chunk B: Cannot read sound (index: %d)", chunkIndex);
 
 					if (setupSound) {
 						if (_isSoundInitialized)
@@ -974,12 +974,14 @@ void Movie::play(const Common::Point &point) {
 				break;
 
 			case kChunkS:
+			case kChunkU:    // CI2 movies
 				if (_field_5B) {
 					uint32 tickInterval = (g_system->getMillis() - ticks);
 
 					if (((chunkIndex + 1) * _framerate) < tickInterval) {
 						if (readFrame) {
-							cinematic->skipFrame();
+							if (chunkType == kChunkS)
+								cinematic->skipFrame();
 
 							// Process sound
 							if (soundHandler->getField0()) {
@@ -1012,17 +1014,25 @@ void Movie::play(const Common::Point &point) {
 					}
 				}
 
-				if (!_imageCIN->readImage(image))
-					error("[Movie::play] Chunk 83: Error reading image (index: %d)", chunkIndex);
+				if (!_image->readImage(image, 32, kDrawType1))
+					error("[Movie::play] Chunk S: Error reading image (index: %d)", chunkIndex);
 
-				if (_hasDialog) {
-					screen->draw(image, point, kDrawType1);
+				// Draw frame
+				screen->draw(image, point, kDrawType1);
+
+				if (_hasDialog)
 					getApp()->getDialogHandler()->play();
 
-					screen->updateScreen();
-				} else {
-					screen->drawAndUpdate(image, point);
+				// For CI2 movies, we need to update the menu
+				if (_isCI2) {
+					Puzzle *menu = getApp()->getPuzzle(kPuzzleMenu);
+					if (menu) {
+						menu->alloc();
+						menu->update();
+					}
 				}
+
+				screen->updateScreen();
 
 				// Process sound
 				if (soundHandler->getField0()) {
@@ -1036,7 +1046,7 @@ void Movie::play(const Common::Point &point) {
 
 			case kChunkT:
 				if (!cinematic->tControl())
-					error("[Movie::play] Chunk 84: Error reading T control (index: %d)", chunkIndex);
+					error("[Movie::play] Chunk T: Error reading T control (index: %d)", chunkIndex);
 				break;
 
 			case kChunkZ:
@@ -1082,7 +1092,7 @@ cleanup:
 #pragma region Sound
 
 bool Movie::readSound() {
-	Cinematic *cinematic = _imageCIN->getCinematic();
+	Cinematic *cinematic = _image->getCinematic();
 	if (!cinematic)
 		error("[Movie::readSound] Cinematic not initialized properly");
 
@@ -1128,7 +1138,7 @@ bool Movie::readSound() {
 }
 
 bool Movie::skipSound() {
-	Cinematic *cinematic = _imageCIN->getCinematic();
+	Common::SeekableReadStream *cinematic = _image->getCinematic();
 	if (!cinematic)
 		error("[Movie::skipSound] Cinematic not initialized properly");
 
@@ -1159,38 +1169,21 @@ bool Movie::skipSound() {
 
 #pragma endregion
 
+#pragma region Frames
+
+uint32 Movie::playNextFrame(const Common::Point &point, DrawType drawType) {
+	error("[Movie::playNextFrame] Not implemented!");
+}
+
+uint32 Movie::getNumberOfFrames() {
+	error("[Movie::getNumberOfFrames] Not implemented!");
+}
+
+void Movie::setSynchroOff() {
+	error("[Movie::setSynchroOff] Not implemented!");
+}
+
 #pragma endregion
-
-#pragma region Movie2
-
-Movie2::Movie2(ScreenManager *screen) : _screen(screen) {
-	_imageCI2 = NULL;
-}
-
-Movie2::~Movie2() {
-	SAFE_DELETE(_imageCI2);
-	SAFE_DELETE(_cinematic2);
-
-	// Zero-out passed pointers
-	_screen = NULL;
-}
-
-bool Movie2::init(const Common::String &folder, const Common::String &filename) {
-	error("[Movie2::init] Not implemented!");
-}
-
-uint32  Movie2::playNextFrame(const Common::Point &point, DrawType drawType) {
-	error("[Movie2::playNextFrame] Not implemented!");
-}
-
-uint32  Movie2::getNumberOfFrames() {
-	error("[Movie2::getNumberOfFrames] Not implemented!");
-}
-
-void  Movie2::setSynchroOff() {
-	error("[Movie2::setSynchroOff] Not implemented!");
-}
-
 
 #pragma endregion
 

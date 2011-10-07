@@ -457,8 +457,8 @@ cleanup:
 	return false;
 }
 
-bool ImageLoaderCIN::init(Common::String filename) {
-	_cinematic = new Cinematic();
+bool ImageLoaderCIN::init(Common::String filename, ArchiveType, ZoneId, LoadFrom) {
+	_cinematic = new Cinematic1();
 
 	if (!_cinematic->init(filename)) {
 		warning("[ImageLoaderCIN::init] Error initializing cinematic (%s)", _filename.c_str());
@@ -485,13 +485,13 @@ bool ImageLoaderCIN::readHeader() {
 
 	// Read header (size: 0x40)
 	_cinematic->read(&_header.signature, sizeof(_header.signature));
-	_header.field_8    = _cinematic->readByte();
-	_header.field_9    = _cinematic->readByte();
-	_header.field_A    = _cinematic->readByte();
+	_header.channels    = _cinematic->readByte();
+	_header.bitsPerSample    = _cinematic->readByte();
+	_header.samplesPerSec    = _cinematic->readByte();
 	_header.field_B    = _cinematic->readByte();
 	_header.field_C    = _cinematic->readUint16LE();
 	_header.chunkCount = _cinematic->readUint32LE();
-	_header.field_12   = _cinematic->readUint32LE();
+	_header.frameRate   = _cinematic->readUint32LE();
 	_header.field_16   = _cinematic->readByte();
 	_header.width      = _cinematic->readUint32LE();
 	_header.height     = _cinematic->readUint32LE();
@@ -512,30 +512,22 @@ bool ImageLoaderCIN::readHeader() {
 	return true;
 }
 
-bool ImageLoaderCIN::readImage(Image *image) {
+bool ImageLoaderCIN::readImage(Image *image, byte bitdepth, DrawType) {
 	if (!_cinematic)
 		error("[ImageLoaderCIN::readImage] Cinematic not initialized properly");
 
 	if (!image)
-		error("[ImageLoaderCNM::readImage] Invalid image pointer!");
+		error("[ImageLoaderCIN::readImage] Invalid image pointer!");
 
-	Graphics::PixelFormat format = g_system->getScreenFormat();
-	format.bytesPerPixel = 2;
-
-	// TODO Create image instead
-	// Create surface to hold the data
-	Graphics::Surface *surface = new Graphics::Surface();
-	surface->create((uint16)_width, (uint16)_height, format);
+	if (!image->isInitialized())
+		image->create(bitdepth, 2, _width, _height);
 
 	// Compute stride
 	_widthAndPadding = _width + 3;
 	_stride = _widthAndPadding * 3;
 
-	if (!_cinematic->sControl((byte *)surface->pixels))
+	if (!_cinematic->sControl((byte *)image->getSurface()->pixels))
 		error("[ImageLoaderCIN::readImage] Cannot read image");
-
-	// Store surface into image
-	image->setSurface(surface);
 
 	return true;
 }
@@ -544,13 +536,13 @@ bool ImageLoaderCIN::readImage(Image *image) {
 
 #pragma region CI2
 
-bool ImageLoaderCI2::SoundTable::read(Common::SeekableReadStream *stream) {
-	_field_0 = stream->readByte();
-	_field_1 = stream->readByte();
-	_field_4 = stream->readUint32LE();
-	_field_6 = stream->readUint16LE();
-	_field_8 = stream->readUint32LE();
-	_field_C = stream->readUint32LE();
+bool ImageLoaderCI2::SoundConfiguration::read(Common::SeekableReadStream *stream) {
+	channels = stream->readByte();
+	bitsPerSample = stream->readByte();
+	samplesPerSec = stream->readUint32LE();
+	field_6 = stream->readUint16LE();
+	field_8 = stream->readUint32LE();
+	field_C = stream->readUint32LE();
 
 	return (!stream->err() && !stream->eos());
 }
@@ -558,7 +550,7 @@ bool ImageLoaderCI2::SoundTable::read(Common::SeekableReadStream *stream) {
 ImageLoaderCI2::ImageLoaderCI2() {
 	_cinematic = NULL;
 	memset(&_header, 0, sizeof(_header));
-	memset(_soundTables, 0, ARRAYSIZE(_soundTables));
+	memset(_soundConfigs, 0, ARRAYSIZE(_soundConfigs));
 	_controlTable = NULL;
 	_widthAndPadding = 0;
 	_stride = 0;
@@ -624,7 +616,7 @@ bool ImageLoaderCI2::init(Common::String filename, ArchiveType archiveType, Zone
 	}
 
 	if (_header.field_1A)
-		_cinematic->setField5404C();
+		_cinematic->setState(true);
 
 	return true;
 }
@@ -636,11 +628,10 @@ bool ImageLoaderCI2::readHeader() {
 	memset(&_header, 0, sizeof(_header));
 
 	// Read header (size: 0xC0)
-	_header.field_0           = _cinematic->readUint32LE();
-	_header.field_4           = _cinematic->readUint32LE();
-	_header.field_8           = _cinematic->readUint32LE();
-	_header.field_C           = _cinematic->readByte();
-	_header.field_D           = _cinematic->readUint32LE();
+	_cinematic->read(&_header.signature, sizeof(_header.signature));
+	_header.chunkCount        = _cinematic->readUint32LE();
+	_header.frameRate         = _cinematic->readUint32LE();
+	_header.field_D           = _cinematic->readByte();
 	_header.width             = _cinematic->readUint32LE();
 	_header.height            = _cinematic->readUint32LE();
 	_header.field_19          = _cinematic->readByte();
@@ -706,7 +697,7 @@ bool ImageLoaderCI2::readHeader() {
 
 	// Read sound tables
 	for (uint32 i = 0; i < _header.soundChannelCount; i++)
-		_soundTables[i].read(_cinematic);
+		_soundConfigs[i].read(_cinematic);
 
 	// Allocate control table
 	uint32 tableSize = 8 * _header.controlTableSize;

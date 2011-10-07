@@ -890,13 +890,10 @@ void Application::playMovie(Common::String filename, float frameDivider) {
 	cursorSelect(kCursorDefault);
 
 	// Compute full path
-	if (!filename.hasSuffix(".cnm"))
-		filename += ".cnm";
-
 	Common::String path = Common::String::format("DATA/%s/PLA/", getCurrentZoneFolder().c_str());
 
 	Movie *movie = new Movie(_screenManager);
-	if (movie->init(path, filename, 1, 0)) {
+	if (movie->init(path, filename, getLanguageFolder(), 0)) {
 		if (frameDivider != 0.0f)
 			movie->setFramerate(1000.0f / frameDivider);
 
@@ -908,20 +905,17 @@ void Application::playMovie(Common::String filename, float frameDivider) {
 
 void Application::playMovieChannel(Common::String filename, uint32 channel) {
 	if (channel < 1 || channel > 3)
-		error("[Application::playMovieChannel] Invalid channel for movie %s (was:%d, valid=[1-3]", filename.c_str(), channel);
+		error("[Application::playMovieChannel] Invalid channel for movie %s (was:%d, valid=[1-3])", filename.c_str(), channel);
 
 	soundStopType(kSoundTypeEffect, 256);
 	soundStopType(kSoundTypeDialog, 256);
 	cursorSelect(kCursorDefault);
 
 	// Compute full path
-	if (!filename.hasSuffix(".cnm"))
-		filename += ".cnm";
-
 	Common::String path = Common::String::format("DATA/%s/PLA/", getCurrentZoneFolder().c_str());
 
 	Movie *movie = new Movie(_screenManager);
-	if (movie->init(path, filename, 1, channel))
+	if (movie->init(path, filename, getLanguageFolder(), channel))
 		movie->play(Common::Point(0, 16));
 
 	delete movie;

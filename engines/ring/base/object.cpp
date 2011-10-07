@@ -327,7 +327,7 @@ Object::Object(Application *application, ObjectId id, Common::String description
 }
 
 Object::~Object() {
-	CLEAR_ARRAY(Accessibility, _accessibilities);
+	CLEAR_ARRAY(Accessibility,      _accessibilities);
 	CLEAR_ARRAY(ObjectPresentation, _presentations);
 	SAFE_DELETE(_animationImage);
 

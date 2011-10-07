@@ -841,9 +841,9 @@ void VisualObjectEncyclopedia::playMovie(uint32 entryIndex) {
 	SAFE_DELETE(_movie);
 
 	// Initialize movie
-	_movie = new Movie2(getApp()->getScreenManager());
+	_movie = new Movie(getApp()->getScreenManager());
 
-	if (!_movie->init(folder, _entries[entryIndex]->getFilename()))
+	if (!_movie->init(folder, _entries[entryIndex]->getFilename(), getApp()->getLanguageFolder(), 0))
 		error("[VisualObjectEncyclopedia::playMovie] Cannot initialize movie (%s%s)", folder.c_str(), _entries[entryIndex]->getFilename().c_str());
 
 	_frameCount = _movie->getNumberOfFrames();

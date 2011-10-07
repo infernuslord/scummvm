@@ -34,27 +34,17 @@
 
 namespace Ring {
 
-class ImageLoaderCIN;
-class ImageLoaderCI2;
+class ImageLoaderMovie;
 class Movie;
 class ScreenManager;
 
 class Cinematic : public Common::SeekableReadStream {
 public:
-	struct TControl {
-		int    *pBuffer;
-		uint32  count;
-	};
+	virtual ~Cinematic() {}
 
-	Cinematic();
-	~Cinematic();
-
-	bool init(Common::String name);
-	void deinit();
-
-	void skipFrame();
-	bool tControl();
-	bool sControl(byte* buffer);
+	virtual void skipFrame() = 0;
+	virtual bool tControl() = 0;
+	virtual void setState(bool state) = 0;
 
 	// ReadStream
 	virtual bool eos() const;
@@ -65,8 +55,29 @@ public:
 	virtual int32 size() const;
 	virtual bool seek(int32 offset, int whence = SEEK_SET);
 
+protected:
+	Common::SeekableReadStream *_stream;    ///< The movie file stream
+};
+
+class Cinematic1 : public Cinematic {
+public:
+	struct TControl {
+		int    *pBuffer;
+		uint32  count;
+	};
+
+	Cinematic1();
+	~Cinematic1();
+
+	bool init(Common::String name);
+	void deinit();
+
+	virtual void skipFrame();
+	virtual bool tControl();
+	bool sControl(byte* buffer);
+
 	// Accessors
-	void setField10(bool state) { _field_10 = state; }
+	virtual void setState(bool state) { _state = state; }
 
 private:
 	struct FrameHeader {
@@ -120,10 +131,9 @@ private:
 		}
 	};
 
-	Common::SeekableReadStream *_stream;    ///< The movie file stream
 	byte   *_buffer;
 	byte   *_buffer2;
-	bool    _field_10;
+	bool    _state;
 	byte   *_backBuffer;
 	TControlHeader _tControlHeader;
 	TControl      *_tControlBuffer;
@@ -140,7 +150,7 @@ private:
 	void updateBufferControl(int index, int **buffer);
 };
 
-class Cinematic2 : public Common::SeekableReadStream {
+class Cinematic2 : public Cinematic {
 public:
 	Cinematic2();
 	~Cinematic2();
@@ -149,20 +159,11 @@ public:
 
 	bool allocBuffer(size_t bufferSize);
 
-	void skipFrame();
-	bool tControl();
+	virtual void skipFrame();
+	virtual bool tControl();
 	bool sControl(byte* buffer, uint32 bitdepth);
 
-	void setField5404C() { _field_5404C = true; }
-
-	// ReadStream
-	virtual bool eos() const;
-	virtual uint32 read(void *dataPtr, uint32 dataSize);
-
-	// SeekableReadStream
-	virtual int32 pos() const;
-	virtual int32 size() const;
-	virtual bool seek(int32 offset, int whence = SEEK_SET);
+	virtual void setState(bool state) { _state = state; }
 
 private:
 	struct TControlHeader {
@@ -190,10 +191,11 @@ private:
 		uint32 offset;
 		uint16 decompressedSize;
 		uint16 bufferSize;
-		uint32 field_C;
-		uint32 field_10;
+		uint32 width;
+		uint32 height;
 		uint32 field_14;
 		uint32 field_18;
+		uint32 field_1C;
 		uint32 field_20;
 		uint32 field_24;
 		uint32 field_28;
@@ -205,10 +207,11 @@ private:
 			offset           = 0;
 			decompressedSize = 0;
 			bufferSize       = 0;
-			field_C          = 0;
-			field_10         = 0;
+			width          = 0;
+			height         = 0;
 			field_14         = 0;
 			field_18         = 0;
+			field_1C         = 0;
 			field_20         = 0;
 			field_24         = 0;
 			field_28         = 0;
@@ -221,10 +224,11 @@ private:
 			offset           = stream->readUint32LE();
 			decompressedSize = stream->readUint16LE();
 			bufferSize       = stream->readUint16LE();
-			field_C          = stream->readUint32LE();
-			field_10         = stream->readUint32LE();
+			width          = stream->readUint32LE();
+			height         = stream->readUint32LE();
 			field_14         = stream->readUint32LE();
 			field_18         = stream->readUint32LE();
+			field_1C         = stream->readUint32LE();
 			field_20         = stream->readUint32LE();
 			field_24         = stream->readUint32LE();
 			field_28         = stream->readUint32LE();
@@ -235,11 +239,9 @@ private:
 		}
 	};
 
-	Common::SeekableReadStream *_stream;    ///< The movie file stream
-
 	byte            _buffer1[65536];
 	void           *_seqBuffer;
-	bool            _field_5404C;
+	bool            _state;
 	byte           *_frameBuffer;
 	byte           *_tControlBuffer;
 	FrameHeader     _frameHeader;
@@ -281,10 +283,15 @@ public:
 	Movie(ScreenManager *screen);
 	~Movie();
 
-	bool init(Common::String path, Common::String filename, uint32 a3, uint32 channel);
+	bool init(const Common::String &path, Common::String filename, const Common::String &languageFolder, uint32 channel);
 	void deinit();
 
 	void play(const Common::Point &point);
+
+	uint32 playNextFrame(const Common::Point &point, DrawType drawType);
+	uint32 getNumberOfFrames();
+
+	void setSynchroOff();
 
 	void setFramerate(float rate) { _framerate = rate; }
 
@@ -294,39 +301,23 @@ private:
 		kChunkB = 66,
 		kChunkS = 83,
 		kChunkT = 84,
+		kChunkU = 85,
 		kChunkZ = 90
 	};
 
-	ImageLoaderCIN *_imageCIN;
-	ScreenManager  *_screen;
-	CinematicSound *_sound;
-	bool            _isSoundInitialized;
-	bool            _field_5B;
-	float           _framerate;
-	bool            _hasDialog;
-	uint32          _channel;
+	ImageLoaderMovie *_image;
+	ScreenManager    *_screen;
+	CinematicSound   *_sound;
+	bool              _isSoundInitialized;
+	bool              _field_5B;
+	float             _framerate;
+	bool              _hasDialog;
+	uint32            _channel;
+	bool              _isCI2;
 
 	// Sound
 	bool readSound();
 	bool skipSound();
-};
-
-class Movie2 {
-public:
-	Movie2(ScreenManager *screen);
-	~Movie2();
-
-	bool init(const Common::String &folder, const Common::String &filename);
-
-	uint32 playNextFrame(const Common::Point &point, DrawType drawType);
-	uint32 getNumberOfFrames();
-
-	void setSynchroOff();
-
-private:
-	ImageLoaderCI2 *_imageCI2;
-	ScreenManager  *_screen;
-	Cinematic2     *_cinematic2;
 };
 
 } // End of namespace Ring

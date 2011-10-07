@@ -27,6 +27,7 @@
 namespace Ring {
 
 class Cinematic;
+class Cinematic1;
 class Cinematic2;
 class CompressedStream;
 class Image;
@@ -40,6 +41,21 @@ public:
 
 protected:
 	Common::String _filename;
+};
+
+class ImageLoaderMovie : public ImageLoader {
+public:
+	virtual ~ImageLoaderMovie() {};
+
+	virtual bool init(Common::String path, ArchiveType archiveType, ZoneId zone, LoadFrom loadFrom) = 0;
+	virtual bool readImage(Image *image, byte bitdepth, DrawType drawType) = 0;
+
+	virtual Cinematic *getCinematic() = 0;
+	virtual uint32 getChunkCount() = 0;
+	virtual uint32 getFrameRate() = 0;
+	virtual byte getChannels(uint32 index) = 0;
+	virtual byte getBitsPerSample(uint32 index) = 0;
+	virtual byte getSamplesPerSec(uint32 index) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -138,17 +154,17 @@ private:
 //////////////////////////////////////////////////////////////////////////
 #define CINEMATIC_FORMAT 0x53
 
-class ImageLoaderCIN : public ImageLoader {
+class ImageLoaderCIN : public ImageLoaderMovie {
 public:
 	struct Header {
 		char   signature[8];
-		byte   field_8;
-		byte   field_9;
-		byte   field_A;
+		byte   channels;
+		byte   bitsPerSample;
+		byte   samplesPerSec;
 		byte   field_B;
 		uint16 field_C;
 		uint32 chunkCount;
-		uint32 field_12;
+		uint32 frameRate;
 		byte   field_16;
 		uint32 width;
 		uint32 height;
@@ -166,16 +182,21 @@ public:
 	ImageLoaderCIN();
 	virtual ~ImageLoaderCIN();
 
-	virtual bool load(Image *image, ArchiveType type, ZoneId zone, LoadFrom loadFrom, DrawType drawType);
-	bool readImage(Image *image);
+	virtual bool load(Image *image, ArchiveType archiveType, ZoneId zone, LoadFrom loadFrom, DrawType drawType);
 
-	bool init(Common::String filename);
+	// ImageLoaderMovie
+	bool init(Common::String filename, ArchiveType type = kArchiveFile, ZoneId zone = kZoneNone, LoadFrom loadFrom = kLoadFromCd);
+	virtual bool readImage(Image *image, byte bitdepth = 16, DrawType drawType = kDrawType1);
 
-	Header *getHeader() { return &_header; }
-	Cinematic *getCinematic() { return _cinematic; }
+	virtual Cinematic *getCinematic()     { return (Cinematic *)_cinematic; }
+	virtual uint32 getChunkCount()        { return _header.chunkCount; }
+	virtual uint32 getFrameRate()         { return _header.frameRate; }
+	virtual byte getChannels(uint32)      { return _header.channels; }
+	virtual byte getBitsPerSample(uint32) { return _header.bitsPerSample; }
+	virtual byte getSamplesPerSec(uint32) { return _header.samplesPerSec; }
 
 private:
-	Cinematic *_cinematic;
+	Cinematic1 *_cinematic;
 	Header _header;
 	uint32 _stride;
 	uint32 _widthAndPadding;
@@ -186,14 +207,13 @@ private:
 	bool readHeader();
 };
 
-class ImageLoaderCI2 : public ImageLoader {
+class ImageLoaderCI2 : public ImageLoaderMovie {
 public:
 	struct Header {
-		uint32 field_0;
-		uint32 field_4;
-		uint32 field_8;
-		byte   field_C;
-		uint32 field_D;
+		char   signature[8];
+		uint32 chunkCount;
+		uint32 frameRate;
+		byte field_D;
 		uint32 width;
 		uint32 height;
 		byte   field_19;
@@ -242,21 +262,21 @@ public:
 		uint32 field_BC;
 	};
 
-	struct SoundTable {
-		byte   _field_0;
-		byte   _field_1;
-		uint32 _field_4;
-		uint16 _field_6;
-		uint32 _field_8;
-		uint32 _field_C;
+	struct SoundConfiguration {
+		byte   channels;
+		byte   bitsPerSample;
+		uint32 samplesPerSec;
+		uint16 field_6;
+		uint32 field_8;
+		uint32 field_C;
 
-		SoundTable() {
-			_field_0 = 0;
-			_field_1 = 0;
-			_field_4 = 0;
-			_field_6 = 0;
-			_field_8 = 0;
-			_field_C = 0;
+		SoundConfiguration() {
+			channels = 0;
+			bitsPerSample = 0;
+			samplesPerSec = 0;
+			field_6 = 0;
+			field_8 = 0;
+			field_C = 0;
 		}
 
 		bool read(Common::SeekableReadStream *stream);
@@ -267,20 +287,26 @@ public:
 
 	virtual bool load(Image *image, ArchiveType archiveType, ZoneId zone, LoadFrom loadFrom, DrawType drawType);
 
-	bool init(Common::String path, ArchiveType archiveType, ZoneId zone, LoadFrom loadFrom);
-	bool readImage(Image *image, byte bitdepth, DrawType drawType);
+	// ImageLoaderMovie
+	virtual bool init(Common::String path, ArchiveType archiveType, ZoneId zone, LoadFrom loadFrom);
+	virtual bool readImage(Image *image, byte bitdepth, DrawType drawType);
 
-	Header *getHeader() { return &_header; }
+	virtual Cinematic *getCinematic()             { return (Cinematic *)_cinematic; }
+	virtual uint32 getChunkCount()                { return _header.chunkCount; }
+	virtual uint32 getFrameRate()                 { return _header.frameRate; }
+	virtual byte getChannels(uint32 index)        { return _soundConfigs[index].channels; }
+	virtual byte getBitsPerSample(uint32 index)   { return _soundConfigs[index].bitsPerSample; }
+	virtual byte getSamplesPerSec(uint32 index)   { return _soundConfigs[index].samplesPerSec; }
 
 private:
-	Cinematic2 *_cinematic;
-	Header      _header;
-	SoundTable  _soundTables[4];
-	void       *_controlTable;
-	uint32      _widthAndPadding;
-	uint32      _stride;
-	uint32      _width;
-	uint32      _height;
+	Cinematic2         *_cinematic;
+	Header              _header;
+	SoundConfiguration  _soundConfigs[4];
+	void               *_controlTable;
+	uint32              _widthAndPadding;
+	uint32              _stride;
+	uint32              _width;
+	uint32              _height;
 
 	void deinit();
 	bool readHeader();

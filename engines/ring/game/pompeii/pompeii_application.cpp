@@ -176,7 +176,34 @@ void ApplicationPompeii::initBag() {
 #pragma region Startup
 
 void ApplicationPompeii::showStartupScreen() {
-	error("[ApplicationPompeii::showStartupScreen] Not implemented");
+	// Original setups zones a second time for no good reason
+	setCurrentZone(kZone100);
+
+	playMovie("dclogo");
+	playMovie("Rmn");
+	playMovie("Logo");
+	playMovie("Sur");
+	playMovie("Arxel");
+
+	varSetByte(90001, 5);
+	showDay();
+
+	playMovie("INTRO_-2");
+	varSetByte(90001, 0);
+	showDay();
+
+	playMovie("INTRO_-1");
+	varSetByte(90001, 1);
+
+	playMovie("INTRO_-3");
+	varSetByte(90904, 0);
+
+	displayFade("black.bmp", "menu.bmp", 5, 0, kLoadFromDisk, getConfiguration().artSY ? kArchiveArt : kArchiveFile);
+	varSetByte(90904, 16);
+
+	setupUser(1);
+
+	_preferenceHandler->load();
 }
 
 void ApplicationPompeii::startMenu(bool savegame) {
@@ -791,6 +818,44 @@ void ApplicationPompeii::onVisualList(Id id, uint32 type, const Common::Point &p
 
 bool ApplicationPompeii::sub_42F7B0() {
 	error("[ApplicationPompeii::sub_42F7B0] Not implemented");
+}
+
+void ApplicationPompeii::showDay() {
+	switch (varGetByte(90001)) {
+	default:
+		_message = "";
+		break;
+
+	case 0:
+		messageGet("Day0");
+		break;
+
+	case 1:
+		messageGet("Day1");
+		break;
+
+	case 2:
+		messageGet("Day2");
+		break;
+
+	case 3:
+		messageGet("Day3");
+		break;
+
+	case 4:
+		messageGet("Day4");
+		break;
+
+	case 5:
+		messageGet("Day5");
+		break;
+	}
+
+	objectPresentationSetTextToPuzzle(kObject1, 1, 0, _message);
+}
+
+void ApplicationPompeii::setupUser(Id userId) {
+	warning("[ApplicationPompeii::setupUser] Not implemented");
 }
 
 #pragma endregion

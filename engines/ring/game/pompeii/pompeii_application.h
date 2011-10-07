@@ -112,6 +112,8 @@ private:
 	Zone12Pompeii     *_zone12;
 
 	bool sub_42F7B0();
+	void showDay();
+	void setupUser(Id userId);
 
 	friend class ZoneSystemPompeii;
 	friend class Zone1Pompeii;
