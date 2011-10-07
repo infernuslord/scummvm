@@ -406,7 +406,7 @@ void ZoneSystemPompeii::onInit() {
 	_app->soundAdd(990013, kSoundTypeAmbientMusic,  "FS_FOO-7.WAs", _app->getConfiguration().ambientEffect.loadFrom);
 	_app->soundAdd(990014, kSoundTypeAmbientMusic,  "FS_FOO-8.WAs", _app->getConfiguration().ambientEffect.loadFrom);
 	_app->soundAdd(90802, kSoundTypeAmbientMusic, "00_LOW-1.WAs", kLoadFromDisk);
-	_app->soundAdd(90801, kSoundTypeAmbientMusic, "bgr_mus.was", kLoadFromDisk);
+	_app->soundAdd(90801, kSoundTypeAmbientMusic, "bgr_mus.was", kLoadFromDisk); // Original has "was", but the file is actually "wac"
 	_app->puzzleAddAmbientSound(kPuzzleGeneralMenu, 90801, 100, 0, 1, 1, 10);
 	_app->puzzleAddAmbientSound(kPuzzleLoad, 90801, 100, 0, 1, 1, 10);
 	_app->puzzleAddAmbientSound(kPuzzleSave, 90801, 100, 0, 1, 1, 10);

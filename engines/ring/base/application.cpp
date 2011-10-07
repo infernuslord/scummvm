@@ -2276,8 +2276,35 @@ void Application::soundAdd(Id soundId, SoundType type, Common::String filename, 
 	else
 		path = Common::String::format("DATA/%s/SOUND/%s", getCurrentZoneFolder().c_str(), filename.c_str());
 
-	if (!Common::File::exists(path))
+	// Check if file exists (and try the 3 different extensions)
+	do {
+		if (Common::File::exists(path))
+			break;
+
+		if (!path.contains('.'))
+			error("[Application::soundAdd] File doesn't exist (%s)", path.c_str());
+
+		// WAS
+		path.deleteLastChar();
+		path += "s";
+		if (Common::File::exists(path))
+			break;
+
+		// WAC
+		path.deleteLastChar();
+		path += "c";
+		if (Common::File::exists(path))
+			break;
+
+		// WAV
+		path.deleteLastChar();
+		path += "v";
+		if (Common::File::exists(path))
+			break;
+
+		// No file found
 		error("[Application::soundAdd] File doesn't exist (%s)", path.c_str());
+	} while (true);
 
 	_soundManager->addEntry(soundId, type, filename, loadFrom, format, a4 != 1, soundChunk);
 }
