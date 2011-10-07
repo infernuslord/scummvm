@@ -83,6 +83,7 @@ enum ObjectId {
 	kObjectPhiltre1          = 10571,
 	kObjectPhiltre2          = 10572,
 	kObject10701             = 10701,
+	kObject10801             = 10801,
 	kObjectKnife             = 30006,
 	kObject30301             = 30301,
 	kObject30311             = 30311,
