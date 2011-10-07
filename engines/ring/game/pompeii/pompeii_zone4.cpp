@@ -76,11 +76,11 @@ void Zone4Pompeii::onInit() {
 	_app->rotationSetMovabilityToRotation(10304, 1, 275.0f, 0.30000001f, 87.0f, 0.0f, 1, 275.0f, 0.30000001f, 87.0f);
 	_app->rotationAddMovabilityToRotation(10305, 10304, "", Common::Rect(1330, -250, 1480, 250), true, kCursorMove, 0);
 	_app->rotationSetMovabilityToRotation(10305, 0, 95.0f, 0.30000001f, 87.0f, 0.0f, 1, 95.0f, 0.30000001f, 87.0f);
-	_app->puzzleAddMovabilityToRotation(30311, 10301, "", Common::Rect(0, 420, 640, 464), false, kCursorBack, 0);
-	_app->puzzleSetMovabilityToRotation(30311, 0, 270.0f, 0, 87.0f);
-	_app->puzzleAddMovabilityToRotation(30312, 10301, "", Common::Rect(0, 420, 640, 464), false, kCursorBack, 0);
-	_app->puzzleAddMovabilityToRotation(30313, 10301, "", Common::Rect(0, 420, 640, 464), false, kCursorBack, 0);
-	_app->puzzleSetMovabilityToRotation(30313, 0, 270.0f, 0, 87.0f);
+	_app->puzzleAddMovabilityToRotation(kPuzzle30311, 10301, "", Common::Rect(0, 420, 640, 464), false, kCursorBack, 0);
+	_app->puzzleSetMovabilityToRotation(kPuzzle30311, 0, 270.0f, 0, 87.0f);
+	_app->puzzleAddMovabilityToRotation(kPuzzle30312, 10301, "", Common::Rect(0, 420, 640, 464), false, kCursorBack, 0);
+	_app->puzzleAddMovabilityToRotation(kPuzzle30313, 10301, "", Common::Rect(0, 420, 640, 464), false, kCursorBack, 0);
+	_app->puzzleSetMovabilityToRotation(kPuzzle30313, 0, 270.0f, 0, 87.0f);
 	_app->objectAdd(kObject30301, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject30301, 10301, Common::Rect(2032, -327, 2497, 262), true, kCursorMove, 0);
 	_app->objectAddPresentation(kObject30301);
