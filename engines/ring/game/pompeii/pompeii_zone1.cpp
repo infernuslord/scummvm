@@ -1191,8 +1191,8 @@ void Zone1Pompeii::onInit() {
 	_app->objectAddRotationAccessibility(kObjectDoveFeather, 10014, Common::Rect(2782, 273, 2875, 324), false, kCursorTake, 0);
 	_app->objectAddPresentation(kObjectDoveFeather);
 	_app->objectPresentationAddImageToRotation(kObjectDoveFeather, 0, 10014, 0);
-	_app->objectAdd(kObjectRedFish, "", "", 1);
-	_app->objectAddRotationAccessibility(kObjectRedFish, 10022, Common::Rect(2042, -233, 2339, 175), false, kCursorAction, 0);
+	_app->objectAdd(kObject1029, "", "", 1);
+	_app->objectAddRotationAccessibility(kObject1029, 10022, Common::Rect(2042, -233, 2339, 175), false, kCursorAction, 0);
 	_app->objectAdd(kObject1028, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject1028, 10022, Common::Rect(2151, 8, 2218, 213), false, kCursorAction, 0);
 	_app->objectAddRotationAccessibility(kObject1028, 10022, Common::Rect(2151, 8, 2218, 213), false, kCursorIdle, 1);
