@@ -25,16 +25,22 @@
 namespace PompeiiGame {
 
 enum PuzzleId {
+	kPuzzle30311                   = 30311,
+	kPuzzle30312                   = 30312,
+	kPuzzle30313                   = 30313,
+	kPuzzle30314                   = 30314,
+	kPuzzle30317                   = 30317,
+	kPuzzle30321                   = 30321,
 	kPuzzleEncyclopedia            = 50000,
-	kPuzzleGeneralMenu            = 90000,
-	kPuzzleLoad            = 90001,
-	kPuzzleSave            = 90002,
-	kPuzzlePreferences            = 90003,
-	kPuzzleStatus            = 90004,
-	kPuzzleInsertCd             = 90006,
-	kPuzzle99001               = 99001,
-	kPuzzle99002               = 99002,
-	kPuzzle99003               = 99003
+	kPuzzleGeneralMenu             = 90000,
+	kPuzzleLoad                    = 90001,
+	kPuzzleSave                    = 90002,
+	kPuzzlePreferences             = 90003,
+	kPuzzleStatus                  = 90004,
+	kPuzzleInsertCd                = 90006,
+	kPuzzle99001                   = 99001,
+	kPuzzle99002                   = 99002,
+	kPuzzle99003                   = 99003
 };
 
 enum ObjectId {
@@ -75,6 +81,12 @@ enum ObjectId {
 	kObjectPhiltre1          = 10571,
 	kObjectPhiltre2          = 10572,
 	kObjectKnife             = 30006,
+	kObject30301             = 30301,
+	kObject30311             = 30311,
+	kObject30312             = 30312,
+	kObject30313             = 30313,
+	kObject30314             = 30314,
+	kObject30315             = 30315,
 	kObjectHollyWater        = 40413,
 	kObjectTali              = 50500,
 	kObjectCubes             = 50601,
