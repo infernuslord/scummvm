@@ -24,11 +24,22 @@
 
 namespace PompeiiGame {
 
-//enum PuzzleId {
-//};
+enum PuzzleId {
+	kPuzzleEncyclopedia            = 50000,
+	kPuzzleGeneralMenu            = 90000,
+	kPuzzleLoad            = 90001,
+	kPuzzleSave            = 90002,
+	kPuzzlePreferences            = 90003,
+	kPuzzleStatus            = 90004,
+	kPuzzleInsertCd             = 90006,
+	kPuzzle99001               = 99001,
+	kPuzzle99002               = 99002,
+	kPuzzle99003               = 99003
+};
 
 enum ObjectId {
 	kObjectItemList          = 7,
+	kObject16                = 16,
 	kObjectStick             = 1002,
 	kObjectRope              = 1003,
 	kObjectSalad             = 1004,
@@ -70,6 +81,11 @@ enum ObjectId {
 	kObjectDropOfWater       = 60612,
 	kObjectJavelin           = 80801,
 	kObjectJavelinWithRose   = 80802,
+	kObject90001             = 90001,
+	kObject90002             = 90002,
+	kObject90003             = 90003,
+	kObject90004             = 90004,
+	kObject90401             = 90401,
 	kObjectRope2             = 90511,
 	kObjectBasket3           = 90512,
 	kObjectBasket4           = 90513,
@@ -96,6 +112,26 @@ enum ObjectId {
 	kObjectIbisFeather       = 91208,
 	kObjectIncenseStick      = 91209,
 	kObjectItemListCompleted = 91210,
+	kObject99000             = 99000,
+	kObject99001             = 99001,
+	kObject99002             = 99002,
+	kObject99003             = 99003,
+	kObject99004             = 99004,
+	kObject99005             = 99005,
+	kObject99006             = 99006,
+	kObject99007             = 99007,
+	kObject99009             = 99009,
+	kObject99022             = 99022,
+	kObject99023             = 99023,
+	kObject99024             = 99024,
+	kObject99025             = 99025,
+	kObject99041             = 99041,
+	kObject99042             = 99042,
+	kObject99043             = 99043,
+	kObject99044             = 99044,
+	kObject99045             = 99045,
+	kObject99046             = 99046,
+	kObject99601             = 99601,
 	kObjectWood              = 99901,
 	kObjectSesterces         = 99950,
 	kObjectMule              = 100081,
