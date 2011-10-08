@@ -108,6 +108,7 @@ public:
 	void drawBuffer(Graphics::Surface *surface);
 	void computeCoordinates(Common::Point *point);
 	void adjustCoordinates(Common::Point *point);
+	void updateData(float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8);
 
 	bool isInitialized() { return _buffer != NULL; }
 	const Header &getHeader() { return _header; }

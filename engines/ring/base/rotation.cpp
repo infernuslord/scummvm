@@ -225,7 +225,83 @@ void Rotation::setCoordinates(Common::Point *point, Common::KeyCode keycode) {
 }
 
 void Rotation::updateView() {
+	// Initialize rotation data and tables
+	ImageHeaderEntry::Header header = _stream->getEntry()->getHeader();
+	_float1 = header.field_4;
+	_float2 = header.field_10 - header.field_C;
+	_float3 = (header.field_10 + header.field_C) * 0.5f;
+	_float4 = header.field_18 - header.field_14;
+	_float5 = (header.field_18 + header.field_14) * 0.5f;
+
+	/////////////////////////////////
+	// RAN
+	/////////////////////////////////
+	if (_ran < 30.0f)
+		_ran = 30.0f;
+
+	if (_ran > 87.0f)
+		_ran = 87.0f;
+
+	// Compute data
+	float angle = _ran * acos(-1.0) * 0.002777777777777778f;
+	float cos1 = cos(angle);
+	float sin1 = sin(angle) / 640.0f;
+
+	float angle0 = 640.0f * sin1;
+	float angle1 = 480.0f * sin1;
+
+	float float6 = 2 * asin(angle1) * 180.0f / acos(-1.0);
+
+	/////////////////////////////////
+	// ALP
+	/////////////////////////////////
+
+	// Reduce alp to the [-360, 360] range
+	_alp = fmod(_alp, 360.0f);
+
+	/////////////////////////////////
+	// BET
+	/////////////////////////////////
+
+	float delta = (_float4 - float6) * 0.5f * 0.5f;
+	if (_bet > _float5 + delta)
+		_bet = _float5 + delta;
+
+	if (_bet < _float5 - delta)
+		_bet = _float5 - delta;
+
+	/////////////////////////////////
+	// Compute pixel value
+	float angle2 = _alp * acos(-1.0) * 0.0055555557f;
+	float angle3 = _bet * acos(-1.0) * 0.0055555557f;
+
+	Pixel::PixelData pixel;
+	pixel.a1 = sin(angle2) * cos(angle3);
+	pixel.a2 = sin(angle3);
+	pixel.a3 = cos(angle2) * cos(angle3);
+
+	Pixel::divide(&pixel);
+
+	// Setup triplet
+	Pixel::PixelTriplet triplet;
+	Pixel::set(&triplet, &pixel, 0.0f, 1.0f, 0.0f);
+
+	/////////////////////////////////
+	// Pixel values
+	/////////////////////////////////
+	float movementOffset = (_ticks - _startTicks) * 0.001f;
+
+	if (_field_65) {
+		error("[Rotation::updateView] Not implemented");
+	} else {
+		_stream->getEntry()->updateData(-angle0, -angle1, angle0, -angle1, -angle0, angle1, angle0, angle1);
+	}
+
 	error("[Rotation::updateView] Not implemented");
+
+	if (_field_66) {
+		error("[Rotation::updateView] Not implemented");
+	}
 }
 
 void Rotation::loadImage() {

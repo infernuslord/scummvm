@@ -410,6 +410,23 @@ void *ImageHeaderEntry::allocBuffer(bool hasAdditionnalData) const {
 	return buffer;
 }
 
+void ImageHeaderEntry::updateData(float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8) {
+	int *data = (int *)_bufferData;
+
+	data[8204] = a1;
+	data[8205] = a2;
+	data[8206] = data[8195];
+	data[8207] = a3;
+	data[8208] = a4;
+	data[8209] = data[8195];
+	data[8210] = a5;
+	data[8211] = a6;
+	data[8212] = data[8195];
+	data[8213] = a7;
+	data[8214] = a8;
+	data[8215] = data[8195];
+}
+
 #pragma endregion
 
 #pragma region ImageHeader
