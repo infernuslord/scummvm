@@ -43,6 +43,7 @@
 #include "ring/game/pompeii/pompeii_zone11.h"
 #include "ring/game/pompeii/pompeii_zone12.h"
 
+#include "ring/graphics/image.h"
 #include "ring/graphics/screen.h"
 
 #include "ring/sound/soundhandler.h"
@@ -207,7 +208,57 @@ void ApplicationPompeii::showStartupScreen() {
 }
 
 void ApplicationPompeii::startMenu(bool savegame) {
-	error("[ApplicationPompeii::startMenu] Not implemented");
+	visualBoxHide(6, kPuzzleMenu);
+
+	if (_currentGameZone)
+		return;
+
+	if (savegame) {
+		cursorSelect(kCursorBusy);
+		_vm->setFlag(false);
+		_bag->reset();
+
+		if (!_saveManager->loadSave(0, kLoadSaveWrite))
+			error("[ApplicationRing::startMenu] Cannot save game in slot 0");
+
+		// Save a copy of the screen surface for savegame
+		SAFE_DELETE(_thumbnail);
+
+		_thumbnail = new Image();
+		_thumbnail->create(24, 2, 640, 480);
+
+		// Save a copy of the screen to our image
+		_screenManager->copySurface(_thumbnail, 0, 0);
+	}
+
+	_currentGameZone = getCurrentZone();
+
+	soundStopAll(4);
+	timerStopAll();
+	setupZone(kZone1, kSetupTypeNone);
+	setSpace(kZone100);
+	puzzleSetActive(kPuzzleGeneralMenu, true, true);
+	puzzleSetMod(kPuzzleMenu, 1, 0);
+
+	for (uint32 i = 1; i < 8; i++) {
+		objectSetAccessibilityOff(i);
+		objectPresentationHideAndRemove(i);
+	}
+
+	Bag *bag = getBag();
+	if (bag && bag->isInitialized())
+		bag->reset();
+
+	cursorDelete();
+
+	if (savegame)
+		objectSetAccessibilityOn(kObject99002);
+	else
+		objectSetAccessibilityOn(kObject99002);
+
+	// Load user preferences
+	setUser("user1");
+	_preferenceHandler->load();
 }
 
 void ApplicationPompeii::showMenu(ZoneId zone, MenuAction menuAction) {
