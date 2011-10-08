@@ -152,27 +152,27 @@ void ZoneSystemRing::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject3, kPuzzleMenu, Common::Rect(286, 269, 363, 307), false, kCursorMenuActive, 0);
 	_app->objectSetPuzzleAccessibilityKey(kObject3, 0, Common::KEYCODE_RETURN);
 
-	_app->objectAdd(kObject4, "", "", 1);
-	_app->objectAddPresentation(kObject4);
-	_app->objectPresentationAddImageToPuzzle(kObject4, 0, kPuzzleMenu, "Question.bmp", Common::Point(160, 165), true, kDrawType1, 1000);
-	_app->objectPresentationAddTextToPuzzle(kObject4, 0, kPuzzleMenu, "", Common::Point(200, 200), kFontDefault, Color(255, 95, 0), Color(-1, -1, -1));
-	_app->objectPresentationAddTextToPuzzle(kObject4, 0, kPuzzleMenu, "", Common::Point(200, 280), kFontDefault, Color(255, 95, 0), Color(-1, -1, -1));
-	_app->objectAddPresentation(kObject4);
-	_app->objectPresentationAddImageToPuzzle(kObject4, 1, kPuzzleMenu, "g_ok.tga", Common::Point(181, 257), true, kDrawType3, 1000);
-	_app->objectAddPresentation(kObject4);
-	_app->objectPresentationAddImageToPuzzle(kObject4, 2, kPuzzleMenu, "qu_cancel.tga", Common::Point(181, 282), true, kDrawType3, 1000);
-	_app->objectAddPuzzleAccessibility(kObject4, kPuzzleMenu, Common::Rect(277, 300, 347, 340), false, kCursorMenuActive, 0);
-	_app->objectAddPuzzleAccessibility(kObject4, kPuzzleMenu, Common::Rect(350, 300, 380, 340), false, kCursorMenuActive, 1);
-	_app->objectSetPuzzleAccessibilityKey(kObject4, 0, Common::KEYCODE_RETURN);
-	_app->objectSetPuzzleAccessibilityKey(kObject4, 1, Common::KEYCODE_ESCAPE);
-	_app->objectAddPuzzleAccessibility(kObject4, kPuzzleMenu, Common::Rect(180, 250, 250, 281), false, kCursorMenuActive, 2);
-	_app->objectAddPuzzleAccessibility(kObject4, kPuzzleMenu, Common::Rect(180, 283, 250, 309), false, kCursorMenuActive, 3);
-	_app->objectSetPuzzleAccessibilityKey(kObject4, 2, Common::KEYCODE_RETURN);
-	_app->objectSetPuzzleAccessibilityKey(kObject4, 3, Common::KEYCODE_ESCAPE);
-	_app->objectAddPuzzleAccessibility(kObject4, kPuzzleMenu, Common::Rect(180, 250, 250, 281), false, kCursorMenuActive, 4);
-	_app->objectAddPuzzleAccessibility(kObject4, kPuzzleMenu, Common::Rect(180, 283, 250, 309), false, kCursorMenuActive, 5);
-	_app->objectSetPuzzleAccessibilityKey(kObject4, 4, Common::KEYCODE_RETURN);
-	_app->objectSetPuzzleAccessibilityKey(kObject4, 5, Common::KEYCODE_ESCAPE);
+	_app->objectAdd(kObjectQuestion, "", "", 1);
+	_app->objectAddPresentation(kObjectQuestion);
+	_app->objectPresentationAddImageToPuzzle(kObjectQuestion, 0, kPuzzleMenu, "Question.bmp", Common::Point(160, 165), true, kDrawType1, 1000);
+	_app->objectPresentationAddTextToPuzzle(kObjectQuestion, 0, kPuzzleMenu, "", Common::Point(200, 200), kFontDefault, Color(255, 95, 0), Color(-1, -1, -1));
+	_app->objectPresentationAddTextToPuzzle(kObjectQuestion, 0, kPuzzleMenu, "", Common::Point(200, 280), kFontDefault, Color(255, 95, 0), Color(-1, -1, -1));
+	_app->objectAddPresentation(kObjectQuestion);
+	_app->objectPresentationAddImageToPuzzle(kObjectQuestion, 1, kPuzzleMenu, "g_ok.tga", Common::Point(181, 257), true, kDrawType3, 1000);
+	_app->objectAddPresentation(kObjectQuestion);
+	_app->objectPresentationAddImageToPuzzle(kObjectQuestion, 2, kPuzzleMenu, "qu_cancel.tga", Common::Point(181, 282), true, kDrawType3, 1000);
+	_app->objectAddPuzzleAccessibility(kObjectQuestion, kPuzzleMenu, Common::Rect(277, 300, 347, 340), false, kCursorMenuActive, 0);
+	_app->objectAddPuzzleAccessibility(kObjectQuestion, kPuzzleMenu, Common::Rect(350, 300, 380, 340), false, kCursorMenuActive, 1);
+	_app->objectSetPuzzleAccessibilityKey(kObjectQuestion, 0, Common::KEYCODE_RETURN);
+	_app->objectSetPuzzleAccessibilityKey(kObjectQuestion, 1, Common::KEYCODE_ESCAPE);
+	_app->objectAddPuzzleAccessibility(kObjectQuestion, kPuzzleMenu, Common::Rect(180, 250, 250, 281), false, kCursorMenuActive, 2);
+	_app->objectAddPuzzleAccessibility(kObjectQuestion, kPuzzleMenu, Common::Rect(180, 283, 250, 309), false, kCursorMenuActive, 3);
+	_app->objectSetPuzzleAccessibilityKey(kObjectQuestion, 2, Common::KEYCODE_RETURN);
+	_app->objectSetPuzzleAccessibilityKey(kObjectQuestion, 3, Common::KEYCODE_ESCAPE);
+	_app->objectAddPuzzleAccessibility(kObjectQuestion, kPuzzleMenu, Common::Rect(180, 250, 250, 281), false, kCursorMenuActive, 4);
+	_app->objectAddPuzzleAccessibility(kObjectQuestion, kPuzzleMenu, Common::Rect(180, 283, 250, 309), false, kCursorMenuActive, 5);
+	_app->objectSetPuzzleAccessibilityKey(kObjectQuestion, 4, Common::KEYCODE_RETURN);
+	_app->objectSetPuzzleAccessibilityKey(kObjectQuestion, 5, Common::KEYCODE_ESCAPE);
 
 	_app->objectAdd(kObject5, "", "", 1);
 	_app->puzzleAdd(kPuzzleInsertCd);
@@ -475,7 +475,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uin
 		_app->messageHideWarning(target);
 		break;
 
-	case kObject4:
+	case kObjectQuestion:
 		switch (target) {
 		default:
 		case 0:
@@ -860,8 +860,8 @@ void ZoneSystemRing::onUpdateBag(const Common::Point &point) {
 	_app->objectPresentationHide(kObjectStatusOk, 0);
 	_app->objectPresentationHide(kObjectYesNo, 1);
 	_app->objectPresentationHide(kObjectYesNo, 2);
-	_app->objectPresentationHide(kObject4, 1);
-	_app->objectPresentationHide(kObject4, 2);
+	_app->objectPresentationHide(kObjectQuestion, 1);
+	_app->objectPresentationHide(kObjectQuestion, 2);
 	_app->objectPresentationHide(kObject3, 1);
 	_app->objectPresentationHide(kObject90912, 0);
 
@@ -894,16 +894,16 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		_app->objectPresentationShow(kObject3, 1);
 		break;
 
-	case kObject4: {
+	case kObjectQuestion: {
 		int32 val = (uint32)(movabilityTo) & 0x80000001;
 		bool state = (val < 0 ? ((int32)((val - 1) | 0xFFFFFFFE)) == -1 : val == 0);
 
 		if (state) {
-			_app->objectPresentationHide(kObject4, 2);
-			_app->objectPresentationShow(kObject4, 1);
+			_app->objectPresentationHide(kObjectQuestion, 2);
+			_app->objectPresentationShow(kObjectQuestion, 1);
 		} else {
-			_app->objectPresentationHide(kObject4, 1);
-			_app->objectPresentationShow(kObject4, 2);
+			_app->objectPresentationHide(kObjectQuestion, 1);
+			_app->objectPresentationShow(kObjectQuestion, 2);
 		}
 		}
 		break;

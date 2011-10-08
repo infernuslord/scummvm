@@ -1165,17 +1165,17 @@ void Application::messageShowQuestion(uint32 accelerationIndex) {
 	if (!puzzleSetMod(kPuzzleMenu, 2, 4))
 		return;
 
-	objectPresentationSetTextToPuzzle(kObject4, 0, 0, _messageType);
-	objectPresentationSetTextCoordinatesToPuzzle(kObject4, 0, 0, Common::Point(225, 193));
-	objectPresentationSetTextToPuzzle(kObject4, 0, 1, _message);
-	objectPresentationSetTextCoordinatesToPuzzle(kObject4, 0, 1, Common::Point(225, 213));
-	objectPresentationShow(kObject4, 0);
-	objectSetAccessibilityOn(kObject4, accelerationIndex, accelerationIndex + 1);
+	objectPresentationSetTextToPuzzle(kObjectQuestion, 0, 0, _messageType);
+	objectPresentationSetTextCoordinatesToPuzzle(kObjectQuestion, 0, 0, Common::Point(225, 193));
+	objectPresentationSetTextToPuzzle(kObjectQuestion, 0, 1, _message);
+	objectPresentationSetTextCoordinatesToPuzzle(kObjectQuestion, 0, 1, Common::Point(225, 213));
+	objectPresentationShow(kObjectQuestion, 0);
+	objectSetAccessibilityOn(kObjectQuestion, accelerationIndex, accelerationIndex + 1);
 }
 
 void Application::messageHideQuestion(uint32 accelerationIndex) {
-	objectPresentationHideAndRemove(kObject4);
-	objectSetAccessibilityOff(kObject4, accelerationIndex, accelerationIndex + 1);
+	objectPresentationHideAndRemove(kObjectQuestion);
+	objectSetAccessibilityOff(kObjectQuestion, accelerationIndex, accelerationIndex + 1);
 	puzzleSetMod(kPuzzleMenu, 1, 0);
 }
 
@@ -1202,20 +1202,27 @@ bool Application::messageGet(Common::String messageId) {
 		if (messageId != Common::String(id))
 			continue;
 
-		// Check language
+		// Found message, look for proper language
+		do {
+			line = archive->readLine();
+			if (line.matchString(language + "*", true))
+				break;
+
+		} while (line.contains('#'));
+
+		// Did not find a proper language
 		if (!line.matchString(language + "*", true))
-			continue;
+			break;
 
 		// Get message type
 		Common::StringTokenizer tokenizer(line, "#");
 		if (tokenizer.empty())
 			error("[Application::messageGet] Invalid line format (missing # separators)");
 
-		tokenizer.nextToken();
-		if (tokenizer.empty())
-			error("[Application::messageGet] Invalid line format (missing message type)");
-
 		_messageType = tokenizer.nextToken();
+		if (line.contains("##"))
+			_messageType = "";
+
 		if (tokenizer.empty())
 			error("[Application::messageGet] Invalid line format (missing message)");
 

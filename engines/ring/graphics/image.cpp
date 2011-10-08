@@ -299,11 +299,11 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 
 		int16 *dstBuffer = (int16 *)dst;
 		// Copy data (and mirror image)
-		for (uint32 j = offset; j < destRect.height(); j++) {
+		for (int16 j = offset; j < destRect.height(); j++) {
 			// Read pixel data
 			uint8 a = 0, r = 0, g = 0, b = 0;
 
-			for (uint32 i = 0; i < destRect.width(); i++) {
+			for (int16 i = 0; i < destRect.width(); i++) {
 				switch (getBPP()) {
 				case 24:
 					formatImage.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);

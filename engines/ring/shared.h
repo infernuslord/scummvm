@@ -296,7 +296,7 @@ enum ObjectIdEnum {
 	kObject1                        = 1,
 	kObjectYesNo                    = 2,
 	kObject3                        = 3,
-	kObject4                        = 4,
+	kObjectQuestion                        = 4,
 	kObject5                        = 5,
 	kObject6                        = 6,
 	kObject7                        = 7
