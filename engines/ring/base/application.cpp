@@ -2270,42 +2270,8 @@ void Application::soundAdd(Id soundId, SoundType type, Common::String filename, 
 	if (format == kSoundFormatInvalid)
 		error("[Application::soundAdd] Wrong file format (%s)", filename.c_str());
 
-	// Compute path
-	Common::String path;
-	if (type == kSoundTypeDialog)
-		path = Common::String::format("DATA/%s/SOUND/%s/%s", getCurrentZoneFolder().c_str(), getLanguageFolder().c_str(), filename.c_str());
-	else
-		path = Common::String::format("DATA/%s/SOUND/%s", getCurrentZoneFolder().c_str(), filename.c_str());
-
-	// Check if file exists (and try the 3 different extensions)
-	do {
-		if (Common::File::exists(path))
-			break;
-
-		if (!path.contains('.'))
-			error("[Application::soundAdd] File doesn't exist (%s)", path.c_str());
-
-		// WAS
-		path.deleteLastChar();
-		path += "s";
-		if (Common::File::exists(path))
-			break;
-
-		// WAC
-		path.deleteLastChar();
-		path += "c";
-		if (Common::File::exists(path))
-			break;
-
-		// WAV
-		path.deleteLastChar();
-		path += "v";
-		if (Common::File::exists(path))
-			break;
-
-		// No file found
-		error("[Application::soundAdd] File doesn't exist (%s)", path.c_str());
-	} while (true);
+	// Check sound path
+	getSoundPath(filename, type);
 
 	_soundManager->addEntry(soundId, type, filename, loadFrom, format, a4 != 1, soundChunk);
 }
@@ -2348,6 +2314,46 @@ bool Application::soundIsPlaying(Id soundId) {
 
 bool Application::soundIsPlayingType(SoundType soundType) {
 	return _soundManager->isPlayingType(soundType);
+}
+
+Common::String Application::getSoundPath(const Common::String &filename, SoundType type) {
+	Common::String path;
+	if (type == kSoundTypeDialog)
+		path = Common::String::format("DATA/%s/SOUND/%s/%s", getCurrentZoneFolder().c_str(), getLanguageFolder().c_str(), filename.c_str());
+	else
+		path = Common::String::format("DATA/%s/SOUND/%s", getCurrentZoneFolder().c_str(), filename.c_str());
+
+	// Check if file exists (and try the 3 different extensions)
+	do {
+		if (Common::File::exists(path))
+			break;
+
+		if (!path.contains('.'))
+			error("[Application::getSoundPath] File doesn't exist (%s)", path.c_str());
+
+		// WAS
+		path.deleteLastChar();
+		path += "s";
+		if (Common::File::exists(path))
+			break;
+
+		// WAC
+		path.deleteLastChar();
+		path += "c";
+		if (Common::File::exists(path))
+			break;
+
+		// WAV
+		path.deleteLastChar();
+		path += "v";
+		if (Common::File::exists(path))
+			break;
+
+		// No file found
+		error("[Application::getSoundPath] File doesn't exist (%s)", path.c_str());
+	} while (true);
+
+	return path;
 }
 
 #pragma endregion
