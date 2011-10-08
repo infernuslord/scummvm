@@ -1224,9 +1224,9 @@ bool Application::messageGet(Common::String messageId) {
 			_messageType = "";
 
 		if (tokenizer.empty())
-			error("[Application::messageGet] Invalid line format (missing message)");
-
-		_message = tokenizer.nextToken();
+			_message = "";
+		else
+			_message = tokenizer.nextToken();
 
 		delete archive;
 
