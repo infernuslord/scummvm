@@ -287,7 +287,19 @@ void Zone3Pompeii::onInit() {
 }
 
 void Zone3Pompeii::onSetup(SetupType type) {
-	error("[Zone3Pompeii::onSetup()] Not implemented");
+	switch (type) {
+	default:
+		break;
+
+	case kSetupTypeNone:
+		_app->setSpace(kZone100);
+		_app->soundPlay(90802, kSoundLoop);
+		_app->objectPresentationShow(kObject99009);
+		_app->playMovie("CONCL_-1");
+		_app->puzzleSetActive(kPuzzle99001);
+		_app->soundPlay(99007);
+		break;
+	}
 }
 
 void Zone3Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
