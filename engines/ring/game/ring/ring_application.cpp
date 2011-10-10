@@ -68,7 +68,7 @@ namespace Ring {
 static const struct {
 	Common::String filenameFrom;
 	Common::String filenameTo;
-	uint32 a3;
+	uint32 frameCount;
 	uint32 ticksWait;
 	LoadFrom loadFrom;
 	ArchiveType archiveType;
@@ -232,7 +232,7 @@ void ApplicationRing::showStartupScreen() {
 
 	for (uint i = 0; i < ARRAYSIZE(introScreens); i++) {
 
-		displayFade(introScreens[i].filenameFrom, introScreens[i].filenameTo, introScreens[i].a3, introScreens[i].ticksWait, introScreens[i].loadFrom, introScreens[i].archiveType);
+		displayFade(introScreens[i].filenameFrom, introScreens[i].filenameTo, introScreens[i].frameCount, introScreens[i].ticksWait, introScreens[i].loadFrom, introScreens[i].archiveType);
 
 		// Skip intro screens if ESCAPE is pressed
 		if (checkEscape())
