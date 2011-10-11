@@ -25,6 +25,7 @@
 #include "cryo/data/graphics/sprite.h"
 
 #include "cryo/data/sound/apc.h"
+#include "cryo/data/sound/zik.h"
 
 #include "cryo/cryo.h"
 
@@ -44,6 +45,7 @@ Debugger::Debugger(CryoEngine *engine) : _engine(engine) {
 	// General
 	DCmd_Register("help",      WRAP_METHOD(Debugger, cmdHelp));
 
+	DCmd_Register("music",     WRAP_METHOD(Debugger, cmdMusic));
 	DCmd_Register("sound",     WRAP_METHOD(Debugger, cmdSound));
 	DCmd_Register("sprite",    WRAP_METHOD(Debugger, cmdSprite));
 }
@@ -72,6 +74,43 @@ bool Debugger::cmdHelp(int, const char **) {
 	DebugPrintf("sound - Play sound\n");
 	DebugPrintf("sprite - Show a sprite\n");
 	DebugPrintf("\n");
+	return true;
+}
+
+bool Debugger::cmdMusic(int argc, const char **argv) {
+	if (argc == 2) {
+
+		// Get music name
+		Common::String filename(const_cast<char *>(argv[1]));
+		if (!Common::File::exists(filename)) {
+			DebugPrintf("Cannot find file %s!\n", filename.c_str());
+			return true;
+		}
+
+		// Stop all playing sounds
+		_engine->_system->getMixer()->stopAll();
+
+		filename.toLowercase();
+
+		// Open sound file and play
+		if (filename.hasSuffix(".zik")) {
+			Zik *music = new Zik(filename);
+			music->play();
+			delete music;
+		} else if (filename.hasSuffix(".wav")) {
+			Common::SeekableReadStream *stream = SearchMan.createReadStreamForMember(filename);
+			if (!stream) {
+				DebugPrintf("Cannot open stream to wav file (%s)\n", filename.c_str());
+				return true;
+			}
+
+			Audio::RewindableAudioStream *waveStream = Audio::makeWAVStream(stream, DisposeAfterUse::YES);
+			_engine->_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, &_soundHandle, (Audio::AudioStream *)waveStream);
+		}
+
+	} else {
+		DebugPrintf("Syntax: sound <filename>\n");
+	}
 	return true;
 }
 

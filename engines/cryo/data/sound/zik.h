@@ -22,6 +22,9 @@
 #ifndef CRYO_ZIK_H
 #define CRYO_ZIK_H
 
+#include "audio/audiostream.h"
+#include "audio/mixer.h"
+
 /*
   ZIK files used by Chine.
 
@@ -33,11 +36,18 @@ namespace Cryo {
 
 class Zik {
 public:
-	Zik();
+	Zik(const Common::String &filename, bool dispose = true);
 	~Zik();
 
-private:
+	void play();
 
+private:
+	Audio::SoundHandle _soundHandle;
+	bool _dispose;
+
+	Audio::RewindableAudioStream *_stream;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo
