@@ -13,9 +13,17 @@ MODULE_OBJS := \
 	data/sound/spp.o \
 	data/sound/synchro.o \
 	data/sound/zik.o \
+	game/screen.o \
+	game/warp.o \
 	debug.o \
 	detection.o \
 	cryo.o
+
+ifdef ENABLE_CHINA
+MODULE_OBJS += \
+	game/china/china.o \
+	game/china/mouse.o
+endif
 
 # This module can be built as a plugin
 ifeq ($(ENABLE_CRYO), DYNAMIC_PLUGIN)

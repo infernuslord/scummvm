@@ -44,40 +44,48 @@ static const PlainGameDescriptor cryoGames[] = {
 	{0, 0}
 };
 
-static const ADGameDescription gameDescriptions[] = {
+static const CryoGameDescription gameDescriptions[] = {
 
 	{
-		"china",
-		"",
 		{
-			{"CHINE.EXE", 0, "8850a946310e8e10208576af34b919f2", 573952},
-			{"CD.HNM",    0, "1aec4b0148683c2776cc00f523ea8a43", 45628},
+			"china",
+			"",
+			{
+				{"CHINE.EXE", 0, "8850a946310e8e10208576af34b919f2", 573952},
+				{"CD.HNM",    0, "1aec4b0148683c2776cc00f523ea8a43", 45628},
+			},
+			Common::EN_ANY,
+			Common::kPlatformWindows,
+			ADGF_UNSTABLE,
+			Common::GUIO_NONE
 		},
-		Common::EN_ANY,
-		Common::kPlatformWindows,
-		ADGF_UNSTABLE,
-		Common::GUIO_NONE
+		GameTypeChina,
+		0
 	},
 
 	{
-		"egypt",
-		"",
 		{
-			{"EGYPTE.EXE", 0, "cce60d7469fbf587f652d756957457d6", 375808},
+			"egypt",
+			"",
+			{
+				{"EGYPTE.EXE", 0, "cce60d7469fbf587f652d756957457d6", 375808},
+			},
+			Common::EN_ANY,
+			Common::kPlatformWindows,
+			ADGF_UNSTABLE,
+			Common::GUIO_NONE
 		},
-		Common::EN_ANY,
-		Common::kPlatformWindows,
-		ADGF_UNSTABLE,
-		Common::GUIO_NONE
+		GameTypeEgypt,
+		0
 	},
 
-	AD_TABLE_END_MARKER
+	{AD_TABLE_END_MARKER, 0, 0}
 };
 
 
 class CryoMetaEngine : public AdvancedMetaEngine {
 public:
-	CryoMetaEngine() : AdvancedMetaEngine(gameDescriptions, sizeof(ADGameDescription), cryoGames) {
+	CryoMetaEngine() : AdvancedMetaEngine(gameDescriptions, sizeof(Cryo::CryoGameDescription), cryoGames) {
 		_guioptions = Common::GUIO_NOSUBTITLES | Common::GUIO_NOSFX;
 	}
 
@@ -89,18 +97,27 @@ public:
 		return "Cryo game Engine (C) 1997-2002 Cryo Interactive";
 	}
 
+	virtual bool hasFeature(MetaEngineFeature f) const;
+	virtual int getMaximumSaveSlot() const { return 99; }
+
+protected:
 	bool createInstance(OSystem *syst, Engine **engine, const ADGameDescription *gd) const;
 };
 
 bool CryoMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *gd) const {
 	if (gd) {
-		*engine = new CryoEngine(syst, (const ADGameDescription *)gd);
+		*engine = new CryoEngine(syst, (const CryoGameDescription *)gd);
 	}
 	return gd != 0;
 }
 
-bool CryoEngine::isDemo() const {
-	return (bool)(_gameDescription->flags & ADGF_DEMO);
+bool CryoMetaEngine::hasFeature(MetaEngineFeature f) const {
+	return (f == kSupportsListSaves) ||
+	       (f == kSupportsDeleteSave) ||
+	       (f == kSavesSupportMetaInfo) ||
+	       (f == kSavesSupportThumbnail) ||
+	       (f == kSavesSupportCreationDate) ||
+	       (f == kSavesSupportPlayTime);
 }
 
 } // End of namespace Cryo

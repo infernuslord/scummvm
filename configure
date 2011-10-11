@@ -87,7 +87,20 @@ add_engine cge "CGE" no
 add_engine cine "Cinematique evo 1" yes
 add_engine composer "Magic Composer" no
 add_engine cruise "Cinematique evo 2" yes
-add_engine cryo "Cryo games" yes
+add_engine cryo "Cryo games" no "atlantis atlantis2 atlantis3 atlantis4 atlantis5 aztec china egypt egypt2 slammbo versailles versailles2 zone"
+add_engine atlantis "Atlantis: The Lost Tales" no
+add_engine atlantis2 "Atlantis II: Beyond Atlantis" no
+add_engine atlantis3 "Atlantis III: The New World" no
+add_engine atlantis4 "Atlantis Evolution" no
+add_engine atlantis5 "The Secrets of Atlantis: The Sacred Legacy" no
+add_engine aztec "Aztec: The Curse in the Heart of the City of Gold" no
+add_engine china "China: The Forbidden City" no
+add_engine egypt "Egypt 1156 B.C.: Tomb of the Pharaoh" no
+add_engine egypt2 "Egypt II: The Heliopolis Prophecy" no
+add_engine salammbo "Salammbo: Battle for Carthage" no
+add_engine versailles "Versailles 1685" no
+add_engine versailles2 "Versailles II: Testament of the King" no
+add_engine zerozone "Zero Zone" no
 add_engine draci "Dragon History" yes
 add_engine drascula "Drascula: The Vampire Strikes Back" yes
 add_engine dreamweb "Dreamweb" no

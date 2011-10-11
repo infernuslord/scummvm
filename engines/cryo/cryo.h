@@ -27,11 +27,10 @@
 
 #include "common/random.h"
 
+#include "engines/advancedDetector.h"
 #include "engines/engine.h"
 
 #include "graphics/pixelformat.h"
-
-struct ADGameDescription;
 
 /**
  * This is the namespace of the Cryo engine.
@@ -40,13 +39,51 @@ struct ADGameDescription;
  *  littleboy
  *
  * Supported games:
- *  -
+ *  - Atlantis: The Lost Tales
+ *  - Atlantis II: Beyond Atlantis,
+ *  - Atlantis III: The New World
+ *  - Atlantis Evolution
+ *  - The Secrets of Atlantis: The Sacred Legacy
+ *  - Aztec: The Curse in the Heart of the City of Gold
+ *  - China: The Forbidden City
+ *  - Egypt 1156 B.C.: Tomb of the Pharaoh
+ *  - Egypt II: The Heliopolis Prophecy
+ *  - Salammbo: Battle for Carthage
+ *  - Versailles 1685
+ *  - Versailles II: Testament of the King
+ *  - Zero Zone
+ *
  */
 namespace Cryo {
 
+struct CryoGameDescription {
+	ADGameDescription desc;
+
+	int gameType;
+	uint32 features;
+};
+
+enum CryoGameType {
+	GameTypeAtlantis,
+	GameTypeAtlantis2,
+	GameTypeAtlantis3,
+	GameTypeAtlantis4,
+	GameTypeAtlantis5,
+	GameTypeAztec,
+	GameTypeChina,
+	GameTypeEgypt,
+	GameTypeEgypt2,
+	GameTypeSalammbo,
+	GameTypeVersailles,
+	GameTypeVersailles2,
+	GameTypeZeroZone
+};
+
+class Game;
+
 class CryoEngine : public Engine {
 public:
-	CryoEngine(OSystem *syst, const ADGameDescription *gd);
+	CryoEngine(OSystem *syst, const CryoGameDescription *gd);
 	~CryoEngine();
 
 	// Event handling
@@ -55,21 +92,20 @@ public:
 
 	// Misc
 	Common::RandomSource getRandom() const {return _random; }
-	bool isDemo() const;
 
 protected:
 	// Engine APIs
 	Common::Error run();
-	virtual bool hasFeature(EngineFeature f) const;
 	virtual Debugger *getDebugger() { return _debugger; }
 
 private:
-	const ADGameDescription *_gameDescription;
-	Graphics::PixelFormat _pixelFormat;
+	const CryoGameDescription *_gameDescription;
 
 	// Misc
 	Debugger *_debugger;
 	Common::RandomSource _random;
+
+	Game *_game;
 };
 
 } // End of namespace Cryo

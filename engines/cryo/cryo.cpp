@@ -22,6 +22,62 @@
 
 #include "cryo/cryo.h"
 
+#include "cryo/game/game.h"
+
+#ifdef ENABLE_ATLANTIS1
+#include "cryo/game/atlantis/atlantis.h"
+#endif
+
+#ifdef ENABLE_ATLANTIS2
+#include "cryo/game/atlantis2/atlantis2.h"
+#endif
+
+#ifdef ENABLE_ATLANTIS3
+#include "cryo/game/atlantis3/atlantis3.h"
+#endif
+
+#ifdef ENABLE_ATLANTIS4
+#include "cryo/game/atlantis4/atlantis4.h"
+#endif
+
+#ifdef ENABLE_ATLANTIS5
+#include "cryo/game/atlantis5/atlantis5.h"
+#endif
+
+#ifdef ENABLE_AZTEC
+#include "cryo/game/aztec/aztec.h"
+#endif
+
+#ifdef ENABLE_CHINA
+#include "cryo/game/china/china.h"
+#endif
+
+#ifdef ENABLE_EGYPT
+//#include "cryo/game/egypt/egypt.h"
+#endif
+
+#ifdef ENABLE_EGYPT2
+#include "cryo/game/egypt2/egypt2.h"
+#endif
+
+#ifdef ENABLE_SALAMMBO
+#include "cryo/game/salammbo/salammbo.h"
+#endif
+
+#ifdef ENABLE_VERSAILLES
+#include "cryo/game/versailles/versailles.h"
+#endif
+
+#ifdef ENABLE_VERSAILLES2
+#include "cryo/game/versailles2/versailles2.h"
+#endif
+
+#ifdef ENABLE_ZEROZONE
+#include "cryo/game/zerozone/zerozone.h"
+#endif
+
+#include "cryo/helpers.h"
+
 #include "common/config-manager.h"
 #include "common/debug-channels.h"
 #include "common/error.h"
@@ -35,8 +91,8 @@
 
 namespace Cryo {
 
-CryoEngine::CryoEngine(OSystem *syst, const ADGameDescription *gd) :
-	Engine(syst), _gameDescription(gd),
+CryoEngine::CryoEngine(OSystem *syst, const CryoGameDescription *gd) :
+	Engine(syst), _gameDescription(gd), _game(NULL),
 	_random("cryo")
 {
 	// Setup mixer
@@ -80,6 +136,7 @@ CryoEngine::CryoEngine(OSystem *syst, const ADGameDescription *gd) :
 }
 
 CryoEngine::~CryoEngine() {
+	SAFE_DELETE(_game);
 
 	// Zero passed pointers
 	_gameDescription = NULL;
@@ -91,6 +148,94 @@ Common::Error CryoEngine::run() {
 
 	// Create debugger. It requires GFX to be initialized
 	_debugger = new Debugger(this);
+
+	// Create game
+	switch (_gameDescription->gameType) {
+	default:
+		error("[CryoEngine::run] Unknown game type!");
+		break;
+
+#ifdef ENABLE_ATLANTIS1
+	case Cryo::GameTypeAtlantis:
+		error("[CryoEngine::run] Atlantis not supported");
+		break;
+#endif
+
+#ifdef ENABLE_ATLANTIS2
+	case Cryo::GameTypeAtlantis2:
+		error("[CryoEngine::run] Atlantis 2 not supported");
+		break;
+#endif
+
+#ifdef ENABLE_ATLANTIS3
+	case Cryo::GameTypeAtlantis3:
+		error("[CryoEngine::run] Atlantis 3 not supported");
+		break;
+#endif
+
+#ifdef ENABLE_ATLANTIS4
+	case Cryo::GameTypeAtlantis4:
+		error("[CryoEngine::run] Atlantis 4 not supported");
+		break;
+#endif
+
+#ifdef ENABLE_ATLANTIS5
+	case Cryo::GameTypeAtlantis5:
+		error("[CryoEngine::run] Atlantis 5 not supported");
+		break;
+#endif
+
+#ifdef ENABLE_AZTEC
+	case Cryo::GameTypeAztec:
+		error("[CryoEngine::run] Aztec not supported");
+		break;
+#endif
+
+#ifdef ENABLE_CHINA
+	case Cryo::GameTypeChina:
+		_game = new ChinaGame();
+		break;
+#endif
+
+#ifdef ENABLE_EGYPT
+	case Cryo::GameTypeEgypt:
+		error("[CryoEngine::run] Egypt not supported");
+		break;
+#endif
+
+#ifdef ENABLE_EGYPT2
+	case Cryo::GameTypeEgypt2:
+		error("[CryoEngine::run] Egypt 2 not supported");
+		break;
+#endif
+
+#ifdef ENABLE_SALAMMBO
+	case Cryo::GameTypeSalammbo:
+		error("[CryoEngine::run] Salammbo not supported");
+		break;
+#endif
+
+#ifdef ENABLE_VERSAILLES
+	case Cryo::GameTypeVersailles:
+		error("[CryoEngine::run] Versailles not supported");
+		break;
+#endif
+
+#ifdef ENABLE_VERSAILLES2
+	case Cryo::GameTypeVersailles2:
+		error("[CryoEngine::run] Versailles 2 not supported");
+		break;
+#endif
+
+#ifdef ENABLE_ZEROZONE
+	case Cryo::GameTypeZeroZone:
+		error("[CryoEngine::run] Zero zone not supported");
+		break;
+#endif
+	}
+
+	// Initialize game
+	_game->init();
 
 	while (!shouldQuit()) {
 		if (handleEvents())
@@ -107,11 +252,11 @@ void CryoEngine::pollEvents() {
 	switch (ev.type) {
 
 	case Common::EVENT_LBUTTONUP:
-
+		// TODO
 		break;
 
 	case Common::EVENT_RBUTTONUP:
-
+		// TODO
 		break;
 
 	default:
@@ -136,6 +281,8 @@ bool CryoEngine::handleEvents() {
 			// CTRL-D: Attach the debugger
 			if ((ev.kbd.flags & Common::KBD_CTRL) && ev.kbd.keycode == Common::KEYCODE_d)
 				_debugger->attach();
+
+			_game->keyDown(ev);
 			break;
 
 		case Common::EVENT_MAINMENU:
@@ -143,16 +290,16 @@ bool CryoEngine::handleEvents() {
 
 		case Common::EVENT_LBUTTONUP:
 		case Common::EVENT_LBUTTONDOWN:
-
+			_game->mouseLeftButton(ev);
 			break;
 
 		case Common::EVENT_RBUTTONUP:
 		case Common::EVENT_RBUTTONDOWN:
-
+			_game->mouseRightButton(ev);
 			break;
 
 		case Common::EVENT_MOUSEMOVE:
-
+			_game->mouseMove(ev);
 			break;
 
 		case Common::EVENT_QUIT:
@@ -165,6 +312,7 @@ bool CryoEngine::handleEvents() {
 	}
 
 	// Update the screen
+	_game->update();
 	_system->updateScreen();
 	_system->delayMillis(50);
 
@@ -174,13 +322,6 @@ bool CryoEngine::handleEvents() {
 		return true;
 
 	return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-/// Misc Engine
-///////////////////////////////////////////////////////////////////////////////////
-bool CryoEngine::hasFeature(EngineFeature f) const {
-	return (f == kSupportsRTL);
 }
 
 } // End of namespace LastExpress
