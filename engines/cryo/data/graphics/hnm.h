@@ -22,15 +22,54 @@
 #ifndef CRYO_HNM_H
 #define CRYO_HNM_H
 
+#include "common/stream.h"
+
 namespace Cryo {
 
 class Hnm6 {
 public:
-	Hnm6();
+	Hnm6(const Common::String &filename);
 	~Hnm6();
 
-private:
 
+	Common::String toString();
+
+private:
+	struct Header {
+		char   signature[4];
+		uint32 version;
+		uint16 width;
+		uint16 height;
+		uint32 filesize;
+		uint32 frames;
+		uint32 tabOffset;
+		uint16 bits;
+		uint16 channels;
+		uint32 framesize;
+		char   creator[17];
+		char   copyright[17];
+
+		Header() {
+			memset(signature, 0, sizeof(signature));
+			version   = 0;
+			width     = 0;
+			height    = 0;
+			filesize  = 0;
+			frames    = 0;
+			tabOffset = 0;
+			bits      = 0;
+			channels  = 0;
+			framesize = 0;
+			memset(creator, 0, sizeof(creator));
+			memset(copyright, 0, sizeof(copyright));
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	Header  _header;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo

@@ -23,6 +23,7 @@
 #include "cryo/debug.h"
 
 #include "cryo/data/graphics/sprite.h"
+#include "cryo/data/graphics/hnm.h"
 
 #include "cryo/data/sound/apc.h"
 #include "cryo/data/sound/zik.h"
@@ -45,6 +46,7 @@ Debugger::Debugger(CryoEngine *engine) : _engine(engine) {
 	// General
 	DCmd_Register("help",      WRAP_METHOD(Debugger, cmdHelp));
 
+	DCmd_Register("hnm",       WRAP_METHOD(Debugger, cmdHnm));
 	DCmd_Register("music",     WRAP_METHOD(Debugger, cmdMusic));
 	DCmd_Register("sound",     WRAP_METHOD(Debugger, cmdSound));
 	DCmd_Register("sprite",    WRAP_METHOD(Debugger, cmdSprite));
@@ -74,6 +76,27 @@ bool Debugger::cmdHelp(int, const char **) {
 	DebugPrintf("sound - Play sound\n");
 	DebugPrintf("sprite - Show a sprite\n");
 	DebugPrintf("\n");
+	return true;
+}
+
+bool Debugger::cmdHnm(int argc, const char **argv) {
+	if (argc == 2) {
+
+		// Get sprite name
+		Common::String name(const_cast<char *>(argv[1]));
+		if (!name.contains('.'))
+			name += ".HNM";
+
+		Hnm6 *hnm = new Hnm6(name);
+
+		// Show information
+		DebugPrintf("%s\n", hnm->toString().c_str());
+
+		delete hnm;
+
+	} else {
+		DebugPrintf("Syntax: hnm <filename>\n");
+	}
 	return true;
 }
 
@@ -109,7 +132,7 @@ bool Debugger::cmdMusic(int argc, const char **argv) {
 		}
 
 	} else {
-		DebugPrintf("Syntax: sound <filename>\n");
+		DebugPrintf("Syntax: music <filename>\n");
 	}
 	return true;
 }
