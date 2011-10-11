@@ -26,6 +26,7 @@
 #include "cryo/data/graphics/hnm.h"
 
 #include "cryo/data/sound/apc.h"
+#include "cryo/data/sound/synchro.h"
 #include "cryo/data/sound/zik.h"
 
 #include "cryo/cryo.h"
@@ -48,6 +49,7 @@ Debugger::Debugger(CryoEngine *engine) : _engine(engine) {
 
 	DCmd_Register("hnm",       WRAP_METHOD(Debugger, cmdHnm));
 	DCmd_Register("music",     WRAP_METHOD(Debugger, cmdMusic));
+	DCmd_Register("sync",      WRAP_METHOD(Debugger, cmdSync));
 	DCmd_Register("sound",     WRAP_METHOD(Debugger, cmdSound));
 	DCmd_Register("sprite",    WRAP_METHOD(Debugger, cmdSprite));
 }
@@ -72,7 +74,9 @@ bool Debugger::cmdHelp(int, const char **) {
 	DebugPrintf("Commands\n");
 	DebugPrintf("--------\n");
 	DebugPrintf("list - List files inside an archive\n");
+	DebugPrintf("hnm   - Show video\n");
 	DebugPrintf("music - Play music\n");
+	DebugPrintf("sync  - Show sync information\n");
 	DebugPrintf("sound - Play sound\n");
 	DebugPrintf("sprite - Show a sprite\n");
 	DebugPrintf("\n");
@@ -133,6 +137,26 @@ bool Debugger::cmdMusic(int argc, const char **argv) {
 
 	} else {
 		DebugPrintf("Syntax: music <filename>\n");
+	}
+	return true;
+}
+
+bool Debugger::cmdSync(int argc, const char **argv) {
+	if (argc == 2) {
+
+		// Get name
+		Common::String name(const_cast<char *>(argv[1]));
+		if (!name.contains('.'))
+			name += ".syc";
+
+		Synchro *sync = new Synchro(name);
+
+		DebugPrintf("%s\n", sync->toString().c_str());
+
+		delete sync;
+
+	} else {
+		DebugPrintf("Syntax: sync <filename>\n");
 	}
 	return true;
 }

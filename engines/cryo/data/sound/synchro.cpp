@@ -21,11 +21,42 @@
 
 #include "cryo/data/sound/synchro.h"
 
+#include "common/file.h"
+
 namespace Cryo {
 
-Synchro::Synchro() {}
+void Synchro::Header::load(Common::SeekableReadStream *stream) {
+	stream->read(&signature, sizeof(signature));
+}
+
+Synchro::Synchro(const Common::String &filename) {
+	load(filename);
+}
 
 Synchro::~Synchro() {
+}
+
+Common::String Synchro::toString() {
+	Common::String info;
+
+
+	return info;
+}
+
+void Synchro::load(const Common::String &filename) {
+	// Open a stream to the data file
+	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember(filename);
+	if (!archive)
+		error("[Synchro::load] Error opening file (%s)", filename.c_str());
+
+	// Read header
+	_header.load(archive);
+
+	if (archive->err() || archive->eos())
+		error("[Synchro::load] Error loading header (%s)", filename.c_str());
+
+
+	delete archive;
 }
 
 } // End of namespace Cryo

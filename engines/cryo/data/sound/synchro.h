@@ -22,15 +22,32 @@
 #ifndef CRYO_SYNCHRO_H
 #define CRYO_SYNCHRO_H
 
+#include "common/str.h"
+#include "common/stream.h"
+
 namespace Cryo {
 
 class Synchro {
 public:
-	Synchro();
+	Synchro(const Common::String &filename);
 	~Synchro();
 
-private:
+	Common::String toString();
 
+private:
+	struct Header {
+		char signature[10];
+
+		Header() {
+			memset(&signature, 0, sizeof(signature));
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	Header _header;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo
