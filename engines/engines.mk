@@ -46,6 +46,11 @@ DEFINES += -DENABLE_CRUISE=$(ENABLE_CRUISE)
 MODULES += engines/cruise
 endif
 
+ifdef ENABLE_CRYO
+DEFINES += -DENABLE_CRYO=$(ENABLE_CRYO)
+MODULES += engines/cryo
+endif
+
 ifdef ENABLE_DRACI
 DEFINES += -DENABLE_DRACI=$(ENABLE_DRACI)
 MODULES += engines/draci
