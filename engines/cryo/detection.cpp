@@ -54,7 +54,19 @@ static const ADGameDescription gameDescriptions[] = {
 			{"CD.HNM",    0, "1aec4b0148683c2776cc00f523ea8a43", 45628},
 		},
 		Common::EN_ANY,
-		Common::kPlatformUnknown,
+		Common::kPlatformWindows,
+		ADGF_UNSTABLE,
+		Common::GUIO_NONE
+	},
+
+	{
+		"egypt",
+		"",
+		{
+			{"EGYPTE.EXE", 0, "cce60d7469fbf587f652d756957457d6", 375808},
+		},
+		Common::EN_ANY,
+		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
 		Common::GUIO_NONE
 	},
