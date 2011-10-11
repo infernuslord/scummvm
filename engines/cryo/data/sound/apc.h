@@ -22,15 +22,53 @@
 #ifndef CRYO_APC_H
 #define CRYO_APC_H
 
+#include "cryo/shared.h"
+
+#include "audio/audiostream.h"
+#include "audio/mixer.h"
+
+#include "common/str.h"
+#include "common/stream.h"
+
 namespace Cryo {
 
 class Apc {
 public:
-	Apc();
+	Apc(const Common::String &filename, bool dispose = true);
 	~Apc();
 
-private:
+	void play();
 
+private:
+	struct Header {
+		char    id[8];
+		char    version[4];
+		uint32  outSize;
+		uint32  sampleRate;
+		uint32  sampleLeft;
+		uint32  sampleRight;
+		uint32  stereo;
+
+		Header() {
+			memset(id, 0, sizeof(id));
+			memset(version, 0, sizeof(version));
+			outSize     = 0;
+			sampleRate  = 0;
+			sampleLeft  = 0;
+			sampleRight = 0;
+			stereo      = 0;
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	Audio::SoundHandle _soundHandle;
+	bool _dispose;
+
+	Header  _header;
+	Audio::RewindableAudioStream *_stream;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo

@@ -25,6 +25,8 @@
 
 #include "gui/debugger.h"
 
+#include "audio/mixer.h"
+
 namespace Cryo {
 
 enum {
@@ -53,6 +55,10 @@ private:
 	bool cmdHelp(int argc, const char **argv);
 
 	bool cmdSprite(int argc, const char **argv);
+	bool cmdSound(int argc, const char **argv);
+
+	// Misc
+	Audio::SoundHandle _soundHandle;
 };
 
 } // End of namespace LastExpress

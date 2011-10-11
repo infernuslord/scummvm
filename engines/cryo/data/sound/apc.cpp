@@ -21,11 +21,54 @@
 
 #include "cryo/data/sound/apc.h"
 
+#include "cryo/helpers.h"
+
+#include "audio/decoders/adpcm.h"
+
+#include "common/file.h"
+#include "common/system.h"
+
 namespace Cryo {
 
-Apc::Apc() {}
+void Apc::Header::load(Common::SeekableReadStream *stream) {
+	stream->read(&id, sizeof(id));
+	stream->read(&version, sizeof(version));
+	outSize     = stream->readUint32LE();
+	sampleRate  = stream->readUint32LE();
+	sampleLeft  = stream->readUint32LE();
+	sampleRight = stream->readUint32LE();
+	stereo      = stream->readUint32LE();
+}
+
+Apc::Apc(const Common::String &filename, bool dispose) : _stream (NULL), _dispose(dispose) {
+	load(filename);
+}
 
 Apc::~Apc() {
+	if (!_dispose)
+		SAFE_DELETE(_stream);
+}
+
+void Apc::load(const Common::String &filename) {
+	// Open a stream to the apc file
+	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember(filename);
+	if (!archive)
+		error("[Apc::load] Error opening file (%s)", filename.c_str());
+
+	// Read APC header
+	_header.load(archive);
+
+	if (archive->err() || archive->eos())
+		error("[Apc::load] Error loading header (%s)", filename.c_str());
+
+	// Create ADPCM stream
+	_stream = makeADPCMStream(archive, DisposeAfterUse::YES, 0, Audio::kADPCMMSIma, _header.sampleRate, _header.stereo ? 2 : 1, 4);
+
+	// archive stream will be disposed when the stream is deleted
+}
+
+void Apc::play() {
+	g_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_soundHandle, _stream, -1, Audio::Mixer::kMaxChannelVolume, 0, _dispose ? DisposeAfterUse::YES : DisposeAfterUse::NO);
 }
 
 } // End of namespace Cryo

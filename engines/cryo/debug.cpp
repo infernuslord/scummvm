@@ -24,7 +24,15 @@
 
 #include "cryo/data/graphics/sprite.h"
 
+#include "cryo/data/sound/apc.h"
+
+#include "cryo/cryo.h"
+
+#include "audio/audiostream.h"
+#include "audio/decoders/wave.h"
 #include "common/debug-channels.h"
+#include "common/file.h"
+#include "common/system.h"
 
 namespace Cryo {
 
@@ -36,6 +44,7 @@ Debugger::Debugger(CryoEngine *engine) : _engine(engine) {
 	// General
 	DCmd_Register("help",      WRAP_METHOD(Debugger, cmdHelp));
 
+	DCmd_Register("sound",     WRAP_METHOD(Debugger, cmdSound));
 	DCmd_Register("sprite",    WRAP_METHOD(Debugger, cmdSprite));
 }
 
@@ -63,6 +72,43 @@ bool Debugger::cmdHelp(int, const char **) {
 	DebugPrintf("sound - Play sound\n");
 	DebugPrintf("sprite - Show a sprite\n");
 	DebugPrintf("\n");
+	return true;
+}
+
+bool Debugger::cmdSound(int argc, const char **argv) {
+	if (argc == 2) {
+
+		// Get sound name
+		Common::String filename(const_cast<char *>(argv[1]));
+		if (!Common::File::exists(filename)) {
+			DebugPrintf("Cannot find file %s!\n", filename.c_str());
+			return true;
+		}
+
+		// Stop all playing sounds
+		_engine->_system->getMixer()->stopAll();
+
+		filename.toLowercase();
+
+		// Open sound file and play
+		if (filename.hasSuffix(".apc")) {
+			Apc *apc = new Apc(filename);
+			apc->play();
+			delete apc;
+		} else if (filename.hasSuffix(".wav")) {
+			Common::SeekableReadStream *stream = SearchMan.createReadStreamForMember(filename);
+			if (!stream) {
+				DebugPrintf("Cannot open stream to wav file (%s)\n", filename.c_str());
+				return true;
+			}
+
+			Audio::RewindableAudioStream *waveStream = Audio::makeWAVStream(stream, DisposeAfterUse::YES);
+			_engine->_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_soundHandle, (Audio::AudioStream *)waveStream);
+		}
+
+	} else {
+		DebugPrintf("Syntax: sound <filename>\n");
+	}
 	return true;
 }
 
