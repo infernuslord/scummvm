@@ -22,6 +22,8 @@
 
 #include "cryo/debug.h"
 
+#include "cryo/data/graphics/sprite.h"
+
 #include "common/debug-channels.h"
 
 namespace Cryo {
@@ -33,6 +35,8 @@ Debugger::Debugger(CryoEngine *engine) : _engine(engine) {
 
 	// General
 	DCmd_Register("help",      WRAP_METHOD(Debugger, cmdHelp));
+
+	DCmd_Register("sprite",    WRAP_METHOD(Debugger, cmdSprite));
 }
 
 Debugger::~Debugger() {
@@ -54,7 +58,30 @@ bool Debugger::cmdHelp(int, const char **) {
 	DebugPrintf("\n");
 	DebugPrintf("Commands\n");
 	DebugPrintf("--------\n");
+	DebugPrintf("list - List files inside an archive\n");
+	DebugPrintf("music - Play music\n");
+	DebugPrintf("sound - Play sound\n");
+	DebugPrintf("sprite - Show a sprite\n");
 	DebugPrintf("\n");
+	return true;
+}
+
+bool Debugger::cmdSprite(int argc, const char **argv) {
+	if (argc == 2) {
+
+		// Get sprite name
+		Common::String name(const_cast<char *>(argv[1]));
+		if (!name.contains('.'))
+			name += ".SPR";
+
+		Sprite *sprite = new Sprite(name);
+		//sprite->draw();
+
+		delete sprite;
+
+	} else {
+		DebugPrintf("Syntax: sprite <filename>\n");
+	}
 	return true;
 }
 

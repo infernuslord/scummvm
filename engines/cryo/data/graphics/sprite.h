@@ -22,15 +22,57 @@
 #ifndef CRYO_SPRITE_H
 #define CRYO_SPRITE_H
 
+#include "cryo/shared.h"
+
+#include "common/rect.h"
+#include "common/str.h"
+#include "common/stream.h"
+
+#include "graphics/surface.h"
+
 namespace Cryo {
 
 class Sprite {
 public:
-	Sprite();
+	Sprite(const Common::String &filename);
 	~Sprite();
 
-private:
+	Common::Rect draw(Graphics::Surface *surface);
 
+private:
+	struct Header {
+		uint32 field_0;
+		uint32 field_1;
+		uint32 field_2;
+		uint16 width;
+		uint16 height;
+		byte   version;
+		byte   field_11;
+		uint32 field_12;
+		uint32 field_16;
+		uint32 field_1A;
+
+		Header() {
+			field_0  = 0;
+			field_1  = 0;
+			field_2  = 0;
+			width    = 0;
+			height   = 0;
+			version  = 0;
+			field_11 = 0;
+			field_12 = 0;
+			field_16 = 0;
+			field_1A = 0;
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	Header  _header;
+	uint16  _bpp;
+	byte   *_data;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo

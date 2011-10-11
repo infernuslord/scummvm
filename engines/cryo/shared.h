@@ -23,6 +23,8 @@
 #ifndef CRYO_SHARED_H
 #define CRYO_SHARED_H
 
+#include "common/textconsole.h"
+
 namespace Cryo {
 
 

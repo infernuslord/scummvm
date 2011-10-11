@@ -51,6 +51,8 @@ private:
 	CryoEngine *_engine;
 
 	bool cmdHelp(int argc, const char **argv);
+
+	bool cmdSprite(int argc, const char **argv);
 };
 
 } // End of namespace LastExpress

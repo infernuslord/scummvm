@@ -22,6 +22,13 @@
 #ifndef CRYO_ZIK_H
 #define CRYO_ZIK_H
 
+/*
+  ZIK files used by Chine.
+
+  They are RAW 16-bit signed stereo at 22050Hz with no header
+  (except for a single one which is a standard WAV file)
+*/
+
 namespace Cryo {
 
 class Zik {

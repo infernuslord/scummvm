@@ -44,7 +44,28 @@ CryoEngine::CryoEngine(OSystem *syst, const ADGameDescription *gd) :
 
 	// Adding the default directories
 	const Common::FSNode gameDataDir(ConfMan.get("path"));
-	SearchMan.addSubDirectoryMatching(gameDataDir, "data");
+
+	SearchMan.addSubDirectoryMatching(gameDataDir, "3D");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "APC");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "FONTES");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "HNM");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "IMAGES");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "INTERF");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "INVENT");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "LOC");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "MUSIC");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "PUZZLES");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "REF");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SCENAR");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SOUND");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SPF");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SPRITE");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SPRITES");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SPW");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SYC");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "SYNC");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "WAM");
+	SearchMan.addSubDirectoryMatching(gameDataDir, "WARP");
 
 	// Initialize the custom debug levels
 	DebugMan.addDebugChannel(kCryoDebugAll, "All", "Debug everything");
@@ -66,17 +87,10 @@ CryoEngine::~CryoEngine() {
 
 Common::Error CryoEngine::run() {
 	// Initialize the graphics
-	const Graphics::PixelFormat dataPixelFormat(2, 5, 5, 5, 0, 10, 5, 0, 0);
-	initGraphics(640, 480, true, &dataPixelFormat);
-
-	// We do not support color conversion
-	if (_system->getScreenFormat() != dataPixelFormat)
-		return Common::kUnsupportedColorMode;
+	initGraphics(640, 480, true);
 
 	// Create debugger. It requires GFX to be initialized
 	_debugger = new Debugger(this);
-
-
 
 	while (!shouldQuit()) {
 		if (handleEvents())
