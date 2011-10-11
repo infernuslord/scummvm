@@ -174,7 +174,16 @@ void Zone4Pompeii::onInit() {
 }
 
 void Zone4Pompeii::onSetup(SetupType type) {
-	error("[Zone4Pompeii::onSetup()] Not implemented");
+	switch (type) {
+	default:
+		break;
+
+	case kSetupType999:
+		_app->timerStopAll();
+		_app->bagRemoveAll();
+		_app->setZone(kZone2, kSetupType200);
+		break;
+	}
 }
 
 void Zone4Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
