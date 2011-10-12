@@ -525,4 +525,24 @@ void ZoneSystemPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, 
 	error("[ZoneSystemPompeii::onButtonUp()] Not implemented");
 }
 
+void ZoneSystemPompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+	error("[ZoneSystemPompeii::onSound] Not implemented");
+}
+
+void ZoneSystemPompeii::onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte type) {
+	error("[ZoneSystemPompeii::onBag] Not implemented");
+}
+
+void ZoneSystemPompeii::onUpdateBag(const Common::Point &point) {
+	error("[ZoneSystemPompeii::onUpdateBag] Not implemented");
+}
+
+void ZoneSystemPompeii::onBagClickedObject(ObjectId objectId) {
+	error("[ZoneSystemPompeii::onBagClickedObject] Not implemented");
+}
+
+void ZoneSystemPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	error("[ZoneSystemPompeii::onUpdateBefore] Not implemented");
+}
+
 } // End of namespace Ring

@@ -175,4 +175,16 @@ void Zone5Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 	error("[Zone5Pompeii::onButtonUp()] Not implemented");
 }
 
+void Zone5Pompeii::onTimer(TimerId id) {
+	error("[Zone5Pompeii::onTimer] Not implemented");
+}
+
+void Zone5Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+	error("[Zone5Pompeii::onAnimationNextFrame] Not implemented");
+}
+
+void Zone5Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+	error("[Zone5Pompeii::onSound] Not implemented");
+}
+
 } // End of namespace Ring

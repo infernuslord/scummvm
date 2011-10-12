@@ -121,4 +121,16 @@ void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 	error("[Zone9Pompeii::onButtonUp()] Not implemented");
 }
 
+void Zone9Pompeii::onTimer(TimerId id) {
+	error("[Zone9Pompeii::onTimer] Not implemented");
+}
+
+void Zone9Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+	error("[Zone9Pompeii::onAnimationNextFrame] Not implemented");
+}
+
+void Zone9Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	error("[Zone9Pompeii::onUpdateBefore] Not implemented");
+}
+
 } // End of namespace Ring

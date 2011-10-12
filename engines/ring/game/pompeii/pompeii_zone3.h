@@ -39,6 +39,15 @@ public:
 	virtual void onSetup(SetupType type);
 	virtual void onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point);
 
+	virtual void onTimer(TimerId id);
+	virtual void onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount);
+	virtual void onSound(Id id, SoundType type, uint32 a3, bool process);
+	virtual void onUpdateBag(const Common::Point &point);
+	virtual void onBagClickedObject(ObjectId objectId);
+	virtual void onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point);
+	virtual void onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point);
+	virtual void onVisualList(Id id, uint32 type, const Common::Point &point);
+
 private:
 	ApplicationPompeii *_app;
 };

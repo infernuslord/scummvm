@@ -38,6 +38,10 @@ public:
 	virtual void onInit();
 	virtual void onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point);
 
+	virtual void onTimer(TimerId id);
+	virtual void onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount);
+	virtual void onSound(Id id, SoundType type, uint32 a3, bool process);
+
 private:
 	ApplicationPompeii *_app;
 };

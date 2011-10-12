@@ -190,4 +190,36 @@ void Zone4Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 	error("[Zone4Pompeii::onButtonUp()] Not implemented");
 }
 
+void Zone4Pompeii::onTimer(TimerId id) {
+	error("[Zone4Pompeii::onTimer] Not implemented");
+}
+
+void Zone4Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+	error("[Zone4Pompeii::onAnimationNextFrame] Not implemented");
+}
+
+void Zone4Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+	error("[Zone4Pompeii::onSound] Not implemented");
+}
+
+void Zone4Pompeii::onUpdateBag(const Common::Point &point) {
+	error("[Zone4Pompeii::onUpdateBag] Not implemented");
+}
+
+void Zone4Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	error("[Zone4Pompeii::onUpdateBefore] Not implemented");
+}
+
+void Zone4Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+	error("[Zone4Pompeii::onUpdateAfter] Not implemented");
+}
+
+void Zone4Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+	error("[Zone4Pompeii::onBeforeRide] Not implemented");
+}
+
+void Zone4Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+	error("[Zone4Pompeii::onVisualList] Not implemented");
+}
+
 } // End of namespace Ring

@@ -746,11 +746,43 @@ void Zone2Pompeii::onInit() {
 }
 
 void Zone2Pompeii::onSetup(SetupType type) {
-	error("[Zone2Pompeii::onSetup()] Not implemented");
+	error("[Zone2Pompeii::onSetup] Not implemented");
 }
 
 void Zone2Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone2Pompeii::onButtonUp()] Not implemented");
+	error("[Zone2Pompeii::onButtonUp] Not implemented");
+}
+
+void Zone2Pompeii::onTimer(TimerId id) {
+	error("[Zone2Pompeii::onTimer] Not implemented");
+}
+
+void Zone2Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+	error("[Zone2Pompeii::onAnimationNextFrame] Not implemented");
+}
+
+void Zone2Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+	error("[Zone2Pompeii::onSound] Not implemented");
+}
+
+void Zone2Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+	error("[Zone2Pompeii::onUpdateBefore] Not implemented");
+}
+
+void Zone2Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+	error("[Zone2Pompeii::onUpdateAfter] Not implemented");
+}
+
+void Zone2Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+	error("[Zone2Pompeii::onBeforeRide] Not implemented");
+}
+
+void Zone2Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+	error("[Zone2Pompeii::onAfterRide] Not implemented");
+}
+
+void Zone2Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+	error("[Zone2Pompeii::onVisualList] Not implemented");
 }
 
 } // End of namespace Ring
