@@ -909,6 +909,10 @@ void ApplicationPompeii::setupUser(Id userId) {
 	warning("[ApplicationPompeii::setupUser] Not implemented");
 }
 
+void ApplicationPompeii::onCall(Id callType) {
+	error("[ApplicationPompeii::onCall] Not implemented");
+}
+
 #pragma endregion
 
 } // End of namespace Ring

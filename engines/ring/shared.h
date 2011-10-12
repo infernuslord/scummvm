@@ -225,6 +225,8 @@ enum SetupType {
 	kSetupType6       = 6,
 	kSetupType10      = 10,
 	kSetupType200     = 200,
+	kSetupType300     = 300,
+	kSetupType400     = 400,
 	kSetupType998     = 998,
 	kSetupType999     = 999,
 	kSetupTypeLoading = 1000
