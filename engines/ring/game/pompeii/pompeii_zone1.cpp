@@ -33,6 +33,7 @@ using namespace PompeiiGame;
 namespace Ring {
 
 Zone1Pompeii::Zone1Pompeii(ApplicationPompeii *application) : _app(application) {
+	_hideBox = false;
 }
 
 Zone1Pompeii::~Zone1Pompeii() {
@@ -1931,11 +1932,23 @@ void Zone1Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 }
 
 void Zone1Pompeii::onUpdateBag(const Common::Point &point) {
-	error("[Zone1Pompeii::onUpdateBag] Not implemented");
+	if (_hideBox) {
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_hideBox = false;
+	}
 }
 
 void Zone1Pompeii::onBagClickedObject(ObjectId objectId) {
-	error("[Zone1Pompeii::onBagClickedObject] Not implemented");
+	if (objectId == kObjectNightingale) {
+		_app->cursorDelete();
+		_app->soundPlay(4106);
+
+		if (_app->varGetByte(90416) == 1
+		 && _app->getCurrentRotationId() == 10011002) {
+			 _app->timerStopAll();
+			 _app->timerStart(kTimer9, 2000);
+		}
+	}
 }
 
 void Zone1Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
@@ -1943,7 +1956,10 @@ void Zone1Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mov
 }
 
 void Zone1Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
-	error("[Zone1Pompeii::onUpdateAfter] Not implemented");
+	if (_hideBox) {
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_hideBox = false;
+	}
 }
 
 void Zone1Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {

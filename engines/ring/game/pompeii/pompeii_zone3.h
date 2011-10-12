@@ -50,6 +50,8 @@ public:
 
 private:
 	ApplicationPompeii *_app;
+
+	bool _hideBox;
 };
 
 } // End of namespace Ring

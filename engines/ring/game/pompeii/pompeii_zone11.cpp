@@ -33,6 +33,7 @@ using namespace PompeiiGame;
 namespace Ring {
 
 Zone11Pompeii::Zone11Pompeii(ApplicationPompeii *application) : _app(application) {
+	_hideBox = false;
 }
 
 Zone11Pompeii::~Zone11Pompeii() {
@@ -191,7 +192,10 @@ void Zone11Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 }
 
 void Zone11Pompeii::onUpdateBag(const Common::Point &point) {
-	error("[Zone11Pompeii::onUpdateBag] Not implemented");
+	if (_hideBox) {
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_hideBox = false;
+	}
 }
 
 void Zone11Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
@@ -199,7 +203,10 @@ void Zone11Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mo
 }
 
 void Zone11Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
-	error("[Zone11Pompeii::onUpdateAfter] Not implemented");
+	if (_hideBox) {
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_hideBox = false;
+	}
 }
 
 void Zone11Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
