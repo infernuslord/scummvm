@@ -73,6 +73,9 @@ ApplicationPompeii::ApplicationPompeii(RingEngine *engine) : Application(engine)
 	_zone10     = new Zone10Pompeii(this);
 	_zone11     = new Zone11Pompeii(this);
 	_zone12     = new Zone12Pompeii(this);
+
+	// Data
+	_savedZone = kZoneNone;
 }
 
 ApplicationPompeii::~ApplicationPompeii() {
@@ -911,6 +914,31 @@ void ApplicationPompeii::setupUser(Id userId) {
 
 void ApplicationPompeii::onCall(Id callType) {
 	error("[ApplicationPompeii::onCall] Not implemented");
+}
+
+void ApplicationPompeii::showEncyclopedia(uint32 index) {
+	_savedZone = getCurrentZone();
+	setCurrentZone(kZone100);
+
+	if (hasCurrentPuzzle()) {
+		varSetByte(90905, 1);
+		varSetDword(90026, getCurrentPuzzleId());
+	} else {
+		varSetByte(90905, 0);
+		varSetDword(90026, getCurrentRotationId());
+	}
+
+	puzzleSetActive(kPuzzleEncyclopedia);
+	visualEncyclopediaShowFile(5, kPuzzleEncyclopedia, Common::String::format("E%03d.out", index));
+}
+
+void ApplicationPompeii::restore() {
+	if (varGetByte(90905) == 1)
+		puzzleSetActive(varGetDword(90026));
+	else
+		rotationSetActive(varGetDword(90026));
+
+	setSpace(_savedZone);
 }
 
 #pragma endregion

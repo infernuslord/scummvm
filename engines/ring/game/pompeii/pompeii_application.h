@@ -98,6 +98,8 @@ protected:
 	// Misc
 	//////////////////////////////////////////////////////////////////////////
 	void onCall(Id callType);
+	void showEncyclopedia(uint32 index);
+	void restore();
 
 private:
 	// Event handlers
@@ -114,6 +116,9 @@ private:
 	Zone10Pompeii     *_zone10;
 	Zone11Pompeii     *_zone11;
 	Zone12Pompeii     *_zone12;
+
+	// Saved zone when showing encyclopedia
+	ZoneId _savedZone;
 
 	bool sub_42F7B0();
 	void showDay();
