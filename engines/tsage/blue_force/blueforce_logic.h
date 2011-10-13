@@ -211,6 +211,7 @@ public:
 
 	virtual Common::String getClassName() { return "SceneExt"; }
 	virtual void postInit(SceneObjectList *OwnerList = NULL);
+	virtual void remove();
 	virtual void process(Event &event);
 	virtual void dispatch();
 	virtual void loadScene(int sceneNum);
@@ -235,7 +236,7 @@ public:
 	virtual void postInit(SceneObjectList *OwnerList = NULL);
 	virtual void remove();
 	PaletteFader *addFader(const byte *arrBufferRGB, int step, Action *action);
-	void sub15DD6(const byte *arrBufferRGB, int step, int paletteNum, Action *action);
+	void add2Faders(const byte *arrBufferRGB, int step, int paletteNum, Action *action);
 	void sub15E4F(const byte *arrBufferRGB, int arg8, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag);
 };
 
@@ -317,13 +318,40 @@ public:
 	InvObject _greensKnife;
 	InvObject _dogWhistle;
 	InvObject _ammoBelt;
-	InvObject _lastInvent;
+	InvObject _alleyCatKey;
 
 	BlueForceInvObjectList();
 	void reset();
 	void setObjectScene(int objectNum, int sceneNumber);
+	void alterInventory(int mode);
 
 	virtual Common::String getClassName() { return "BlueForceInvObjectList"; }
+};
+
+class NamedHotspot : public SceneHotspot {
+public:
+	int _resNum, _lookLineNum, _useLineNum, _talkLineNum;
+	NamedHotspot();
+
+
+	virtual bool startAction(CursorType action, Event &event);
+	virtual Common::String getClassName() { return "NamedHotspot"; }
+	virtual void synchronize(Serializer &s);
+	virtual void setDetails(int ys, int xs, int ye, int xe, const int resnum, const int lookLineNum, const int useLineNum);
+	virtual void setDetails(const Rect &bounds, int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode, SceneItem *item);
+	virtual void setDetails(int sceneRegionId, int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode);
+};
+
+class NamedHotspotExt : public NamedHotspot {
+public:
+	int _flag;
+	NamedHotspotExt() { _flag = 0; }
+
+	virtual Common::String getClassName() { return "NamedHotspot"; }
+	virtual void synchronize(Serializer &s) {
+		NamedHotspot::synchronize(s);
+		s.syncAsSint16LE(_flag);
+	}
 };
 
 } // End of namespace BlueForce

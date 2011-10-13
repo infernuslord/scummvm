@@ -442,11 +442,11 @@ reg_t kUpdateScreenItem(EngineState *s, int argc, reg_t *argv);
 reg_t kDeleteScreenItem(EngineState *s, int argc, reg_t *argv);
 // Text
 reg_t kCreateTextBitmap(EngineState *s, int argc, reg_t *argv);
+reg_t kDisposeTextBitmap(EngineState *s, int argc, reg_t *argv);
 // "Planes" in SCI32 are pictures
 reg_t kAddPlane(EngineState *s, int argc, reg_t *argv);
 reg_t kDeletePlane(EngineState *s, int argc, reg_t *argv);
 reg_t kUpdatePlane(EngineState *s, int argc, reg_t *argv);
-reg_t kRepaintPlane(EngineState *s, int argc, reg_t *argv);
 reg_t kSetShowStyle(EngineState *s, int argc, reg_t *argv);
 reg_t kGetHighPlanePri(EngineState *s, int argc, reg_t *argv);
 reg_t kFrameOut(EngineState *s, int argc, reg_t *argv);
@@ -476,6 +476,7 @@ reg_t kSetLanguage(EngineState *s, int argc, reg_t *argv);
 reg_t kScrollWindow(EngineState *s, int argc, reg_t *argv);
 reg_t kSetFontRes(EngineState *s, int argc, reg_t *argv);
 reg_t kFont(EngineState *s, int argc, reg_t *argv);
+reg_t kBitmap(EngineState *s, int argc, reg_t *argv);
 #endif
 
 reg_t kDoSoundInit(EngineState *s, int argc, reg_t *argv);

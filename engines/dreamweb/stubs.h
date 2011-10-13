@@ -223,6 +223,7 @@
 	bool checkifpathison(uint8 index);
 	void isitworn();
 	bool isitworn(const DynObject *object);
+	void wornerror();
 	void makeworn();
 	void makeworn(DynObject *object);
 	void obtoinv();
@@ -245,5 +246,4 @@
 	uint8 getblockofpixel(uint8 x, uint8 y);
 	void bresenhams();
 	void examineobtext();
-
 

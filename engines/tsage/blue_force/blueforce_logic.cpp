@@ -43,9 +43,7 @@ namespace BlueForce {
 
 void BlueForceGame::start() {
 	// Start the game
-	g_globals->_sceneManager.changeScene(300);
-
-	g_globals->_events.setCursor(CURSOR_WALK);
+	g_globals->_sceneManager.changeScene(20);
 }
 
 Scene *BlueForceGame::createScene(int sceneNumber) {
@@ -65,17 +63,23 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Tsnunami Title Screen #2
 		return new Scene100();
 	case 109:
-		// Introduction Bar Room
+		// Introduction - Bar Room
 		return new Scene109();
 	case 110:
+		// Introduction - Outside the bar
+		return new Scene110();
 	case 114:
+		// Useless? - Outside the bar
+		return new Scene114();
 	case 115:
 	case 125:
 	case 140:
 	case 150:
 	case 160:
-	case 180:
 		error("Scene group 1 not implemented");
+	case 180:
+		// Front of Home
+		return new Scene180();
 	case 190:
 		// Front of Police Station
 		return new Scene190();
@@ -95,11 +99,14 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Graduation Article
 		return new Scene265();
 	case 270:
-		// Grandma's Living Room
+		// Living Room & Kitchen
 		return new Scene270();
 	case 271:
+		// Living Room & Kitchen #2
+		return new Scene271();
 	case 280:
-		error("Scene group 2 not implemented");
+		// Bedroom Flashback cut-scene
+		return new Scene280();
 	case 300:
 		// Outside Police Station
 		return new Scene300();
@@ -182,13 +189,17 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Decking
 		return new Scene690();
 	case 710:
+		// Beach
 		return new Scene710();
 	case 800:
 		// Jamison & Ryan
 		return new Scene800();
 	case 810:
+		// Lyle's Office
+		return new Scene810();
 	case 820:
-		error("Scene group 8 not implemented");
+		// Microfiche Reader
+		return new Scene820();
 	case 830:
 		// Outside Boat Rentals
 		return new Scene830();
@@ -196,15 +207,22 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Boat Rentals
 		return new Scene840();
 	case 850:
+		// Boat Leaving/Entering Marina
+		return new Scene850();
 	case 860:
+		// Boat Entering Cove
+		return new Scene860();
 	case 870:
+		// Cove Beach
+		return new Scene870();
 	case 880:
-		error("Scene group 8 not implemented");
+		// Beach Path
+		return new Scene880();
 	case 900:
 		// Outside Warehouse
 		return new Scene900();
 	case 910:
-		error("Scene group 9 not implemented");
+		return new Scene910();
 	case 920:
 		// Inside Warehouse: Secret room
 		return new Scene920();
@@ -670,6 +688,21 @@ void SceneExt::postInit(SceneObjectList *OwnerList) {
 	}
 }
 
+void SceneExt::remove() {
+	BF_GLOBALS._uiElements.hide();
+	BF_GLOBALS._uiElements.resetClear();
+
+	// Below code originally in Blue Force Scene::remove(). Placed here to avoid contaminating
+	// core class with Blue Force specific code
+	if (_action) {
+		if (_action->_endHandler)
+			_action->_endHandler = NULL;
+		_action->remove();
+	}
+	
+	_focusObject = NULL;
+}
+
 void SceneExt::process(Event &event) {
 	_objArray2.process(event);
 	if (!event.handled)
@@ -832,7 +865,7 @@ PaletteFader *PalettedScene::addFader(const byte *arrBufferRGB, int step, Action
 	return BF_GLOBALS._scenePalette.addFader(arrBufferRGB, 1, step, action);
 }
 
-void PalettedScene::sub15DD6(const byte *arrBufferRGB, int step, int paletteNum, Action *action) {
+void PalettedScene::add2Faders(const byte *arrBufferRGB, int step, int paletteNum, Action *action) {
 	BF_GLOBALS._scenePalette.addFader(arrBufferRGB, 1, 100, NULL);
 	_palette.loadPalette(paletteNum);
 	_palette.loadPalette(2);
@@ -895,6 +928,23 @@ void SceneHandlerExt::process(Event &event) {
 		BF_GLOBALS._stripProxy._action->process(event);
 		if (event.handled)
 			return;
+	}
+
+	// If the user clicks the button whislt the introduction is active, prompt for playing the game
+	if ((BF_GLOBALS._dayNumber == 0) && (event.eventType == EVENT_BUTTON_DOWN)) {
+		// Prompt user for whether to start play or watch introduction
+		BF_GLOBALS._player.enableControl();
+		BF_GLOBALS._events.setCursor(CURSOR_WALK);
+
+		if (MessageDialog::show2(WATCH_INTRO_MSG, START_PLAY_BTN_STRING, INTRODUCTION_BTN_STRING) == 0) {
+			// Start the game
+			BF_GLOBALS._dayNumber = 1;
+			BF_GLOBALS._sceneManager.changeScene(190);
+		} else {
+			BF_GLOBALS._player.disableControl();
+		}
+
+		event.handled = true;
 	}
 
 	SceneHandler::process(event);
@@ -986,7 +1036,7 @@ BlueForceInvObjectList::BlueForceInvObjectList():
 		_greensKnife(9, 4, 4),
 		_dogWhistle(9, 4, 5),
 		_ammoBelt(9, 1, 2),
-		_lastInvent(9, 4, 7) {
+		_alleyCatKey(9, 4, 7) {
 
 	// Add the items to the list
 	_itemList.push_back(&_none);
@@ -1056,7 +1106,7 @@ BlueForceInvObjectList::BlueForceInvObjectList():
 	_itemList.push_back(&_greensKnife);
 	_itemList.push_back(&_dogWhistle);
 	_itemList.push_back(&_ammoBelt);
-	_itemList.push_back(&_lastInvent);
+	_itemList.push_back(&_alleyCatKey);
 }
 
 void BlueForceInvObjectList::reset() {
@@ -1141,7 +1191,191 @@ void BlueForceInvObjectList::setObjectScene(int objectNum, int sceneNumber) {
 	BF_GLOBALS._uiElements.updateInventory();
 }
 
+void BlueForceInvObjectList::alterInventory(int mode) {
+	// Check for existing specific items in player's inventory
+	bool hasPrintout = getObjectScene(INV_PRINT_OUT) == 1;
+	bool hasRags = getObjectScene(INV_RAGS) == 1;
+	bool hasJar = getObjectScene(INV_JAR) == 1;
+	bool hasNickel = getObjectScene(INV_NICKEL) == 1;
+	bool hasCrate1 = getObjectScene(INV_CRATE1) == 1;	//di
+	bool hasForestRap = getObjectScene(INV_FOREST_RAP) == 1;
+	bool hasRentalCoupon = getObjectScene(INV_RENTAL_COUPON) == 1;	//si
+	bool hasWarehouseKeys = getObjectScene(INV_WAREHOUSE_KEYS) == 1;
+	bool hasCobbRap = getObjectScene(INV_COBB_RAP) == 1;
+	bool hasHook = getObjectScene(INV_HOOK) == 1;
+	bool hasMugShot = getObjectScene(INV_MUG_SHOT) == 1;
+
+	// Remove any items currently in player's inventory
+	SynchronizedList<InvObject *>::iterator i;
+	for (i = _itemList.begin(); i != _itemList.end(); ++i) {
+		if ((*i)->_sceneNumber == 1)
+			(*i)->_sceneNumber = 0;
+	}
+
+	// Give basic set of items back into inventory
+	setObjectScene(INV_COLT45, 1);
+	setObjectScene(INV_HANDCUFFS, 1);
+	setObjectScene(INV_AMMO_BELT, 1);
+	setObjectScene(INV_ID, 1);
+
+	// Reset ticket book and miranda card back to motorcycle
+	setObjectScene(INV_TICKET_BOOK, 60);
+	setObjectScene(INV_MIRANDA_CARD, 60);
+
+	BF_GLOBALS._v4CEC4 = 0;
+
+	switch (mode) {
+	case 2:
+		if (hasPrintout)
+			setObjectScene(INV_PRINT_OUT, 1);
+		if (hasNickel)
+			setObjectScene(INV_NICKEL, 1);
+		if (hasForestRap)
+			setObjectScene(INV_FOREST_RAP, 1);
+		if (hasCrate1)
+			setObjectScene(INV_CRATE1, 1);
+		if (hasRentalCoupon)
+			setObjectScene(INV_RENTAL_COUPON, 1);
+		if (hasHook)
+			setObjectScene(INV_HOOK, 1);
+		break;
+	case 3:
+		if (hasPrintout)
+			setObjectScene(INV_PRINT_OUT, 1);
+		if (hasNickel)
+			setObjectScene(INV_NICKEL, 1);
+		if (hasForestRap)
+			setObjectScene(INV_FOREST_RAP, 1);
+		if (hasCrate1)
+			setObjectScene(INV_CRATE1, 1);
+		if (hasRentalCoupon)
+			setObjectScene(INV_RENTAL_COUPON, 1);
+		if (hasCobbRap)
+			setObjectScene(INV_COBB_RAP, 1);
+		if (hasHook)
+			setObjectScene(INV_HOOK, 1);
+		if (hasMugShot)
+			setObjectScene(INV_MUG_SHOT, 1);
+		break;
+	case 4:
+		if (hasNickel)
+			setObjectScene(INV_NICKEL, 1);
+		if (hasRentalCoupon)
+			setObjectScene(INV_RENTAL_COUPON, 1);
+		if (hasHook)
+			setObjectScene(INV_HOOK, 1);
+		break;
+	case 5:
+		if (hasRags)
+			setObjectScene(INV_RAGS, 1);
+		if (hasJar)
+			setObjectScene(INV_JAR, 1);
+		if (hasRentalCoupon)
+			setObjectScene(INV_RENTAL_COUPON, 1);
+		if (hasWarehouseKeys)
+			setObjectScene(INV_WAREHOUSE_KEYS, 1);
+		break;
+	default:
+		break;
+	}
+}
+
 /*--------------------------------------------------------------------------*/
+
+NamedHotspot::NamedHotspot() : SceneHotspot() {
+	_resNum = 0;
+	_lookLineNum = _useLineNum = _talkLineNum = -1;
+}
+
+bool NamedHotspot::startAction(CursorType action, Event &event) {
+	switch (action) {
+	case CURSOR_WALK:
+		// Nothing
+		return false;
+	case CURSOR_LOOK:
+		if (_lookLineNum == -1)
+			return SceneHotspot::startAction(action, event);
+
+		SceneItem::display2(_resNum, _lookLineNum);
+		return true;
+	case CURSOR_USE:
+		if (_useLineNum == -1)
+			return SceneHotspot::startAction(action, event);
+
+		SceneItem::display2(_resNum, _useLineNum);
+		return true;
+	case CURSOR_TALK:
+		if (_talkLineNum == -1)
+			return SceneHotspot::startAction(action, event);
+
+		SceneItem::display2(_resNum, _talkLineNum);
+		return true;
+	default:
+		return SceneHotspot::startAction(action, event);
+	}
+}
+
+void NamedHotspot::setDetails(int ys, int xs, int ye, int xe, const int resnum, const int lookLineNum, const int useLineNum) {
+	setBounds(ys, xe, ye, xs);
+	_resNum = resnum;
+	_lookLineNum = lookLineNum;
+	_useLineNum = useLineNum;
+	_talkLineNum = -1;
+	g_globals->_sceneItems.addItems(this, NULL);
+}
+
+void NamedHotspot::setDetails(const Rect &bounds, int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode, SceneItem *item) {
+	setBounds(bounds);
+	_resNum = resNum;
+	_lookLineNum = lookLineNum;
+	_talkLineNum = talkLineNum;
+	_useLineNum = useLineNum;
+
+	switch (mode) {
+	case 2:
+		g_globals->_sceneItems.push_front(this);
+		break;
+	case 4:
+		g_globals->_sceneItems.addBefore(item, this);
+		break;
+	case 5:
+		g_globals->_sceneItems.addAfter(item, this);
+		break;
+	default:
+		g_globals->_sceneItems.push_back(this);
+		break;
+	}
+}
+
+void NamedHotspot::setDetails(int sceneRegionId, int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode) {
+	_sceneRegionId = sceneRegionId;
+	_resNum = resNum;
+	_lookLineNum = lookLineNum;
+	_talkLineNum = talkLineNum;
+	_useLineNum = useLineNum;
+
+	// Handle adding hotspot to scene items list as necessary
+	switch (mode) {
+	case 2:
+		GLOBALS._sceneItems.push_front(this);
+		break;
+	case 3:
+		break;
+	default:
+		GLOBALS._sceneItems.push_back(this);
+		break;
+	}
+}
+
+void NamedHotspot::synchronize(Serializer &s) {
+	SceneHotspot::synchronize(s);
+	s.syncAsSint16LE(_resNum);
+	s.syncAsSint16LE(_lookLineNum);
+	s.syncAsSint16LE(_useLineNum);
+
+	if (g_vm->getGameID() == GType_BlueForce)
+		s.syncAsSint16LE(_talkLineNum);
+}
 
 } // End of namespace BlueForce
 

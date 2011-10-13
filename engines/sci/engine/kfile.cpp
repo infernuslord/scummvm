@@ -365,9 +365,12 @@ reg_t kDeviceInfo(EngineState *s, int argc, reg_t *argv) {
 
 reg_t kGetSaveDir(EngineState *s, int argc, reg_t *argv) {
 #ifdef ENABLE_SCI32
-	// TODO: SCI32 uses a parameter here.
-	if (argc > 0)
-		warning("kGetSaveDir called with %d parameter(s): %04x:%04x", argc, PRINT_REG(argv[0]));
+	// SCI32 uses a parameter here. It is used to modify a string, stored in a
+	// global variable, so that game scripts store the save directory. We
+	// don't really set a save game directory, thus not setting the string to
+	// anything is the correct thing to do here.
+	//if (argc > 0)
+	//	warning("kGetSaveDir called with %d parameter(s): %04x:%04x", argc, PRINT_REG(argv[0]));
 #endif
 		return s->_segMan->getSaveDirPtr();
 }
@@ -1164,8 +1167,17 @@ reg_t kSave(EngineState *s, int argc, reg_t *argv) {
 		return kRestoreGame(s, argc - 1,argv + 1);
 	case 2:
 		return kGetSaveDir(s, argc - 1, argv + 1);
+	case 3:
+		return kCheckSaveGame(s, argc - 1, argv + 1);
 	case 5:
 		return kGetSaveFiles(s, argc - 1, argv + 1);
+	case 6:
+		// This is used in Shivers to delete saved games, however it
+		// always passes the same file name (SHIVER), so it doesn't
+		// actually delete anything...
+		// TODO: Check why this happens
+		// argv[1] is a string (most likely the save game directory)
+		return kFileIOUnlink(s, argc - 2, argv + 2);
 	case 8:
 		// TODO
 		// This is a timer callback, with 1 parameter: the timer object
@@ -1176,10 +1188,9 @@ reg_t kSave(EngineState *s, int argc, reg_t *argv) {
 		// This function has to return something other than 0 to proceed
 		return s->r_acc;
 	default:
-		warning("Unknown/unhandled kSave subop %d", argv[0].toUint16());
+		kStub(s, argc, argv);
+		return NULL_REG;
 	}
-
-	return NULL_REG;
 }
 
 #endif

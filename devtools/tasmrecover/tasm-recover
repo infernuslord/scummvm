@@ -199,6 +199,7 @@ generator = cpp(context, "DreamGen", blacklist = [
 	'usetext',
 	'bresenhams',
 	'examineobtext',
+	'wornerror',
 	], skip_output = [
 	# These functions are processed but not output
 	'dreamweb',
@@ -207,6 +208,7 @@ generator = cpp(context, "DreamGen", blacklist = [
 	'madman',
 	'loadgame',
 	'savegame',
+	'zoomonoff',
 	'doload'
 	])
 generator.generate('dreamweb') #start routine

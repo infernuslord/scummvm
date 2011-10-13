@@ -124,6 +124,95 @@ public:
 	virtual void signal();
 };
 
+class Scene110: public SceneExt {
+	/* Actions */
+	class Action1: public Action {
+	public:
+		virtual void signal();
+	};
+	class Action2: public Action {
+	public:
+		virtual void signal();
+	};
+	class Action3: public Action {
+	public:
+		virtual void signal();
+		virtual void dispatch();
+	};
+	class Action4: public Action {
+	public:
+		virtual void signal();
+		virtual void dispatch();
+	};
+	class Action5: public Action {
+	public:
+		virtual void signal();
+	};
+public:
+	NamedObject _object1, _object2, _object3, _object4, _object5, _object6, _object7, _object8, _object9, _object10; 
+	ASound _sound;
+	Action1 _action1;
+	Action2 _action2;
+	Action3 _action3;
+	Action4 _action4;
+	Action5 _action5;
+public:
+	virtual void postInit(SceneObjectList *OwnerList = NULL);
+};
+
+class Scene114: public SceneExt {
+	/* Objects */
+	class Object1: public NamedObject {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+	class Object2: public NamedObject {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+public:
+	SequenceManager _sequenceManager1;
+	Object1 _object1;
+	Object2 _object2;
+	NamedObject _object3;
+	NamedHotspot _item1;
+public:
+	virtual void postInit(SceneObjectList *OwnerList = NULL);
+	virtual void signal();
+};
+
+class Scene180: public SceneExt {
+	/* Objects */
+	class Vechile: public NamedObject {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+
+	/* Items */
+	class GarageExit: public NamedHotspot {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+public:
+	SequenceManager _sequenceManager;
+	SpeakerGameText _gameTextSpeaker;
+	NamedObject _object1;
+	Vechile _vechile;
+	NamedHotspot _driveway, _garage, _frontDoor, _house, _street;
+	NamedHotspot _lawn, _bushes, _palms, _fence, _steps;
+	NamedHotspot _curb, _sky;
+	GarageExit _garageExit;
+	ASoundExt _sound1;
+	int _fieldC56;
+
+	Scene180();
+	virtual void synchronize(Serializer &s);
+	virtual void postInit(SceneObjectList *OwnerList = NULL);
+	virtual void signal();
+	virtual void process(Event &event);
+	virtual void dispatch();
+};
+
 class Scene190: public SceneExt {
 	/* Objects */
 	class Object4: public NamedObject {

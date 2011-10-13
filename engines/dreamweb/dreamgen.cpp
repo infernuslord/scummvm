@@ -5029,25 +5029,6 @@ void DreamGenContext::cantdrop() {
 	worktoscreenm();
 }
 
-void DreamGenContext::wornerror() {
-	STACK_CHECK;
-	data.byte(kCommandtype) = 255;
-	delpointer();
-	di = 76;
-	bx = 21;
-	al = 57;
-	dl = 240;
-	printmessage();
-	worktoscreenm();
-	cx = 50;
-	hangonp();
-	showpanel();
-	showman();
-	examicon();
-	data.byte(kCommandtype) = 255;
-	worktoscreenm();
-}
-
 void DreamGenContext::removeobfrominv() {
 	STACK_CHECK;
 	_cmp(data.byte(kCommand), 100);
@@ -12360,47 +12341,6 @@ void DreamGenContext::findtext1() {
 	si = ax;
 }
 
-void DreamGenContext::zoomonoff() {
-	STACK_CHECK;
-	_cmp(data.word(kWatchingtime), 0);
-	if (!flags.z())
-		{ blank(); return; };
-	_cmp(data.byte(kPointermode), 2);
-	if (flags.z())
-		{ blank(); return; };
-	_cmp(data.byte(kCommandtype), 222);
-	if (flags.z())
-		goto alreadyonoff;
-	data.byte(kCommandtype) = 222;
-	al = 39;
-	commandonly();
-alreadyonoff:
-	ax = data.word(kMousebutton);
-	_cmp(ax, data.word(kOldbutton));
-	if (flags.z())
-		return /* (nozoomonoff) */;
-	_and(ax, 1);
-	if (!flags.z())
-		goto dozoomonoff;
-	return;
-dozoomonoff:
-	al = data.byte(kZoomon);
-	_xor(al, 1);
-	data.byte(kZoomon) = al;
-	createpanel();
-	data.byte(kNewobs) = 0;
-	drawfloor();
-	printsprites();
-	reelsonscreen();
-	showicon();
-	getunderzoom();
-	undertextline();
-	al = 39;
-	commandonly();
-	readmouse();
-	worktoscreenm();
-}
-
 void DreamGenContext::saveload() {
 	STACK_CHECK;
 	_cmp(data.word(kWatchingtime), 0);
@@ -16907,7 +16847,6 @@ void DreamGenContext::__dispatch_call(uint16 addr) {
 		case addr_dropobject: dropobject(); break;
 		case addr_droperror: droperror(); break;
 		case addr_cantdrop: cantdrop(); break;
-		case addr_wornerror: wornerror(); break;
 		case addr_removeobfrominv: removeobfrominv(); break;
 		case addr_selectopenob: selectopenob(); break;
 		case addr_useopened: useopened(); break;

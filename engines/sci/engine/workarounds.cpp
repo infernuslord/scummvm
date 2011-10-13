@@ -124,6 +124,7 @@ const SciWorkaroundEntry uninitializedReadWorkarounds[] = {
 	{ GID_MOTHERGOOSEHIRES,-1,64950,  1,               "View", "handleEvent",    -1,    0, { WORKAROUND_FAKE,   0 } }, // see above
 	{ GID_PEPPER,         -1,   894,  0,            "Package", "doVerb",         -1,    3, { WORKAROUND_FAKE,   0 } }, // using the hand on the book in the inventory - bug #3040012
 	{ GID_PEPPER,        150,   928,  0,           "Narrator", "startText",      -1,    0, { WORKAROUND_FAKE,   0 } }, // happens during the non-interactive demo of Pepper
+	{ GID_PQ4,            -1,    25,  0,         "iconToggle", "select",         -1,    1, { WORKAROUND_FAKE,   0 } }, // when toggling the icon bar to auto-hide or not
 	{ GID_PQSWAT,         -1, 64950,  0,               "View", "handleEvent",    -1,    0, { WORKAROUND_FAKE,   0 } }, // Using the menu in the beginning
 	{ GID_QFG1,           -1,   210,  0,          "Encounter", "init",        0xbd0,    0, { WORKAROUND_FAKE,   0 } }, // hq1: going to the brigands hideout
 	{ GID_QFG1,           -1,   210,  0,          "Encounter", "init",        0xbe4,    0, { WORKAROUND_FAKE,   0 } }, // qfg1: going to the brigands hideout
@@ -154,6 +155,9 @@ const SciWorkaroundEntry uninitializedReadWorkarounds[] = {
 	{ GID_SHIVERS,        -1,   952,  0,       "SoundManager", "stop",           -1,    2, { WORKAROUND_FAKE,   0 } }, // Just after Sierra logo
 	{ GID_SHIVERS,        -1, 64950,  0,            "Feature", "handleEvent",    -1,    0, { WORKAROUND_FAKE,   0 } }, // When clicking on the locked door at the beginning
 	{ GID_SHIVERS,        -1, 64950,  0,               "View", "handleEvent",    -1,    0, { WORKAROUND_FAKE,   0 } }, // When clicking on the gargoyle eye at the beginning
+	{ GID_SHIVERS,     20311, 64964,  0,              "DPath", "init",           -1,    1, { WORKAROUND_FAKE,   0 } }, // Just after door puzzle is solved and the metal balls start to roll
+	{ GID_SHIVERS,     29260, 29260,  0,             "spMars", "handleEvent",    -1,    4, { WORKAROUND_FAKE,   0 } }, // When clicking mars after seeing fortune to align earth etc...
+	{ GID_SHIVERS,     29260, 29260,  0,            "spVenus", "handleEvent",    -1,    4, { WORKAROUND_FAKE,   0 } }, // When clicking venus after seeing fortune to align earth etc...
 	{ GID_SQ1,           103,   103,  0,               "hand", "internalEvent",  -1,   -1, { WORKAROUND_FAKE,   0 } }, // Spanish (and maybe early versions?) only: when moving cursor over input pad, temps 1 and 2
 	{ GID_SQ1,            -1,   703,  0,                   "", "export 1",       -1,    0, { WORKAROUND_FAKE,   0 } }, // sub that's called from several objects while on sarien battle cruiser
 	{ GID_SQ1,            -1,   703,  0,         "firePulsar", "changeState", 0x18a,    0, { WORKAROUND_FAKE,   0 } }, // export 1, but called locally (when shooting at aliens)

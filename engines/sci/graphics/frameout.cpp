@@ -170,10 +170,6 @@ void GfxFrameout::kernelUpdatePlane(reg_t object) {
 	error("kUpdatePlane called on plane that wasn't added before");
 }
 
-void GfxFrameout::kernelRepaintPlane(reg_t object) {
-	// TODO
-}
-
 void GfxFrameout::kernelDeletePlane(reg_t object) {
 	deletePlanePictures(object);
 	for (PlaneList::iterator it = _planes.begin(); it != _planes.end(); it++) {
@@ -239,36 +235,45 @@ void GfxFrameout::kernelUpdateScreenItem(reg_t object) {
 	if (!_segMan->isObject(object))
 		return;
 
-	for (FrameoutList::iterator listIterator = _screenItems.begin(); listIterator != _screenItems.end(); listIterator++) {
-		FrameoutEntry *itemEntry = *listIterator;
-
-		if (itemEntry->object == object) {
-			itemEntry->viewId = readSelectorValue(_segMan, object, SELECTOR(view));
-			itemEntry->loopNo = readSelectorValue(_segMan, object, SELECTOR(loop));
-			itemEntry->celNo = readSelectorValue(_segMan, object, SELECTOR(cel));
-			itemEntry->x = readSelectorValue(_segMan, object, SELECTOR(x));
-			itemEntry->y = readSelectorValue(_segMan, object, SELECTOR(y));
-			itemEntry->z = readSelectorValue(_segMan, object, SELECTOR(z));
-			itemEntry->priority = readSelectorValue(_segMan, object, SELECTOR(priority));
-			if (readSelectorValue(_segMan, object, SELECTOR(fixPriority)) == 0)
-				itemEntry->priority = itemEntry->y;
-
-			itemEntry->signal = readSelectorValue(_segMan, object, SELECTOR(signal));
-			itemEntry->scaleX = readSelectorValue(_segMan, object, SELECTOR(scaleX));
-			itemEntry->scaleY = readSelectorValue(_segMan, object, SELECTOR(scaleY));
-			return;
-		}
+	FrameoutEntry *itemEntry = findScreenItem(object);
+	if (!itemEntry) {
+		warning("kernelUpdateScreenItem: invalid object %04x:%04x", PRINT_REG(object));
+		return;
 	}
+
+	itemEntry->viewId = readSelectorValue(_segMan, object, SELECTOR(view));
+	itemEntry->loopNo = readSelectorValue(_segMan, object, SELECTOR(loop));
+	itemEntry->celNo = readSelectorValue(_segMan, object, SELECTOR(cel));
+	itemEntry->x = readSelectorValue(_segMan, object, SELECTOR(x));
+	itemEntry->y = readSelectorValue(_segMan, object, SELECTOR(y));
+	itemEntry->z = readSelectorValue(_segMan, object, SELECTOR(z));
+	itemEntry->priority = readSelectorValue(_segMan, object, SELECTOR(priority));
+	if (readSelectorValue(_segMan, object, SELECTOR(fixPriority)) == 0)
+		itemEntry->priority = itemEntry->y;
+
+	itemEntry->signal = readSelectorValue(_segMan, object, SELECTOR(signal));
+	itemEntry->scaleX = readSelectorValue(_segMan, object, SELECTOR(scaleX));
+	itemEntry->scaleY = readSelectorValue(_segMan, object, SELECTOR(scaleY));
 }
 
 void GfxFrameout::kernelDeleteScreenItem(reg_t object) {
+	FrameoutEntry *itemEntry = findScreenItem(object);
+	if (!itemEntry) {
+		warning("kernelDeleteScreenItem: invalid object %04x:%04x", PRINT_REG(object));
+		return;
+	}
+
+	_screenItems.remove(itemEntry);
+}
+
+FrameoutEntry *GfxFrameout::findScreenItem(reg_t object) {
 	for (FrameoutList::iterator listIterator = _screenItems.begin(); listIterator != _screenItems.end(); listIterator++) {
 		FrameoutEntry *itemEntry = *listIterator;
-		if (itemEntry->object == object) {
-			_screenItems.remove(itemEntry);
-			return;
-		}
+		if (itemEntry->object == object)
+			return itemEntry;
 	}
+
+	return NULL;
 }
 
 int16 GfxFrameout::kernelGetHighPlanePri() {
@@ -368,7 +373,10 @@ void GfxFrameout::kernelFrameout() {
 			continue;
 		}
 
-		if (it->planeBack)
+		// There is a race condition lurking in SQ6, which causes the game to hang in the intro, when teleporting to Polysorbate LX.
+		// Since I first wrote the patch, the race has stopped occurring for me though.
+		// I'll leave this for investigation later, when someone can reproduce.
+		if (it->pictureId == 0xffff)
 			_paint32->fillRect(it->planeRect, it->planeBack);
 
 		GuiResourceId planeMainPictureId = it->pictureId;
@@ -548,24 +556,7 @@ void GfxFrameout::kernelFrameout() {
 			} else {
 				// Most likely a text entry
 				if (lookupSelector(_segMan, itemEntry->object, SELECTOR(text), NULL, NULL) == kSelectorVariable) {
-					TextEntry *textEntry = g_sci->_gfxText32->getTextEntry(itemEntry->object);
-					uint16 startX = ((textEntry->x * _screen->getWidth()) / scriptsRunningWidth) + it->planeRect.left;
-					uint16 startY = ((textEntry->y * _screen->getHeight()) / scriptsRunningHeight) + it->planeRect.top;
-					// HACK. The plane sometimes doesn't contain the correct width. This
-					// hack breaks the dialog options when speaking with Grace, but it's
-					// the best we got up to now. This happens because of the unimplemented
-					// kTextWidth function in SCI32.
-					// TODO: Remove this once kTextWidth has been implemented.
-					uint16 w = it->planeRect.width() >= 20 ? it->planeRect.width() : _screen->getWidth() - 10;
-
-					// Upscale the coordinates/width if the fonts are already upscaled
-					if (_screen->fontIsUpscaled()) {
-						startX = startX * _screen->getDisplayWidth() / _screen->getWidth();
-						startY = startY * _screen->getDisplayHeight() / _screen->getHeight();
-						w  = w * _screen->getDisplayWidth() / _screen->getWidth();
-					}
-
-					g_sci->_gfxText32->drawTextBitmap(itemEntry->object, startX, startY, w);
+					g_sci->_gfxText32->drawTextBitmap(itemEntry->object);
 				}
 			}
 		}

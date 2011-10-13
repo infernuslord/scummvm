@@ -26,6 +26,9 @@
 #define PLATFORM_SDL_MAEMO_H
 
 #include "backends/platform/sdl/posix/posix.h"
+#include "backends/platform/maemo/maemo-common.h"
+
+namespace Maemo {
 
 class OSystem_SDL_Maemo : public OSystem_POSIX {
 public:
@@ -36,10 +39,18 @@ public:
 	virtual void fatalError();
 	virtual void setWindowCaption(const char *caption);
 
+	Model getModel() { return _model; }
+
 private:
 	virtual void setXWindowName(const char *caption);
 
-};
-#endif
+	const Model detectModel();
+	Model _model;
 
-#endif
+};
+
+} // namespace Maemo
+
+#endif // ifndef PLATFORM_SDL_MAEMO_H
+
+#endif // if defined(MAEMO)

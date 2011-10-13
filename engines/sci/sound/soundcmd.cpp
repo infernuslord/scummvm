@@ -37,7 +37,15 @@ SoundCommandParser::SoundCommandParser(ResourceManager *resMan, SegManager *segM
 
 	_music = new SciMusic(_soundVersion);
 	_music->init();
+	// Check if the user wants synthesized or digital sound effects in SCI1.1
+	// or later games
 	_bMultiMidi = ConfMan.getBool("multi_midi");
+	// In SCI2 and later games, this check should always be true - there was
+	// always only one version of each sound effect or digital music track
+	// (e.g. the menu music in GK1 - there is a sound effect with the same
+	// resource number, but it's totally unrelated to the menu music).
+	if (getSciVersion() >= SCI_VERSION_2)
+		_bMultiMidi = true;
 }
 
 SoundCommandParser::~SoundCommandParser() {
@@ -81,7 +89,9 @@ void SoundCommandParser::initSoundResource(MusicEntry *newSound) {
 	// on soundblaster. FIXME: check, why this is
 
 	if (checkAudioResource && _resMan->testResource(ResourceId(kResourceTypeAudio, newSound->resourceId))) {
-		// Found a relevant audio resource, create an audio stream
+		// Found a relevant audio resource, create an audio stream if there is
+		// no associated sound resource, or if both resources exist and the
+		// user wants the digital version.
 		if (_bMultiMidi || !newSound->soundRes) {
 			int sampleLen;
 			newSound->pStreamAud = _audio->getAudioStream(newSound->resourceId, 65535, &sampleLen);
@@ -123,8 +133,6 @@ void SoundCommandParser::processInitSound(reg_t obj) {
 			writeSelectorValue(_segMan, obj, SELECTOR(state), kSoundInitialized);
 		else
 			writeSelector(_segMan, obj, SELECTOR(nodePtr), obj);
-
-		writeSelector(_segMan, obj, SELECTOR(handle), obj);
 	}
 }
 

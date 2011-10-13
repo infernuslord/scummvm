@@ -174,7 +174,7 @@ class Scene270: public SceneExt {
 	};
 
 	/* Objects */
-	class Object8: public NamedObject {
+	class Lyle: public NamedObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
@@ -201,15 +201,14 @@ public:
 	SpeakerSkip _skipSpeaker;
 	SpeakerGameText _gameTextSpeaker;
 	Action1 _action1;
-	NamedObject _object1, _object2, _object3, _object4;
-	NamedObject _object5, _object6, _object7;
-	Object8 _object8;
+	NamedObject _object1, _object2, _object3, _laura;
+	NamedObject _skip, _tv, _fireplace;
+	Lyle _lyle;
 	Grandma _grandma;
-	Item _item1;
-	NamedHotspot _item2, _item3;
-	Item _item4;
-	NamedHotspot _item5, _item6, _item7, _item8, _item9;
-	NamedHotspot _item10, _item11, _item12;
+	Item _couch, _afgan;
+	NamedHotspot _appliances;
+	NamedHotspot _ivy, _fridge, _photos, _item8, _item9;
+	NamedHotspot _item10, _item11, _background;
 	Exit _exit;
 	int _field380, _field382, _field384, _field386;
 	int _field219A, _field21A0;
@@ -221,6 +220,75 @@ public:
 	virtual void signal();
 	virtual void process(Event &event);
 	virtual void dispatch();
+};
+
+class Scene271: public PalettedScene {
+	/* Actions */
+	class Action1: public ActionExt {
+	public:
+		virtual void signal();
+	};
+
+	/* Objects */
+	class Object12: public NamedObject {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+
+	/* Items */
+	class Item: public NamedHotspot {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+	class Exit: public NamedHotspot {
+	public:
+		virtual bool startAction(CursorType action, Event &event);
+	};
+public:
+	SequenceManager _sequenceManager1, _sequenceManager2, _sequenceManager3;
+	SpeakerGrandma _grandmaSpeaker;
+	SpeakerLyle _lyleSpeaker;
+	SpeakerJake _jakeSpeaker;
+	SpeakerLaura _lauraSpeaker;
+	SpeakerSkip _skipSpeaker;
+	SpeakerGameText _gameTextSpeaker;
+	SpeakerGranText _granTextSpeaker;
+	SpeakerLyleText _lyleTextSpeaker;
+
+	NamedObject _object1, _object2, _object3, _object4, _object5;
+	NamedObject _object6, _object7, _object8, _tv, _object10;
+	NamedObject _object11;
+	Object12 _object12;
+	Item _item1, _item3;
+	NamedHotspot _item2, _item4, _item5, _item6, _item7;
+	NamedHotspot _item8, _item9, _item10, _item11;
+	Exit _exit;
+	Action1 _action1;
+	Rect _rect1;
+	int _field796, _field2E16;
+	Common::Point _tempPos;
+
+	Scene271();
+	virtual void synchronize(Serializer &s);
+	virtual void postInit(SceneObjectList *OwnerList = NULL);
+	virtual void signal();
+	virtual void process(Event &event);
+	virtual void dispatch();
+};
+
+class Scene280: public PalettedScene {
+	/* Actions */
+	class Action1: public ActionExt {
+	public:
+		virtual void signal();
+	};
+public:
+	Action1 _action1;
+	SpeakerGameText _gameTextSpeaker;
+	NamedObject _jake, _dad, _mum, _object4;
+
+	void postInit(SceneObjectList *OwnerList);
+	virtual void signal();
 };
 
 } // End of namespace BlueForce
