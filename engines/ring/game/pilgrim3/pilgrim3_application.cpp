@@ -259,6 +259,8 @@ void ApplicationPilgrim3::onKeyDown(Common::Event &evt) {
 }
 
 void ApplicationPilgrim3::onTimer(TimerId timerId) {
+	debugC(kRingDebugLogic, "[ApplicationPilgrim3::onTimer] Timer id: %d", timerId);
+
 	error("[ApplicationPilgrim3::onTimer] Not implemented (id: %d)", timerId);
 }
 

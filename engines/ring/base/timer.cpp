@@ -36,14 +36,17 @@ namespace Ring {
 Timer::Timer(TimerId timerId, uint32 elapseTime): BaseObject(timerId), _elapseTime(elapseTime) {
 	_fired = 0;
 	_tickStart = g_system->getMillis();
+	_reference = Common::String::format("Ring Timer %d", _id);
+
+	start();
 }
 
 Timer::~Timer() {
-	g_system->getTimerManager()->removeTimerProc(&handler);
+	g_system->getTimerManager()->removeTimerProc(_reference);
 }
 
 void Timer::start() {
-	if (!g_system->getTimerManager()->installTimerProc(&handler, _elapseTime, this, Common::String::format("Ring Timer %d", _id)))
+	if (!g_system->getTimerManager()->installTimerProc(&handler, _elapseTime, this, _reference, true))
 		error("[Timer::start] Cannot start timer %d", _id);
 }
 

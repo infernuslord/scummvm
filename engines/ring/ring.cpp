@@ -172,8 +172,12 @@ Common::Error RingEngine::run() {
 			switch (ev.type) {
 
 			case Common::EVENT_CUSTOM:
-				if (ev.custom.message == MESSAGE_TIMER)
-					_application->onTimer((TimerId)ev.custom.param1);
+				if (ev.custom.message == MESSAGE_TIMER) {
+					TimerId timerId = (TimerId)ev.custom.param1;
+
+					if (_application->hasTimer(timerId))
+						_application->onTimer(timerId);
+				}
 				break;
 
 			case Common::EVENT_KEYDOWN:

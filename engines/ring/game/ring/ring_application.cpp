@@ -1429,7 +1429,7 @@ void ApplicationRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 
 }
 
 void ApplicationRing::onTimer(TimerId timerId) {
-	debugC(kRingDebugLogic, "onTimer (id: %d)", timerId);
+	debugC(kRingDebugLogic, "[ApplicationRing::onTimer] Timer id: %d", timerId);
 
 	switch (getCurrentZone()) {
 	default:

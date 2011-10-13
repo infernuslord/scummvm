@@ -304,6 +304,8 @@ void ApplicationJerusalem::onKeyDown(Common::Event &evt) {
 }
 
 void ApplicationJerusalem::onTimer(TimerId timerId) {
+	debugC(kRingDebugLogic, "[ApplicationJerusalem::onTimer] Timer id: %d", timerId);
+
 	error("[ApplicationJerusalem::onTimer] Not implemented (id: %d)", timerId);
 }
 

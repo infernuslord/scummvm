@@ -462,7 +462,7 @@ void ApplicationPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId,
 }
 
 void ApplicationPompeii::onTimer(TimerId timerId) {
-	debugC(kRingDebugLogic, "onTimer (id: %d)", timerId);
+	debugC(kRingDebugLogic, "[ApplicationPompeii::onTimer] Timer id: %d", timerId);
 
 	switch (getCurrentZone()) {
 	default:

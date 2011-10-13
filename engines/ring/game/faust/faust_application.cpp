@@ -1244,6 +1244,8 @@ void ApplicationFaust::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32
 }
 
 void ApplicationFaust::onTimer(TimerId timerId) {
+	debugC(kRingDebugLogic, "[ApplicationFaust::onTimer] Timer id: %d", timerId);
+
 	switch (getCurrentZone()) {
 	default:
 		break;
