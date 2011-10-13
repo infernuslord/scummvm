@@ -945,7 +945,7 @@ void Zone2Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 		break;
 
 	case 1001:
-		_app->puzzleSetMovabilityOn(kPuzzle10155);
+		_app->rotationSetMovabilityOn(10155);
 		break;;
 
 	case 1002:

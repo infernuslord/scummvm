@@ -172,19 +172,121 @@ void Zone5Pompeii::onInit() {
 }
 
 void Zone5Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone5Pompeii::onButtonUp()] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kObject40412:
+		if (_app->bagGetClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->varSetByte(90112, 1);
+			_app->objectSetAccessibilityOff(kObject40412);
+			_app->puzzleSetActive(kPuzzle40411);
+			_app->soundPlay(40411);
+		}
+		break;
+
+	case kObject10405:
+		if (_app->bagGetClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectPresentationPauseAnimation(kObject10405, 4);
+			_app->objectPresentationPauseAnimation(kObject10405, 3);
+			_app->timerStopAll();
+			_app->soundStop(50001, 1024);
+			_app->onCall(10400);
+		}
+		break;
+
+	case kObject40411:
+		if (_app->bagGetClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->varSetByte(90112, 2);
+			_app->bagRemove(kObjectNecklace);
+			_app->objectSetAccessibilityOff(kObject40411);
+			_app->puzzleSetActive(kPuzzle40441);
+			_app->soundPlay(40412);
+		}
+		break;
+
+	case kObject90004:
+		_app->restore();
+		break;
+	}
 }
 
 void Zone5Pompeii::onTimer(TimerId id) {
-	error("[Zone5Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kTimer0:
+		_app->timerStop(kTimer0);
+		_app->objectPresentationUnpauseAnimation(kObject10405, 3);
+		break;
+
+	case kTimer1:
+		_app->timerStop(kTimer1);
+		_app->objectPresentationUnpauseAnimation(kObject10405, 4);
+		break;
+	}
 }
 
 void Zone5Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone5Pompeii::onAnimationNextFrame] Not implemented");
+	switch (animationId) {
+	default:
+		break;
+
+	case 40001:
+		if (frame == frameCount || frame == 1) {
+			_app->objectPresentationPauseAnimation(kObject10405, 4);
+			_app->timerStart(kTimer1, 1000 * (rnd(3) + 3));
+		}
+		break;
+
+	case 40002:
+		if (frame == frameCount || frame == 1) {
+			_app->objectPresentationPauseAnimation(kObject10405, 3);
+			_app->timerStart(kTimer0, 1000 * (rnd(3) + 4));
+		}
+		break;
+	}
 }
 
 void Zone5Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone5Pompeii::onSound] Not implemented");
+	if (!process)
+		return;
+
+	switch (id) {
+	default:
+		break;
+
+	case 40411:
+		_app->objectPresentationHide(kObject10405, 0);
+		_app->objectPresentationHide(kObject10405, 3);
+		_app->playMovie("S04A01-2", 0.0);
+		_app->rotationSetActive(10411, 1, 1);
+		_app->objectSetAccessibilityOn(kObject40411);
+		_app->bagAdd(kObjectHollyWater);
+		_app->rotationSetMovabilityOn(10411);
+		break;
+
+	case 40412:
+		_app->playMovie("S04A01-1");
+		_app->soundPlay(40413);
+		break;
+
+	case 40413:
+		_app->fadeOut(15, Color(0, 0, 0), 0);
+		_app->soundStop(50001, 1024);
+		_app->objectPresentationHide(kObject10405);
+		_app->rotationSetMovabilityOn(10441);
+		_app->onCall(1129);
+		_app->onCall(113);
+		break;
+	}
 }
 
 } // End of namespace Ring

@@ -69,7 +69,6 @@ enum PuzzleId {
 	kPuzzle10016                   = 10016,
 	kPuzzle10017                   = 10017,
 	kPuzzle10021                   = 10021,
-	kPuzzle10155                   = 10155,
 	kPuzzle10211                   = 10211,
 	kPuzzle10241                   = 10241,
 	kPuzzle10245                   = 10245,
