@@ -41,8 +41,9 @@ private:
 public:
 	DefaultTimerManager();
 	virtual ~DefaultTimerManager();
-	virtual bool installTimerProc(TimerProc proc, int32 interval, void *refCon, const Common::String &id);
+	virtual bool installTimerProc(TimerProc proc, int32 interval, void *refCon, const Common::String &id, bool allowDuplicate = false);
 	virtual void removeTimerProc(TimerProc proc);
+	virtual void removeTimerProc(const Common::String &id);
 
 	/**
 	 * Timer callback, to be invoked at regular time intervals by the backend.

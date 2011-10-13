@@ -109,7 +109,7 @@ void DefaultTimerManager::handler() {
 	}
 }
 
-bool DefaultTimerManager::installTimerProc(TimerProc callback, int32 interval, void *refCon, const Common::String &id) {
+bool DefaultTimerManager::installTimerProc(TimerProc callback, int32 interval, void *refCon, const Common::String &id, bool allowDuplicate) {
 	assert(interval > 0);
 	Common::StackLock lock(_mutex);
 
@@ -118,13 +118,16 @@ bool DefaultTimerManager::installTimerProc(TimerProc callback, int32 interval, v
 			error("Different callbacks are referred by same name (%s)", id.c_str());
 		}
 	}
-	TimerSlotMap::const_iterator i;
 
-	for (i = _callbacks.begin(); i != _callbacks.end(); ++i) {
-		if (i->_value == callback) {
-			error("Same callback is referred by different names (%s vs %s)", i->_key.c_str(), id.c_str());
+	// Check for duplicated callbacks
+	if (!allowDuplicate) {
+		for (TimerSlotMap::const_iterator i = _callbacks.begin(); i != _callbacks.end(); ++i) {
+			if (i->_value == callback) {
+				error("Same callback is referred by different names (%s vs %s)", i->_key.c_str(), id.c_str());
+			}
 		}
 	}
+
 	_callbacks[id] = callback;
 
 	TimerSlot *slot = new TimerSlot;
@@ -136,12 +139,6 @@ bool DefaultTimerManager::installTimerProc(TimerProc callback, int32 interval, v
 	slot->nextFireTimeMicro = interval % 1000;
 	slot->next = 0;
 
-	// FIXME: It seems we do allow the client to add one callback multiple times over here,
-	// but "removeTimerProc" will remove *all* added instances. We should either prevent
-	// multiple additions of a timer proc OR we should change removeTimerProc to only remove
-	// a specific timer proc entry.
-	// Probably we can safely just allow a single addition of a specific function once
-	// and just update our Timer documentation accordingly.
 	insertPrioQueue(_head, slot);
 
 	return true;
@@ -163,7 +160,7 @@ void DefaultTimerManager::removeTimerProc(TimerProc callback) {
 	}
 
 	// We need to remove all names referencing the timer proc here.
-	// 
+	//
 	// Else we run into troubles, when the client code removes and readds timer
 	// callbacks.
 	//
@@ -178,4 +175,29 @@ void DefaultTimerManager::removeTimerProc(TimerProc callback) {
 		if (i->_value == callback)
 			_callbacks.erase(i);
 	}
+}
+
+void DefaultTimerManager::removeTimerProc(const Common::String &id) {
+	Common::StackLock lock(_mutex);
+
+	if (!_callbacks.contains(id))
+		return;
+
+	TimerSlot *slot = _head;
+
+	while (slot->next) {
+		if (slot->next->id == id) {
+			TimerSlot *next = slot->next->next;
+			delete slot->next;
+			slot->next = next;
+
+			// There should only be a single callback with that id
+			break;
+		} else {
+			slot = slot->next;
+		}
+	}
+
+	// Remove the callback from the slot map
+	_callbacks.erase(id);
 }
