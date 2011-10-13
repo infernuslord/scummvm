@@ -102,7 +102,8 @@ bool WINCESdlEventSource::pollEvent(Common::Event &event) {
 				event.kbd.flags = 0xFF;
 			else if (ev.key.keysym.sym == SDLK_PAUSE) {
 				_graphicsMan->_lastKeyPressed = 0;
-				event.type = Common::EVENT_PREDICTIVE_DIALOG;
+				event.type = Common::EVENT_CUSTOM;
+				event.custom.message = Common::MESSAGE_PREDICTIVE_DIALOG;
 				return true;
 			}
 			event.type = Common::EVENT_KEYDOWN;

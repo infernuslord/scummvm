@@ -82,7 +82,8 @@ bool PS3SdlEventSource::handleJoyButtonDown(SDL_Event &ev, Common::Event &event)
 		event.kbd.ascii = mapKey(SDLK_ESCAPE, (SDLMod) ev.key.keysym.mod, 0);
 		break;
 	case BTN_L1: // Predictive input dialog
-		event.type = Common::EVENT_PREDICTIVE_DIALOG;
+		event.type = Common::EVENT_CUSTOM;
+		event.custom.message = Common::MESSAGE_PREDICTIVE_DIALOG;
 		break;
 	case BTN_START: // ScummVM in game menu
 		event.type = Common::EVENT_MAINMENU;

@@ -65,20 +65,13 @@ enum EventType {
 
 	EVENT_QUIT = 10,
 	EVENT_SCREEN_CHANGED = 11,
-	/**
-	 * The backend requests the agi engine's predictive dialog to be shown.
-	 * TODO: Fingolfin suggests that it would be of better value to expand
-	 * on this notion by generalizing its use. For example the backend could
-	 * use events to ask for the save game dialog or to pause the engine.
-	 * An associated enumerated type can accomplish this.
-	 **/
-	EVENT_PREDICTIVE_DIALOG = 12,
 
 	EVENT_CUSTOM = 18
 };
 
 enum CustomEventMessage {
 	MESSAGE_INVALID           = 0,
+	MESSAGE_PREDICTIVE_DIALOG = 1,    ///< The backend requests the agi engine's predictive dialog to be shown
 	MESSAGE_USER              = 999   ///< Engines can use values equal and above for engine-specific messages
 };
 

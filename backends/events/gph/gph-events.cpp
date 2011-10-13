@@ -324,7 +324,8 @@ bool GPHEventSource::handleJoyButtonDown(SDL_Event &ev, Common::Event &event) {
 	case BUTTON_A:
 		event.type = Common::EVENT_KEYDOWN;
 		if (BUTTON_STATE_L == true) {
-			event.type = Common::EVENT_PREDICTIVE_DIALOG;
+			event.type = Common::EVENT_CUSTOM;
+			event.custom.message = Common::MESSAGE_PREDICTIVE_DIALOG;
 		} else {
 			event.kbd.keycode = Common::KEYCODE_PERIOD;
 			event.kbd.ascii = mapKey(SDLK_PERIOD, ev.key.keysym.mod, 0);
