@@ -267,6 +267,7 @@ enum MenuAction {
 	kMenuAction2  = 2,
 	kMenuAction3  = 3,
 	kMenuAction4  = 4,
+	kMenuAction7  = 7,
 	kMenuAction10 = 10
 };
 

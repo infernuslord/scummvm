@@ -188,23 +188,143 @@ void Zone10Pompeii::onInit() {
 }
 
 void Zone10Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone10Pompeii::onButtonUp()] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kObject10901:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (_app->varGetByte(90309) == 2) {
+				_app->varSetByte(90309, 3);
+				_app->onCall(3099);
+			}
+
+			_app->objectPresentationPauseAnimation(kObject10901, 0);
+			_app->objectPresentationPauseAnimation(kObject10901, 1);
+			_app->objectPresentationPauseAnimation(kObject10901, 4);
+			_app->timerStopAll();
+			_app->onCall(109001);
+		}
+		break;
+
+	case kObject10902:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectPresentationPauseAnimation(kObject10901, 0);
+			_app->objectPresentationPauseAnimation(kObject10901, 1);
+			_app->objectPresentationPauseAnimation(kObject10901, 4);
+			_app->timerStopAll();
+			_app->onCall(1090012);
+		}
+		break;
+
+	case kObject10903:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectPresentationPauseAnimation(kObject10901, 0);
+			_app->objectPresentationPauseAnimation(kObject10901, 1);
+			_app->objectPresentationPauseAnimation(kObject10901, 4);
+			_app->timerStopAll();
+			_app->onCall(109005);
+		}
+		break;
+
+	case kObject90004:
+		_app->restore();
+		break;
+
+	case kObject99902:
+		if (_app->bagHasClickedObject()) {
+			if (target == 0 && _app->bagGetClickedObject() == 99901) {
+				_app->objectSetAccessibilityOff(kObject99902);
+				_app->objectSetAccessibilityOff(kObjectWood);
+				_app->soundPlay(3049);
+			}
+
+			_app->cursorDelete();
+		}
+		break;
+
+	case kObject99903:
+		if (_app->bagHasClickedObject()) {
+			if (_app->bagGetClickedObject() == kObjectKnife) {
+				_app->soundPlay(90002);
+				_app->objectSetAccessibilityOff(kObject99903);
+				_app->objectPresentationHide(kObject10901, 0);
+				_app->objectPresentationShow(kObject10901, 4);
+				_app->varSetByte(90309, 2);
+				_app->soundPlay(90001);
+				_app->onCall(310);
+				_app->onCall(311);
+				_app->soundPlay(3048);
+				_app->rotationSetMovabilityOff(10922, 1, 1);
+			}
+
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObject99903);
+			_app->soundPlay(3051);
+			_app->rotationSetMovabilityOff(10931);
+		}
+		break;
+
+	case kObject99904:
+		_app->playMovie("S09A03-2");
+		_app->exitToMenu(kMenuAction7);
+		break;
+	}
 }
 
 void Zone10Pompeii::onTimer(TimerId id) {
-	error("[Zone10Pompeii::onTimer] Not implemented");
+	if (id == kTimer0) {
+		_app->timerStop(kTimer0);
+		_app->objectPresentationUnpauseAnimation(kObject10901, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10901, 1);
+		_app->objectPresentationUnpauseAnimation(kObject10901, 4);
+	}
 }
 
 void Zone10Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone10Pompeii::onAnimationNextFrame] Not implemented");
+	if (animationId == 90901 && (frame == frameCount || frame == 1)) {
+		_app->objectPresentationPauseAnimation(kObject10901, 0);
+		_app->objectPresentationPauseAnimation(kObject10901, 1);
+		_app->objectPresentationPauseAnimation(kObject10901, 4);
+		_app->timerStart(kTimer0, rnd(3000) + 3000);
+	}
 }
 
 void Zone10Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone10Pompeii::onSound] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case 3049:
+		_app->playMovie("S09A02-1");
+		_app->rotationSetMovabilityOn(10922, 1, 1);
+		_app->objectPresentationShow(kObject10901, 1);
+		break;
+
+	case 3050:
+		_app->exitToMenu(kMenuAction7);
+		break;
+
+	case 3051:
+		_app->playMovie("S09A03-1");
+		_app->soundPlay(3050);
+		break;
+	}
 }
 
-void Zone10Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone10Pompeii::onUpdateBefore] Not implemented");
+void Zone10Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+	if (movabilityType == kMovabilityRotationToRotation) {
+		if (movabilityFrom == 10925 && movabilityTo == 10911
+		 || movabilityFrom == 10911 && movabilityTo == 10925)
+			_app->fadeOut(15, Color(0, 0, 0), 0);
+	}
 }
 
 } // End of namespace Ring
