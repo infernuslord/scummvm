@@ -217,7 +217,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 	default:
 		break;
 
-	case 10601:
+	case kObject10601:
 		if (_app->bagHasClickedObject()) {
 			_app->cursorDelete();
 		} else {
@@ -230,7 +230,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		}
 		break;
 
-	case 60611:
+	case kObject60611:
 		if (_app->bagHasClickedObject()) {
 			_app->cursorDelete();
 		} else {
@@ -243,7 +243,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		}
 		break;
 
-	case 60612:
+	case kObjectDropOfWater:
 		if (_app->bagHasClickedObject()) {
 			if (_app->bagGetClickedObject() == kObjectGlassTube || _app->bagGetClickedObject() == kObjectGlassTube2) {
 				if (target == 1) {
@@ -259,11 +259,11 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		}
 		break;
 
-	case 90004:
+	case kObject90004:
 		_app->restore();
 		break;
 
-	case 90601:
+	case kObjectGlassTube:
 		if (_app->bagHasClickedObject() && _app->bagGetClickedObject() == kObjectDropOfWater) {
 			_app->soundPlay(60002);
 			_app->objectSetAccessibilityOff(kObjectGlassTube);
@@ -275,7 +275,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		}
 		break;
 
-	case 91206:
+	case kObjectDropOfBlood:
 		if (_app->bagHasClickedObject()) {
 			if ((_app->bagGetClickedObject() == kObjectGlassTube || _app->bagGetClickedObject() == kObjectGlassTube2) && target == 1) {
 				_app->soundPlay(60001);
@@ -290,7 +290,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		}
 		break;
 
-	case 91207:
+	case kObjectApolloTear:
 		if (_app->bagHasClickedObject())
 		{
 			if ((_app->bagGetClickedObject() == kObjectGlassTube || _app->bagGetClickedObject() == kObjectGlassTube2) && target >= 2) {
