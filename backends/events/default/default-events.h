@@ -24,6 +24,7 @@
 #define BACKEND_EVENTS_DEFAULT_H
 
 #include "common/events.h"
+#include "common/mutex.h"
 #include "common/queue.h"
 
 namespace Common {
@@ -48,6 +49,7 @@ class DefaultEventManager : public Common::EventManager, Common::EventObserver {
 
 	Common::ArtificialEventSource _artificialEventSource;
 
+	Common::Mutex                _mutex;
 	Common::Queue<Common::Event> _eventQueue;
 	bool notifyEvent(const Common::Event &ev) {
 		_eventQueue.push(ev);

@@ -80,14 +80,18 @@ void DefaultEventManager::init() {
 }
 
 bool DefaultEventManager::pollEvent(Common::Event &event) {
-	uint32 time = g_system->getMillis();
 	bool result = false;
 
+	_mutex.lock();
 	_dispatcher.dispatch();
+	_mutex.unlock();
+
 	if (!_eventQueue.empty()) {
 		event = _eventQueue.pop();
 		result = true;
 	}
+
+	uint32 time = g_system->getMillis();
 
 	if (result) {
 		event.synthetic = false;
@@ -272,6 +276,8 @@ bool DefaultEventManager::pollEvent(Common::Event &event) {
 }
 
 void DefaultEventManager::pushEvent(const Common::Event &event) {
+	Common::StackLock lock(_mutex);
+
 	// If already received an EVENT_QUIT, don't add another one
 	if (event.type == Common::EVENT_QUIT) {
 		if (!_shouldQuit)
