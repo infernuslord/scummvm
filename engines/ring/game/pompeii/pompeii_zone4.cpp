@@ -216,7 +216,33 @@ void Zone4Pompeii::onTimer(TimerId id) {
 }
 
 void Zone4Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone4Pompeii::onAnimationNextFrame] Not implemented");
+	switch (animationId) {
+	default:
+		break;
+
+	case 30001:
+		if (frame != frameCount)
+			break;
+
+		_app->objectPresentationPauseAnimation(kObject30301, 1);
+		_app->objectPresentationPauseAnimation(kObject30301, 2);
+		_app->objectPresentationPauseAnimation(kObject30301, 3);
+		_app->objectPresentationPauseAnimation(kObject30301, 4);
+		_app->objectPresentationPauseAnimation(kObject30301, 6);
+		_app->timerStart(kTimer0, 1000 * (rnd(5) + 2));
+		break;
+
+	case 30002:
+		if (frame != frameCount)
+			break;
+
+		_app->objectPresentationPauseAnimation(kObject30301, 5);
+		_app->objectPresentationPauseAnimation(kObject30301, 7);
+		_app->objectPresentationPauseAnimation(kObject30301, 8);
+		_app->objectPresentationPauseAnimation(kObject30301, 9);
+		_app->timerStart(kTimer1, 1000 * (rnd(5) + 2));
+		break;
+	}
 }
 
 void Zone4Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
@@ -231,7 +257,12 @@ void Zone4Pompeii::onUpdateBag(const Common::Point &point) {
 }
 
 void Zone4Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone4Pompeii::onUpdateBefore] Not implemented");
+	if (movabilityFrom == 30315
+	 && !_hideBox
+	 && !_app->bagHasClickedObject()) {
+		_app->visualBoxSetParameters(6, kPuzzleMenu, 1051, g_system->getEventManager()->getMousePos() - Common::Point(20, 16));
+		_hideBox = true;
+	}
 }
 
 void Zone4Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
@@ -242,7 +273,35 @@ void Zone4Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 mova
 }
 
 void Zone4Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
-	error("[Zone4Pompeii::onVisualList] Not implemented");
+	switch (point.x) {
+	default:
+		break;
+
+	case 1051:
+		_app->varSetByte(90107, 3);
+		break;
+
+	case 1052:
+	case 1053:
+	case 1055:
+	case 1056:
+	case 1057:
+	case 1058:
+	case 1059:
+	case 1060:
+	case 1061:
+	case 1062:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle30314, 1, 1);
+		break;
+
+	case 101051:
+		_app->puzzleSetActive(kPuzzle30317, 1, 1);
+		_app->soundPlay(1063);
+		_app->objectSetAccessibilityOff(kObject30315);
+		_app->varSetByte(90107, 3);
+		break;
+	}
 }
 
 } // End of namespace Ring

@@ -736,7 +736,7 @@ void ApplicationPompeii::onBagClickedObject(ObjectId id) {
 
 	case kZone2:
 	case kZone3:
-		_zone2->onBagClickedObject(id);
+		_zone3->onBagClickedObject(id);
 		break;
 	}
 

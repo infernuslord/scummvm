@@ -341,7 +341,35 @@ void Zone3Pompeii::onTimer(TimerId id) {
 }
 
 void Zone3Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone3Pompeii::onAnimationNextFrame] Not implemented");
+	switch (animationId) {
+	default:
+		break;
+
+	case 20000:
+		if (frame != frameCount)
+			break;
+
+		_app->objectPresentationPauseAnimation(kObject20001, 0);
+		_app->objectPresentationPauseAnimation(kObject20001, 1);
+		_app->objectPresentationPauseAnimation(kObject20002, 0);
+		_app->objectPresentationPauseAnimation(kObject20002, 1);
+		_app->objectPresentationPauseAnimation(kObject20006, 0);
+		_app->objectPresentationPauseAnimation(kObject20007, 0);
+		_app->objectPresentationPauseAnimation(kObject20007, 1);
+		_app->timerStart(kTimer1, 1000 * (rnd(5) + 2));
+		break;
+
+	case 20001:
+		if (frame != frameCount)
+			break;
+
+		_app->objectPresentationPauseAnimation(kObject20001, 2);
+		_app->objectPresentationPauseAnimation(kObject20002, 2);
+		_app->objectPresentationPauseAnimation(kObject20007, 2);
+		_app->objectPresentationPauseAnimation(kObject10202, 1);
+		_app->timerStart(kTimer2, 1000 * (rnd(5) + 2));
+		break;
+	}
 }
 
 void Zone3Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
@@ -356,7 +384,12 @@ void Zone3Pompeii::onUpdateBag(const Common::Point &point) {
 }
 
 void Zone3Pompeii::onBagClickedObject(ObjectId objectId) {
-	error("[Zone3Pompeii::onBagClickedObject] Not implemented");
+	if (objectId == kObjectNightingale) {
+		_app->bagRemove(kObjectNightingale);
+		_app->bagAdd(kObjectNightingale);
+		_app->cursorDelete();
+		_app->soundPlay(4106);
+	}
 }
 
 void Zone3Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {

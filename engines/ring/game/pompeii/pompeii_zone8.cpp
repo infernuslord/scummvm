@@ -191,7 +191,12 @@ void Zone8Pompeii::onTimer(TimerId id) {
 }
 
 void Zone8Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone8Pompeii::onAnimationNextFrame] Not implemented");
+	if (animationId == 70001 && frame == frameCount) {
+		_app->objectPresentationPauseAnimation(kObject10701, 0);
+		_app->objectPresentationPauseAnimation(kObject10701, 7);
+		_app->objectPresentationPauseAnimation(kObject10701, 8);
+		_app->timerStart(kTimer2, 1000 * (rnd(5) + 2));
+	}
 }
 
 void Zone8Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
@@ -206,7 +211,32 @@ void Zone8Pompeii::onUpdateBag(const Common::Point &point) {
 }
 
 void Zone8Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone8Pompeii::onUpdateBefore] Not implemented");
+	Common::Point mouse = g_system->getEventManager()->getMousePos() - Common::Point(20, 16);
+
+	if (movabilityFrom == 70701
+	 && !_hideBox
+	 && !_app->bagHasClickedObject()) {
+
+		switch (movabilityTo) {
+		default:
+			break;
+
+		case 1:
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 2056, mouse);
+			_hideBox = true;
+			break;
+
+		case 4:
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4083, mouse);
+			_hideBox = true;
+			break;
+
+		case 6:
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4086, mouse);
+			_hideBox = true;
+			break;
+		}
+	}
 }
 
 void Zone8Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
@@ -217,7 +247,32 @@ void Zone8Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 mova
 }
 
 void Zone8Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
-	error("[Zone8Pompeii::onVisualList] Not implemented");
+	switch (point.x) {
+	default:
+		break;
+
+	case 2057:
+	case 2058:
+	case 4084:
+	case 4085:
+	case 4087:
+	case 4088:
+	case 4089:
+	case 4090:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle70121);
+		break;
+
+	case 104083:
+		_app->objectSetAccessibilityOff(kObject70701);
+		_app->objectSetAccessibilityOn(kObject70701, 5, 5);
+		break;
+
+	case 102056:
+		_app->objectSetAccessibilityOff(kObject70701);
+		_app->objectSetAccessibilityOn(kObject70701, 2, 2);
+		break;
+	}
 }
 
 } // End of namespace Ring

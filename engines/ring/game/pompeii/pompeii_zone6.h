@@ -53,6 +53,7 @@ private:
 	bool _hideBox;
 	uint32 _frame1;
 	uint32 _frame2;
+	byte _playSoundValue;
 };
 
 } // End of namespace Ring

@@ -36,6 +36,7 @@ Zone6Pompeii::Zone6Pompeii(ApplicationPompeii *application) : _app(application) 
 	_hideBox = false;
 	_frame1  = 0;
 	_frame2  = 0;
+	_playSoundValue = 0;
 }
 
 Zone6Pompeii::~Zone6Pompeii() {
@@ -617,7 +618,26 @@ void Zone6Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 mova
 }
 
 void Zone6Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
-	error("[Zone6Pompeii::onAfterRide] Not implemented");
+	if (movabilityType == kMovabilityPuzzleToRotation && movabilityTo == 505213) {
+		_app->timerStop(kTimer1);
+		_app->objectSetAccessibilityOn(kObject50523);
+
+		if (_app->varGetByte(90001) == 2) {
+			_app->rotationSetMovabilityOff(10521);
+
+			if (_app->varGetByte(90215) == 2) {
+				if (_app->varGetByte(50002) == _playSoundValue)
+					_app->soundPlay(2074);
+				else if ( _app->varGetByte(50003) == _playSoundValue)
+					_app->soundPlay(2073);
+			} else {
+				_app->soundPlay(2075);
+			}
+		} else {
+			if (_app->varGetByte(90001) > 2)
+				_app->objectPresentationShow(kObject50502, 4);
+		}
+	}
 }
 
 void Zone6Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {

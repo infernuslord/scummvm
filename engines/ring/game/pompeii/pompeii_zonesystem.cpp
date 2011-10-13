@@ -557,11 +557,76 @@ void ZoneSystemPompeii::onBag(ObjectId id, Id target, Id puzzleRotationId, uint3
 }
 
 void ZoneSystemPompeii::onUpdateBag(const Common::Point &point) {
-	error("[ZoneSystemPompeii::onUpdateBag] Not implemented");
+	if (_app->hasCurrentRotation())
+		_app->varSetDword(99027, _app->getCurrentRotationId());
+
+	_app->objectPresentationHide(kObject6, 6);
+	_app->objectPresentationHide(kObject6, 7);
+	_app->objectPresentationHide(kObject6, 8);
+	_app->objectPresentationHide(kObject6, 9);
+	_app->objectPresentationHide(kObject6, 10);
+	_app->objectPresentationHide(kObject6, 11);
+	_app->objectPresentationHide(kObject6, 12);
+	_app->objectPresentationHide(kObject6, 13);
+	_app->objectPresentationHide(kObject6, 14);
+	_app->objectPresentationHide(kObject6, 15);
+	_app->objectPresentationHide(kObject6, 16);
+	_app->objectPresentationHide(kObject6, 17);
+	_app->objectPresentationHide(kObject6, 18);
+	_app->objectPresentationHide(kObjectYesNo, 2);
+	_app->objectPresentationHide(kObjectYesNo, 1);
+	_app->objectPresentationHide(kObjectQuestion, 1);
+	_app->objectPresentationHide(kObjectQuestion, 2);
+	_app->objectPresentationHide(kObject3, 1);
+	_app->objectPresentationHide(kObject5, 1);
+	_app->objectPresentationHide(kObject5, 2);
+	_app->objectPresentationHide(kObject99000, 0);
+	_app->objectPresentationHide(kObject99001, 0);
+	_app->objectPresentationHide(kObject99002, 0);
+	_app->objectPresentationHide(kObject99003, 0);
+	_app->objectPresentationHide(kObject99004, 0);
+	_app->objectPresentationHide(kObject99005, 0);
+	_app->objectPresentationHide(kObject99006, 0);
+
+	if (!_app->varGetByte(98008))
+		_app->objectPresentationHide(kObject99007);
+
+	_app->objectPresentationHide(kObject99023, 0);
+	_app->objectPresentationHide(kObject99022, 0);
+	_app->objectPresentationHide(kObject99025, 0);
+	_app->objectPresentationHide(kObject99024, 0);
+	_app->objectPresentationHide(kObject99042, 0);
+	_app->objectPresentationHide(kObject99041, 0);
+	_app->objectPresentationHide(kObject90401, 0);
+	_app->objectPresentationHide(kObject16, 1);
+	_app->objectPresentationHide(kObject16, 2);
 }
 
 void ZoneSystemPompeii::onBagClickedObject(ObjectId objectId) {
-	error("[ZoneSystemPompeii::onBagClickedObject] Not implemented");
+	switch (objectId) {
+	default:
+		break;
+
+	case kObjectItemList:
+	case kObjectItemListCompleted:
+		_app->cursorDelete();
+		_app->objectPresentationHide(kObjectItemList);
+		_app->objectPresentationShow(kObjectItemList, 0);
+		_app->objectSetAccessibilityOn(kObjectItemList);
+
+		for (uint32 i = 1; i < 10; i++) {
+			if (_app->varGetByte(91200 + i) > 0)
+				_app->objectPresentationShow(kObjectItemList, i);
+		}
+		break;
+
+	case kObjectAmulet:
+		_app->cursorDelete();
+
+		if (_app->soundIsPlayingType(kSoundTypeDialog))
+			_app->onCall(777);
+		break;
+	}
 }
 
 void ZoneSystemPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {

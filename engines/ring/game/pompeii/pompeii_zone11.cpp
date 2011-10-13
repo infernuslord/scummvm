@@ -199,7 +199,27 @@ void Zone11Pompeii::onTimer(TimerId id) {
 }
 
 void Zone11Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone11Pompeii::onAnimationNextFrame] Not implemented");
+	switch (animationId) {
+	default:
+		break;
+
+	case 100001:
+	case 100002:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject11001, 8);
+			_app->objectPresentationPauseAnimation(kObject11001, 9);
+			_app->objectPresentationPauseAnimation(kObject11001, 10);
+			_app->timerStart(kTimer0, rnd(3000) + 3000);
+		}
+		break;
+
+	case 100003:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject11001, 11);
+			_app->timerStart(kTimer1, rnd(3000) + 3000);
+		}
+		break;
+	}
 }
 
 void Zone11Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
@@ -214,7 +234,23 @@ void Zone11Pompeii::onUpdateBag(const Common::Point &point) {
 }
 
 void Zone11Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone11Pompeii::onUpdateBefore] Not implemented");
+	Common::Point mouse = g_system->getEventManager()->getMousePos() - Common::Point(20, 16);
+
+	if (movabilityFrom == 11002
+	 && movabilityTo   == 2
+	 && !_hideBox
+	 && !_app->bagHasClickedObject()) {
+		_app->visualBoxSetParameters(6, kPuzzleMenu, 4053, mouse);
+		_hideBox = true;
+	}
+
+	if (movabilityFrom == 11006
+	 && (movabilityTo == 2 || movabilityTo == 3)
+	 && !_hideBox
+	 && !_app->bagHasClickedObject()) {
+		_app->visualBoxSetParameters(6, kPuzzleMenu, 4061, mouse);
+		_hideBox = true;
+	}
 }
 
 void Zone11Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
@@ -225,11 +261,47 @@ void Zone11Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 mov
 }
 
 void Zone11Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
-	error("[Zone11Pompeii::onAfterRide] Not implemented");
+	if (movabilityType == kMovabilityRotationToRotation
+	 && movabilityFrom == 11022
+	 && movabilityTo == 11024
+	 && _app->varGetByte(90408) == 1) {
+		if (_app->varGetByte(90407) == 2) {
+			_app->varSetByte(90407, 3);
+			_app->objectSetAccessibilityOn(kObject11006, 1, 1);
+		} else if (_app->varGetByte(90407) < 2) {
+			_app->objectSetAccessibilityOn(kObject11006, 0, 0);
+		}
+	}
 }
 
 void Zone11Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
-	error("[Zone11Pompeii::onVisualList] Not implemented");
+	switch (point.x) {
+	default:
+		break;
+
+	case 4053:
+		_app->objectSetAccessibilityOff(kObject11002);
+		break;
+
+	case 4054:
+	case 4055:
+	case 4056:
+	case 4057:
+	case 4058:
+	case 4059:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle110111);
+		break;
+
+	case 4062:
+	case 4063:
+	case 4064:
+	case 4065:
+	case 4066:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle110221);
+		break;
+	}
 }
 
 } // End of namespace Ring
