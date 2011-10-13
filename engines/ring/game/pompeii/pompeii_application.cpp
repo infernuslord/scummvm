@@ -763,10 +763,6 @@ void ApplicationPompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32
 		_zone2->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
 		break;
 
-	case kZone4:
-		_zone4->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
-		break;
-
 	case kZone10:
 		_zone10->onBeforeRide(movabilityFrom, movabilityTo, movabilityIndex, target, movabilityType);
 		break;

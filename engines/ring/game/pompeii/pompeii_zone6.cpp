@@ -34,6 +34,8 @@ namespace Ring {
 
 Zone6Pompeii::Zone6Pompeii(ApplicationPompeii *application) : _app(application) {
 	_hideBox = false;
+	_frame1  = 0;
+	_frame2  = 0;
 }
 
 Zone6Pompeii::~Zone6Pompeii() {
@@ -532,7 +534,60 @@ void Zone6Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 }
 
 void Zone6Pompeii::onTimer(TimerId id) {
-	error("[Zone6Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case 0:
+		_app->timerStop(kTimer0);
+		_app->varSetByte(50609, 1);
+		_app->objectPresentationUnpauseAnimation(kObjectCubes, 2);
+		_app->objectPresentationUnpauseAnimation(kObjectCubes, 3);
+		_app->objectPresentationHide(kObjectCubes, 2);
+		_app->objectPresentationHide(kObjectCubes, 3);
+
+		handleEvents();
+
+		_app->varSetByte(50607, 0);
+		_app->varSetByte(50608, 0);
+		_app->varSetByte(50603, 0);
+		_app->varSetByte(50604, 0);
+		_app->varSetWord(50603, 0);
+		_app->varSetWord(50604, 0);
+		_app->varSetWord(50607, 0);
+		_app->varSetWord(50608, 0);
+		_app->varSetWord(50611, 0);
+		_app->varSetWord(50612, 0);
+		_frame1 = rnd(6) + 1;
+		_frame2 = rnd(6) + 1;
+		_app->objectPresentationShow(kObjectCubes, 2);
+		_app->soundPlay(50527);
+		break;
+
+	case 1:
+		_app->timerStop(kTimer1);
+		_app->soundPlay(2071);
+		break;
+
+	case 2:
+		_app->timerStop(kTimer2);
+		_app->objectPresentationUnpauseAnimation(kObject50501, 0);
+		_app->objectPresentationUnpauseAnimation(kObject50501, 10);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 0);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 2);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 9);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 10);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 11);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 14);
+		break;
+
+	case 3:
+		_app->timerStop(kTimer3);
+		_app->objectPresentationUnpauseAnimation(kObject50501, 11);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 15);
+		_app->objectPresentationUnpauseAnimation(kObject50502, 16);
+		break;
+	}
 }
 
 void Zone6Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {

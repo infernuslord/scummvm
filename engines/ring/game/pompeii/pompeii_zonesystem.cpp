@@ -364,11 +364,11 @@ void ZoneSystemPompeii::onInit() {
 		_app->setArchiveType(kArchiveArt);
 
 	_app->visualListAddToPuzzle(1, kPuzzleSave, 129,
-	                            "", "", "", "", "ar_uph.tga", "", "ar_upn.tga", "", "ar_dnh.tga", "", "ar_dnn.tga", "", "",
-	                            kDrawType3, Common::Point(0, 0), Common::Point(0, 0), 30, 75, 235, 20, 25, 0,
-	                            Common::Point(280, 80), 270, 70, 40, 40, Common::Point(280, 400), 270, 390, 40, 40,
-	                            Common::Point(0, 0), kImageTypeBMP, kDrawType1, 170, 300, 14, Color(248, 250, 36),
-	                            Color(255, 255, 255), Color(-1, -1, -1), kFontDefault, _app->getConfiguration().artSY ? kArchiveArt : kArchiveFile);
+								"", "", "", "", "ar_uph.tga", "", "ar_upn.tga", "", "ar_dnh.tga", "", "ar_dnn.tga", "", "",
+								kDrawType3, Common::Point(0, 0), Common::Point(0, 0), 30, 75, 235, 20, 25, 0,
+								Common::Point(280, 80), 270, 70, 40, 40, Common::Point(280, 400), 270, 390, 40, 40,
+								Common::Point(0, 0), kImageTypeBMP, kDrawType1, 170, 300, 14, Color(248, 250, 36),
+								Color(255, 255, 255), Color(-1, -1, -1), kFontDefault, _app->getConfiguration().artSY ? kArchiveArt : kArchiveFile);
 
 	_app->visualListSetOff(1, kPuzzleSave);
 
@@ -526,7 +526,30 @@ void ZoneSystemPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, 
 }
 
 void ZoneSystemPompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[ZoneSystemPompeii::onSound] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case 99007:
+		_app->playMovie("CONCL_-2");
+		_app->puzzleSetActive(kPuzzle99002);
+		_app->soundPlay(99008);
+		break;
+
+	case 99008:
+		_app->playMovie("CONCL_-3");
+		_app->puzzleSetActive(kPuzzle99003);
+		_app->soundPlay(99009);
+		break;
+
+	case 99009:
+		_app->soundStop(90802, 1024);
+		_app->playMovie("CONCL_-4");
+		_app->playMovie("CONCL_-5");
+		_app->showCredits();
+		_app->exitToMenu(kMenuAction13);
+		break;
+	}
 }
 
 void ZoneSystemPompeii::onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte type) {

@@ -51,6 +51,8 @@ private:
 	ApplicationPompeii *_app;
 
 	bool _hideBox;
+	uint32 _frame1;
+	uint32 _frame2;
 };
 
 } // End of namespace Ring

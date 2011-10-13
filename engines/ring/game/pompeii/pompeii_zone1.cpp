@@ -1920,7 +1920,210 @@ void Zone1Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 }
 
 void Zone1Pompeii::onTimer(TimerId id) {
-	error("[Zone1Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kTimer0:
+		_app->timerStop(kTimer0);
+		_app->soundPlay(1027);
+		_app->timerStart(kTimer1, 40000);
+		break;
+
+	case kTimer1:
+		_app->timerStop(kTimer1);
+		_app->soundPlay(1028);
+		_app->timerStart(kTimer2, 700000);
+		break;
+
+	case kTimer2:
+		_app->timerStop(kTimer2);
+		_app->objectSetAccessibilityOff(kObjectRope, 0, 0);
+		_app->objectSetAccessibilityOff(kObject1006);
+		_app->soundPlay(1029);
+		break;
+
+	case kTimer3:
+		_app->timerStop(kTimer3);
+		if (!_app->varGetByte(1029)) {
+			_app->playMovie("S00A0-17");
+			_app->exitToMenu(kMenuAction4);
+		}
+		break;
+
+	case kTimer4:
+		_app->timerStop(kTimer4);
+		_app->playMovie("S00A05-9");
+		_app->exitToMenu(kMenuAction8);
+		break;
+
+	case kTimer5:
+		_app->timerStop(kTimer5);
+		_app->playMovie("S00A05-1");
+		_app->exitToMenu(kMenuAction8);
+		break;
+
+	case kTimer6:
+		_app->timerStop(kTimer6);
+		_app->playMovie("S00A01-3");
+		_app->exitToMenu(kMenuAction9);
+		break;
+
+	case kTimer7:
+		_app->timerStop(kTimer7);
+		switch (_app->varGetByte(1097)) {
+		default:
+			break;
+
+		case 1:
+			_app->rotationSet3DSoundOff(10011002, 1191);
+			break;
+
+		case 2:
+			_app->rotationSet3DSoundOff(1001902, 1191);
+			break;
+
+		case 3:
+			_app->rotationSet3DSoundOff(1001702, 1191);
+			break;
+
+		case 4:
+			_app->rotationSet3DSoundOff(1001602, 1191);
+			break;
+
+		case 5:
+			_app->rotationSet3DSoundOff(1001502, 1191);
+			break;
+
+		case 6:
+			_app->rotationSet3DSoundOff(1001402, 1191);
+			break;
+
+		case 7:
+			_app->rotationSet3DSoundOff(10011402, 1191);
+			break;
+
+		case 8:
+			_app->rotationSet3DSoundOff(1001202, 1191);
+			break;
+
+		case 9:
+			_app->rotationSet3DSoundOff(1001102, 1191);
+			_app->onCall(419);
+			break;
+		}
+		break;
+
+	case kTimer8:
+		_app->timerStop(kTimer8);
+		_app->rotationSet3DSoundOn(1001102, 1191);
+		_app->timerStart(kTimer7, 3000);
+		_app->varSetByte(1097, 9);
+		break;
+
+	case kTimer9:
+		_app->timerStop(kTimer9);
+		if (_app->varGetByte(90416) == 1 && _app->getCurrentRotationId() == 10011002) {
+			_app->varSetByte(90416, 2);
+			_app->timerStart(kTimer6, 2000);
+			_app->soundPlay(1190);
+		}
+		break;
+
+	case kTimer10:
+		_app->timerStop(kTimer10);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 3);
+		_app->objectPresentationUnpauseAnimation(kObject1006, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10071, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10071, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1009, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1009, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1011, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1011, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1013, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1013, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1016, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1017, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1017, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1019, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1019, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1020, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1020, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1021, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1021, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1023, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1023, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1039, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1039, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1040, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1035, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1041, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1045, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1028, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1028, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1031, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1031, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1033, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1033, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1046, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1046, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1050, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1051, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1053, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1054, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1055, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1049, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1057, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1057, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1059, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1059, 1);
+		_app->objectPresentationUnpauseAnimation(kObject10591, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10591, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1062, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1062, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1064, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1066, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1067, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1068, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1068, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1077, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1077, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1079, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1081, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1081, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1084, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1085, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1093, 0);
+		break;
+
+	case kTimer11:
+		_app->timerStop(kTimer11);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 4);
+		_app->objectPresentationUnpauseAnimation(kObject10071, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1010, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1011, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1013, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1016, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1019, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1053, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1054, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1057, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1059, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 3);
+		_app->objectPresentationUnpauseAnimation(kObject1064, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1066, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1068, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1077, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1078, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1093, 1);
+		break;
+	}
 }
 
 void Zone1Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {

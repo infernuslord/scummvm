@@ -214,7 +214,21 @@ void Zone12Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint
 }
 
 void Zone12Pompeii::onTimer(TimerId id) {
-	error("[Zone12Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kTimer0:
+		_app->timerStop(kTimer0);
+		_app->objectPresentationUnpauseAnimation(kObject11101, 6);
+		_app->objectPresentationUnpauseAnimation(kObject111001, 0);
+		break;
+
+	case kTimer1:
+		_app->timerStop(kTimer1);
+		_app->objectPresentationUnpauseAnimation(kObject11101, 7);
+		break;
+	}
 }
 
 void Zone12Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {

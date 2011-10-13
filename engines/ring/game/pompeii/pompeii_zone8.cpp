@@ -163,7 +163,31 @@ void Zone8Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 }
 
 void Zone8Pompeii::onTimer(TimerId id) {
-	error("[Zone8Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kTimer0:
+		_app->timerStop(kTimer0);
+		_app->playMovie("S07A01-2");
+		_app->puzzleSetActive(kPuzzle70211);
+		_app->soundPlay(2061);
+		break;
+
+	case kTimer1:
+		_app->timerStop(kTimer1);
+		_app->playMovie("S07A01-2");
+		_app->puzzleSetActive(kPuzzle70211);
+		_app->soundPlay(4091);
+		break;
+
+	case kTimer2:
+		_app->timerStop(kTimer2);
+		_app->objectPresentationUnpauseAnimation(kObject10701, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10701, 7);
+		_app->objectPresentationUnpauseAnimation(kObject10701, 8);
+		break;
+	}
 }
 
 void Zone8Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {

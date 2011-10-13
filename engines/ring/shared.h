@@ -268,7 +268,10 @@ enum MenuAction {
 	kMenuAction3  = 3,
 	kMenuAction4  = 4,
 	kMenuAction7  = 7,
-	kMenuAction10 = 10
+	kMenuAction8  = 8,
+	kMenuAction9  = 9,
+	kMenuAction10 = 10,
+	kMenuAction13 = 13
 };
 
 enum ProgressState {

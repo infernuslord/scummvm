@@ -192,7 +192,27 @@ void Zone4Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 }
 
 void Zone4Pompeii::onTimer(TimerId id) {
-	error("[Zone4Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kTimer0:
+		_app->timerStop(kTimer0);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 1);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 2);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 3);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 4);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 6);
+		break;
+
+	case kTimer1:
+		_app->timerStop(kTimer1);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 5);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 7);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 8);
+		_app->objectPresentationUnpauseAnimation(kObject30301, 9);
+		break;
+	}
 }
 
 void Zone4Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
@@ -219,10 +239,6 @@ void Zone4Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 mova
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
-}
-
-void Zone4Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
-	error("[Zone4Pompeii::onBeforeRide] Not implemented");
 }
 
 void Zone4Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
