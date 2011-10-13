@@ -118,19 +118,203 @@ void Zone9Pompeii::onInit() {
 }
 
 void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone9Pompeii::onButtonUp()] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kObject10801:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (_app->varGetByte(90305) == 2) {
+				_app->varSetByte(90305, 3);
+				_app->onCall(307);
+			}
+
+			_app->objectPresentationPauseAnimation(kObject10801, 0);
+			_app->objectPresentationPauseAnimation(kObject10801, 3);
+			_app->timerStopAll();
+			_app->onCall(10800);
+		}
+		break;
+
+	case kObjectJavelin:
+	case kObjectJavelinWithRose:
+		if (_app->bagHasClickedObject()) {
+			switch (target) {
+			default:
+				break;
+
+			case 0:
+				if (_app->bagGetClickedObject() == kObjectRose || _app->bagGetClickedObject() == kObjectRoses) {
+					_app->soundPlay(80003);
+					_app->objectPresentationHide(kObject10801, 1);
+					_app->objectPresentationHide(kObject10801, 0);
+					_app->objectPresentationHide(kObject10801, 3);
+					_app->objectPresentationShow(kObject10801, 2);
+					_app->objectPresentationShow(kObject10801, 0);
+					_app->objectPresentationShow(kObject10801, 3);
+					_app->objectSetAccessibilityOff(kObjectJavelin, 0, 0);
+					_app->objectSetAccessibilityOn(80802, 0, 0);
+				}
+
+				_app->setField74(0);
+				_app->cursorDelete();
+				break;
+
+			case 2:
+				if (_app->bagGetClickedObject() == kObjectJavelin) {
+					_app->bagRemove(kObjectJavelin);
+					_app->playMovie("S08A01-7");
+					_app->playMovie("S08A01-6");
+					_app->objectSetAccessibilityOff(kObjectJavelin);
+					_app->objectSetAccessibilityOn(kObjectJavelin, 0, 0);
+					_app->objectPresentationHide(kObject10801, 0);
+					_app->objectPresentationHide(kObject10801, 3);
+					_app->objectPresentationHide(kObject10801, 1);
+					_app->objectPresentationShow(kObject10801, 0);
+					_app->objectPresentationShow(kObject10801, 3);
+					_app->objectPresentationShow(kObject10801, 1);
+				} else if (_app->bagGetClickedObject() == 80802) {
+					_app->bagRemove(kObjectJavelinWithRose);
+					_app->playMovie("S08A01-5");
+					_app->playMovie("S08A01-2");
+					_app->objectSetAccessibilityOff(kObjectJavelin);
+					_app->objectSetAccessibilityOn(kObjectJavelin, 0, 0);
+					_app->objectPresentationHide(kObject10801, 0);
+					_app->objectPresentationHide(kObject10801, 3);
+					_app->objectPresentationShow(kObject10801, 1);
+					_app->objectPresentationShow(kObject10801, 0);
+					_app->objectPresentationShow(kObject10801, 3);
+				}
+
+				_app->setField74(0);
+				_app->cursorDelete();
+				break;
+
+			case 3:
+				if (_app->bagGetClickedObject() == kObjectJavelin) {
+					_app->bagRemove(kObjectJavelin);
+					_app->playMovie("S08A01-7");
+					_app->soundPlay(3019);
+					_app->playMovie("S08A01-1");
+				} else if (_app->bagGetClickedObject() != kObjectJavelinWithRose) {
+					_app->bagRemove(kObjectJavelinWithRose);
+					_app->playMovie("S08A01-5");
+					_app->soundPlay(3019);
+					_app->playMovie("S08A01-4");
+				} else {
+					_app->setField74(0);
+					_app->cursorDelete();
+					break;
+				}
+
+				_app->exitToMenu(kMenuAction10);
+				break;
+
+			case 4:
+				if (_app->bagGetClickedObject() == kObjectJavelin) {
+					_app->bagRemove(kObjectJavelin);
+					_app->playMovie("S08A01-7");
+					_app->playMovie("S08A01-3");
+					_app->varSetByte(90305, 2);
+					_app->varSetByte(90007, 1);
+					_app->objectSetAccessibilityOff(kObjectJavelin);
+				} else if (_app->bagGetClickedObject() == kObjectJavelinWithRose) {
+					_app->bagRemove(kObjectJavelinWithRose);
+					_app->playMovie("S08A01-5");
+					_app->playMovie("S08A01-8");
+					_app->varSetByte(90305, 2);
+					_app->varSetByte(90007, 2);
+					_app->objectSetAccessibilityOff(kObjectJavelin);
+					_app->objectSetAccessibilityOff(kObjectJavelinWithRose);
+					_app->bagRemove(kObjectRose);
+				}
+
+				_app->setField74(0);
+				_app->cursorDelete();
+				break;
+			}
+		} else {
+			switch (target) {
+			default:
+				_app->setField74(0);
+				break;
+
+			case 0:
+				_app->objectSetAccessibilityOff(kObjectJavelin, 0, 0);
+				_app->objectSetAccessibilityOn(kObjectJavelin, 1, 3);
+				_app->bagAdd(kObjectJavelin);
+				_app->objectPresentationHide(kObject10801, 1);
+				_app->objectPresentationHide(kObject10801, 0);
+				_app->objectPresentationHide(kObject10801, 3);
+				_app->objectPresentationShow(kObject10801, 0);
+				_app->objectPresentationShow(kObject10801, 3);
+				break;
+
+			case 1:
+				_app->objectSetAccessibilityOff(kObjectJavelinWithRose, 0, 0);
+				_app->objectSetAccessibilityOn(kObjectJavelin, 1, 3);
+				_app->bagAdd(kObjectJavelinWithRose);
+				_app->objectPresentationHide(kObject10801, 2);
+				_app->objectPresentationHide(kObject10801, 0);
+				_app->objectPresentationHide(kObject10801, 3);
+				_app->objectPresentationShow(kObject10801, 0);
+				_app->objectPresentationShow(kObject10801, 3);
+				break;
+			}
+		}
+		break;
+	}
 }
 
 void Zone9Pompeii::onTimer(TimerId id) {
-	error("[Zone9Pompeii::onTimer] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case kTimer0:
+		_app->timerStop(kTimer0);
+		_app->objectPresentationUnpauseAnimation(kObject10801, 0);
+		break;
+
+	case kTimer1:
+		_app->timerStop(kTimer1);
+		_app->objectPresentationUnpauseAnimation(kObject10801, 3);
+		break;
+	}
 }
 
 void Zone9Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone9Pompeii::onAnimationNextFrame] Not implemented");
+	switch (animationId) {
+	default:
+		break;
+
+	case 80001:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject10801, 0);
+			_app->timerStart(kTimer0, 1000 * (rnd(5) + 2));
+		}
+		break;
+
+	case 80002:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject10801, 3);
+			_app->timerStart(kTimer1, 1000 * (rnd(5) + 2));
+		}
+		break;
+	}
 }
 
 void Zone9Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone9Pompeii::onUpdateBefore] Not implemented");
+	if (movabilityFrom == 80801
+	 && _app->bagHasClickedObject()
+	 && (_app->bagGetClickedObject() == kObjectJavelinWithRose || _app->bagGetClickedObject() == kObjectJavelin)
+	 && movabilityTo == 4
+	 && !_app->varGetByte(90305)) {
+		_app->varSetByte(90305, 1);
+		_app->soundPlay(3017);
+	}
 }
 
 } // End of namespace Ring
