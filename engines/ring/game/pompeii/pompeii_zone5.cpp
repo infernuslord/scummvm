@@ -177,7 +177,7 @@ void Zone5Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		break;
 
 	case kObject40412:
-		if (_app->bagGetClickedObject()) {
+		if (_app->bagHasClickedObject()) {
 			_app->cursorDelete();
 		} else {
 			_app->varSetByte(90112, 1);
@@ -188,7 +188,7 @@ void Zone5Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		break;
 
 	case kObject10405:
-		if (_app->bagGetClickedObject()) {
+		if (_app->bagHasClickedObject()) {
 			_app->cursorDelete();
 		} else {
 			_app->objectPresentationPauseAnimation(kObject10405, 4);
@@ -200,7 +200,7 @@ void Zone5Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 		break;
 
 	case kObject40411:
-		if (_app->bagGetClickedObject()) {
+		if (_app->bagHasClickedObject()) {
 			_app->cursorDelete();
 		} else {
 			_app->varSetByte(90112, 2);

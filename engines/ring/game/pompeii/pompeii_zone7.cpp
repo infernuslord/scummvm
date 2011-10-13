@@ -213,19 +213,156 @@ void Zone7Pompeii::onInit() {
 }
 
 void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone7Pompeii::onButtonUp()] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case 10601:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (_app->varGetByte(91207) + _app->varGetByte(91206) == 2)
+				_app->varSetByte(90209, 2);
+
+			_app->objectPresentationPauseAnimation(kObject10601, 0);
+			_app->timerStopAll();
+			_app->onCall(10600);
+		}
+		break;
+
+	case 60611:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (!target) {
+				_app->varSetByte(90209, 1);
+				_app->objectSetAccessibilityOff(kObject60611);
+				_app->puzzleSetActive(kPuzzle60011, 1, 1);
+				_app->soundPlay(2029);
+			}
+		}
+		break;
+
+	case 60612:
+		if (_app->bagHasClickedObject()) {
+			if (_app->bagGetClickedObject() == kObjectGlassTube || _app->bagGetClickedObject() == kObjectGlassTube2) {
+				if (target == 1) {
+					_app->soundPlay(60002);
+					_app->bagRemove(kObjectGlassTube);
+					_app->bagAdd(kObjectDropOfWater);
+				}
+			}
+
+			_app->cursorDelete();
+		} else if (!target) {
+			_app->puzzleSetActive(kPuzzle60022);
+		}
+		break;
+
+	case 90004:
+		_app->restore();
+		break;
+
+	case 90601:
+		if (_app->bagHasClickedObject() && _app->bagGetClickedObject() == kObjectDropOfWater) {
+			_app->soundPlay(60002);
+			_app->objectSetAccessibilityOff(kObjectGlassTube);
+			_app->objectPresentationShow(kObjectApolloTear, 0);
+			_app->bagRemove(kObjectDropOfWater);
+			_app->bagAdd(kObjectGlassTube);
+		} else {
+			_app->setField74(0);
+		}
+		break;
+
+	case 91206:
+		if (_app->bagHasClickedObject()) {
+			if ((_app->bagGetClickedObject() == kObjectGlassTube || _app->bagGetClickedObject() == kObjectGlassTube2) && target == 1) {
+				_app->soundPlay(60001);
+				_app->objectSetAccessibilityOff(kObjectDropOfBlood);
+				_app->bagRemove(kObjectGlassTube2);
+				_app->bagAdd(kObjectDropOfBlood);
+			}
+
+			_app->cursorDelete();
+		} else if (!target) {
+			_app->puzzleSetActive(kPuzzle60021);
+		}
+		break;
+
+	case 91207:
+		if (_app->bagHasClickedObject())
+		{
+			if ((_app->bagGetClickedObject() == kObjectGlassTube || _app->bagGetClickedObject() == kObjectGlassTube2) && target >= 2) {
+				_app->soundPlay(60002);
+				_app->objectSetAccessibilityOff(kObjectDropOfWater);
+				_app->objectSetAccessibilityOff(kObjectApolloTear, 1, 100);
+				_app->bagRemove(kObjectGlassTube);
+				_app->bagAdd(kObjectApolloTear);
+				_app->objectPresentationHide(kObjectApolloTear);
+			}
+
+			_app->cursorDelete();
+		}
+		else if (!target) {
+			_app->puzzleSetActive(kPuzzle60023);
+		}
+		break;
+	}
 }
 
 void Zone7Pompeii::onTimer(TimerId id) {
-	error("[Zone7Pompeii::onTimer] Not implemented");
+	if (id == kTimer0) {
+		_app->timerStop(kTimer0);
+		_app->objectPresentationUnpauseAnimation(kObject10601, 0);
+	}
 }
 
 void Zone7Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone7Pompeii::onAnimationNextFrame] Not implemented");
+	switch (animationId) {
+	default:
+		break;
+
+	case 60000:
+		_app->objectSetAccessibilityOff(kObjectApolloTear, 1, 100);
+		_app->objectSetAccessibilityOn(kObjectApolloTear, frame, frame);
+
+		if (frame == frameCount) {
+			_app->objectSetAccessibilityOff(kObjectApolloTear);
+			_app->objectSetAccessibilityOn(kObjectApolloTear, 0, 0);
+			_app->objectSetAccessibilityOn(kObjectApolloTear);
+			_app->cursorDelete();
+		}
+		break;
+
+	case 60001:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject10601, 0);
+			_app->timerStart(kTimer0, rnd(4000) + 2000);
+		}
+		break;
+	}
 }
 
 void Zone7Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone7Pompeii::onSound] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case 2029:
+		_app->rotationSetAlp(10612, 190.0f);
+		_app->rotationSetActive(10612);
+
+		_app->objectSetAccessibilityOn(kObject60611, 1, 1);
+		_hideBox = false;
+		break;
+
+	case 2030:
+	case 2031:
+		_app->rotationSetAlp(10612, 190.0f);
+		_app->rotationSetActive(10612);
+		break;
+	}
 }
 
 void Zone7Pompeii::onUpdateBag(const Common::Point &point) {
@@ -236,7 +373,14 @@ void Zone7Pompeii::onUpdateBag(const Common::Point &point) {
 }
 
 void Zone7Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone7Pompeii::onUpdateBefore] Not implemented");
+	if (movabilityFrom == 60611
+	 && movabilityTo == 1
+	 && !_hideBox
+	 && !_app->bagHasClickedObject()) {
+		_app->visualBoxSetParameters(6, kPuzzleMenu, 2029, g_system->getEventManager()->getMousePos() - Common::Point(20, 16));
+
+		_hideBox = true;
+	}
 }
 
 void Zone7Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
@@ -247,7 +391,25 @@ void Zone7Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 mova
 }
 
 void Zone7Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
-	error("[Zone7Pompeii::onVisualList] Not implemented");
+	switch (point.x) {
+	default:
+		break;
+
+	case 2029:
+		_app->objectSetAccessibilityOff(kObject60611);
+		_app->objectSetAccessibilityOn(kObjectDropOfWater);
+		_app->objectSetAccessibilityOn(kObjectDropOfBlood);
+		_app->objectSetAccessibilityOn(kObjectGlassTube);
+		break;
+
+	case 2030:
+	case 2031:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_hideBox = false;
+
+		_app->puzzleSetActive(kPuzzle60011);
+		break;
+	}
 }
 
 } // End of namespace Ring
