@@ -23,6 +23,7 @@
 #define RING_SHARED_H
 
 #include "common/array.h"
+#include "common/events.h"
 #include "common/serializer.h"
 #include "common/system.h"
 #include "common/textconsole.h"
@@ -39,6 +40,12 @@ namespace Ring {
 #ifndef RING_DEBUG_DRAWING
 #define RING_DEBUG_DRAWING  0	// Refresh screen after each drawing operation
 #endif
+
+//////////////////////////////////////////////////////////////////////////
+// Custom messages
+//////////////////////////////////////////////////////////////////////////
+
+#define MESSAGE_TIMER (Common::CustomEventMessage)(Common::MESSAGE_USER + 1)
 
 //////////////////////////////////////////////////////////////////////////
 // Enumerations
@@ -281,6 +288,8 @@ enum ProgressState {
 // Structures and types
 //////////////////////////////////////////////////////////////////////////
 
+#pragma region Ids
+
 enum PuzzleIdEnum {
 	kPuzzleInvalid          = 0,
 	kPuzzleMenu             = 1,
@@ -348,6 +357,10 @@ public:
 		return _id == i;
 	}
 };
+
+#pragma endregion
+
+#pragma region Color and Sound
 
 struct Color {
 	int32 red;
@@ -423,9 +436,10 @@ struct Configuration {
 	}
 };
 
-//////////////////////////////////////////////////////////////////////////
-// Classes
-//////////////////////////////////////////////////////////////////////////
+#pragma endregion
+
+#pragma region Classes
+
 class BaseObject {
 public:
 	BaseObject(Id id) : _id(id) {}
@@ -487,6 +501,8 @@ public:
 		}
 	}
 };
+
+#pragma endregion
 
 } // End of namespace Ring
 

@@ -60,7 +60,13 @@ void Timer::handler(void *refCon) {
 }
 
 void Timer::handle() {
-	error("[Timer::handle] Not implemented (id: %d)", _id);
+	// Setup our timer message and inject into the queue
+	Common::Event evt;
+	evt.type = Common::EVENT_CUSTOM;
+	evt.custom.message = MESSAGE_TIMER;
+	evt.custom.param1  = _id;
+
+	g_system->getEventManager()->pushEvent(evt);
 }
 
 #pragma endregion

@@ -171,6 +171,11 @@ Common::Error RingEngine::run() {
 		while (_eventMan->pollEvent(ev)) {
 			switch (ev.type) {
 
+			case Common::EVENT_CUSTOM:
+				if (ev.custom.message == MESSAGE_TIMER)
+					_application->onTimer((TimerId)ev.custom.param1);
+				break;
+
 			case Common::EVENT_KEYDOWN:
 				// CTRL-D: Attach the debugger
 				if ((ev.kbd.flags & Common::KBD_CTRL) && ev.kbd.keycode == Common::KEYCODE_d)
