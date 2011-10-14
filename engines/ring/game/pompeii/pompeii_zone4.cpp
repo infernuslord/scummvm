@@ -187,8 +187,93 @@ void Zone4Pompeii::onSetup(SetupType type) {
 	}
 }
 
-void Zone4Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone4Pompeii::onButtonUp()] Not implemented");
+void Zone4Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
+	switch (id) {
+	default:
+		break;
+
+	case kObject30301:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectPresentationPauseAnimation(kObject30301, 5);
+			_app->objectPresentationPauseAnimation(kObject30301, 7);
+			_app->objectPresentationPauseAnimation(kObject30301, 8);
+			_app->objectPresentationPauseAnimation(kObject30301, 9);
+			_app->objectPresentationPauseAnimation(kObject30301, 1);
+			_app->objectPresentationPauseAnimation(kObject30301, 2);
+			_app->objectPresentationPauseAnimation(kObject30301, 3);
+			_app->objectPresentationPauseAnimation(kObject30301, 4);
+			_app->objectPresentationPauseAnimation(kObject30301, 6);
+			_app->timerStopAll();
+			_app->onCall(10300);
+		}
+		break;
+
+	case kObject30311:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			switch (target) {
+			default:
+				break;
+
+			case 0:
+				if (!_app->varGetByte(90107)) {
+					_app->varSetByte(90107, 1);
+					_app->puzzleSetActive(kPuzzle30313);
+					_app->objectSetAccessibilityOff(kObject30311);
+					_app->soundPlay(1044);
+				}
+				break;
+
+			case 1:
+				_app->puzzleSetActive(kPuzzle30311);
+				if (!_app->varGetByte(90109)) {
+					_app->varSetByte(90109, 1);
+					_app->varSetByte(30002, 1);
+					_app->soundPlay(1049);
+					_app->objectSetAccessibilityOff(kObject30311);
+					_app->objectSetAccessibilityOn(kObject30314);
+				}
+				break;
+			}
+		}
+		break;
+
+	case kObject30312:
+	case kObject30315:
+		if (_app->bagHasClickedObject())
+			_app->cursorDelete();
+		break;
+
+	case kObject30313:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (!target) {
+				_app->soundPlay(1045);
+				_app->objectSetAccessibilityOff(kObject30313);
+			}
+		}
+		break;
+
+	case kObject30314:
+		if (_app->bagHasClickedObject()) {
+
+			if (_app->bagGetClickedObject() == kObjectKnife) {
+				_app->objectSetAccessibilityOff(kObject30314);
+				_app->soundPlay(1050);
+				_app->objectSetAccessibilityOff(kObject30301);
+			}
+
+			_app->cursorDelete();
+		}
+		break;
+
+	case kObject90004:
+		_app->restore();
+	}
 }
 
 void Zone4Pompeii::onTimer(TimerId id) {
@@ -245,8 +330,76 @@ void Zone4Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*
 	}
 }
 
-void Zone4Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone4Pompeii::onSound] Not implemented");
+void Zone4Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
+	switch (id) {
+	default:
+		break;
+
+	case 1044:
+		_app->rotationSetActive(10301);
+		_app->objectSetAccessibilityOn(kObject30313, 0, 0);
+		_app->objectSetAccessibilityOn(kObject30311, 3, 4);
+		break;
+
+	case 1049:
+		_app->rotationSetActive(10301);
+		_app->objectSetAccessibilityOn(kObject30314);
+		break;
+
+	case 1050:
+		_app->playMovie("S03A01-1");
+		_app->puzzleSetActive(kPuzzle30313);
+		_app->soundPlay(10511);
+		break;
+
+	case 1052:
+	case 1053:
+	case 1055:
+	case 1056:
+	case 1057:
+	case 1058:
+	case 1059:
+	case 1060:
+	case 1061:
+	case 1062:
+		_hideBox = false;
+		_app->rotationSetAlp(10301, 270.0f);
+		_app->rotationSetBet(10301, 14.0f);
+		_app->rotationSetActive(10301);
+		break;
+
+	case 10512:
+		_app->playMovie("S03A01-4");
+		_app->puzzleSetActive(kPuzzle30314);
+		_app->soundPlay(10513);
+		break;
+
+	case 1063:
+		_app->objectPresentationHide(kObject30301);
+		_app->playMovie("S03A01-2");
+		_app->rotationSetActive(10301);
+		_app->objectSetAccessibilityOn(kObject30301);
+		_app->onCall(1091);
+		break;
+
+	case 10511:
+		_app->rotationSetActive(10301);
+		_app->objectSetAccessibilityOff(kObject30313);
+		_app->onCall(109);
+		_app->playMovie("S03A01-3");
+		_app->puzzleSetActive(kPuzzle30321);
+		_app->soundPlay(10512);
+		break;
+
+	case 10513:
+		_app->rotationSetAlp(10301, 270.0f);
+		_app->rotationSetBet(10301, 14.0f);
+		_app->rotationSetActive(10301);
+		_app->objectSetAccessibilityOn(kObject30315);
+		_app->varSetByte(30003, 1);
+		_hideBox = false;
+		break;
+	}
 }
 
 void Zone4Pompeii::onUpdateBag(const Common::Point &/*point*/) {
@@ -292,11 +445,11 @@ void Zone4Pompeii::onVisual(int x) {
 	case 1061:
 	case 1062:
 		_app->visualBoxHide(6, kPuzzleMenu);
-		_app->puzzleSetActive(kPuzzle30314, 1, 1);
+		_app->puzzleSetActive(kPuzzle30314);
 		break;
 
 	case 101051:
-		_app->puzzleSetActive(kPuzzle30317, 1, 1);
+		_app->puzzleSetActive(kPuzzle30317);
 		_app->soundPlay(1063);
 		_app->objectSetAccessibilityOff(kObject30315);
 		_app->varSetByte(90107, 3);
