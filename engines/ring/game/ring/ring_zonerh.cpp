@@ -798,7 +798,7 @@ void ZoneRHRing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			_app->rotationSetRolTo(20302, 320.0f, 26.0f, 85.7f);
 			_app->varSetFloat(90005, _app->varGetFloat(90005) + 2.0f);
 			_app->objectSetAccessibilityOff(kObject20302, 1, 2);
-			_app->playMovie("1683", 0.0);
+			_app->playMovie("1683");
 			_app->puzzleSetActive(kPuzzle20302);
 			_app->soundPlay(20302);
 			break;

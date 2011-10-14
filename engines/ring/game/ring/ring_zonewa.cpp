@@ -1128,8 +1128,8 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 
 	case kObjectCounch1:
 		if (_app->bagHasClickedObject()) {
-			if (_app->bagGetClickedObject() != 50000 || _app->varGetByte(50005)) {
-				if (_app->bagGetClickedObject() == 50501) {
+			if (_app->bagGetClickedObject() != kObjectMagicLance || _app->varGetByte(50005)) {
+				if (_app->bagGetClickedObject() == kObjectDragonSword) {
 					if (_app->varGetByte(50005) == 1) {
 						_app->bagRemove(kObjectDragonSword);
 						_app->rotationSetRolTo(50304, 145.0f, 9.0f, 85.7f);
@@ -1197,7 +1197,7 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 
 	case kObjectPhoenix:
 		if (_app->bagHasClickedObject()) {
-			if (_app->bagGetClickedObject() != 50000) {
+			if (_app->bagGetClickedObject() != kObjectMagicLance) {
 				_app->rotationSetActive(50303);
 				_app->cursorDelete();
 				break;

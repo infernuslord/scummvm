@@ -175,7 +175,7 @@ void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 					_app->objectPresentationShow(kObject10801, 0);
 					_app->objectPresentationShow(kObject10801, 3);
 					_app->objectPresentationShow(kObject10801, 1);
-				} else if (_app->bagGetClickedObject() == 80802) {
+				} else if (_app->bagGetClickedObject() == kObjectJavelinWithRose) {
 					_app->bagRemove(kObjectJavelinWithRose);
 					_app->playMovie("S08A01-5");
 					_app->playMovie("S08A01-2");

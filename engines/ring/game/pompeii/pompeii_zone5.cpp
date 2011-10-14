@@ -266,7 +266,7 @@ void Zone5Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool proces
 	case 40411:
 		_app->objectPresentationHide(kObject10405, 0);
 		_app->objectPresentationHide(kObject10405, 3);
-		_app->playMovie("S04A01-2", 0.0);
+		_app->playMovie("S04A01-2");
 		_app->rotationSetActive(10411);
 		_app->objectSetAccessibilityOn(kObject40411);
 		_app->bagAdd(kObjectHollyWater);

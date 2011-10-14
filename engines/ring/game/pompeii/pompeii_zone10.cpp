@@ -239,7 +239,7 @@ void Zone10Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, 
 
 	case kObject99902:
 		if (_app->bagHasClickedObject()) {
-			if (target == 0 && _app->bagGetClickedObject() == 99901) {
+			if (target == 0 && _app->bagGetClickedObject() == kObjectWood) {
 				_app->objectSetAccessibilityOff(kObject99902);
 				_app->objectSetAccessibilityOff(kObjectWood);
 				_app->soundPlay(3049);
