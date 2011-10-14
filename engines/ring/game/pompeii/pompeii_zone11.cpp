@@ -175,8 +175,156 @@ void Zone11Pompeii::onInit() {
 	_app->varDefineByte(100001, 0);
 }
 
-void Zone11Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone11Pompeii::onButtonUp()] Not implemented");
+void Zone11Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
+	switch (id) {
+	default:
+		break;
+
+	case kObject11001:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectPresentationPauseAnimation(kObject11001, 8);
+			_app->objectPresentationPauseAnimation(kObject11001, 9);
+			_app->objectPresentationPauseAnimation(kObject11001, 10);
+			_app->objectPresentationPauseAnimation(kObject11001, 11);
+			_app->timerStopAll();
+			_app->onCall(10500);
+		}
+		break;
+
+	case kObject11002:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			switch (target) {
+			default:
+				break;
+
+			case 0:
+				_app->objectSetAccessibilityOff(kObject11002);
+				_app->soundPlay(2062);
+				break;
+
+			case 1:
+				_app->varSetByte(90408, 1);
+				_app->objectSetAccessibilityOff(kObject11002);
+				_app->puzzleSetActive(kPuzzle110111);
+				_app->soundPlay(4053);
+				break;
+			}
+		}
+		break;
+	case kObject11006:
+		if (_app->bagHasClickedObject()) {
+			if (target == 3 && _app->bagGetClickedObject() == 91003) {
+				_app->bagRemove(kObjectFabricAndFlour);
+				_app->rotationSetFreOn(11022);
+				_app->soundPlay(100004);
+				_app->objectSetAccessibilityOff(kObject11006);
+				_app->objectPresentationHide(kObject11001, 2);
+				_app->objectPresentationHide(kObject11001, 9);
+				_app->objectPresentationShow(kObject11001, 3);
+				_app->objectPresentationShow(kObject11001, 10);
+
+				handleEvents();
+
+				_app->puzzleSetActive(kPuzzle110222);
+				_app->soundPlay(4067);
+			}
+
+			_app->cursorDelete();
+		} else {
+			switch (target) {
+			default:
+				break;
+
+			case 0:
+				_app->objectSetAccessibilityOff(kObject11006);
+				_app->puzzleSetActive(kPuzzle110221);
+				_app->soundPlay(4060);
+				break;
+
+			case 1:
+				_app->varSetByte(90408, 2);
+				_app->objectSetAccessibilityOff(kObject11006);
+				_app->varSetByte(100001, 0);
+				_app->puzzleSetActive(kPuzzle110221);
+				_app->soundPlay(4061);
+				break;
+			}
+		}
+		break;
+	case kObject11005:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObject11005);
+			_app->objectSetAccessibilityOn(kObjectMuleToothPowder);
+		}
+		break;
+	case kObject11004:
+		if (_app->bagHasClickedObject()) {
+			if (_app->bagGetClickedObject() == kObjectMuleTooth) {
+				_app->soundPlay(100001);
+				_app->objectSetAccessibilityOff(kObject11004);
+				_app->bagRemove(kObjectMuleTooth);
+			}
+
+			_app->cursorDelete();
+		}
+		break;
+
+	case kObjectExitEncyclopedia:
+		_app->restore();
+		break;
+
+	case kObjectMuleTooth:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->varSetByte(90213, 1);
+			_app->soundPlay(100006);
+			_app->objectSetAccessibilityOff(kObjectMuleTooth);
+			_app->objectPresentationHide(kObject11001, 1);
+			_app->bagAdd(kObjectMuleTooth);
+		}
+		break;
+
+	case kObjectFabricAndFlour:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->soundPlay(100005);
+			_app->objectSetAccessibilityOff(kObjectFabricAndFlour);
+			_app->objectPresentationHide(kObject11001, 7);
+			_app->bagAdd(kObjectFabricAndFlour);
+		}
+		break;
+
+	case kObjectBread:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObjectBread);
+			_app->objectPresentationHide(kObject11001, 7);
+			_app->bagAdd(kObjectBread);
+			_app->soundPlay(4068);
+		}
+		break;
+
+	case kObjectMuleToothPowder:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->soundPlay(100005);
+			_app->objectSetAccessibilityOff(kObjectMuleToothPowder);
+			_app->objectPresentationHide(kObject11001, 7);
+			_app->bagAdd(kObjectMuleToothPowder);
+			_app->varSetByte(90213, 2);
+		}
+		break;
+	}
 }
 
 void Zone11Pompeii::onTimer(TimerId id) {
@@ -198,7 +346,7 @@ void Zone11Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone11Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone11Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -222,8 +370,91 @@ void Zone11Pompeii::onAnimationNextFrame(Id animationId, const Common::String &n
 	}
 }
 
-void Zone11Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone11Pompeii::onSound] Not implemented");
+void Zone11Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
+	switch (id) {
+	default:
+		break;
+
+	 case 4053:
+		_app->rotationSetAlp(11011, 286.0f);
+		_app->rotationSetBet(11011, 15.0f);
+		_app->rotationSetActive(11011);
+		_hideBox = false;
+		_app->varSetByte(100001, 0);
+		_app->objectSetAccessibilityOn(kObject11002, 2, 2);
+		break;
+
+	case 4054:
+	case 4055:
+	case 4057:
+		_app->varSetByte(100001, _app->varGetByte(100001) + 1);
+		// Fallback to next case
+
+	case 4056:
+	case 4058:
+	case 4059:
+		_app->rotationSetAlp(11011, 286.0f);
+		_app->rotationSetBet(11011, 15.0f);
+		_app->rotationSetActive(11011);
+		if (_app->varGetByte(100001) == 3)
+			_app->rotationSetMovabilityOn(11011);
+		break;
+
+	case 4060:
+		_app->rotationSetActive(11022);
+		break;
+
+	case 4061:
+		_hideBox = false;
+		_app->rotationSetAlp(11022, 266.0f);
+		_app->rotationSetBet(11022, 12.0f);
+		_app->rotationSetActive(11022);
+		_app->objectSetAccessibilityOn(kObject11006, 2, 2);
+		break;
+
+	case 4062:
+	case 4063:
+	case 4064:
+		_app->varSetByte(100001, _app->varGetByte(100001) + 1);
+		// Fallback to next case
+
+	case 4065:
+	case 4066:
+		_app->rotationSetAlp(11022, 266.0f);
+		_app->rotationSetBet(11022, 12.0f);
+		_app->rotationSetActive(11022);
+		if (_app->varGetByte(100001) == 3) {
+			_app->objectSetAccessibilityOff(kObject11006);
+			_app->objectSetAccessibilityOn(kObject11006, 3, 3);
+		}
+		break;
+
+	case 4067:
+		_app->soundPlay(4068);
+		break;
+
+	case 4068:
+		_app->soundPlay(4069);
+		break;
+
+	case 4069:
+		_app->playMovie("S10A02-1");
+		_app->objectPresentationHide(kObject11001, 3);
+		_app->objectPresentationHide(kObject11001, 10);
+		_app->rotationSetAlp(11022, 266.0f);
+		_app->rotationSetBet(11022, 12.0f);
+		_app->rotationSetActive(11022);
+		_app->rotationSetFreOff(11022);
+		_app->varSetByte(90408, 2);
+		break;
+
+	case 100001:
+		_app->playMovie("S10A02-2");
+		_app->objectPresentationHide(kObject11001, 6);
+		_app->objectPresentationShow(kObject11001, 7);
+		_app->objectSetAccessibilityOn(kObjectMuleToothPowder);
+		break;
+	}
 }
 
 void Zone11Pompeii::onUpdateBag(const Common::Point &/*point*/) {
