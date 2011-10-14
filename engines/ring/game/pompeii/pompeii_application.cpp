@@ -607,7 +607,7 @@ void ApplicationPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint
 	}
 
 	if (hasCurrentRotation())
-		varSetWord(99028, getCurrentRotationId());
+		varSetWord(99028, (int16)getCurrentRotationId());
 
 	switch (getCurrentZone()) {
 	default:
@@ -859,7 +859,80 @@ void ApplicationPompeii::onAnimationNextFrame(Id animationId, const Common::Stri
 }
 
 void ApplicationPompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
-	error("[ApplicationPompeii::onVisualList] Not implemented");
+	switch (id) {
+	default:
+		break;
+
+	case 1:
+		if (type == 3) {
+			Common::String userFolder = getObject(visualListGetObjectIdClicked(1, kPuzzleLoad))->getName();
+			objectPresentationSetTextToPuzzle(99601, 1, 0, userFolder);
+			objectPresentationSetAnimationCoordinatesOnPuzzle(99601, 0, Common::Point((int16)objectPresentationGetTextWidth(99601, 1, 0) + 30, 435));
+			objectSetAccessibilityOn(kObject99025);
+			objectPresentationHide(kObject99025, 1);
+			varSetByte(98003, 1);
+		}
+		break;
+
+	case 4:
+		if (type == 3) {
+			Common::String userFolder = getObject(visualListGetObjectIdClicked(1, kPuzzlePreferences))->getName();
+			objectPresentationSetTextToPuzzle(99601, 1, 1, userFolder);
+			objectPresentationShow(kObject99601, 1);
+			objectSetAccessibilityOn(kObject99023);
+			objectPresentationHide(kObject99023, 1);
+		}
+		break;
+
+	case 6:
+		if (type == 6 || type == 7) {
+			int x = point.x;
+			if (type == 7 && point.y > 0)
+				x += 100000;
+
+			switch (getCurrentZone()) {
+			default:
+				break;
+
+			case kZone1:
+				_zone1->onVisual(x);
+				break;
+
+			case kZone2:
+				_zone2->onVisual(x);
+				break;
+
+			case kZone3:
+				_zone3->onVisual(x);
+				break;
+
+			case kZone4:
+				_zone4->onVisual(x);
+				break;
+
+			case kZone6:
+				_zone6->onVisual(x);
+				break;
+
+			case kZone7:
+				_zone7->onVisual(x);
+				break;
+
+			case kZone8:
+				_zone8->onVisual(x);
+				break;
+
+			case kZone11:
+				_zone11->onVisual(x);
+				break;
+
+			case kZone12:
+				_zone12->onVisual(x);
+				break;
+			}
+		}
+		break;
+	}
 }
 
 #pragma endregion
