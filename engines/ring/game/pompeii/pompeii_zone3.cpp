@@ -403,7 +403,7 @@ void Zone3Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uin
 	}
 }
 
-void Zone3Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void Zone3Pompeii::onVisual(int x) {
 	error("[Zone3Pompeii::onVisualList] Not implemented");
 }
 

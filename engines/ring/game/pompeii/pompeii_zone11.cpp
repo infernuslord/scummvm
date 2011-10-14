@@ -274,8 +274,8 @@ void Zone11Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*mov
 	}
 }
 
-void Zone11Pompeii::onVisualList(Id /*id*/, uint32 /*type*/, const Common::Point &point) {
-	switch (point.x) {
+void Zone11Pompeii::onVisual(int x) {
+	switch (x) {
 	default:
 		break;
 

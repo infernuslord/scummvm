@@ -989,7 +989,7 @@ void Zone2Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*proc
 			if (_app->varGetByte(10024) == 1)
 				onVisualList(0, 0, Common::Point(102, 0));
 		}
-		break;;
+		break;
 
 	case 1015:
 		_app->objectSetAccessibilityOn(kObject10009, 1, 1);
@@ -1212,8 +1212,8 @@ void Zone2Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*mova
 		_app->soundPlay(900002);
 }
 
-void Zone2Pompeii::onVisualList(Id , uint32, const Common::Point &point) {
-	switch (point.x) {
+void Zone2Pompeii::onVisual(int x) {
+	switch (x) {
 	default:
 		break;
 

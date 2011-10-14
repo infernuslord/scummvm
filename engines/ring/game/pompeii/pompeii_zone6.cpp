@@ -539,7 +539,7 @@ void Zone6Pompeii::onTimer(TimerId id) {
 	default:
 		break;
 
-	case 0:
+	case kTimer0:
 		_app->timerStop(kTimer0);
 		_app->varSetByte(50609, 1);
 		_app->objectPresentationUnpauseAnimation(kObjectCubes, 2);
@@ -565,12 +565,12 @@ void Zone6Pompeii::onTimer(TimerId id) {
 		_app->soundPlay(50527);
 		break;
 
-	case 1:
+	case kTimer1:
 		_app->timerStop(kTimer1);
 		_app->soundPlay(2071);
 		break;
 
-	case 2:
+	case kTimer2:
 		_app->timerStop(kTimer2);
 		_app->objectPresentationUnpauseAnimation(kObject50501, 0);
 		_app->objectPresentationUnpauseAnimation(kObject50501, 10);
@@ -582,7 +582,7 @@ void Zone6Pompeii::onTimer(TimerId id) {
 		_app->objectPresentationUnpauseAnimation(kObject50502, 14);
 		break;
 
-	case 3:
+	case kTimer3:
 		_app->timerStop(kTimer3);
 		_app->objectPresentationUnpauseAnimation(kObject50501, 11);
 		_app->objectPresentationUnpauseAnimation(kObject50502, 15);
@@ -640,7 +640,7 @@ void Zone6Pompeii::onAfterRide(Id /*movabilityFrom*/, Id movabilityTo, uint32 /*
 	}
 }
 
-void Zone6Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void Zone6Pompeii::onVisual(int x) {
 	error("[Zone6Pompeii::onVisualList] Not implemented");
 }
 

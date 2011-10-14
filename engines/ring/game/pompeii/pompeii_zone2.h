@@ -47,7 +47,8 @@ public:
 	virtual void onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point);
 	virtual void onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType);
 	virtual void onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType);
-	virtual void onVisualList(Id id, uint32 type, const Common::Point &point);
+
+	void onVisual(int x);
 
 private:
 	ApplicationPompeii *_app;

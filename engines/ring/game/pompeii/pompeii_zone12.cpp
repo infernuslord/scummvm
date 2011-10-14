@@ -300,8 +300,8 @@ void Zone12Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, ui
 	}
 }
 
-void Zone12Pompeii::onVisualList(Id /*id*/, uint32 /*type*/, const Common::Point &point) {
-	switch (point.x) {
+void Zone12Pompeii::onVisual(int x) {
+	switch (x) {
 	default:
 		break;
 

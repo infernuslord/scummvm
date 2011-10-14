@@ -2172,7 +2172,7 @@ void Zone1Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabi
 	error("[Zone1Pompeii::onAfterRide] Not implemented");
 }
 
-void Zone1Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void Zone1Pompeii::onVisual(int x) {
 	error("[Zone1Pompeii::onVisualList] Not implemented");
 }
 
