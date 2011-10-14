@@ -158,8 +158,160 @@ void Zone8Pompeii::onInit() {
 	_app->varDefineByte(70001, 0);
 }
 
-void Zone8Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone8Pompeii::onButtonUp()] Not implemented");
+void Zone8Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
+	switch (id) {
+	default:
+		break;
+
+	case kObject10701:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectPresentationPauseAnimation(kObject10701, 0);
+			_app->objectPresentationPauseAnimation(kObject10701, 7);
+			_app->objectPresentationPauseAnimation(kObject10701, 8);
+			_app->timerStopAll();
+			_app->onCall(10700);
+		}
+		break;
+
+	case kObject70701:
+		if (_app->bagHasClickedObject()) {
+			if (target > 2 || _app->bagGetClickedObject() != kObjectHollyWater) {
+				if (target == 5 && _app->bagGetClickedObject() == kObjectPapyrus ) {
+					_app->bagRemove(kObjectPapyrus);
+					_app->objectSetAccessibilityOff(kObject70701);
+					_app->soundPlay(70004);
+					_app->puzzleSetActive(kPuzzle70121);
+					_app->soundPlay(4086);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if ( target < 2 )
+					_app->visualBoxHide(6, kPuzzleMenu);
+
+				_app->bagRemove(kObjectHollyWater);
+				_app->objectSetAccessibilityOff(kObject70701);
+				_app->puzzleSetActive(kPuzzle70121);
+				_app->soundPlay(2059);
+				_app->cursorDelete();
+			}
+		} else {
+			switch (target) {
+			default:
+				break;
+
+			case 0:
+				_app->varSetByte(90212, 1);
+				_app->objectSetAccessibilityOff(kObject70701);
+				_app->puzzleSetActive(kPuzzle70121);
+				_app->soundPlay(2056);
+				break;
+
+			case 3:
+				_app->objectSetAccessibilityOff(kObject70701);
+				_app->puzzleSetActive(kPuzzle70121);
+				_app->soundPlay(4083);
+				break;
+			}
+		}
+		break;
+
+	case kObject70702:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObject70702);
+			_app->objectPresentationHide(kObject10701, 1);
+			_app->objectPresentationShow(kObject10701, 2);
+			_app->objectPresentationShow(kObject10701, 0);
+			_app->objectPresentationShow(kObject10701, 7);
+			_app->objectPresentationShow(kObject10701, 8);
+			_app->soundPlay(70003);
+			_app->timerStop(kTimer0);
+			_app->timerStop(kTimer1);
+
+			if (target == 0 || target == 1)
+				_app->varSetByte(70001, (byte)target);
+
+			handleEvents();
+
+			_app->playMovie("S07A02-1");
+			_app->puzzleSetActive(kPuzzle70211);
+			_app->objectPresentationShow(kObject10701, 0);
+			_app->objectPresentationShow(kObject10701, 7);
+			_app->objectPresentationShow(kObject10701, 8);
+			_app->objectPresentationHide(kObject10701, 1);
+			_app->objectPresentationShow(kObject10701, 2);
+			if (_app->varGetByte(70001)) {
+				if (_app->varGetByte(70001) == 1)
+					_app->soundPlay(4091);
+			} else {
+				_app->soundPlay(2060);
+			}
+		}
+		break;
+
+	case kObject70703:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (target) {
+				_app->objectSetAccessibilityOff(kObject70703, 1, 1);
+				_app->soundPlay(70002);
+				_app->objectPresentationHide(kObject10701, 2);
+				_app->objectPresentationHide(kObject10701, 3);
+				_app->objectPresentationHide(kObject10701, 5);
+				_app->objectPresentationHide(kObject10701, 6);
+				_app->objectPresentationShow(kObject10701, 4);
+			} else {
+				_app->objectSetAccessibilityOff(kObject70703, 0, 0);
+				_app->objectSetAccessibilityOn(kObjectSylphium);
+				_app->soundPlay(70002);
+				_app->objectPresentationHide(kObject10701, 2);
+				_app->objectPresentationHide(kObject10701, 3);
+				_app->objectPresentationHide(kObject10701, 4);
+				_app->objectPresentationHide(kObject10701, 6);
+				_app->objectPresentationShow(kObject10701, 5);
+			}
+		}
+		break;
+
+	case kObjectExitEncyclopedia:
+		_app->restore();
+		break;
+
+	case kObjectSylphium:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObjectSylphium);
+			_app->bagAdd(kObjectSylphium);
+			_app->soundPlay(70001);
+			_app->objectPresentationHide(kObject10701, 2);
+			_app->objectPresentationHide(kObject10701, 3);
+			_app->objectPresentationHide(kObject10701, 4);
+			_app->objectPresentationShow(kObject10701, 5);
+			_app->objectPresentationShow(kObject10701, 6);
+			_app->timerStop(kTimer1);
+			_app->varSetByte(90411, 2);
+		}
+		break;
+
+	case kObjectIbisFeather:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObjectIbisFeather);
+			_app->objectPresentationHide(kObject10701, 3);
+			_app->bagAdd(kObjectIbisFeather);
+			_app->timerStop(kTimer0);
+			_app->onCall(2129);
+			_app->varSetByte(90212, 2);
+		}
+		break;
+	}
 }
 
 void Zone8Pompeii::onTimer(TimerId id) {
@@ -199,8 +351,72 @@ void Zone8Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*
 	}
 }
 
-void Zone8Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone8Pompeii::onSound] Not implemented");
+void Zone8Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
+	switch (id) {
+	default:
+		break;
+
+	case 2056:
+	case 2057:
+	case 2058:
+		_hideBox = false;
+		_app->objectSetAccessibilityOn(kObject70701, 1, 1);
+		_app->rotationSetAlp(10711, 298.0f);
+		_app->rotationSetBet(10711, 13.0f);
+		_app->rotationSetActive(10711);
+		break;
+
+	case 2059:
+		_app->rotationSetMovabilityOn(10711);
+		_app->objectPresentationHide(kObject10701, 0);
+		_app->objectPresentationHide(kObject10701, 7);
+		_app->objectPresentationHide(kObject10701, 8);
+		_app->playMovie("S07A01-1");
+		_app->rotationSetActive(10711);
+		_app->timerStart(kTimer0, 45000);
+		break;
+
+	case 2060:
+	case 4091:
+		_app->exitToMenu(kMenuAction3);
+		break;
+
+	case 2061:
+		_app->exitToMenu(kMenuAction12);
+		break;
+
+	case 4083:
+	case 4084:
+	case 4085:
+		_hideBox = false;
+		_app->objectSetAccessibilityOn(kObject70701, 4, 4);
+		_app->rotationSetAlp(10711, 298.0f);
+		_app->rotationSetBet(10711, 13.0f);
+		_app->rotationSetActive(10711);
+		break;
+
+	case 4086:
+	case 4087:
+	case 4088:
+	case 4090:
+		_hideBox = false;
+		_app->objectSetAccessibilityOn(kObject70701, 6, 6);
+		_app->rotationSetAlp(10711, 298.0f);
+		_app->rotationSetBet(10711, 13.0f);
+		_app->rotationSetActive(10711);
+		break;
+
+	case 4089:
+		_app->objectSetAccessibilityOff(kObject70701);
+		_app->rotationSetMovabilityOn(10711);
+		_app->objectPresentationHide(kObject10701, 0);
+		_app->objectPresentationHide(kObject10701, 7);
+		_app->objectPresentationHide(kObject10701, 8);
+		_app->playMovie("S07A01-1");
+		_app->rotationSetActive(10711);
+		_app->timerStart(kTimer1, 120000);
+		break;
+	}
 }
 
 void Zone8Pompeii::onUpdateBag(const Common::Point &/*point*/) {
