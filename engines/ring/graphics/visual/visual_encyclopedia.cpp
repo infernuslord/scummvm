@@ -159,6 +159,7 @@ VisualObjectEncyclopedia::VisualObjectEncyclopedia(Id id) : Visual(id) {
 	_field_549          = 0;
 	_soundId            = 0;
 	_field_551          = 0;
+	_archiveType        = kArchiveInvalid;
 }
 
 VisualObjectEncyclopedia::~VisualObjectEncyclopedia() {
@@ -182,6 +183,9 @@ VisualObjectEncyclopedia::~VisualObjectEncyclopedia() {
 }
 
 void VisualObjectEncyclopedia::draw() {
+	if (!_movie)
+		error("[VisualObjectEncyclopedia::draw] Movie not initialized properly");
+
 	if (!_visible)
 		return;
 
@@ -192,17 +196,17 @@ void VisualObjectEncyclopedia::draw() {
 			break;
 
 		case 0:
-			if (_imageArrowUp_dis->isInitialized())
+			if (_imageArrowUp_dis && _imageArrowUp_dis->isInitialized())
 				getApp()->getScreenManager()->draw(_imageArrowUp_dis, Common::Point(606, 20), _imageArrowUp_dis->getDrawType());
 			break;
 
 		case 1:
-			if (_imageArrowUp_nor->isInitialized())
+			if (_imageArrowUp_nor && _imageArrowUp_nor->isInitialized())
 				getApp()->getScreenManager()->draw(_imageArrowUp_nor, Common::Point(606, 20), _imageArrowUp_nor->getDrawType());
 			break;
 
 		case 2:
-			if (_imageArrowUp_hlt->isInitialized())
+			if (_imageArrowUp_hlt && _imageArrowUp_hlt->isInitialized())
 				getApp()->getScreenManager()->draw(_imageArrowUp_hlt, Common::Point(606, 20), _imageArrowUp_hlt->getDrawType());
 			break;
 		}
@@ -213,26 +217,26 @@ void VisualObjectEncyclopedia::draw() {
 			break;
 
 		case 0:
-			if (_imageArrowUp_dis->isInitialized())
+			if (_imageArrowDown_dis && _imageArrowDown_dis->isInitialized())
 				getApp()->getScreenManager()->draw(_imageArrowDown_dis, Common::Point(606, 432), _imageArrowDown_dis->getDrawType());
 			break;
 
 		case 1:
-			if (_imageArrowUp_nor->isInitialized())
+			if (_imageArrowDown_nor && _imageArrowDown_nor->isInitialized())
 				getApp()->getScreenManager()->draw(_imageArrowDown_nor, Common::Point(606, 432), _imageArrowDown_nor->getDrawType());
 			break;
 
 		case 2:
-			if (_imageArrowUp_hlt->isInitialized())
+			if (_imageArrowDown_hlt && _imageArrowDown_hlt->isInitialized())
 				getApp()->getScreenManager()->draw(_imageArrowDown_hlt, Common::Point(606, 432), _imageArrowDown_hlt->getDrawType());
 			break;
 		}
 
 		// Show sliders
-		if (_imageSlide->isInitialized())
+		if (_imageSlide && _imageSlide->isInitialized())
 			getApp()->getScreenManager()->draw(_imageSlide, Common::Point(610, 45), _imageSlide->getDrawType());
 
-		if (_imageSlider->isInitialized())
+		if (_imageSlider && _imageSlider->isInitialized())
 			getApp()->getScreenManager()->draw(_imageSlider, _sliderCoordinates, _imageSlider->getDrawType());
 
 		// Show text
@@ -250,7 +254,7 @@ void VisualObjectEncyclopedia::draw() {
 			getApp()->getScreenManager()->drawText(_text, exclude1, exclude2);
 	}
 
-	if (_field_64 && _image7->isInitialized()) {
+	if (_field_64 && _image7 && _image7->isInitialized()) {
 		// Adjust coordinates
 		_point.x = _clippingCenter.x - _image7->getWidth() / 2;
 		_point.y = _clippingCenter.y - _image7->getHeight() / 2;
@@ -613,7 +617,7 @@ bool VisualObjectEncyclopedia::load() {
 		// Adjust coordinates
 		Common::Point point(clippingLeft, clippingTop);
 		if (entry->getField2C() > offset) {
-			clippingTop += textHeight + (entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset);
+			clippingTop += textHeight + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
 			textHeight = 0;
 			offset = entry->getField2C();
 			point.y = clippingTop;
