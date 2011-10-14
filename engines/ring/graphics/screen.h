@@ -65,7 +65,7 @@ private:
 
 	Common::Point _offset;
 
-	void debugDrawing();
+	void debugDrawing() const;
 };
 
 } // End of namespace Ring

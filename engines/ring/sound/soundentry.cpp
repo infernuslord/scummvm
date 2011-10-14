@@ -279,6 +279,9 @@ void SoundEntryStream::stopAndReleaseSoundBuffer() {
 }
 
 bool SoundEntryStream::loadData(SoundFormat format, const Common::String &path, int32 soundChunk) {
+	if (!_loader)
+		error("[SoundEntryStream::loadData] Loader not initialized properly");
+
 	if (_loader->load(path, this))
 		return true;
 

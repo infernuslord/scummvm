@@ -187,7 +187,7 @@ void Zone10Pompeii::onInit() {
 	_app->rotationAddAmbientSound(10932, 99000, 100, 0, 1, 1, 10);
 }
 
-void Zone10Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
+void Zone10Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
 	switch (id) {
 	default:
 		break;
@@ -288,7 +288,7 @@ void Zone10Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone10Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone10Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	if (animationId == 90901 && (frame == frameCount || frame == 1)) {
 		_app->objectPresentationPauseAnimation(kObject10901, 0);
 		_app->objectPresentationPauseAnimation(kObject10901, 1);
@@ -297,7 +297,7 @@ void Zone10Pompeii::onAnimationNextFrame(Id animationId, const Common::String &n
 	}
 }
 
-void Zone10Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+void Zone10Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
 	switch (id) {
 	default:
 		break;
@@ -319,7 +319,7 @@ void Zone10Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	}
 }
 
-void Zone10Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+void Zone10Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
 	if (movabilityType == kMovabilityRotationToRotation) {
 		if (movabilityFrom == 10925 && movabilityTo == 10911
 		 || movabilityFrom == 10911 && movabilityTo == 10925)

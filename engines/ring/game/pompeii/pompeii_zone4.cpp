@@ -215,7 +215,7 @@ void Zone4Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone4Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone4Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -249,14 +249,14 @@ void Zone4Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	error("[Zone4Pompeii::onSound] Not implemented");
 }
 
-void Zone4Pompeii::onUpdateBag(const Common::Point &point) {
+void Zone4Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone4Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void Zone4Pompeii::onUpdateBefore(Id movabilityFrom, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
 	if (movabilityFrom == 30315
 	 && !_hideBox
 	 && !_app->bagHasClickedObject()) {
@@ -265,14 +265,14 @@ void Zone4Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mov
 	}
 }
 
-void Zone4Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+void Zone4Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone4Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void Zone4Pompeii::onVisualList(Id /*id*/, uint32 /*type*/, const Common::Point &point) {
 	switch (point.x) {
 	default:
 		break;

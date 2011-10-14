@@ -22,7 +22,6 @@
 #include "ring/graphics/animation.h"
 
 #include "ring/base/application.h"
-#include "ring/base/event.h"
 #include "ring/base/saveload.h"
 
 #include "ring/graphics/image.h"

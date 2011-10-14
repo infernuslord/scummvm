@@ -231,7 +231,7 @@ void Zone12Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone12Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone12Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -257,14 +257,14 @@ void Zone12Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	error("[Zone12Pompeii::onSound] Not implemented");
 }
 
-void Zone12Pompeii::onUpdateBag(const Common::Point &point) {
+void Zone12Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone12Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void Zone12Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
 	Common::Point mouse = g_system->getEventManager()->getMousePos() - Common::Point(20, 16);
 
 	if (movabilityFrom == 111001
@@ -293,14 +293,14 @@ void Zone12Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mo
 	}
 }
 
-void Zone12Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+void Zone12Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone12Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void Zone12Pompeii::onVisualList(Id /*id*/, uint32 /*type*/, const Common::Point &point) {
 	switch (point.x) {
 	default:
 		break;

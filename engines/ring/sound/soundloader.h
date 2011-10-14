@@ -94,7 +94,7 @@ public:
 	uint32 getDataSize() { return _dataSize; }
 	virtual bool getChunk() = 0;
 	int getSamplesPerSec() { return _samplesPerSec; }
-	int16 getBitsPerSample();
+	int16 getBitsPerSample() const;
 	int16 getType() { return _type; }
 	int getBlockAlign() { return _blockAlign; }
 

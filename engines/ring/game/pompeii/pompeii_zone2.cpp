@@ -895,7 +895,7 @@ void Zone2Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone2Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone2Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -939,14 +939,14 @@ void Zone2Pompeii::onAnimationNextFrame(Id animationId, const Common::String &na
 	}
 }
 
-void Zone2Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+void Zone2Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
 	switch (id) {
 	default:
 		break;
 
 	case 1001:
 		_app->rotationSetMovabilityOn(10155);
-		break;;
+		break;
 
 	case 1002:
 		_app->objectSetAccessibilityOn(kObject10007, 1, 1);
@@ -1120,14 +1120,14 @@ void Zone2Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	}
 }
 
-void Zone2Pompeii::onUpdateBag(const Common::Point &point) {
+void Zone2Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone2Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void Zone2Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
 	if (_hideBox || _app->bagGetClickedObject())
 		return;
 
@@ -1169,14 +1169,14 @@ void Zone2Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mov
 	}
 }
 
-void Zone2Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+void Zone2Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone2Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+void Zone2Pompeii::onBeforeRide(Id movabilityFrom, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
 	if (movabilityType == kMovabilityRotationToRotation && movabilityFrom == 10111) {
 		if (_app->varGetByte(90103) == 2) {
 			_app->varSetByte(90103, 3);
@@ -1185,7 +1185,7 @@ void Zone2Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movab
 	}
 }
 
-void Zone2Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+void Zone2Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
 	onVisualList(0, 0, Common::Point(201, 0));
 	onVisualList(0, 0, Common::Point(207, 0));
 
@@ -1212,7 +1212,7 @@ void Zone2Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabi
 		_app->soundPlay(900002);
 }
 
-void Zone2Pompeii::onVisualList(Id, uint32, const Common::Point &point) {
+void Zone2Pompeii::onVisualList(Id , uint32, const Common::Point &point) {
 	switch (point.x) {
 	default:
 		break;

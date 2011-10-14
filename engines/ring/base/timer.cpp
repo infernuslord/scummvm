@@ -62,7 +62,7 @@ void Timer::handler(void *refCon) {
 	((Timer *)refCon)->handle();
 }
 
-void Timer::handle() {
+void Timer::handle() const {
 	// Setup our timer message and inject into the queue
 	Common::Event evt;
 	evt.type = Common::EVENT_CUSTOM;

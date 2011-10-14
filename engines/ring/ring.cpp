@@ -22,7 +22,6 @@
 #include "ring/ring.h"
 
 #include "ring/base/application.h"
-#include "ring/base/event.h"
 #include "ring/base/saveload.h"
 
 #ifdef ENABLE_FAUST

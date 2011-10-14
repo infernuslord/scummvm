@@ -26,7 +26,6 @@
 
 #include "ring/debug.h"
 #include "ring/ring.h"
-#include "ring/helpers.h"
 
 using namespace PompeiiGame;
 
@@ -2158,7 +2157,7 @@ void Zone1Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mov
 	error("[Zone1Pompeii::onUpdateBefore] Not implemented");
 }
 
-void Zone1Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+void Zone1Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;

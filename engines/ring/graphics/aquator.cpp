@@ -411,6 +411,9 @@ void *ImageHeaderEntry::allocBuffer(bool hasAdditionnalData) const {
 }
 
 void ImageHeaderEntry::updateData(float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8) {
+	if (!_bufferData)
+		error("[ImageHeaderEntry::updateData] BufferData not initialized properly");
+
 	int *data = (int *)_bufferData;
 
 	data[8204] = a1;
@@ -565,7 +568,7 @@ void AquatorStream::initNode(Common::SeekableReadStream *stream, const Graphics:
 	SAFE_DELETE(stream);
 
 	// Init entry buffer
-	int16 *buffer = (int16 *)_entry->getBuffer();
+	uint16 *buffer = (uint16 *)_entry->getBuffer();
 
 	// Process buffer
 	for (uint32 i = 0; i < 64800; i++) {

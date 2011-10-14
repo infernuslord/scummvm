@@ -243,14 +243,14 @@ void Rotation::updateView() {
 		_ran = 87.0f;
 
 	// Compute data
-	float angle = _ran * acos(-1.0) * 0.002777777777777778f;
+	float angle = _ran * acos(-1.0f) * 0.002777777777777778f;
 	float cos1 = cos(angle);
 	float sin1 = sin(angle) / 640.0f;
 
 	float angle0 = 640.0f * sin1;
 	float angle1 = 480.0f * sin1;
 
-	float float6 = 2 * asin(angle1) * 180.0f / acos(-1.0);
+	float float6 = 2 * asin(angle1) * 180.0f / acos(-1.0f);
 
 	/////////////////////////////////
 	// ALP
@@ -272,8 +272,8 @@ void Rotation::updateView() {
 
 	/////////////////////////////////
 	// Compute pixel value
-	float angle2 = _alp * acos(-1.0) * 0.0055555557f;
-	float angle3 = _bet * acos(-1.0) * 0.0055555557f;
+	float angle2 = _alp * acos(-1.0f) * 0.0055555557f;
+	float angle3 = _bet * acos(-1.0f) * 0.0055555557f;
 
 	Pixel::PixelData pixel;
 	pixel.a1 = sin(angle2) * cos(angle3);

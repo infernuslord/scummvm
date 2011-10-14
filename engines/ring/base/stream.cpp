@@ -39,7 +39,7 @@ CompressedStream::~CompressedStream() {
 	SAFE_DELETE(_artStream);
 }
 
-bool CompressedStream::init(Common::String filename, uint32 type, uint32) {
+bool CompressedStream::init(Common::String filename, byte type, uint32) {
 	if (!initBuffer(filename, type))
 		return false;
 
@@ -48,7 +48,7 @@ bool CompressedStream::init(Common::String filename, uint32 type, uint32) {
 	return true;
 }
 
-bool CompressedStream::initBuffer(Common::String filename, uint32 type) {
+bool CompressedStream::initBuffer(Common::String filename, byte type) {
 	_fileStream = SearchMan.createReadStreamForMember(filename);
 	if (!_fileStream) {
 		warning("[CompressedStream::init] Error opening file (%s)", filename.c_str());
@@ -131,20 +131,20 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 		error("[CompressedStream::decompressIndexed] Invalid stream!");
 
 	// Initialize buffer
-	byte *buffer = (byte *)malloc(bufferSize + 1024);
+	void *buffer = malloc(bufferSize + 1024);
 	if (!buffer)
 		error("[CompressedStream::decompressIndexed] Cannot allocate buffer");
 
 	memset(buffer, 0, bufferSize + 1024);
 
 	// Decompress seq
-	byte *seqBuffer = (byte *)malloc(seqDataSize + 1024);
+	void *seqBuffer = malloc(seqDataSize + 1024);
 	if (!seqBuffer)
 		error("[CompressedStream::decompressIndexed] Cannot allocate seq buffer");
 
 	memset(seqBuffer, 0, seqDataSize + 1024);
 
-	uint32 decompressSize = decode(stream, blockSize, 6, 608, 8 * seqSize + 608, seqBuffer);
+	uint32 decompressSize = decode(stream, blockSize, 6, 608, 8 * seqSize + 608, (byte *)seqBuffer);
 	if (decompressSize > (seqDataSize + 64))
 		error("[CompressedStream::decompressIndexed] Error during SEQ decompression (buffer overrun)!");
 
@@ -164,8 +164,8 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 	int16 *pBuffer = (int16 *)buffer;
 	int16 *pSeqBuffer = (int16 *)seqBuffer;
 	for (uint32 i = 0; i < seqDataSize / 2; i++) {
-		uint16 index = pSeqBuffer[i];
-		if (index > 2000)
+		int16 index = pSeqBuffer[i];
+		if (index < 0 || index > 2000)
 			error("[CompressedStream::decompressIndexed] Invalid index (was: %d, max: 2000)", index);
 
 		pBuffer[0] = coreBuffer[index].a1;
@@ -174,15 +174,15 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 		pBuffer += 3;
 	}
 
-	buffer[indexEnd]     = field_C;
-	buffer[indexEnd + 2] = field_10;
+	WRITE_UINT16((byte *)buffer + indexEnd, (uint16)field_C);
+	WRITE_UINT16((byte *)buffer + indexEnd + 2, field_10);
 
 	// Cleanup buffers
 	free(seqBuffer);
 	free(coreBuffer);
 
 	// Create decompressed stream
-	return new Common::MemoryReadStream(buffer, bufferSize, DisposeAfterUse::YES);
+	return new Common::MemoryReadStream((byte *)buffer, bufferSize, DisposeAfterUse::YES);
 }
 
 #define NODE_HEADER_SIZE 52

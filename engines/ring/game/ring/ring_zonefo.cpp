@@ -1540,8 +1540,8 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 		case 3:
 		case 4:
 			_app->soundPlay(30512);
-			_app->objectPresentationHide(kObjectBow, target);
-			_app->objectSetAccessibilityOff(kObjectBow, target, target);
+			_app->objectPresentationHide(kObjectBow, (uint32)target);
+			_app->objectSetAccessibilityOff(kObjectBow, (uint32)target, (uint32)target);
 			_app->varSetByte(target + 30049, 1);
 
 			_app->bagAdd(kObjectHare);
@@ -1554,8 +1554,8 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 		case 5:
 		case 6:
 			_app->soundPlay(30512);
-			_app->objectPresentationHide(kObjectBow, target);
-			_app->objectSetAccessibilityOff(kObjectBow, target, target);
+			_app->objectPresentationHide(kObjectBow, (uint32)target);
+			_app->objectSetAccessibilityOff(kObjectBow, (uint32)target, (uint32)target);
 			_app->varSetByte(target + 30049, 1);
 
 			_app->bagAdd(kObjectBow);
@@ -1795,50 +1795,50 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			case kObjectMeltedGold:
 				_app->varSetByte(30025, (byte)target);
 				_app->bagRemove(kObjectMeltedGold);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 
 			case  kObjectMeltedSilver:
 				_app->varSetByte(30026, (byte)target);
 				_app->bagRemove(kObjectMeltedSilver);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 
 			case kObjectMeltedCopper:
 				_app->varSetByte(30027, (byte)target);
 				_app->bagRemove(kObjectMeltedCopper);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 
 			case kObjectMeltedLead:
 				_app->varSetByte(30028, (byte)target);
 				_app->bagRemove(kObjectMeltedLead);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 
 			case kObjectMeltedSteel:
 				_app->varSetByte(30029, (byte)target);
 				_app->bagRemove(kObjectMeltedSteel);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 
 			case kObjectMeltedTin:
 				_app->varSetByte(30030, (byte)target);
 				_app->bagRemove(kObjectMeltedTin);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 
 			case kObjectQuicksilver:
 				_app->varSetByte(30031, (byte)target);
 				_app->bagRemove(kObjectQuicksilver);
-				_app->objectPresentationShow(kObject30042, target);
-				_app->objectSetAccessibilityOff(kObject30042, target, target);
+				_app->objectPresentationShow(kObject30042, (uint32)target);
+				_app->objectSetAccessibilityOff(kObject30042, (uint32)target, (uint32)target);
 				break;
 			}
 		}
@@ -2170,7 +2170,7 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 					_app->playMovie("1196", target);
 					_app->varSetFloat(90007, _app->varGetFloat(90007) + 5.5f);
 					_app->objectPresentationHide(kObject30051, 2);
-					_app->objectSetAccessibilityOff(kObject30051, target, target);
+					_app->objectSetAccessibilityOff(kObject30051, (uint32)target, (uint32)target);
 					_app->objectSetAccessibilityOff(kObject30051, 3, 3);
 				}
 

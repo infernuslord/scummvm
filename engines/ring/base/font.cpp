@@ -74,6 +74,7 @@ Font::Font(FontId id, Common::String facename, uint32 height, bool smallWeight, 
 	}
 
 	// Try getting font replacement
+	_font = NULL;
 	if (!fontName.empty())
 		_font = const_cast<Graphics::Font *>(FontMan.getFontByName(fontName));
 

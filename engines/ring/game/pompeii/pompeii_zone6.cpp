@@ -599,7 +599,7 @@ void Zone6Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	error("[Zone6Pompeii::onSound] Not implemented");
 }
 
-void Zone6Pompeii::onUpdateBag(const Common::Point &point) {
+void Zone6Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
@@ -610,14 +610,14 @@ void Zone6Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mov
 	error("[Zone6Pompeii::onUpdateBefore] Not implemented");
 }
 
-void Zone6Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+void Zone6Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone6Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
+void Zone6Pompeii::onAfterRide(Id /*movabilityFrom*/, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
 	if (movabilityType == kMovabilityPuzzleToRotation && movabilityTo == 505213) {
 		_app->timerStop(kTimer1);
 		_app->objectSetAccessibilityOn(kObject50523);

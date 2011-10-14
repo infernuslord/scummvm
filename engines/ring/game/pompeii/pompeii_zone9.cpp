@@ -117,7 +117,7 @@ void Zone9Pompeii::onInit() {
 	_app->soundAdd(3019,  kSoundTypeDialog,        "3019.wav",     _app->getConfiguration().dialog.loadFrom);
 }
 
-void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
+void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
 	switch (id) {
 	default:
 		break;
@@ -158,7 +158,7 @@ void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 					_app->objectSetAccessibilityOn(80802, 0, 0);
 				}
 
-				_app->setField74(0);
+				_app->setField74(false);
 				_app->cursorDelete();
 				break;
 
@@ -188,7 +188,7 @@ void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 					_app->objectPresentationShow(kObject10801, 3);
 				}
 
-				_app->setField74(0);
+				_app->setField74(false);
 				_app->cursorDelete();
 				break;
 
@@ -204,7 +204,7 @@ void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 					_app->soundPlay(3019);
 					_app->playMovie("S08A01-4");
 				} else {
-					_app->setField74(0);
+					_app->setField74(false);
 					_app->cursorDelete();
 					break;
 				}
@@ -231,14 +231,14 @@ void Zone9Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 					_app->bagRemove(kObjectRose);
 				}
 
-				_app->setField74(0);
+				_app->setField74(false);
 				_app->cursorDelete();
 				break;
 			}
 		} else {
 			switch (target) {
 			default:
-				_app->setField74(0);
+				_app->setField74(false);
 				break;
 
 			case 0:
@@ -285,7 +285,7 @@ void Zone9Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone9Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone9Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -306,7 +306,7 @@ void Zone9Pompeii::onAnimationNextFrame(Id animationId, const Common::String &na
 	}
 }
 
-void Zone9Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void Zone9Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
 	if (movabilityFrom == 80801
 	 && _app->bagHasClickedObject()
 	 && (_app->bagGetClickedObject() == kObjectJavelinWithRose || _app->bagGetClickedObject() == kObjectJavelin)

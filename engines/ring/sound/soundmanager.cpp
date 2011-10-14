@@ -22,7 +22,6 @@
 #include "ring/sound/soundmanager.h"
 
 #include "ring/base/application.h"
-#include "ring/base/event.h"
 #include "ring/base/dialog.h"
 
 #include "ring/sound/soundentry.h"

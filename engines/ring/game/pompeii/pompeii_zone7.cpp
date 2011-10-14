@@ -167,7 +167,7 @@ void Zone7Pompeii::onInit() {
 	_app->objectPresentationSetAnimationOnPuzzle(kObjectApolloTear, 0, 0, 60000);
 
 	for (uint32 i = 0; i < 100; i++)
-		_app->objectAddPuzzleAccessibility(kObjectApolloTear, kPuzzle60023, Common::Rect(342, i * 2.5999999f + 193.0f, 392, i * 2.5999999f + 213.0f), false, kCursorActionObject, i + 1);
+		_app->objectAddPuzzleAccessibility(kObjectApolloTear, kPuzzle60023, Common::Rect(342, (int16)(i * 2.5999999f + 193.0f), 392, (int16)(i * 2.5999999f + 213.0f)), false, kCursorActionObject, i + 1);
 
 	_app->objectAdd(kObject10601, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject10601, 10611, Common::Rect(1030, -269, 1441, 247), true, kCursorMove, 0);
@@ -212,7 +212,7 @@ void Zone7Pompeii::onInit() {
 	_app->varDefineByte(60000, 0);
 }
 
-void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
+void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
 	switch (id) {
 	default:
 		break;
@@ -237,7 +237,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 			if (!target) {
 				_app->varSetByte(90209, 1);
 				_app->objectSetAccessibilityOff(kObject60611);
-				_app->puzzleSetActive(kPuzzle60011, 1, 1);
+				_app->puzzleSetActive(kPuzzle60011);
 				_app->soundPlay(2029);
 			}
 		}
@@ -271,7 +271,7 @@ void Zone7Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint3
 			_app->bagRemove(kObjectDropOfWater);
 			_app->bagAdd(kObjectGlassTube);
 		} else {
-			_app->setField74(0);
+			_app->setField74(false);
 		}
 		break;
 
@@ -318,7 +318,7 @@ void Zone7Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone7Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone7Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -344,7 +344,7 @@ void Zone7Pompeii::onAnimationNextFrame(Id animationId, const Common::String &na
 	}
 }
 
-void Zone7Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+void Zone7Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
 	switch (id) {
 	default:
 		break;
@@ -365,14 +365,14 @@ void Zone7Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	}
 }
 
-void Zone7Pompeii::onUpdateBag(const Common::Point &point) {
+void Zone7Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone7Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void Zone7Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
 	if (movabilityFrom == 60611
 	 && movabilityTo == 1
 	 && !_hideBox
@@ -383,14 +383,14 @@ void Zone7Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 mov
 	}
 }
 
-void Zone7Pompeii::onUpdateAfter(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType, const Common::Point &point) {
+void Zone7Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
 	}
 }
 
-void Zone7Pompeii::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void Zone7Pompeii::onVisualList(Id /*id*/, uint32 /*type*/, const Common::Point &point) {
 	switch (point.x) {
 	default:
 		break;

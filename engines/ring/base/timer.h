@@ -53,7 +53,7 @@ private:
 	Common::String _reference;
 
 	static void handler(void *ptr);
-	void handle();
+	void handle() const;
 };
 
 class TimerHandler : public Common::Serializable {

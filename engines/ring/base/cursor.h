@@ -99,7 +99,7 @@ public:
 	void removeByType(CursorType cursorType);
 
 	void draw();
-	void hide();
+	void hide() const;
 	void select(CursorId id);
 	void setOffset(CursorId id, const Common::Point &offset);
 	CursorType getType();

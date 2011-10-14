@@ -22,7 +22,6 @@
 #include "ring/graphics/visual/visual_list.h"
 
 #include "ring/base/application.h"
-#include "ring/base/event.h"
 #include "ring/base/object.h"
 #include "ring/base/text.h"
 

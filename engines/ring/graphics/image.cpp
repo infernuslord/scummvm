@@ -269,10 +269,10 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 	screen->fillRect(destRect, Color(255, 0, 0).getColor());
 	//////////////////////////////////////////////////////////////////////////
 
-	byte *src  = (byte*)_surface->getBasePtr(srcX, getHeight() - offset - 1);
+	byte *src  = (byte*)_surface->getBasePtr(srcX, (int)getHeight() - (offset + 1));
 	byte *dst  = (byte *)screen->getBasePtr(dest.x, dest.y);
 	int16 height = destRect.height();
-	uint16 stride = (uint16)destRect.width() * _surface->format.bytesPerPixel;
+	uint16 stride = (uint16)(destRect.width() * _surface->format.bytesPerPixel);
 
 	// Handle different bit depth
 	switch (getBPP()) {
@@ -299,12 +299,15 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 
 		int16 *dstBuffer = (int16 *)dst;
 		// Copy data (and mirror image)
-		for (int16 j = offset; j < destRect.height(); j++) {
+		for (int32 j = offset; j < destRect.height(); j++) {
 			// Read pixel data
 			uint8 a = 0, r = 0, g = 0, b = 0;
 
 			for (int16 i = 0; i < destRect.width(); i++) {
 				switch (getBPP()) {
+				default:
+					error("[CursorImage::draw] Invalid bpp (%d) for cursor (24/32bpp only)", getBPP());
+
 				case 24:
 					formatImage.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
 					break;
@@ -314,7 +317,7 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 					break;
 				}
 
-				dstBuffer[i] = formatScreen.ARGBToColor(a, r, g, b);
+				dstBuffer[i] = (int16)formatScreen.ARGBToColor(a, r, g, b);
 			}
 
 			// Advance buffers

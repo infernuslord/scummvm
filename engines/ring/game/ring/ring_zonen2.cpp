@@ -1628,7 +1628,7 @@ void ZoneN2Ring::onBag(ObjectId id, Id target, Id, uint32, DragControl *, byte t
 	}
 }
 
-void ZoneN2Ring::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void ZoneN2Ring::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &point) {
 	if (movabilityFrom == 70100 && movabilityTo == 0) {
 		_app->rotationSetActive(70100);
 		_app->objectSetAccessibilityOn(kObject70101, 0, 0);
@@ -1641,7 +1641,7 @@ void ZoneN2Ring::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movab
 	}
 }
 
-void ZoneN2Ring::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32, Id, MovabilityType movabilityType) {
+void ZoneN2Ring::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
 	if (movabilityFrom == 70000 || movabilityFrom == 70001)
 		_app->timerStop(kTimer0);
 
@@ -1654,7 +1654,7 @@ void ZoneN2Ring::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32, Id, Mo
 	}
 }
 
-void ZoneN2Ring::onAfterRide(Id movabilityFrom, Id, uint32, Id target, MovabilityType movabilityType) {
+void ZoneN2Ring::onAfterRide(Id movabilityFrom, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id target, MovabilityType movabilityType) {
 	if (movabilityFrom == 70000 || movabilityFrom == 70001)
 		if (!_app->varGetByte(70012))
 			_app->timerStart(kTimer0, 10000);

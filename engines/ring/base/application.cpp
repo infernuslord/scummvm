@@ -26,7 +26,6 @@
 #include "ring/base/bag.h"
 #include "ring/base/cursor.h"
 #include "ring/base/dialog.h"
-#include "ring/base/event.h"
 #include "ring/base/font.h"
 #include "ring/base/language.h"
 #include "ring/base/movability.h"
@@ -2351,7 +2350,7 @@ Common::String Application::getSoundPath(const Common::String &filename, SoundTy
 
 		// No file found
 		error("[Application::getSoundPath] File doesn't exist (%s)", path.c_str());
-	} while (true);
+	} while (false);
 
 	return path;
 }

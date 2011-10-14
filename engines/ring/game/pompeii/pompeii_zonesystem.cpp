@@ -26,7 +26,6 @@
 
 #include "ring/debug.h"
 #include "ring/ring.h"
-#include "ring/helpers.h"
 
 using namespace PompeiiGame;
 
@@ -514,7 +513,7 @@ void ZoneSystemPompeii::onInit() {
 	_app->varDefineDword(90026, 0);
 	_app->varDefineDword(99027, 0);
 	_app->visualAddEncyclopediaToPuzzle(5, kPuzzleEncyclopedia, "E001.out", _app->_configuration.artSY ? kArchiveArt :  kArchiveFile);
-	_app->visualEncyclopediaSetParameters(5, kPuzzleEncyclopedia, Common::Point(20, 20), Common::Rect(50, 428, 50, 580), 1);
+	_app->visualEncyclopediaSetParameters(5, kPuzzleEncyclopedia, Common::Point(20, 20), Common::Rect(50, 428, 50, 580), true);
 	_app->visualAddBoxToPuzzle(6, 1, " ", kArchiveFile);
 	_app->varDefineWord(99500, 0);
 	_app->varDefineDword(99028, 10111);
@@ -525,7 +524,7 @@ void ZoneSystemPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, 
 	error("[ZoneSystemPompeii::onButtonUp()] Not implemented");
 }
 
-void ZoneSystemPompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+void ZoneSystemPompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
 	switch (id) {
 	default:
 		break;
@@ -556,7 +555,7 @@ void ZoneSystemPompeii::onBag(ObjectId id, Id target, Id puzzleRotationId, uint3
 	error("[ZoneSystemPompeii::onBag] Not implemented");
 }
 
-void ZoneSystemPompeii::onUpdateBag(const Common::Point &point) {
+void ZoneSystemPompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_app->hasCurrentRotation())
 		_app->varSetDword(99027, _app->getCurrentRotationId());
 

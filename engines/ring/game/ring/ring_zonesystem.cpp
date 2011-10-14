@@ -433,7 +433,7 @@ void ZoneSystemRing::onKeyDown(const Common::KeyState &keyState) {
 	}
 }
 
-void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
+void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
 	RingEngine *engine = ((RingEngine *)g_engine);
 
 	switch (id) {
@@ -472,7 +472,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uin
 		break;
 
 	case kObject3:
-		_app->messageHideWarning(target);
+		_app->messageHideWarning((uint32)target);
 		break;
 
 	case kObjectQuestion:
@@ -764,7 +764,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uin
 	}
 }
 
-void ZoneSystemRing::onSound(Id id, SoundType type, uint32 a3, bool process) {
+void ZoneSystemRing::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool process) {
 	if (!process)
 		return;
 
@@ -775,7 +775,7 @@ void ZoneSystemRing::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	}
 }
 
-void ZoneSystemRing::onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte type) {
+void ZoneSystemRing::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*/, uint32 /*a4*/, DragControl * /*dragControl*/, byte type) {
 	switch (id) {
 	default:
 		break;
@@ -842,7 +842,7 @@ void ZoneSystemRing::onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a
 	}
 }
 
-void ZoneSystemRing::onUpdateBag(const Common::Point &point) {
+void ZoneSystemRing::onUpdateBag(const Common::Point &/*point*/) {
 	_app->objectPresentationHide(kObjectMenuNewGame, 0);
 	_app->objectPresentationHide(kObjectMenuPreferences, 0);
 	_app->objectPresentationHide(kObjectMenuLoad, 0);
@@ -868,7 +868,7 @@ void ZoneSystemRing::onUpdateBag(const Common::Point &point) {
 	_app->cursorSelect(kCursorMenuIdle);
 }
 
-void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
 	switch (movabilityFrom) {
 	default:
 		break;
@@ -895,8 +895,10 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 		break;
 
 	case kObjectQuestion: {
-		int32 val = (uint32)(movabilityTo) & 0x80000001;
-		bool state = (val < 0 ? ((int32)((val - 1) | 0xFFFFFFFE)) == -1 : val == 0);
+		int32 val = ((uint32)movabilityTo) & 0x80000001;
+		bool state = (val == 0);
+		if (val < 0)
+			state = ((val - 1) | -2) == -1;
 
 		if (state) {
 			_app->objectPresentationHide(kObjectQuestion, 2);
@@ -1028,7 +1030,7 @@ void ZoneSystemRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 m
 	}
 }
 
-void ZoneSystemRing::onVisualList(Id id, uint32 type, const Common::Point &point) {
+void ZoneSystemRing::onVisualList(Id id, uint32 type, const Common::Point &/*point*/) {
 	if (id == 1) {
 		if (type > 0 && type <= 3) {
 			_app->objectPresentationHide(kObjectLoadOk, 0);

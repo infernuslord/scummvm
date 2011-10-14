@@ -171,7 +171,7 @@ void Zone5Pompeii::onInit() {
 	_app->soundAdd(40413, kSoundTypeDialog, "1090.wac", _app->getConfiguration().dialog.loadFrom);
 }
 
-void Zone5Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
+void Zone5Pompeii::onButtonUp(ObjectId id, Id /*target*/, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
 	switch (id) {
 	default:
 		break;
@@ -234,7 +234,7 @@ void Zone5Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone5Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
+void Zone5Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
 	switch (animationId) {
 	default:
 		break;
@@ -255,7 +255,7 @@ void Zone5Pompeii::onAnimationNextFrame(Id animationId, const Common::String &na
 	}
 }
 
-void Zone5Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
+void Zone5Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool process) {
 	if (!process)
 		return;
 
@@ -267,7 +267,7 @@ void Zone5Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 		_app->objectPresentationHide(kObject10405, 0);
 		_app->objectPresentationHide(kObject10405, 3);
 		_app->playMovie("S04A01-2", 0.0);
-		_app->rotationSetActive(10411, 1, 1);
+		_app->rotationSetActive(10411);
 		_app->objectSetAccessibilityOn(kObject40411);
 		_app->bagAdd(kObjectHollyWater);
 		_app->rotationSetMovabilityOn(10411);

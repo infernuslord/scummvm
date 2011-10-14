@@ -26,7 +26,6 @@
 
 #include "ring/debug.h"
 #include "ring/ring.h"
-#include "ring/helpers.h"
 
 using namespace RingGame;
 

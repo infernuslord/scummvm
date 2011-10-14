@@ -567,7 +567,7 @@ void ZoneRORing::onButtonDown(ObjectId id, Id target, Id, uint32, const Common::
 	for (uint32 i = 1; i < 16; i++)
 		_app->objectPresentationHide(kObject40202, i);
 
-	_app->objectPresentationShow(kObject40202, target + 1);
+	_app->objectPresentationShow(kObject40202, (uint32)target + 1);
 
 	if (target >= 7) {
 		_app->soundPlay(target + 40500);
@@ -810,7 +810,7 @@ void ZoneRORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 		_app->objectSetAccessibilityOff(kObject40060);
 		_app->puzzleSetMovabilityOff(kPuzzle40060, 0, 0);
 		if ((_presentationIndexRO / 10) == (int32)(target + 1)) {
-			_app->objectPresentationShow(kObject40201, target);
+			_app->objectPresentationShow(kObject40201, (uint32)target);
 
 			Common::String str = _app->varGetString(40901);
 			while (str.size() > 6)
@@ -819,7 +819,7 @@ void ZoneRORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			_app->varSetString(40901, Common::String::format("%s%d", str.c_str(), target));
 		} else {
 			_app->varSetByte(target + 40200, _app->varGetByte(target + 40200) ? 0 : 1);
-			_app->objectPresentationShow(kObject40201, target + 7);
+			_app->objectPresentationShow(kObject40201, (uint32)target + 7);
 			_app->soundSetVolume(40602, rnd(20) + 80);
 			_app->soundPlay(40602);
 		}

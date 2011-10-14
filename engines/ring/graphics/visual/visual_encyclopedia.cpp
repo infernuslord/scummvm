@@ -487,15 +487,32 @@ void VisualObjectEncyclopedia::dealloc() {
 
 	CLEAR_ARRAY(EncyclopediaEntry, _entries);
 
-	_imageArrowDown_dis->destroy();
-	_imageArrowDown_hlt->destroy();
-	_imageArrowDown_nor->destroy();
-	_imageArrowUp_dis->destroy();
-	_imageArrowUp_hlt->destroy();
-	_imageArrowUp_nor->destroy();
-	_image7->destroy();
-	_imageSlide->destroy();
-	_imageSlider->destroy();
+	if (_imageArrowDown_dis)
+		_imageArrowDown_dis->destroy();
+
+	if (_imageArrowDown_hlt)
+		_imageArrowDown_hlt->destroy();
+
+	if (_imageArrowDown_nor)
+		_imageArrowDown_nor->destroy();
+
+	if (_imageArrowUp_dis)
+		_imageArrowUp_dis->destroy();
+
+	if (_imageArrowUp_hlt)
+		_imageArrowUp_hlt->destroy();
+
+	if (_imageArrowUp_nor)
+		_imageArrowUp_nor->destroy();
+
+	if (_image7)
+		_image7->destroy();
+
+	if (_imageSlide)
+		_imageSlide->destroy();
+
+	if (_imageSlider)
+		_imageSlider->destroy();
 }
 
 void VisualObjectEncyclopedia::init(const Common::String &name, ArchiveType archiveType) {

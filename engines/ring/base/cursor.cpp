@@ -134,6 +134,9 @@ void CursorImage::draw() {
 
 		for (uint32 i = 0; i < _image->getWidth(); i++) {
 			switch (_image->getBPP()) {
+			default:
+				error("[CursorImage::draw] Invalid bpp (%d) for cursor (24/32bpp only)", _image->getBPP());
+
 			case 24:
 				formatCursor.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
 				break;
@@ -143,7 +146,7 @@ void CursorImage::draw() {
 				break;
 			}
 
-			dst[i] = formatScreen.ARGBToColor(a, r, g, b);
+			dst[i] = (int16)formatScreen.ARGBToColor(a, r, g, b);
 		}
 
 		// Advance buffers
@@ -157,7 +160,7 @@ void CursorImage::draw() {
 	CursorMan.showMouse(true);
 
 	// Cleanup
-	delete buf;
+	free(buf);
 }
 
 #pragma endregion
@@ -279,8 +282,8 @@ void CursorHandler::draw() {
 	_cursors[_index]->draw();
 }
 
-void CursorHandler::hide() {
-
+void CursorHandler::hide() const {
+	CursorMan.showMouse(false);
 }
 
 void CursorHandler::select(CursorId id) {

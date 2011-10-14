@@ -68,11 +68,11 @@ void VisualObjectBox::reset() {
 }
 
 void VisualObjectBox::draw() {
-	if (!_visible || !_isSetup)
+	if (!_visible || !_isSetup || !_background)
 		return;
 
 	if (_keywords.empty()) {
-		getApp()->onVisualList(_id, 7, Common::Point(_keywordId, 1));
+		getApp()->onVisualList(_id, 7, Common::Point((int16)_keywordId, 1));
 		_visible = false;
 		reset();
 		return;
@@ -156,12 +156,12 @@ uint32 VisualObjectBox::handleLeftButtonDown(Common::Point point) {
 			break;
 
 		case 10: {
-			Keyword *keyword = NULL;
-			if (hotspot->getCursorId() < (CursorId)_keywords.size())
-				keyword = _keywords[hotspot->getCursorId()];
+			if (hotspot->getCursorId() >= (CursorId)_keywords.size())
+				break;
 
-			getApp()->onVisualList(_id, 6, Common::Point(keyword->id, 0));
+			Keyword *keyword = _keywords[hotspot->getCursorId()];
 
+			getApp()->onVisualList(_id, 6, Common::Point((int16)keyword->id, 0));
 			playDialog(i, keyword->id);
 
 			}
@@ -287,7 +287,7 @@ void VisualObjectBox::setupOptions() {
 
 		// Compute text dimensions
 		text->set(keyword->name);
-		y += text->getHeight();
+		y += (int16)text->getHeight();
 
 		_options.push_back(text);
 

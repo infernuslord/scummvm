@@ -117,16 +117,7 @@ Cinematic1::Cinematic1() {
 }
 
 Cinematic1::~Cinematic1() {
-	SAFE_DELETE(_stream);
-
-	// Free buffers
-	free(_buffer);
-	_buffer2 = NULL;
-
-	free(_backBuffer);
-	free(_tControlBuffer);
-	free(_cacheBuffer);
-	free(_compressedData);
+	deinit();
 }
 
 bool Cinematic1::init(Common::String filename) {
@@ -246,8 +237,8 @@ bool Cinematic1::tControl() {
 }
 
 bool Cinematic1::sControl(byte* buffer) {
-	if (!_tControlBuffer)
-		error("[Cinematic1::readFrameHeader] Control buffer not initialized");
+	if (!_tControlBuffer || !_backBuffer)
+		error("[Cinematic1::readFrameHeader] Buffers not initialized properly");
 
 	// Reset tControl buffer
 	memset(_tControlBuffer, 0, CINEMATIC_TCONTROLBUFFER_SIZE * sizeof(TControl));
@@ -312,6 +303,9 @@ bool Cinematic1::sControl(byte* buffer) {
 }
 
 uint32 Cinematic1::decompress(byte *data, byte *output, uint32 dataSize) {
+	if (!_cacheBuffer || !_compressedDataEnd || !_compressedBufferEnd || !_tControlBuffer)
+		error("[Cinematic1::decompress] Buffers not initialized properly");
+
 	// TODO: Reduce code duplication
 
 #define UPDATE_BUFFER_CONTROL(index) updateBufferControl(index, &buffer);
@@ -349,7 +343,7 @@ uint32 Cinematic1::decompress(byte *data, byte *output, uint32 dataSize) {
 						UPDATE_BUFFER_CONTROL(2 * *cacheBuffer);
 					} else {
 
-						uint32 total = *cacheBuffer - _field_46 - 1;
+						uint32 total = *cacheBuffer - (_field_46 + 1);
 						byte *offset;
 						for (offset = _compressedBufferEnd; ; offset += *offset + 1) {
 							if (total-- < 1)
@@ -499,6 +493,8 @@ Cinematic2::Cinematic2() {
 
 	_frameBuffer = NULL;
 	_tControlBuffer = NULL;
+
+	memset(_buffer1, 0, sizeof(_buffer1));
 }
 
 Cinematic2::~Cinematic2() {
@@ -1092,6 +1088,9 @@ cleanup:
 #pragma region Sound
 
 bool Movie::readSound() {
+	if (!_image)
+		error("[Movie::readSound] Image not initialized properly");
+
 	Cinematic *cinematic = _image->getCinematic();
 	if (!cinematic)
 		error("[Movie::readSound] Cinematic not initialized properly");

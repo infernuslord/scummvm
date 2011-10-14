@@ -2596,7 +2596,7 @@ void ZoneNIRing::onBag(ObjectId id, Id target, Id, uint32, DragControl *, byte t
 	}
 }
 
-void ZoneNIRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
+void ZoneNIRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &point) {
 	if (movabilityFrom == 10100 && movabilityTo == 0) {
 		_app->rotationSetActive(10101);
 		_app->objectSetAccessibilityOn(kObject10101, 0, 0);
@@ -2609,7 +2609,7 @@ void ZoneNIRing::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movab
 	}
 }
 
-void ZoneNIRing::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id, MovabilityType movabilityType) {
+void ZoneNIRing::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id /*target*/, MovabilityType movabilityType) {
 	switch (movabilityType) {
 	default:
 		break;
@@ -2696,7 +2696,7 @@ void ZoneNIRing::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabil
 	}
 }
 
-void ZoneNIRing::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32, Id target, MovabilityType movabilityType) {
+void ZoneNIRing::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id target, MovabilityType movabilityType) {
 	if (target == 100) {
 		_app->rotationSetMovabilityOff(movabilityFrom, 0, 0);
 	} else if (target == 110) {

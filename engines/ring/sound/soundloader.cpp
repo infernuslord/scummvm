@@ -49,6 +49,9 @@ void SoundResource::cleanup() {
 }
 
 void SoundResource::add(void *data, uint32 dataSize) {
+	if (!_buffer)
+		error("[SoundResource::add] Buffer not initialized properly");
+
 	if (data == NULL)
 		error("[SoundResource::add] Invalid data pointer");
 
@@ -89,7 +92,10 @@ void SoundResource::add(void *data, uint32 dataSize) {
 }
 
 void SoundResource::getBuffer(SoundBuffer *buffer, uint32 size) {
-	if (buffer == NULL)
+	if (!_currentPointer)
+		error("[SoundResource::getBuffer] Current pointer not initialized properly");
+
+	if (!buffer)
 		error("[SoundResource::getBuffer] Invalid info parameter");
 
 	if (_size) {
@@ -157,7 +163,7 @@ bool CompressedSound::init(const Common::String &path) {
 	return true;
 }
 
-int16 CompressedSound::getBitsPerSample() {
+int16 CompressedSound::getBitsPerSample() const {
 	if (_flags & Audio::FLAG_UNSIGNED)
 		return 8;
 
@@ -172,6 +178,9 @@ int16 CompressedSound::getBitsPerSample() {
 }
 
 uint32 CompressedSound::decode(byte delta, uint32 start, uint32, int16 *buffer) {
+	if (!_stream)
+		error("[CompressedSound::decode] Stream not initialized properly");
+
 	// Store buffer position
 	int16 *bufferStart = buffer;
 
@@ -185,7 +194,7 @@ uint32 CompressedSound::decode(byte delta, uint32 start, uint32, int16 *buffer) 
 
 		if (CHECK_BIT(var, position)) {
 			_initialValue += _offset;
-			WRITE_UINT16(buffer, _initialValue);
+			WRITE_UINT16(buffer, (uint16)_initialValue);
 			++buffer;
 			++start;
 		} else {
@@ -254,6 +263,9 @@ bool CompressedSoundMono::decompress(SoundBuffer *buffer) {
 }
 
 bool CompressedSoundMono::getChunk() {
+	if (!_stream)
+		error("[CompressedSoundMono::getChunk] Stream not initialized properly");
+
 	_stream->seek(52, SEEK_SET);
 	_compressedDataOffset = _stream->readUint16LE();
 
@@ -417,6 +429,9 @@ void SoundLoader::close() {
 }
 
 bool SoundLoader::getChunk() {
+	if (!_compressedStream)
+		error("[SoundLoader::getChunk] Compressed stream not initialized properly");
+
 	_compressedStream->getChunk();
 	_field_16 = false;
 
@@ -424,6 +439,9 @@ bool SoundLoader::getChunk() {
 }
 
 uint32 SoundLoader::getDataSize() {
+	if (!_compressedStream)
+		error("[SoundLoader::getChunk] Compressed stream not initialized properly");
+
 	return _compressedStream->getDataSize();
 }
 
