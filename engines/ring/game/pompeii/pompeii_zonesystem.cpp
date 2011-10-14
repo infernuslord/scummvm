@@ -61,9 +61,9 @@ void ZoneSystemPompeii::onInit() {
 	_app->objectPresentationShow(kObject1, 1);
 	_app->puzzleAdd(kPuzzleEncyclopedia);
 	_app->puzzleAddBackgroundImage(kPuzzleEncyclopedia, "encyclopedia.bmp", Common::Point(0, 0), true);
-	_app->objectAdd(kObject90004, "", "", 1);
-	_app->objectAddPuzzleAccessibility(kObject90004, kPuzzleEncyclopedia, Common::Rect(0, 440, 250, 480), true, kCursorMenuActive, 0);
-	_app->objectSetPuzzleAccessibilityKey(kObject90004, 0, Common::KEYCODE_ESCAPE);
+	_app->objectAdd(kObjectExitEncyclopedia, "", "", 1);
+	_app->objectAddPuzzleAccessibility(kObjectExitEncyclopedia, kPuzzleEncyclopedia, Common::Rect(0, 440, 250, 480), true, kCursorMenuActive, 0);
+	_app->objectSetPuzzleAccessibilityKey(kObjectExitEncyclopedia, 0, Common::KEYCODE_ESCAPE);
 	_app->puzzleAdd(kPuzzle99001);
 	_app->puzzleAddBackgroundImage(kPuzzle99001, "concl_p01.bmp", Common::Point(0, 16), true);
 	_app->puzzleAdd(kPuzzle99002);

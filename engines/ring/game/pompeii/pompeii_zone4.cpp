@@ -271,7 +271,7 @@ void Zone4Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 		}
 		break;
 
-	case kObject90004:
+	case kObjectExitEncyclopedia:
 		_app->restore();
 	}
 }

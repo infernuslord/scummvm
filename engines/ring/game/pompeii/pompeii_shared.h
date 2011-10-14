@@ -298,7 +298,7 @@ enum ObjectId {
 	kObject90001             = 90001,
 	kObject90002             = 90002,
 	kObject90003             = 90003,
-	kObject90004             = 90004,
+	kObjectExitEncyclopedia  = 90004,
 	kObject90401             = 90401,
 	kObjectRope2             = 90511,
 	kObjectBasket3           = 90512,
