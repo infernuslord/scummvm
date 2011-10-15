@@ -418,7 +418,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	// User
-	void startLogin();
+	void startLogin(PuzzleId puzzlePreferences);
 	void setUser(Common::String name) { _username = name; }
 	Common::String getUser() { return _username; }
 

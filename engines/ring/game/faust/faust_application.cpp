@@ -323,7 +323,7 @@ void ApplicationFaust::showMenu(ZoneId zone, MenuAction menuAction) {
 		case kMenuAction10:
 			exitZone();
 			initZones();
-			startLogin();
+			startLogin(kPuzzlePreferences);
 			break;
 		}
 		break;
@@ -503,7 +503,7 @@ void ApplicationFaust::loadAndStartLogin() {
 
 			exitZone();
 			initZones();
-			startLogin();
+			startLogin(kPuzzlePreferences);
 		}
 
 		messageFormat("CanNotLoadGame", filename);
@@ -526,7 +526,7 @@ void ApplicationFaust::loadAndInitZone() {
 
 			exitZone();
 			initZones();
-			startLogin();
+			startLogin(kPuzzlePreferences);
 
 			messageFormat("CanNotLoadGame", filename);
 			messageShowWarning(0);

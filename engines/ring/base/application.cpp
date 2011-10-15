@@ -2966,7 +2966,7 @@ ArchiveType Application::getArchiveType(ZoneId zone) const {
 
 #pragma region Login
 
-void Application::startLogin() {
+void Application::startLogin(PuzzleId puzzlePreferences) {
 	// Load the list of users
 	Common::Array<SaveManager::SaveEntry *> *users = getSaveManager()->loadUsers();
 
@@ -2974,14 +2974,14 @@ void Application::startLogin() {
 	for (uint32 i = 0; i < users->size(); i++) {
 		ObjectId objectId = i + 20000000;
 		objectAdd(objectId, (*users)[i]->description, (*users)[i]->filename, 1);
-		visualListAdd(3, kPuzzlePreferences, objectId);
+		visualListAdd(3, puzzlePreferences, objectId);
 	}
 
 	// Setup game
 	timerStopAll();
 	setupZone(_systemZone, kSetupTypeNone);
 	setSpace(_systemZone);
-	puzzleSetActive(kPuzzlePreferences);
+	puzzleSetActive(puzzlePreferences);
 	_currentGameZone = _systemZone;
 }
 

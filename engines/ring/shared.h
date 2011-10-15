@@ -298,13 +298,6 @@ enum ProgressState {
 enum PuzzleIdEnum {
 	kPuzzleInvalid          = 0,
 	kPuzzleMenu             = 1,
-
-	// Shared menu puzzles
-	kPuzzleGeneralMenu      = 90000,
-	kPuzzlePreferences      = 90001,
-	kPuzzleLoad             = 90002,
-	kPuzzleSave             = 90003,
-	kPuzzleGameStatus       = 90004
 };
 
 enum ObjectIdEnum {
