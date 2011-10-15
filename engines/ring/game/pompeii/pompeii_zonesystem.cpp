@@ -347,17 +347,17 @@ void ZoneSystemPompeii::onInit() {
 		_app->objectPresentationAddImageToPuzzle(kObject90401, i, kPuzzleStatus, Common::String::format("stat.%04d.bmp", i), Common::Point(190, 120), true, kDrawType1, 2400);
 	}
 
-	_app->objectAdd(kObject99601, "", "", 1);
-	_app->objectAddPresentation(kObject99601);
-	_app->objectPresentationAddAnimationToPuzzle(kObject99601, 0, kPuzzleSave, "kybcur", kImageTypeBMP, Common::Point(0, 0), kDrawType1, 2300, 6, 12.5, 16);
+	_app->objectAdd(kObjectSaveName, "", "", 1);
+	_app->objectAddPresentation(kObjectSaveName);
+	_app->objectPresentationAddAnimationToPuzzle(kObjectSaveName, 0, kPuzzleSave, "kybcur", kImageTypeBMP, Common::Point(0, 0), kDrawType1, 2300, 6, 12.5, 16);
 	_app->objectPresentationSetAnimationCoordinatesOnPuzzle(99601, 0, Common::Point(192, 388));
-	_app->objectAddPresentation(kObject99601);
-	_app->objectPresentationAddTextToPuzzle(kObject99601, 1, kPuzzleSave, "", Common::Point(30, 437), kFontDefault, Color(248, 250, 36), Color(-1, -1, -1));
-	_app->objectPresentationAddTextToPuzzle(kObject99601, 1, kPuzzleLoad, "", Common::Point(30, 437), kFontDefault, Color(248, 250, 36), Color(-1, -1, -1));
+	_app->objectAddPresentation(kObjectSaveName);
+	_app->objectPresentationAddTextToPuzzle(kObjectSaveName, 1, kPuzzleSave, "", Common::Point(30, 437), kFontDefault, Color(248, 250, 36), Color(-1, -1, -1));
+	_app->objectPresentationAddTextToPuzzle(kObjectSaveName, 1, kPuzzleLoad, "", Common::Point(30, 437), kFontDefault, Color(248, 250, 36), Color(-1, -1, -1));
 
 	_app->setArchiveType(kArchiveFile);
-	_app->objectAddPresentation(kObject99601);
-	_app->objectPresentationAddImageToPuzzle(kObject99601, 2, kPuzzleSave, "osc.bmp", Common::Point(320, 135), true, kDrawType1, 5000);
+	_app->objectAddPresentation(kObjectSaveName);
+	_app->objectPresentationAddImageToPuzzle(kObjectSaveName, 2, kPuzzleSave, "osc.bmp", Common::Point(320, 135), true, kDrawType1, 5000);
 
 	if (_app->getConfiguration().artSY)
 		_app->setArchiveType(kArchiveArt);

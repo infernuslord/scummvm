@@ -387,7 +387,90 @@ void ApplicationPompeii::onMouseRightButtonUp(const Common::Event &evt) {
 }
 
 void ApplicationPompeii::onKeyDown(Common::Event &evt) {
-	error("[ApplicationPompeii::onKeyDown] Not implemented (evt: %d)", evt.type);
+	Common::KeyCode keycode = evt.kbd.keycode;
+
+	switch (getCurrentPuzzleId()) {
+	default:
+		if (keycode == Common::KEYCODE_SPACE
+		 && !soundIsPlayingType(kSoundTypeDialog)) {
+			objectPresentationHide(kObjectItemList);
+			objectSetAccessibilityOff(kObjectItemList);
+			visualBoxHide(6, kPuzzleMenu);
+
+			if (!varGetByte(90508)) {
+				puzzleSetMod(kPuzzleMenu, 2, 6);
+				objectPresentationShow(kObject6, 0);
+				objectSetAccessibilityOn(kObject6);
+				if (hasCurrentRotation())
+					varSetDword(99027, (int16)getCurrentRotationId());
+
+				objectPresentationShow(kObject6, 5);
+				sub_42F8C0();
+				objectSetAccessibilityOn(kObject6, 1, 4);
+				objectSetAccessibilityOff(kObject6, 6, 18);
+				varSetByte(90508, 1);
+			}
+		}
+		break;
+
+	case kPuzzleEncyclopedia:
+	case kPuzzle50001:
+	case kPuzzlePreferences:
+	case kPuzzleStatus:
+	case kPuzzle90005:
+	case kPuzzleInsertCd:
+		break;
+
+	case kPuzzleLoad:
+		if (keycode == Common::KEYCODE_DELETE) {
+			if (visualListGetObjectIdClicked(4, kPuzzleLoad)) {
+				messageGet("DoYouWantToDeleteSavedGame");
+				messageShowQuestion(8);
+			}
+		}
+		break;
+
+	case kPuzzleSave:
+		if (keycode == Common::KEYCODE_DELETE) {
+			if (visualListGetObjectIdClicked(1, kPuzzleSave)) {
+				messageGet("DoYouWantToDeleteSavedGame");
+				messageShowQuestion(4);
+			}
+
+			break;
+		}
+
+		visualListResetObjectClicked(1, kPuzzleSave);
+		objectSetAccessibilityOn(kObject99025);
+		objectPresentationHide(kObject99025, 1);
+
+		switch (keycode) {
+		default:
+			if (objectPresentationGetTextWidth(kObjectSaveName, 1, 0) >= 235)
+				return;
+
+			*getSaveManager()->getName() += (char)evt.kbd.ascii;
+			break;
+
+		case Common::KEYCODE_ESCAPE:
+			getSaveManager()->getName()->clear();
+			break;
+
+		case Common::KEYCODE_BACKSPACE:
+			if (getSaveManager()->getName()->size() != 1)
+				getSaveManager()->getName()->deleteLastChar();
+			break;
+
+		case Common::KEYCODE_RETURN:
+			// Do nothing
+			return;
+		}
+
+		objectPresentationSetTextToPuzzle(kObjectSaveName, 1, 0, *getSaveManager()->getName());
+		objectPresentationSetTextCoordinatesToPuzzle(kObjectSaveName, 1, 0, Common::Point(344, 181));
+		objectPresentationSetAnimationCoordinatesOnPuzzle(kObjectSaveName, 0, Common::Point((int16)objectPresentationGetTextWidth(kObjectSaveName, 1, 0) + 30, 435));
+		break;
+	}
 }
 
 void ApplicationPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
@@ -878,7 +961,7 @@ void ApplicationPompeii::onVisualList(Id id, uint32 type, const Common::Point &p
 		if (type == 3) {
 			Common::String userFolder = getObject(visualListGetObjectIdClicked(1, kPuzzlePreferences))->getName();
 			objectPresentationSetTextToPuzzle(99601, 1, 1, userFolder);
-			objectPresentationShow(kObject99601, 1);
+			objectPresentationShow(kObjectSaveName, 1);
 			objectSetAccessibilityOn(kObject99023);
 			objectPresentationHide(kObject99023, 1);
 		}
@@ -941,6 +1024,10 @@ void ApplicationPompeii::onVisualList(Id id, uint32 type, const Common::Point &p
 
 bool ApplicationPompeii::sub_42F7B0() {
 	error("[ApplicationPompeii::sub_42F7B0] Not implemented");
+}
+
+void ApplicationPompeii::sub_42F8C0() {
+	error("[ApplicationPompeii::sub_42F8C0] Not implemented");
 }
 
 void ApplicationPompeii::showDay() {

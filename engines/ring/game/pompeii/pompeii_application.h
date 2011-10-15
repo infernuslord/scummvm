@@ -121,6 +121,7 @@ private:
 	ZoneId _savedZone;
 
 	bool sub_42F7B0();
+	void sub_42F8C0();
 	void showDay();
 	void setupUser(Id userId);
 
