@@ -122,6 +122,8 @@ void CursorImage::draw() {
 		if (!buf)
 			error("[CursorImage::draw] Cannot allocate cursor buffer (size: %d)", size);
 
+		memset(buf, 0, size);
+
 		if (!Image::crossBlit(buf,
 		                 (byte *)_image->getSurface()->getBasePtr(0, _image->getHeight() - 1),
 		                 _image->getWidth() * formatScreen.bytesPerPixel,

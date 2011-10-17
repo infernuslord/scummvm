@@ -340,6 +340,10 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 				for (int x = 0; x < w; x++, src += 4, dst += 2) {
 					uint32 color = *(const uint32 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
+
+					if (a == 0)
+						continue;
+
 					color = dstFmt.ARGBToColor(a, r, g, b);
 					*(uint16 *)dst = (uint16)color;
 				}
