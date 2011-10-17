@@ -331,6 +331,156 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 	return destRect;
 }
 
+// Function to blit a rect from one color format to another (copied from conversion.cpp)
+// Added support for downsampling and copying data from bottom to top (our images are decoded that way)
+bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown) {
+
+	// Error out if conversion is impossible
+	if ((srcFmt.bytesPerPixel == 1)
+	 || (dstFmt.bytesPerPixel == 1)
+	 || (!srcFmt.bytesPerPixel)
+	 || (!dstFmt.bytesPerPixel))
+		return false;
+
+	// Don't perform unnecessary conversion
+	if (srcFmt == dstFmt) {
+		if (dst == src)
+			return true;
+
+		if (dstpitch == srcpitch && ((w * dstFmt.bytesPerPixel) == dstpitch)) {
+			memcpy(dst,src,dstpitch * h);
+			return true;
+		} else {
+			for (int i = 0; i < h; i++) {
+				memcpy(dst,src,w * dstFmt.bytesPerPixel);
+				dst += dstpitch;
+				src += srcpitch;
+			}
+
+			return true;
+		}
+	}
+
+	// Faster, but larger, to provide optimized handling for each case.
+	int srcDelta, dstDelta;
+	srcDelta = (srcpitch - w * srcFmt.bytesPerPixel);
+	dstDelta = (dstpitch - w * dstFmt.bytesPerPixel);
+
+	// TODO: optimized cases for dstDelta of 0
+	uint8 r, g, b, a;
+	if (dstFmt.bytesPerPixel == 2) {
+		switch (srcFmt.bytesPerPixel) {
+		default:
+			error("[Image::crossBlit] Unsupported bit depth for downsampling to 16bpp (%d)", srcFmt.bytesPerPixel * 8);
+			break;
+
+		case 2:
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 2, dst += 2) {
+					uint16 color = *(const uint16 *)src;
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					*(uint16 *)dst = color;
+				}
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
+				dst += dstDelta;
+			}
+			break;
+
+		case 4:
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 4, dst += 2) {
+					uint32 color = *(const uint32 *)src;
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					*(uint16 *)dst = (uint16)color;
+				}
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
+				dst += dstDelta;
+			}
+			break;
+		}
+	} else if (dstFmt.bytesPerPixel == 3) {
+		if (srcFmt.bytesPerPixel > dstFmt.bytesPerPixel)
+			error("[Image::crossBlit] Downsampling to 24bpp not implemented");
+
+		uint32 color;
+		uint8 *col = (uint8 *) &color;
+#ifdef SCUMM_BIG_ENDIAN
+		col++;
+#endif
+		if (srcFmt.bytesPerPixel == 2) {
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 2, dst += 3) {
+					color = *(const uint16 *)src;
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					memcpy(dst, col, 3);
+				}
+				src += srcDelta;
+				dst += dstDelta;
+			}
+		} else {
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 3, dst += 3) {
+					memcpy(col, src, 3);
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					memcpy(dst, col, 3);
+				}
+				src += srcDelta;
+				dst += dstDelta;
+			}
+		}
+	} else if (dstFmt.bytesPerPixel == 4) {
+		if (srcFmt.bytesPerPixel > dstFmt.bytesPerPixel)
+			error("[Image::crossBlit] Downsampling to 32bpp not implemented");
+
+		uint32 color;
+		if (srcFmt.bytesPerPixel == 2) {
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 2, dst += 4) {
+					color = *(const uint16 *)src;
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					*(uint32 *)dst = color;
+				}
+				src += srcDelta;
+				dst += dstDelta;
+			}
+		} else if (srcFmt.bytesPerPixel == 3) {
+			uint8 *col = (uint8 *)&color;
+#ifdef SCUMM_BIG_ENDIAN
+			col++;
+#endif
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 2, dst += 4) {
+					memcpy(col, src, 3);
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					*(uint32 *)dst = color;
+				}
+				src += srcDelta;
+				dst += dstDelta;
+			}
+		} else {
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++, src += 4, dst += 4) {
+					color = *(const uint32 *)src;
+					srcFmt.colorToARGB(color, a, r, g, b);
+					color = dstFmt.ARGBToColor(a, r, g, b);
+					*(uint32 *)dst = color;
+				}
+				src += srcDelta;
+				dst += dstDelta;
+			}
+		}
+	} else {
+		return false;
+	}
+	return true;
+}
+
 void Image::setSurface(Graphics::Surface *surface) {
 	destroy();
 

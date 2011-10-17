@@ -49,6 +49,8 @@ public:
 	Common::Rect draw(Graphics::Surface *surface, const Common::Point &dest);
 	Common::Rect draw(Graphics::Surface *surface, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset);
 
+	static bool crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown = true);
+
 	// Accessors
 	byte getBPP()      { return _surface ? _surface->format.bytesPerPixel * 8: 0; }
 	uint32 getWidth()  { return _surface ? _surface->w : 0; }

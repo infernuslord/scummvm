@@ -101,66 +101,48 @@ void CursorImage::draw() {
 	if (!_image->isInitialized())
 		alloc();
 
-	// Easy case: 16bpp cursors
-	if (_image->getBPP() == 16) {
+	switch (_image->getBPP()) {
+	default:
+		error("[CursorImage::draw] Invalid bit depth (%d)", _image->getBPP());
+
+	case 16:
 		CursorMan.replaceCursor((byte *)_image->getSurface()->pixels, _image->getWidth(), _image->getHeight(), -_offset.x, -_offset.y, 0, 1, &_image->getSurface()->format);
 		CursorMan.disableCursorPalette(true);
 		CursorMan.showMouse(true);
+		break;
 
-		return;
-	}
+	case 24:
+	case 32: {
+		Graphics::PixelFormat formatScreen = g_system->getScreenFormat();
+		Graphics::PixelFormat formatCursor = _image->getSurface()->format;
 
-	// 24bpp & 32bpp cases
-	if (_image->getBPP() != 24 && _image->getBPP() != 32)
-		error("[CursorImage::draw] Cursor conversion is only supported for 24 & 32bpp images");
+		// Prepare buffer to hold new cursor data
+		uint32 size = _image->getWidth() * _image->getHeight() * formatScreen.bytesPerPixel;
+		byte *buf = (byte *)malloc(size);
+		if (!buf)
+			error("[CursorImage::draw] Cannot allocate cursor buffer (size: %d)", size);
 
-	//////////////////////////////////////////////////////////////////////////
-	// HACK: Convert to 16bpp for display
-	Graphics::PixelFormat formatCursor = _image->getSurface()->format;
-	Graphics::PixelFormat formatScreen = g_system->getScreenFormat();
+		if (!Image::crossBlit(buf,
+		                 (byte *)_image->getSurface()->getBasePtr(0, _image->getHeight() - 1),
+		                 _image->getWidth() * formatScreen.bytesPerPixel,
+		                 _image->getSurface()->pitch,
+		                 _image->getWidth(),
+		                 _image->getHeight(),
+		                 formatScreen,
+		                 formatCursor,
+		                 false))
+			error("[CursorImage::draw] Cannot convert cursor image to proper screen format");
 
-	// Prepare buffer to hold new cursor data
-	uint32 size = _image->getWidth() * _image->getHeight();
-	int16 *buf = (int16 *)malloc(size * 2);
-	if (!buf)
-		error("[CursorImage::draw] Cannot allocate cursor buffer (size: %d)", size);
+		// Replace cursor
+		CursorMan.replaceCursor((byte *)buf, _image->getWidth(), _image->getHeight(), -_offset.x, -_offset.y, 0, 1, &formatScreen);
+		CursorMan.disableCursorPalette(true);
+		CursorMan.showMouse(true);
 
-	// Copy data (and mirror image)
-	byte *src = (byte *)_image->getSurface()->getBasePtr(0, _image->getHeight() - 1);
-	int16 *dst = buf;
-	for (uint32 j = 0; j < _image->getHeight(); j++) {
-		// Read pixel data
-		uint8 a = 0, r = 0, g = 0, b = 0;
-
-		for (uint32 i = 0; i < _image->getWidth(); i++) {
-			switch (_image->getBPP()) {
-			default:
-				error("[CursorImage::draw] Invalid bpp (%d) for cursor (24/32bpp only)", _image->getBPP());
-
-			case 24:
-				formatCursor.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
-				break;
-
-			case 32:
-				formatCursor.colorToARGB(READ_LE_UINT32(src + i * 4), a, r, g, b);
-				break;
-			}
-
-			dst[i] = (int16)formatScreen.ARGBToColor(a, r, g, b);
+		// Cleanup
+		free(buf);
+		break;
 		}
-
-		// Advance buffers
-		dst += _image->getWidth();        //pitch for 16bpp buffer
-		src -= _image->getSurface()->pitch;
 	}
-
-	// Replace cursor
-	CursorMan.replaceCursor((byte *)buf, _image->getWidth(), _image->getHeight(), -_offset.x, -_offset.y, 0, 1, &formatScreen);
-	CursorMan.disableCursorPalette(true);
-	CursorMan.showMouse(true);
-
-	// Cleanup
-	free(buf);
 }
 
 #pragma endregion
