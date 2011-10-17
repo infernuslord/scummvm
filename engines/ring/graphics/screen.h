@@ -54,7 +54,7 @@ public:
 	void drawText(Text *text);
 	void drawText(Text *text, const Common::Rect &exclude, const Common::Rect &exclude2);
 
-	void copySurface(Image *image, uint32 a2, uint32 a3) const;
+	void copySurface(Image *image) const;
 
 	void updateScreen();
 

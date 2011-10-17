@@ -73,9 +73,9 @@ void ScreenManager::draw(Image *image, const Common::Point &point, DrawType type
 	if (!image)
 		error("[ScreenManager::draw] Invalid image pointer!");
 
-	// Check the screen surface bit depth (we only handle 16bpp)
-	if (_screen.format.bytesPerPixel != 2)
-		error("[ScreenManager::draw] Engine only handles 16bpp surfaces (was: %d)!", _screen.format.bytesPerPixel * 8);
+	// Check the screen surface bit depth (we only handle 16 & 32bpp)
+	if (_screen.format.bytesPerPixel != 2 && _screen.format.bytesPerPixel != 4)
+		error("[ScreenManager::draw] Engine only handles 16/32bpp surfaces (was: %d)!", _screen.format.bytesPerPixel * 8);
 
 	// Check the image bit depth
 	switch (image->getBPP()) {
@@ -176,9 +176,7 @@ void ScreenManager::drawText(Text *text, const Common::Rect &exclude, const Comm
 	drawText(text);
 }
 
-void ScreenManager::copySurface(Image *image, uint32, uint32) const {
-	// TODO use parameters?
-
+void ScreenManager::copySurface(Image *image) const {
 	image->getSurface()->copyFrom(_screen);
 }
 

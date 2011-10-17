@@ -231,7 +231,7 @@ void ApplicationPompeii::startMenu(bool savegame) {
 		_thumbnail->create(24, 2, 640, 480);
 
 		// Save a copy of the screen to our image
-		_screenManager->copySurface(_thumbnail, 0, 0);
+		_screenManager->copySurface(_thumbnail);
 	}
 
 	_currentGameZone = getCurrentZone();
