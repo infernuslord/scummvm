@@ -128,6 +128,7 @@ void CursorImage::draw() {
 		                 _image->getSurface()->pitch,
 		                 _image->getWidth(),
 		                 _image->getHeight(),
+		                 0,
 		                 formatScreen,
 		                 formatCursor,
 		                 false))

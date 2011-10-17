@@ -266,74 +266,27 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 
 	//////////////////////////////////////////////////////////////////////////
 	// DEBUG: Draw destination rect
-	screen->fillRect(destRect, Color(255, 0, 0).getColor());
+	//screen->fillRect(destRect, Color(255, 0, 0).getColor());
 	//////////////////////////////////////////////////////////////////////////
 
-	byte *src  = (byte*)_surface->getBasePtr(srcX, (int)getHeight() - (offset + 1));
-	byte *dst  = (byte *)screen->getBasePtr(dest.x, dest.y);
-	int16 height = destRect.height();
-	uint16 stride = (uint16)(destRect.width() * _surface->format.bytesPerPixel);
-
-	// Handle different bit depth
-	switch (getBPP()) {
-	default:
-		error("[Image::draw] Invalid image bpp (%d)!", getBPP());
-
-	case 8:
-		error("[Image::draw] Drawing not implemented (bpp: %d)!", getBPP());
-
-	// Fast case
-	case 16:
-		do {
-			memcpy(dst, src, stride);
-			dst += screen->pitch;
-			src -= _surface->pitch;
-		} while (--height);
-		break;
-
-	// Downsample to 16bpp
-	case 24:
-	case 32: {
-		Graphics::PixelFormat formatImage  = _surface->format;
-		Graphics::PixelFormat formatScreen = g_system->getScreenFormat();
-
-		int16 *dstBuffer = (int16 *)dst;
-		// Copy data (and mirror image)
-		for (int32 j = offset; j < destRect.height(); j++) {
-			// Read pixel data
-			uint8 a = 0, r = 0, g = 0, b = 0;
-
-			for (int16 i = 0; i < destRect.width(); i++) {
-				switch (getBPP()) {
-				default:
-					error("[CursorImage::draw] Invalid bpp (%d) for cursor (24/32bpp only)", getBPP());
-
-				case 24:
-					formatImage.colorToARGB(READ_LE_UINT32(src + i * 3), a, r, g, b);
-					break;
-
-				case 32:
-					formatImage.colorToARGB(READ_LE_UINT32(src + i * 4), a, r, g, b);
-					break;
-				}
-
-				dstBuffer[i] = (int16)formatScreen.ARGBToColor(a, r, g, b);
-			}
-
-			// Advance buffers
-			dstBuffer += screen->w;        //pitch for 16bpp buffer
-			src -= _surface->pitch;
-		}
-		}
-		break;
-	}
+	if (!crossBlit((byte *)screen->getBasePtr(dest.x, dest.y),
+	               (byte *)_surface->getBasePtr(srcX, (int)getHeight() - (offset + 1)),
+	               screen->pitch,
+	               _surface->pitch,
+	               destRect.width(),
+	               destRect.height(),
+	               offset,
+	               screen->format,
+	               _surface->format,
+	               false))
+		error("[Image::draw] Cannot convert image to proper screen format");
 
 	return destRect;
 }
 
 // Function to blit a rect from one color format to another (copied from conversion.cpp)
 // Added support for downsampling and copying data from bottom to top (our images are decoded that way)
-bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown) {
+bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, int offset, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown) {
 
 	// Error out if conversion is impossible
 	if ((srcFmt.bytesPerPixel == 1)
@@ -347,18 +300,13 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 		if (dst == src)
 			return true;
 
-		if (dstpitch == srcpitch && ((w * dstFmt.bytesPerPixel) == dstpitch)) {
-			memcpy(dst,src,dstpitch * h);
-			return true;
-		} else {
-			for (int i = 0; i < h; i++) {
-				memcpy(dst,src,w * dstFmt.bytesPerPixel);
-				dst += dstpitch;
-				src += srcpitch;
-			}
-
-			return true;
+		for (int i = 0; i < h; i++) {
+			memcpy(dst,src,w * dstFmt.bytesPerPixel);
+			dst += dstpitch;
+			src += (topDown ? srcpitch : -srcpitch);
 		}
+
+		return true;
 	}
 
 	// Faster, but larger, to provide optimized handling for each case.
@@ -371,11 +319,11 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 	if (dstFmt.bytesPerPixel == 2) {
 		switch (srcFmt.bytesPerPixel) {
 		default:
-			error("[Image::crossBlit] Unsupported bit depth for downsampling to 16bpp (%d)", srcFmt.bytesPerPixel * 8);
-			break;
+			warning("[Image::crossBlit] Unsupported bit depth for downsampling to 16bpp (%d)", srcFmt.bytesPerPixel * 8);
+			return false;
 
 		case 2:
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 2, dst += 2) {
 					uint16 color = *(const uint16 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
@@ -388,7 +336,7 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 			break;
 
 		case 4:
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 4, dst += 2) {
 					uint32 color = *(const uint32 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
@@ -410,42 +358,44 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 		col++;
 #endif
 		if (srcFmt.bytesPerPixel == 2) {
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 2, dst += 3) {
 					color = *(const uint16 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
 					color = dstFmt.ARGBToColor(a, r, g, b);
 					memcpy(dst, col, 3);
 				}
-				src += srcDelta;
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
 				dst += dstDelta;
 			}
 		} else {
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 3, dst += 3) {
 					memcpy(col, src, 3);
 					srcFmt.colorToARGB(color, a, r, g, b);
 					color = dstFmt.ARGBToColor(a, r, g, b);
 					memcpy(dst, col, 3);
 				}
-				src += srcDelta;
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
 				dst += dstDelta;
 			}
 		}
 	} else if (dstFmt.bytesPerPixel == 4) {
-		if (srcFmt.bytesPerPixel > dstFmt.bytesPerPixel)
-			error("[Image::crossBlit] Downsampling to 32bpp not implemented");
+		if (srcFmt.bytesPerPixel > dstFmt.bytesPerPixel) {
+			warning("[Image::crossBlit] Downsampling to 32bpp not implemented");
+			return false;
+		}
 
 		uint32 color;
 		if (srcFmt.bytesPerPixel == 2) {
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 2, dst += 4) {
 					color = *(const uint16 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
 					color = dstFmt.ARGBToColor(a, r, g, b);
 					*(uint32 *)dst = color;
 				}
-				src += srcDelta;
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
 				dst += dstDelta;
 			}
 		} else if (srcFmt.bytesPerPixel == 3) {
@@ -453,25 +403,25 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 #ifdef SCUMM_BIG_ENDIAN
 			col++;
 #endif
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 2, dst += 4) {
 					memcpy(col, src, 3);
 					srcFmt.colorToARGB(color, a, r, g, b);
 					color = dstFmt.ARGBToColor(a, r, g, b);
 					*(uint32 *)dst = color;
 				}
-				src += srcDelta;
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
 				dst += dstDelta;
 			}
 		} else {
-			for (int y = 0; y < h; y++) {
+			for (int y = offset; y < h; y++) {
 				for (int x = 0; x < w; x++, src += 4, dst += 4) {
 					color = *(const uint32 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
 					color = dstFmt.ARGBToColor(a, r, g, b);
 					*(uint32 *)dst = color;
 				}
-				src += srcDelta;
+				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
 				dst += dstDelta;
 			}
 		}

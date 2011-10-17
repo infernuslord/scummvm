@@ -1014,7 +1014,7 @@ void Movie::play(const Common::Point &point) {
 					error("[Movie::play] Chunk S: Error reading image (index: %d)", chunkIndex);
 
 				// Draw frame
-				screen->draw(image, point, kDrawType1);
+				//screen->draw(image, point, kDrawType1);
 
 				if (_hasDialog)
 					getApp()->getDialogHandler()->play();
