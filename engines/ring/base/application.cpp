@@ -873,8 +873,60 @@ cleanup:
 	SAFE_DELETE(imageTo);
 }
 
-void Application::fadeOut(uint32 frameCount, const Color &colorTo, uint32 ticksWait) {
-	warning("[Application::fadeOut] Not implemented");
+void Application::fadeOut(uint32 frameCount, Color colorTo, uint32 ticksWait) {
+	if (!_screenManager)
+		error("[Application::fadeOut] Screen manager not initialized properly");
+
+	// Get screen image
+	byte bpp = _screenManager->getSurface()->format.bytesPerPixel;
+	Image *image = new Image();
+	image->create(bpp * 8, 2, 640, 480);
+	_screenManager->copySurface(image);
+	byte *buffer = (byte *)image->getSurface()->pixels;
+
+	// Setup animation
+	Animation *animation = new Animation();
+	animation->init(frameCount, 15.0f, 1, 4, 0);
+	animation->setField21(2);
+	animation->setTicks(g_system->getMillis());
+
+	// Setup difference image
+	byte *diffBuffer = (byte *)malloc(640 * 480 * bpp);
+	if (!diffBuffer)
+		error("[Application::fadeOut] Cannot allocate buffer for fade");
+
+	error("[Application::fadeOut] Not implemented");;
+
+	// Fade out image
+	if (frameCount >= 1) {
+		uint32 activeFrame = 1;
+		bool stop = false;
+		do {
+
+			error("[Application::fadeOut] Not implemented");;
+
+			// Wait until next frame
+			while (animation->getCurrentFrame() == activeFrame && !stop)
+				stop = checkEvents();
+
+			if (stop)
+				break;
+
+			activeFrame = animation->getActiveFrame() + 1;
+
+		} while (activeFrame <= frameCount);
+	}
+
+	// Show final image
+	image->getSurface()->fillRect(Common::Rect(0, 0, 640, 480), colorTo.getColor());
+
+	// Wait for end of animation
+	waitForEscape(ticksWait);
+
+	// Cleanup
+	free(diffBuffer);
+	delete animation;
+	delete image;
 }
 
 void Application::waitForEscape(uint32 ticksWait) const {
