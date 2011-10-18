@@ -25,6 +25,7 @@
 #include "ring/game/pompeii/pompeii_shared.h"
 
 #include "ring/debug.h"
+#include "ring/helpers.h"
 #include "ring/ring.h"
 
 using namespace PompeiiGame;
@@ -2125,15 +2126,117 @@ void Zone1Pompeii::onTimer(TimerId id) {
 	}
 }
 
-void Zone1Pompeii::onAnimationNextFrame(Id animationId, const Common::String &name, uint32 frame, uint32 frameCount) {
-	error("[Zone1Pompeii::onAnimationNextFrame] Not implemented");
+void Zone1Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*name*/, uint32 frame, uint32 frameCount) {
+	switch (animationId) {
+	default:
+		break;
+
+	case 1001:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject1001, 0);
+			_app->objectPresentationPauseAnimation(kObject1001, 1);
+			_app->objectPresentationPauseAnimation(kObject1001, 3);
+			_app->objectPresentationPauseAnimation(kObject1006, 0);
+			_app->objectPresentationPauseAnimation(kObject10071, 0);
+			_app->objectPresentationPauseAnimation(kObject10071, 1);
+			_app->objectPresentationPauseAnimation(kObject1009, 0);
+			_app->objectPresentationPauseAnimation(kObject1009, 1);
+			_app->objectPresentationPauseAnimation(kObject1011, 0);
+			_app->objectPresentationPauseAnimation(kObject1011, 1);
+			_app->objectPresentationPauseAnimation(kObject1013, 0);
+			_app->objectPresentationPauseAnimation(kObject1013, 1);
+			_app->objectPresentationPauseAnimation(kObject1016, 0);
+			_app->objectPresentationPauseAnimation(kObject1017, 0);
+			_app->objectPresentationPauseAnimation(kObject1017, 1);
+			_app->objectPresentationPauseAnimation(kObject1019, 0);
+			_app->objectPresentationPauseAnimation(kObject1019, 1);
+			_app->objectPresentationPauseAnimation(kObject1020, 0);
+			_app->objectPresentationPauseAnimation(kObject1020, 1);
+			_app->objectPresentationPauseAnimation(kObject1021, 0);
+			_app->objectPresentationPauseAnimation(kObject1021, 2);
+			_app->objectPresentationPauseAnimation(kObject1023, 0);
+			_app->objectPresentationPauseAnimation(kObject1023, 1);
+			_app->objectPresentationPauseAnimation(kObject1039, 0);
+			_app->objectPresentationPauseAnimation(kObject1039, 1);
+			_app->objectPresentationPauseAnimation(kObject1040, 0);
+			_app->objectPresentationPauseAnimation(kObject1035, 0);
+			_app->objectPresentationPauseAnimation(kObject1041, 0);
+			_app->objectPresentationPauseAnimation(kObject1045, 0);
+			_app->objectPresentationPauseAnimation(kObject1028, 0);
+			_app->objectPresentationPauseAnimation(kObject1028, 1);
+			_app->objectPresentationPauseAnimation(kObject1031, 0);
+			_app->objectPresentationPauseAnimation(kObject1031, 1);
+			_app->objectPresentationPauseAnimation(kObject1033, 0);
+			_app->objectPresentationPauseAnimation(kObject1033, 1);
+			_app->objectPresentationPauseAnimation(kObject1046, 0);
+			_app->objectPresentationPauseAnimation(kObject1046, 1);
+			_app->objectPresentationPauseAnimation(kObject1050, 0);
+			_app->objectPresentationPauseAnimation(kObject1051, 0);
+			_app->objectPresentationPauseAnimation(kObject1053, 0);
+			_app->objectPresentationPauseAnimation(kObject1054, 0);
+			_app->objectPresentationPauseAnimation(kObject1055, 0);
+			_app->objectPresentationPauseAnimation(kObject1049, 0);
+			_app->objectPresentationPauseAnimation(kObject1057, 0);
+			_app->objectPresentationPauseAnimation(kObject1057, 1);
+			_app->objectPresentationPauseAnimation(kObject1059, 0);
+			_app->objectPresentationPauseAnimation(kObject1059, 1);
+			_app->objectPresentationPauseAnimation(kObject10591, 0);
+			_app->objectPresentationPauseAnimation(kObject10591, 1);
+			_app->objectPresentationPauseAnimation(kObject1062, 0);
+			_app->objectPresentationPauseAnimation(kObject1062, 1);
+			_app->objectPresentationPauseAnimation(kObject1061, 2);
+			_app->objectPresentationPauseAnimation(kObject1064, 0);
+			_app->objectPresentationPauseAnimation(kObject1066, 0);
+			_app->objectPresentationPauseAnimation(kObject1067, 0);
+			_app->objectPresentationPauseAnimation(kObject1068, 0);
+			_app->objectPresentationPauseAnimation(kObject1068, 1);
+			_app->objectPresentationPauseAnimation(kObject1077, 0);
+			_app->objectPresentationPauseAnimation(kObject1077, 1);
+			_app->objectPresentationPauseAnimation(kObject1079, 0);
+			_app->objectPresentationPauseAnimation(kObject1081, 0);
+			_app->objectPresentationPauseAnimation(kObject1081, 2);
+			_app->objectPresentationPauseAnimation(kObject1084, 0);
+			_app->objectPresentationPauseAnimation(kObject1085, 0);
+			_app->objectPresentationPauseAnimation(kObject1093, 0);
+
+			_app->timerStart(kTimer10, 1000 * (rnd(5) + 2));
+		}
+		break;
+
+	case 1002:
+		if (frame == frameCount) {
+			_app->objectPresentationPauseAnimation(kObject1001, 2);
+			_app->objectPresentationPauseAnimation(kObject1001, 4);
+			_app->objectPresentationPauseAnimation(kObject10071, 2);
+			_app->objectPresentationPauseAnimation(kObject1010, 0);
+			_app->objectPresentationPauseAnimation(kObject1011, 2);
+			_app->objectPresentationPauseAnimation(kObject1013, 2);
+			_app->objectPresentationPauseAnimation(kObject1016, 1);
+			_app->objectPresentationPauseAnimation(kObject1019, 2);
+			_app->objectPresentationPauseAnimation(kObject1053, 1);
+			_app->objectPresentationPauseAnimation(kObject1054, 1);
+			_app->objectPresentationPauseAnimation(kObject1057, 2);
+			_app->objectPresentationPauseAnimation(kObject1059, 2);
+			_app->objectPresentationPauseAnimation(kObject1061, 0);
+			_app->objectPresentationPauseAnimation(kObject1061, 1);
+			_app->objectPresentationPauseAnimation(kObject1061, 3);
+			_app->objectPresentationPauseAnimation(kObject1064, 1);
+			_app->objectPresentationPauseAnimation(kObject1066, 1);
+			_app->objectPresentationPauseAnimation(kObject1068, 2);
+			_app->objectPresentationPauseAnimation(kObject1077, 2);
+			_app->objectPresentationPauseAnimation(kObject1078, 0);
+			_app->objectPresentationPauseAnimation(kObject1093, 1);
+			_app->timerStart(kTimer11, 1000 * (rnd(5) + 2));
+		}
+		break;
+	}
 }
 
 void Zone1Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
 	error("[Zone1Pompeii::onSound] Not implemented");
 }
 
-void Zone1Pompeii::onUpdateBag(const Common::Point &point) {
+void Zone1Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 	if (_hideBox) {
 		_app->visualBoxHide(6, kPuzzleMenu);
 		_hideBox = false;
@@ -2164,8 +2267,53 @@ void Zone1Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uin
 	}
 }
 
-void Zone1Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
-	error("[Zone1Pompeii::onBeforeRide] Not implemented");
+void Zone1Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
+	if (movabilityType != kMovabilityRotationToRotation)
+		return;
+
+	switch (movabilityFrom) {
+	default:
+		break;
+
+	case 10032:
+		if (movabilityTo == 100515)
+			_app->onCall(30);
+		break;
+
+	case 10012:
+		if (movabilityTo == 10013 && _app->varGetByte(90001) == 3 && !_app->varGetByte(90302)) {
+			_app->timerStop(kTimer3);
+			_app->varSetByte(1029, 1);
+			_app->playMovie("S00A01-5");
+			_app->objectPresentationShow(kObject1048, 0);
+			_app->rotationSetActive(10012);
+			onVisual(302);
+		}
+		break;
+
+	case 100515:
+		if (movabilityTo == 10032)
+			_app->onCall(20);
+		break;
+
+	case 1001102:
+		if (movabilityTo == 10011302 && _app->varGetByte(90416) >= 2 && _app->varGetByte(90419) == 1)
+			_app->exitToMenu(kMenuAction12);
+		break;
+
+	case 10011002:
+		if (_app->varGetByte(90416) == 2) {
+			_app->varSetByte(90416, 3);
+			_app->timerStop(kTimer6);
+			_app->rotationSet3DSoundOn(10011002, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 1);
+
+			for (uint32 i = 1; i <= 6; i++)
+				_app->objectPresentationShow(kObject1080, i);
+		}
+		break;
+	}
 }
 
 void Zone1Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
