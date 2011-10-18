@@ -262,17 +262,20 @@ enum SoundLoopType {
 };
 
 enum MenuAction {
-	kMenuAction0  = 0,
-	kMenuAction1  = 1,
-	kMenuAction2  = 2,
-	kMenuAction3  = 3,
-	kMenuAction4  = 4,
-	kMenuAction7  = 7,
-	kMenuAction8  = 8,
-	kMenuAction9  = 9,
-	kMenuAction10 = 10,
-	kMenuAction12 = 12,
-	kMenuAction13 = 13
+	kMenuAction0   = 0,
+	kMenuAction1   = 1,
+	kMenuAction2   = 2,
+	kMenuAction3   = 3,
+	kMenuAction4   = 4,
+	kMenuAction7   = 7,
+	kMenuAction8   = 8,
+	kMenuAction9   = 9,
+	kMenuAction10  = 10,
+	kMenuAction12  = 12,
+	kMenuAction13  = 13,
+	kMenuAction200 = 200,
+	kMenuAction300 = 300,
+	kMenuAction400 = 400
 };
 
 enum ProgressState {
