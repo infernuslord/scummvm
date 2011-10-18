@@ -2168,8 +2168,251 @@ void Zone1Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 movab
 	error("[Zone1Pompeii::onBeforeRide] Not implemented");
 }
 
-void Zone1Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, MovabilityType movabilityType) {
-	error("[Zone1Pompeii::onAfterRide] Not implemented");
+void Zone1Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
+	switch (movabilityTo) {
+	default:
+		break;
+
+	case 1001202:
+		if (movabilityFrom == 1001102 && _app->varGetByte(1097) == 8) {
+			_app->rotationSetMovabilityOff(1001102, 0, 0);
+			_app->rotationSetMovabilityOff(1001102, 1, 1);
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(1001202, 1191);
+			_app->soundSetVolume(900001, 95);
+			_app->soundPlay(900001);
+			_app->varSetByte(1097, 9);
+			_app->timerStart(kTimer8, 4000);
+		}
+		break;
+
+	case 1001402:
+		if (movabilityFrom == 10011402 && _app->varGetByte(1097) == 6) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(1001402, 1191);
+			_app->objectPresentationHide(kObject1080, 2);
+			_app->rotationSet3DSoundOn(10011402, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 7);
+		}
+		break;
+
+	case 1001502:
+		if (movabilityFrom == 1001402 && _app->varGetByte(1097) == 5) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(1001502, 1191);
+			_app->objectPresentationHide(kObject1080, 3);
+			_app->rotationSet3DSoundOn(1001402, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 6);
+		}
+		break;
+
+	case 1001602:
+		if (movabilityFrom == 1001502 && _app->varGetByte(1097) == 4) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(1001602, 1191);
+			_app->objectPresentationHide(kObject1080, 4);
+			_app->rotationSet3DSoundOn(1001502, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 5);
+		}
+		break;
+
+	case 1001702:
+		if (movabilityFrom == 1001602 && _app->varGetByte(1097) == 3) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(1001702, 1191);
+			_app->objectPresentationHide(kObject1080, 5);
+			_app->rotationSet3DSoundOn(1001602, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 4);
+		}
+		break;
+
+	case 1001902:
+		if (movabilityFrom == 1001702 && _app->varGetByte(1097) == 2) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(1001902, 1191);
+			_app->objectPresentationHide(kObject1080, 6);
+			_app->rotationSet3DSoundOn(1001702, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 3);
+		}
+		break;
+
+	case 10011002:
+		if (movabilityFrom == 1001902 && _app->varGetByte(1097) == 1) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(10011002, 1191);
+			_app->rotationSet3DSoundOn(1001902, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 2);
+		}
+
+		if (_app->varGetByte(90416) == 3) {
+			_app->varSetByte(90416, 4);
+			_app->playMovie("S00A0-15");
+			_app->rotationSetActive(10011002);
+			_app->objectPresentationShow(kObjectStone2, 0);
+			_app->objectSetAccessibilityOn(kObjectStone2);
+		}
+		break;
+
+	case 10011402:
+		if (movabilityFrom == 1001202 && _app->varGetByte(1097) == 7) {
+			_app->timerStop(kTimer7);
+			_app->rotationSet3DSoundOff(10011402, 1191);
+			_app->objectPresentationHide(kObject1080, 1);
+			_app->rotationSet3DSoundOn(1001202, 1191);
+			_app->timerStart(kTimer7, 3000);
+			_app->varSetByte(1097, 8);
+		}
+		break;
+	}
+
+	if (_app->varGetByte(90104) == 2) {
+		_app->varSetByte(90104, 3);
+		_app->onCall(1049);
+	}
+
+	if (_app->varGetByte(90109) == 2) {
+		_app->varSetByte(90109, 3);
+		_app->onCall(1099);
+	}
+
+	if (_app->varGetByte(90203) == 2) {
+		_app->varSetByte(90203, 3);
+		_app->onCall(2039);
+	}
+
+	if (_app->bagHas(kObjectItemListCompleted) && !_app->varGetByte(1099)) {
+		_app->varSetByte(1099, 1);
+		_app->onCall(215);
+	}
+
+	if (_app->varGetByte(90301) == 2) {
+		_app->varSetByte(90301, 3);
+		_app->onCall(3019);
+	}
+
+	if (_app->varGetByte(90307) == 2) {
+		_app->varSetByte(90307, 3);
+		_app->onCall(3079);
+	}
+
+	if (_app->varGetByte(90402) == 2) {
+		_app->varSetByte(90402, 3);
+		_app->onCall(4029);
+	}
+
+	if (_app->varGetByte(90405) == 2) {
+		_app->varSetByte(90405, 3);
+		_app->onCall(4039);
+		_app->onCall(4059);
+	}
+
+	if (_app->varGetByte(90410) >= 2 && _app->varGetByte(90411) >= 2 && !_app->varGetByte(1098)) {
+		_app->varSetByte(1098, 1);
+		_app->onCall(413);
+	}
+
+	onVisual(204);
+	onVisual(206);
+	onVisual(208);
+	onVisual(211);
+	onVisual(214);
+	onVisual(402);
+	onVisual(403);
+	onVisual(405);
+	onVisual(406);
+	onVisual(409);
+	onVisual(420);
+
+	if (movabilityType != kMovabilityRotationToRotation)
+		return;
+
+	switch (movabilityFrom) {
+	default:
+		break;
+
+	case 10011:
+		if (movabilityTo == 10012 && !_app->varGetByte(90104) && _app->varGetByte(90103) >= 2) {
+			_app->objectSetAccessibilityOff(kObject1001, 0, 0);
+			_app->objectSetAccessibilityOff(kObject1005, 0, 0);
+		}
+		break;
+
+	case 10012:
+		if (movabilityTo == 10011 && !_app->varGetByte(90104) && _app->varGetByte(90103) >= 2) {
+			_app->soundPlay(1025);
+		} else if (movabilityTo == 100114 && !_app->varGetByte(1029) && _app->varGetByte(90001) == 3 && !_app->varGetByte(90302)) {
+			_app->timerStart(kTimer3, 5000);
+			_app->soundPlay(3003);
+		}
+
+		if (_app->varGetByte(90001) == 4 && !_app->varGetByte(90402) && !_app->varGetByte(1040))
+			_app->soundPlay(4008);
+		break;
+
+	case 10023:
+		if (_app->varGetByte(90001) == 1 && _app->varGetByte(90109) < 2 && _app->varGetByte(90107) >= 2)
+			_app->soundPlay(1064);
+		break;
+
+	case 10031:
+		if (movabilityTo == 100113 && !_app->varGetByte(1008) && _app->varGetByte(90001) == 2 && !_app->varGetByte(90203))
+			_app->onCall(203);
+		break;
+
+	case 10013:
+		if (movabilityTo == 10012 && _app->varGetByte(90001) == 3 && !_app->varGetByte(90303) && _app->varGetByte(1029) == 1) {
+			_app->rotationSetMovabilityOff(10013);
+			_app->varSetByte(90303, 1);
+			_app->puzzleSetActive(kPuzzle1027);
+			_app->soundPlay(3005);
+		}
+		break;
+
+	case 10043:
+		if (_app->varGetByte(90001) == 3 && !_app->varGetByte(90307) && _app->varGetByte(90305) >= 2)
+			_app->soundPlay(3022);
+		break;
+
+	case 100515:
+		if (_app->varGetByte(90001) == 4 && _app->varGetByte(90406) && _app->varGetByte(90408) >= 2 && !_app->varGetByte(90409)) {
+			_app->varSetByte(90409, 1);
+			_app->onCall(409);
+		}
+		break;
+
+	case 1001202:
+		if (movabilityTo == 1001102 && _app->varGetByte(90001) == 4 && _app->varGetByte(90416) >= 2 && _app->varGetByte(90419) == 1) {
+			_app->varSetByte(90419, 2);
+			_app->playMovie("S00A0-12");
+			_app->puzzleSetActive(kPuzzle1060);
+			_app->soundPlay(4108);
+			_app->varSetByte(1050, 1);
+		}
+		break;
+
+	case 1005402:
+		if (_app->varGetByte(90001) == 4 && _app->varGetByte(90419) >= 2 && !_app->varGetByte(90420)) {
+			_app->varSetByte(90420, 1);
+			_app->soundPlay(4114);
+		}
+		break;
+
+	case 10011103:
+		if (movabilityTo == 10011203) {
+			if (_app->varGetByte(90001) == 4 && !_app->varGetByte(1052) && !_app->varGetByte(1052))
+				_app->objectSetAccessibilityOn(kObject1093, 0, 0);
+
+			if (_app->varGetByte(90001) == 4 && _app->varGetByte(1052) == 1 && !_app->varGetByte(1053))
+				_app->objectSetAccessibilityOn(kObject1093, 0, 0);
+		}
+		break;
+	}
 }
 
 void Zone1Pompeii::onVisual(int x) {
