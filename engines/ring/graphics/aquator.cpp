@@ -526,7 +526,7 @@ AquatorStream::~AquatorStream() {
 
 void AquatorStream::alloc(bool isCompressed, const Graphics::PixelFormat &format, uint32 size) {
 	if (isCompressed) {
-		Common::String filename = Common::String::format("%s.aqi", _path.c_str());
+		Common::String filename = Common::String::format("%s.aqc", _path.c_str());
 
 		// Decompress node
 		CompressedStream *stream = new CompressedStream();

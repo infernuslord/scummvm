@@ -53,6 +53,24 @@ private:
 		uint16 a3;
 	};
 
+	struct NodeHeader {
+		int32 field_0;
+		int32 field_4;
+		int32 field_8;
+		int32 field_C;
+		int32 field_10;
+		int32 field_14;
+		int32 field_18;
+		int32 field_1C;
+		int32 field_20;
+		int32 field_24;
+		int32 field_28;
+		int32 field_2C;
+		int32 field_30;
+
+		void read(Common::SeekableReadStream *stream);
+	};
+
 	Common::SeekableReadStream *_fileStream;    ///< The file stream
 	Common::SeekableReadStream *_artStream;     ///< The art stream
 
