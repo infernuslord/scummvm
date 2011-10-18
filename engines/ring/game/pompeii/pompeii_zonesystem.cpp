@@ -628,8 +628,88 @@ void ZoneSystemPompeii::onBagClickedObject(ObjectId objectId) {
 	}
 }
 
-void ZoneSystemPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[ZoneSystemPompeii::onUpdateBefore] Not implemented");
+void ZoneSystemPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &point) {
+	onUpdateBag(point);
+
+	switch (movabilityFrom) {
+	default:
+		break;
+
+	case kObjectYesNo:
+		_app->objectPresentationHide(kObjectYesNo, 1);
+		_app->objectPresentationHide(kObjectYesNo, 2);
+
+		switch (movabilityTo) {
+		default:
+			break;
+
+		case 0:
+			_app->objectPresentationShow(kObjectYesNo, 2);
+			break;
+
+		case 1:
+			_app->objectPresentationShow(kObjectYesNo, 1);
+			break;
+		}
+		break;
+
+	case kObject3:
+		_app->objectPresentationShow(kObject3, 1);
+		break;
+
+	case kObjectQuestion: {
+		_app->objectPresentationHide(kObjectQuestion, 1);
+		_app->objectPresentationHide(kObjectQuestion, 2);
+
+		int32 val = ((uint32)movabilityTo) & 0x80000001;
+		bool state = (val == 0);
+		if (val < 0)
+			state = ((val - 1) | -2) == -1;
+
+		if (state)
+			_app->objectPresentationShow(kObjectQuestion, 1);
+		else
+			_app->objectPresentationShow(kObjectQuestion, 2);
+
+		}
+		break;
+
+	case kObject5:
+		_app->objectPresentationHide(kObject5, 1);
+		_app->objectPresentationHide(kObject5, 2);
+		_app->objectPresentationShow(kObject5, movabilityTo + 1);
+		break;
+
+	case kObject6:
+		if (movabilityTo >= 6 && movabilityTo <= 18)
+			_app->objectPresentationShow(kObject6, movabilityTo);
+		break;
+
+	case kObject16:
+		if (movabilityTo == 1)
+			_app->objectPresentationShow(kObject16, 2);
+		else
+			_app->objectPresentationShow(kObject16, 1);
+		break;
+
+	case kObject90401:
+	case kObject99000:
+	case kObject99001:
+	case kObject99002:
+	case kObject99003:
+	case kObject99004:
+	case kObject99005:
+	case kObject99006:
+	case kObject99007:
+	case kObject99022:
+	case kObject99023:
+	case kObject99024:
+	case kObject99025:
+	case kObject99041:
+	case kObject99042:
+		_app->objectPresentationShow((ObjectId)movabilityFrom, 0);
+		break;
+	}
 }
 
 } // End of namespace Ring
