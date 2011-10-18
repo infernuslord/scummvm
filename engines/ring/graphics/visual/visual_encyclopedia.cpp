@@ -85,7 +85,7 @@ uint32 EncyclopediaEntry::load(const char *buffer, uint32 size) {
 	return offset;
 }
 
-Color EncyclopediaEntry::getForegroundColor() {
+Color EncyclopediaEntry::getForegroundColor() const {
 	if (_foregroundColor == -1)
 		return Color(-1, -1, -1);
 
@@ -97,17 +97,17 @@ Color EncyclopediaEntry::getForegroundColor() {
 	}
 
 	return Color(_foregroundColor & 0xFF,
-	             (_foregroundColor >> 8) & 0xFF,
-	             (_foregroundColor >> 16) & 0xFF);
+	             ((uint32)_foregroundColor >> 8) & 0xFF,
+	             ((uint32)_foregroundColor >> 16) & 0xFF);
 }
 
-Color EncyclopediaEntry::getBackgroundColor() {
+Color EncyclopediaEntry::getBackgroundColor() const {
 	if (_backgroundColor == -1 || _backgroundColor == 0)
 		return Color(-1, -1, -1);
 
 	return Color(_backgroundColor & 0xFF,
-	             (_backgroundColor >> 8) & 0xFF,
-	             (_backgroundColor >> 16) & 0xFF);
+	             ((uint32)_backgroundColor >> 8) & 0xFF,
+	             ((uint32)_backgroundColor >> 16) & 0xFF);
 }
 
 #pragma endregion
@@ -256,8 +256,8 @@ void VisualObjectEncyclopedia::draw() {
 
 	if (_field_64 && _image7 && _image7->isInitialized()) {
 		// Adjust coordinates
-		_point.x = _clippingCenter.x - _image7->getWidth() / 2;
-		_point.y = _clippingCenter.y - _image7->getHeight() / 2;
+		_point.x = _clippingCenter.x - (int16)(_image7->getWidth()  / 2);
+		_point.y = _clippingCenter.y - (int16)(_image7->getHeight() / 2);
 
 		getApp()->getScreenManager()->draw(_image7, _point, _image7->getDrawType());
 	}
@@ -403,7 +403,7 @@ uint32 VisualObjectEncyclopedia::handleLeftButtonDown(Common::Point point) {
 
 			case kTarget5:
 			case kTargetStopMovie:
-				stopMovie(hotspot->getSoundId());
+				stopMovie((uint32)hotspot->getSoundId());
 				_field_60 = 20;
 				break;
 
@@ -561,9 +561,9 @@ void VisualObjectEncyclopedia::setParameters(const Common::Point &point, const C
 	_clippingRect = clippingRect;
 	_field_CC = a8;
 
-	_field_80 = clippingRect.height() / 2;
-	_clippingCenter.x = clippingRect.left + abs((int)clippingRect.width()) / 2;
-	_clippingCenter.y = clippingRect.bottom + abs((int)clippingRect.height()) / 2;
+	_field_80         = (uint16)clippingRect.height() / 2;
+	_clippingCenter.x = clippingRect.left   + (int16)(abs((int)clippingRect.width())  / 2);
+	_clippingCenter.y = clippingRect.bottom + (int16)(abs((int)clippingRect.height()) / 2);
 }
 
 void VisualObjectEncyclopedia::showFile(const Common::String &filename) {
@@ -600,7 +600,7 @@ bool VisualObjectEncyclopedia::load() {
 	uint32 offset = 0;
 	uint32 textHeight = 12;
 	int16 clippingLeft = _clippingRect.left;
-	int16 clippingTop = _clippingRect.top;
+	uint32 clippingTop = (uint16)_clippingRect.top;
 
 	// Process entries
 	for (uint32 i = 0; i < _entries.size(); i++) {
@@ -615,12 +615,12 @@ bool VisualObjectEncyclopedia::load() {
 		str += entry->getLabel();
 
 		// Adjust coordinates
-		Common::Point point(clippingLeft, clippingTop);
+		Common::Point point(clippingLeft, (int16)clippingTop);
 		if (entry->getField2C() > offset) {
-			clippingTop += textHeight + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
+			clippingTop += (uint16)(textHeight + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset)));
 			textHeight = 0;
 			offset = entry->getField2C();
-			point.y = clippingTop;
+			point.y = (int16)clippingTop;
 		}
 
 		// Init contents
@@ -639,8 +639,8 @@ bool VisualObjectEncyclopedia::load() {
 
 		// Compute text dimensions
 		if (i == 0) {
-			_textTop = point.y;
-			_field_7C = point.y - _clippingRect.top;
+			_textTop  = (uint16)point.y;
+			_field_7C = (uint16)(point.y - _clippingRect.top);
 		}
 
 		if (text->getHeight() > textHeight)
@@ -658,23 +658,23 @@ bool VisualObjectEncyclopedia::load() {
 			spaceWidth = space->getWidth();
 			delete space;
 
-			coords.x += spaceWidth;
+			coords.x += (int16)spaceWidth;
 			text->setCoordinates(coords);
 		}
 
 		if ((int16)text->getWidth() + clippingLeft > _clippingRect.right) {
 			clippingLeft = _clippingRect.left;
 
-			Common::Point coords(clippingLeft, textHeight + point.y);
+			Common::Point coords(clippingLeft, (int16)textHeight + point.y);
 			text->setCoordinates(coords);
 
 			textHeight = 12;
-			clippingTop = coords.y + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
+			clippingTop = (uint16)coords.y + ((entry->getField2C() <= offset + 1) ? 0 : 12 * (entry->getField2C() - offset));
 			offset = entry->getField2C();
 		}
 
 		// Adjust clipping
-		clippingLeft += text->getWidth() + spaceWidth;
+		clippingLeft += (int16)(text->getWidth() + spaceWidth);
 
 		_texts.push_back(text);
 
@@ -685,7 +685,7 @@ bool VisualObjectEncyclopedia::load() {
 
 	_textHeight = textHeight;
 	_field_74 = textHeight + clippingTop;
-	_field_78 = _clippingRect.height();
+	_field_78 = (uint16)_clippingRect.height();
 
 	return true;
 }
@@ -700,7 +700,7 @@ bool VisualObjectEncyclopedia::loadEntries(const Common::String &filename) {
 	CLEAR_ARRAY(EncyclopediaEntry, _entries);
 
 	// Read the archive contents into a buffer
-	uint32 size = archive->size();
+	uint32 size = (uint32)archive->size();
 	if (size <= 1) {
 		delete archive;
 		return true;
@@ -726,12 +726,12 @@ bool VisualObjectEncyclopedia::loadEntries(const Common::String &filename) {
 
 	} while (size > 0);
 
-	delete buffer;
+	free(buffer);
 
 	return true;
 }
 
-void VisualObjectEncyclopedia::scrollUp(uint32 offset) {
+void VisualObjectEncyclopedia::scrollUp(int16 offset) {
 	if (_texts.empty())
 		return;
 
@@ -739,7 +739,7 @@ void VisualObjectEncyclopedia::scrollUp(uint32 offset) {
 	if (text->getCoordinates().y >= (int16)_textTop)
 		return;
 
-	uint32 maxOffset = abs((int)(_textTop - text->getCoordinates().y));
+	int16 maxOffset = (int16)abs((int32)_textTop - text->getCoordinates().y);
 	if (offset > maxOffset)
 		offset = maxOffset;
 
@@ -765,7 +765,7 @@ void VisualObjectEncyclopedia::scrollUp(uint32 offset) {
 		sub_487580();
 }
 
-void VisualObjectEncyclopedia::scrollDown(uint32 offset) {
+void VisualObjectEncyclopedia::scrollDown(int16 offset) {
 	if (_texts.empty())
 		return;
 
@@ -776,7 +776,7 @@ void VisualObjectEncyclopedia::scrollDown(uint32 offset) {
 	if (text->getCoordinates().y <= _clippingRect.bottom)
 		return;
 
-	uint32 maxOffset = abs((int)(text->getCoordinates().y - _clippingRect.bottom));
+	int16 maxOffset = (int16)abs((int)(text->getCoordinates().y - _clippingRect.bottom));
 	if (offset > maxOffset)
 		offset = maxOffset;
 
@@ -822,11 +822,11 @@ void VisualObjectEncyclopedia::setHotspot() {
 
 	Text *text = _texts[0];
 
-	float y = (float)(text->getCoordinates().y - _field_7C - _clippingRect.top);
+	float y = (float)(text->getCoordinates().y - ((int32)_field_7C + _clippingRect.top));
 	if (y >= 0) {
 		_sliderCoordinates.x = 49;
 	} else {
-		_sliderCoordinates.x = (int16)(((float)text->getHeight() + abs(y)) / (float)(_field_74 - _clippingRect.bottom) * 386.0f + 49.0f);
+		_sliderCoordinates.x = (int16)(((float)text->getHeight() + abs(y)) / ((float)((int32)_field_74 - _clippingRect.bottom) * 386.0f + 49.0f));
 		if (_sliderCoordinates.x > 421)
 			_sliderCoordinates.x = 421;
 
@@ -881,7 +881,7 @@ void VisualObjectEncyclopedia::stopMovie(uint32 soundIndex) {
 	getApp()->soundPlay(soundIndex + 1000000);
 }
 
-FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target) {
+FontId VisualObjectEncyclopedia::getFontId(Facetype faceType, uint32 height, bool smallWeight, bool italic, Id target) {
 	// Height
 	uint32 height_id = 0;
 	switch (height) {
@@ -1021,7 +1021,7 @@ void VisualObjectEncyclopedia::sub_484040(const Common::Point &point) {
 	Hotspot *hotspot2 = _hotspots[2];
 
 	if (point.y <= hotspot2->getRect().top) {
-		uint32 diff = hotspot2->getRect().top - point.y;
+		int32 diff = hotspot2->getRect().top - point.y;
 
 		if (diff <= 20)
 			scrollUp(20);
@@ -1037,7 +1037,7 @@ void VisualObjectEncyclopedia::sub_484040(const Common::Point &point) {
 			scrollUp(220);
 
 	} else {
-		uint32 diff = point.y - hotspot2->getRect().top;
+		int32 diff = point.y - hotspot2->getRect().top;
 
 		if (diff <= 20)
 			scrollDown(20);
@@ -1087,7 +1087,7 @@ void VisualObjectEncyclopedia::handleTarget9(uint32 entryIndex) {
 	for (uint32 i = 0; i < _entries.size(); i++) {
 		if (_entries[i]->getField10() == field_C) {
 
-			uint32 offset = _texts[i]->getCoordinates().y - _clippingRect.bottom;
+			int16 offset = _texts[i]->getCoordinates().y - _clippingRect.bottom;
 
 			if (offset > 0)
 				scrollDown(offset);
@@ -1123,18 +1123,18 @@ void VisualObjectEncyclopedia::sub_487580() {
 
 	uint32 delta = 1410065407;
 	uint32 index = 0;
-	uint32 target = 0;
+	EncyclopediaTarget target = kTargetScrollUp;
 
 	// Get index and target from hotspots
 	for (uint32 i = 3; i < _hotspots.size(); i++) {
 		Hotspot *hotspot = _hotspots[i];
 
 		if (hotspot->getTarget() == kTargetLoadImage || hotspot->getTarget() == kTargetPlayMovie || hotspot->getTarget() == kTargetStopMovie) {
-			uint32 currentDelta = abs((int)(hotspot->getRect().top - _field_80));
+			uint32 currentDelta = (uint32)abs((int)(hotspot->getRect().top - (int32)_field_80));
 			if (currentDelta < delta) {
 				index = i;
 				delta = currentDelta;
-				target = hotspot->getTarget();
+				target = (EncyclopediaTarget)hotspot->getTarget();
 			}
 		}
 	}
@@ -1159,7 +1159,7 @@ void VisualObjectEncyclopedia::sub_487580() {
 			break;
 
 		case kTargetStopMovie:
-			stopMovie(hotspot->getSoundId());
+			stopMovie((uint32)hotspot->getSoundId());
 			break;
 		}
 	}

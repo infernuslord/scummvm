@@ -64,11 +64,11 @@ public:
 	Facetype             getFaceType()     { return _facetype; }
 	uint32               getFieldC()       { return _field_C; }
 	uint32               getField10()      { return _field_10; }
-	Color                getForegroundColor();
-	Color                getBackgroundColor();
+	Color                getForegroundColor() const;
+	Color                getBackgroundColor() const;
 	uint32               getHeight()        { return _height; }
-	uint32               getSmallWeight()   { return _smallWeight; }
-	uint32               getItalic()        { return _italic; }
+	bool                 getSmallWeight()   { return _smallWeight; }
+	bool                 getItalic()        { return _italic; }
 	uint32               getField2C()       { return _field_2C; }
 	uint32               getPadding()       { return _padding; }
 
@@ -175,8 +175,8 @@ private:
 
 	bool load();
 	bool loadEntries(const Common::String &filename);
-	void scrollUp(uint32 offset);
-	void scrollDown(uint32 offset);
+	void scrollUp(int16 offset);
+	void scrollDown(int16 offset);
 
 	void addHotspots();
 	void addHotspot(Id target, Text *text, uint32 entryIndex);
@@ -187,7 +187,7 @@ private:
 	void playMovie(uint32 entryIndex);
 	void stopMovie(uint32 soundIndex);
 
-	FontId getFontId(Facetype faceType, int height, bool smallWeight, bool italic, Id target);
+	FontId getFontId(Facetype faceType, uint32 height, bool smallWeight, bool italic, Id target);
 
 	void sub_484040(const Common::Point &point);
 	void loadImage(uint32 entryIndex);
