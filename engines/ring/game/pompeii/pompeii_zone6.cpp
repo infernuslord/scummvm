@@ -628,7 +628,7 @@ void Zone6Pompeii::onAfterRide(Id /*movabilityFrom*/, Id movabilityTo, uint32 /*
 			if (_app->varGetByte(90215) == 2) {
 				if (_app->varGetByte(50002) == _playSoundValue)
 					_app->soundPlay(2074);
-				else if ( _app->varGetByte(50003) == _playSoundValue)
+				else if (_app->varGetByte(50003) == _playSoundValue)
 					_app->soundPlay(2073);
 			} else {
 				_app->soundPlay(2075);

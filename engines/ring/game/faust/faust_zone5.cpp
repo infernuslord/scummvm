@@ -610,7 +610,7 @@ void Zone5Faust::onTimer(TimerId id) {
 					_app->playMovie("1356");
 					_app->fadeOut(15, Color(0, 0, 0), 0);
 
-					if (_app->getSaveManager()->getData()->progressState == 5 )
+					if (_app->getSaveManager()->getData()->progressState == 5)
 						_app->getSaveManager()->getData()->progress++;
 
 					_app->setupRotation(2);

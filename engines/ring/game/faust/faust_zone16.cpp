@@ -178,7 +178,7 @@ void Zone16Faust::onInit() {
 	_app->objectAddPresentation(kObject310002);
 	_app->objectPresentationAddImageToPuzzle(kObject310002, 11, kPuzzle310001, "n12.tga", Common::Point(0, 0), true, kDrawType3, 1011);
 
-	if (_app->getZoneArchiveType(kZone16) == kArchiveFile )
+	if (_app->getZoneArchiveType(kZone16) == kArchiveFile)
 		_app->setArchiveType(kArchiveFile);
 
 	_app->objectPresentationShow(kObject310001);

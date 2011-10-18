@@ -194,7 +194,7 @@ private:
 	void handleTarget9(uint32 entryIndex);
 	void loadPage(uint32 entryIndex);
 	void sub_487580();
-	void setupArrowType( const Common::Point & point );
+	void setupArrowType(const Common::Point & point);
 };
 
 } // End of namespace Ring

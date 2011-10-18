@@ -983,7 +983,7 @@ void Zone2Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*proc
 		_app->rotationSetBet(10111, 15.0f);
 		_app->rotationSetActive(10111);
 
-		if (_app->varGetByte(10025) == 1 ) {
+		if (_app->varGetByte(10025) == 1) {
 			_app->objectSetAccessibilityOff(kObject10008, 1, 1);
 
 			if (_app->varGetByte(10024) == 1)

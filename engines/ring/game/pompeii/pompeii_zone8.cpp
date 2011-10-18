@@ -178,7 +178,7 @@ void Zone8Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 	case kObject70701:
 		if (_app->bagHasClickedObject()) {
 			if (target > 2 || _app->bagGetClickedObject() != kObjectHollyWater) {
-				if (target == 5 && _app->bagGetClickedObject() == kObjectPapyrus ) {
+				if (target == 5 && _app->bagGetClickedObject() == kObjectPapyrus) {
 					_app->bagRemove(kObjectPapyrus);
 					_app->objectSetAccessibilityOff(kObject70701);
 					_app->soundPlay(70004);
@@ -188,7 +188,7 @@ void Zone8Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 
 				_app->cursorDelete();
 			} else {
-				if ( target < 2 )
+				if (target < 2)
 					_app->visualBoxHide(6, kPuzzleMenu);
 
 				_app->bagRemove(kObjectHollyWater);

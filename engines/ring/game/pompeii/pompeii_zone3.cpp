@@ -360,9 +360,9 @@ void Zone3Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 					break;
 				}
 
-				if ( _app->bagGetClickedObject() == kObjectPerfumedOil
+				if (_app->bagGetClickedObject() == kObjectPerfumedOil
 					&& !_app->bagHas(kObjectDates)
-					&& !_app->varGetByte(90216) )
+					&& !_app->varGetByte(90216))
 				{
 					_app->objectSetAccessibilityOff(kObject20001);
 					_app->bagRemove(kObjectPerfumedOil);
@@ -445,7 +445,7 @@ void Zone3Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 				_app->soundPlay(20048);
 
 				uint32 start = g_system->getMillis();
-				while ( g_system->getMillis() - start < 2000 )
+				while (g_system->getMillis() - start < 2000)
 					handleEvents();
 
 				_app->playMovie("S02A04-2");
@@ -459,9 +459,9 @@ void Zone3Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 		break;
 
 	case kObject20010:
-		if (_app->bagHasClickedObject() )
+		if (_app->bagHasClickedObject())
 		{
-			if ( _app->bagGetClickedObject() == kObjectPhiltre1) {
+			if (_app->bagGetClickedObject() == kObjectPhiltre1) {
 				_app->bagRemove(kObjectPhiltre1);
 				_app->objectSetAccessibilityOff(kObject20010, 0, 0);
 				_app->puzzleSetActive(kPuzzle10241);
@@ -593,7 +593,7 @@ void Zone3Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*proc
 	case 2077:
 		if (_app->varGetByte(90005) == 1)
 			_app->soundPlay(2078);
-		else if ( _app->varGetByte(90005) == 2)
+		else if (_app->varGetByte(90005) == 2)
 			_app->soundPlay(2079);
 		break;
 
@@ -835,7 +835,7 @@ void Zone3Pompeii::onVisual(int x) {
 	case 113:
 		if (_app->varGetByte(90113) < 2) {
 
-			if (_app->soundIsPlaying(20042) )
+			if (_app->soundIsPlaying(20042))
 				_app->soundStop(20042, 1024);
 
 			_app->fadeOut(15, Color(0, 0, 0), 0);
