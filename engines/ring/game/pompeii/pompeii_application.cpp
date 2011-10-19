@@ -27,6 +27,7 @@
 #include "ring/base/preferences.h"
 #include "ring/base/rotation.h"
 #include "ring/base/saveload.h"
+#include "ring/base/timer.h"
 
 #include "ring/game/pompeii/pompeii_shared.h"
 #include "ring/game/pompeii/pompeii_zonesystem.h"
@@ -269,7 +270,17 @@ void ApplicationPompeii::showMenu(ZoneId zone, MenuAction menuAction) {
 }
 
 void ApplicationPompeii::showCredits() {
-	error("[ApplicationPompeii::showCredits] Not implemented");
+	soundStopAll(1024);
+	soundPlay(90801, kSoundLoop);
+	setCurrentZone(kZone100);
+
+	// Scroll credits
+	for (uint i = 0; i < 14; i++) {
+		if (scrollImage(Common::String::format("cre%02d", i + 1), 0, kLoadFromDisk, _configuration.artSY ? kArchiveArt : kArchiveFile))
+			break;
+	}
+
+	soundStop(90801, 1024);
 }
 
 void ApplicationPompeii::loadPreferences() {
@@ -286,6 +297,34 @@ void ApplicationPompeii::draw() {
 
 	// Update engine state
 	//error("[ApplicationPompeii::draw] Engine state update not implemented!");
+}
+
+#pragma endregion
+
+#pragma region Messages
+
+void ApplicationPompeii::messageInsertCd(ZoneId zone) {
+	setupZone(kZone1, kSetupTypeNone);
+	setSpace(kZone100);
+
+	for (uint32 i = 0; i <= 7; i++) {
+		objectSetAccessibilityOff(i);
+		objectPresentationHideAndRemove(i);
+	}
+
+	objectPresentationSetTextToPuzzle(kObject16, 0, 0, _messageType);
+	objectPresentationSetTextCoordinatesToPuzzle(kObject16, 0, 0, Common::Point(225, 193));
+	objectPresentationSetTextToPuzzle(kObject16, 0, 1, _message);
+	objectPresentationSetTextCoordinatesToPuzzle(kObject16, 0, 1, Common::Point(225, 213));
+	objectPresentationShow(kObject16, 0);
+	objectSetAccessibilityOff(kObject16);
+
+	if (zone == kZone3)
+		objectSetAccessibilityOn(kObject16, 1, 2);
+	else
+		objectSetAccessibilityOn(kObject16, 0, 1);
+
+	puzzleSetActive(kPuzzleInsertCd);
 }
 
 #pragma endregion
@@ -595,6 +634,9 @@ void ApplicationPompeii::onTimer(TimerId timerId) {
 		_zone12->onTimer(timerId);
 		break;
 	}
+
+	if (getState() != kStateShowMenu)
+		getTimerHandler()->incrementFiredCount(timerId);
 }
 
 void ApplicationPompeii::onSound(Id id, SoundType type, uint32 a3) {
