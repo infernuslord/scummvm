@@ -855,8 +855,1317 @@ void Zone2Pompeii::onSetup(SetupType type) {
 	}
 }
 
-void Zone2Pompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[Zone2Pompeii::onButtonUp] Not implemented");
+void Zone2Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
+	if (id == kObjectExitEncyclopedia)
+		_app->restore();
+
+	switch (_app->varGetByte(90001)) {
+	default:
+		break;
+
+	case 0:
+		switch (id) {
+		default:
+			break;
+
+		case kObject10101:
+			_app->onCall(10100);
+			break;
+
+		case kObject10102:
+			_app->onCall(102003);
+			break;
+		}
+		break;
+
+	case 1:
+		switch (id) {
+		default:
+			break;
+
+		case kObject10000:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() != kObjectKey) {
+					_app->cursorDelete();
+					break;
+				}
+
+				_app->soundPlay(10040);
+				_app->bagRemove(kObjectKey);
+				_app->objectSetAccessibilityOff(kObject10000);
+				_app->objectSetAccessibilityOff(kObject10000);
+				_app->varSetByte(10000, 1);
+				_app->objectSetAccessibilityOn(kObject10001);
+				_app->puzzleSetActive(kPuzzle10000);
+				_app->cursorDelete();
+			}
+			break;
+
+		case kObject10001:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && _app->varGetByte(10000) == 1) {
+					_app->soundPlay(10045);
+					_app->objectSetAccessibilityOff(kObject10001);
+					_app->rotationSetActive(10111);
+					_app->soundPlay(10044);
+					_app->objectPresentationHide(kObject10000, 1);
+					_app->varSetByte(10000, 0);
+					_app->objectSetAccessibilityOn(kObject10000);
+
+					if (_app->varGetByte(10002) != 1 || _app->varGetByte(10003) != 1 || _app->varGetByte(10004) != 1) {
+						_app->bagAdd(kObjectKey);
+					} else {
+						_app->objectSetAccessibilityOff(kObject10000);
+						_app->bagRemove(kObjectKey);
+						onVisual(101);
+					}
+				}
+			}
+			break;
+
+		case kObjectKey:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10001)) {
+					_app->soundPlay(10039);
+					_app->objectPresentationHide(kObjectKey);
+					_app->objectSetAccessibilityOff(kObjectKey);
+					_app->bagAdd(kObjectKey);
+					_app->varSetByte(10001, 1);
+					_app->objectSetAccessibilityOn(kObject10000);
+				}
+			}
+			break;
+
+		case kObjectAmulet:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && _app->varGetByte(10000) == 1 && !_app->varGetByte(10002)) {
+					_app->soundPlay(10041);
+					_app->objectPresentationShow(kObject10000, 2);
+					_app->objectSetAccessibilityOff(kObjectAmulet, 0, 0);
+					_app->bagAdd(kObjectAmulet);
+					_app->varSetByte(10002, 1);
+				}
+			}
+			break;
+
+		case kObjectContract:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && _app->varGetByte(10000) == 1 && !_app->varGetByte(10003)) {
+					_app->objectPresentationShow(kObject10000, 3);
+					_app->objectSetAccessibilityOff(kObjectContract, 0, 0);
+					_app->puzzleSetActive(kPuzzle10001);
+					_app->objectSetAccessibilityOn(kObject10006);
+					_app->soundPlay(10042);
+				}
+			}
+			break;
+
+		case kObjectRopes:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && _app->varGetByte(10000) == 1 && !_app->varGetByte(10004)) {
+					_app->soundPlay(10043);
+					_app->objectPresentationShow(kObject10000, 4);
+					_app->objectSetAccessibilityOff(kObjectRopes, 0, 0);
+					_app->bagAdd(kObjectRopes);
+					_app->varSetByte(10004, 1);
+				}
+			}
+			break;
+
+		case kObject10006:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10003)) {
+					_app->soundPlay(10042);
+					_app->objectSetAccessibilityOff(kObject10006);
+					_app->bagAdd(kObjectContract);
+					_app->varSetByte(10003, 1);
+					_app->puzzleSetActive(kPuzzle10000);
+				}
+			}
+			break;
+
+		case kObject10007:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10005)) {
+					_app->objectSetAccessibilityOff(kObject10007, 0, 0);
+					_app->puzzleSetActive(kPuzzle10007);
+					_app->soundPlay(1002);
+					_app->varSetByte(10005, 1);
+				}
+			}
+			break;
+
+		case kObject10008:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10006)) {
+					_app->objectSetAccessibilityOff(kObject10008, 0, 0);
+					_app->puzzleSetActive(kPuzzle10010);
+					_app->soundPlay(1008);
+					_app->varSetByte(10006, 1);
+				}
+			}
+			break;
+
+		case kObject10009:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10007)) {
+					_app->objectSetAccessibilityOff(kObject10009, 0, 0);
+					_app->puzzleSetActive(kPuzzle10013);
+					_app->soundPlay(1015);
+					_app->varSetByte(10007, 1);
+				}
+			}
+			break;
+
+		case kObject10031:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (target == 101 || target == 77)
+					_app->showEncyclopedia((uint32)target);
+			}
+			break;
+
+		case kObject10101:
+			if ( _app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (_app->varGetByte(90103) == 2) {
+					_app->varSetByte(90103, 3);
+					_app->onCall(1039);
+					_app->rotationSetMovabilityOn(10111, 0, 0);
+					_app->rotationSetMovabilityOn(10111, 1, 1);
+				}
+
+				_app->objectPresentationPauseAnimation(kObject10007, 0);
+				_app->objectPresentationPauseAnimation(kObject10007, 1);
+				_app->objectPresentationPauseAnimation(kObject10008, 0);
+				_app->objectPresentationPauseAnimation(kObject10008, 1);
+				_app->objectPresentationPauseAnimation(kObject10009, 1);
+				_app->objectPresentationPauseAnimation(kObject10010, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 1);
+				_app->objectPresentationPauseAnimation(kObject10018, 0);
+				_app->objectPresentationPauseAnimation(kObject10018, 1);
+				_app->objectPresentationPauseAnimation(kObject10020, 0);
+				_app->objectPresentationPauseAnimation(kObject10020, 1);
+				_app->objectPresentationPauseAnimation(kObject10007, 2);
+				_app->objectPresentationPauseAnimation(kObject10009, 0);
+				_app->objectPresentationPauseAnimation(kObject10009, 2);
+				_app->objectPresentationPauseAnimation(kObject10011, 2);
+				_app->objectPresentationPauseAnimation(kObject10018, 2);
+				_app->timerStopAll();
+				_app->onCall(10100);
+
+				if (!_app->varGetByte(90104))
+					_app->onCall(104);
+			}
+			break;
+		}
+		break;
+
+	case 2:
+		switch (id) {
+		default:
+			break;
+
+		case kObject10010:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10009)) {
+					_app->objectSetAccessibilityOff(kObject10010);
+					_app->playMovie("S01A02-1");
+					_app->varSetByte(10009, 1);
+					_app->objectSetAccessibilityOn(kObject10101);
+				}
+			}
+			break;
+
+		case kObject10011:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10010)) {
+					_app->objectSetAccessibilityOff(kObject10011);
+					_app->puzzleSetActive(kPuzzle10016);
+					_app->soundPlay(2027);
+					_app->varSetByte(10010, 1);
+					_app->objectSetAccessibilityOn(kObject10012, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectWine, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectLamp, 0, 0);
+				}
+			}
+			break;
+
+		case kObject10012:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				switch (target) {
+				default:
+					break;
+
+				case 0:
+					_app->objectSetAccessibilityOff(kObject10012, 0, 0);
+					_app->soundPlay(900013);
+					_app->objectSetAccessibilityOff(kObject10012, 0, 0);
+					_app->puzzleSetActive(kPuzzle10002);
+					_app->objectSetAccessibilityOn(kObject10012, 1, 1);
+
+					if (!_app->varGetByte(91209))
+						_app->objectSetAccessibilityOn(kObjectIncense, 0, 0);
+					break;
+
+				case 1:
+					_app->objectSetAccessibilityOff(kObject10012, 1, 1);
+					_app->rotationSetActive(10191);
+					_app->soundPlay(900014);
+
+					if (!_app->varGetByte(91209))
+						_app->objectSetAccessibilityOn(kObject10012, 0, 0);
+					break;
+				}
+			}
+			break;
+
+		case kObjectWine:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10011)) {
+					_app->soundPlay(900010);
+					_app->bagAdd(kObjectPureWine);
+					_app->objectSetAccessibilityOff(kObjectWine);
+					_app->objectPresentationHide(kObjectWine);
+					_app->varSetByte(10011, 1);
+				}
+			}
+			break;
+
+		case kObjectIncense:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10013)) {
+					_app->soundPlay(900011);
+					_app->bagAdd(kObjectIncenseStick);
+					_app->objectPresentationShow(kObjectIncense, 0);
+					_app->objectSetAccessibilityOff(kObjectIncense, 0, 0);
+					_app->varSetByte(10013, 1);
+				}
+			}
+			break;
+
+		case kObjectLamp:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target && !_app->varGetByte(10012)) {
+					_app->soundPlay(900012);
+					_app->bagAdd(kObjectLamp2);
+					_app->objectSetAccessibilityOff(kObjectLamp);
+					_app->objectPresentationHide(kObjectLamp);
+					_app->varSetByte(10012, 1);
+				}
+			}
+			break;
+
+		case kObject10101:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (_app->varGetByte(90201) == 2) {
+					_app->varSetByte(90201, 3);
+					_app->onCall(2009);
+				} else if ( _app->varGetByte(90207) == 2) {
+					_app->varSetByte(90207, 3);
+					_app->onCall(2079);
+				}
+
+				_app->objectPresentationPauseAnimation(kObject10007, 0);
+				_app->objectPresentationPauseAnimation(kObject10007, 1);
+				_app->objectPresentationPauseAnimation(kObject10008, 0);
+				_app->objectPresentationPauseAnimation(kObject10008, 1);
+				_app->objectPresentationPauseAnimation(kObject10009, 1);
+				_app->objectPresentationPauseAnimation(kObject10010, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 1);
+				_app->objectPresentationPauseAnimation(kObject10018, 0);
+				_app->objectPresentationPauseAnimation(kObject10018, 1);
+				_app->objectPresentationPauseAnimation(kObject10020, 0);
+				_app->objectPresentationPauseAnimation(kObject10020, 1);
+				_app->objectPresentationPauseAnimation(kObject10007, 2);
+				_app->objectPresentationPauseAnimation(kObject10009, 0);
+				_app->objectPresentationPauseAnimation(kObject10009, 2);
+				_app->objectPresentationPauseAnimation(kObject10011, 2);
+				_app->objectPresentationPauseAnimation(kObject10018, 2);
+				_app->timerStopAll();
+				_app->onCall(10100);
+
+				if (_app->varGetByte(90201) == 3) {
+					_app->varSetByte(90201, 4);
+					_app->onCall(202);
+				}
+			}
+			break;
+		}
+
+		onVisual(201);
+		onVisual(207);
+		break;
+
+	case 3:
+		switch (id) {
+		default:
+			break;
+
+		case kObject10101:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				_app->objectPresentationPauseAnimation(kObject10007, 0);
+				_app->objectPresentationPauseAnimation(kObject10007, 1);
+				_app->objectPresentationPauseAnimation(kObject10008, 0);
+				_app->objectPresentationPauseAnimation(kObject10008, 1);
+				_app->objectPresentationPauseAnimation(kObject10009, 1);
+				_app->objectPresentationPauseAnimation(kObject10010, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 1);
+				_app->objectPresentationPauseAnimation(kObject10018, 0);
+				_app->objectPresentationPauseAnimation(kObject10018, 1);
+				_app->objectPresentationPauseAnimation(kObject10020, 0);
+				_app->objectPresentationPauseAnimation(kObject10020, 1);
+				_app->objectPresentationPauseAnimation(kObject10007, 2);
+				_app->objectPresentationPauseAnimation(kObject10009, 0);
+				_app->objectPresentationPauseAnimation(kObject10009, 2);
+				_app->objectPresentationPauseAnimation(kObject10011, 2);
+				_app->objectPresentationPauseAnimation(kObject10018, 2);
+				_app->timerStopAll();
+				_app->onCall(10100);
+			}
+			break;
+
+		case kObject10102:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				_app->objectPresentationPauseAnimation(kObject10007, 0);
+				_app->objectPresentationPauseAnimation(kObject10007, 1);
+				_app->objectPresentationPauseAnimation(kObject10008, 0);
+				_app->objectPresentationPauseAnimation(kObject10008, 1);
+				_app->objectPresentationPauseAnimation(kObject10009, 1);
+				_app->objectPresentationPauseAnimation(kObject10010, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 1);
+				_app->objectPresentationPauseAnimation(kObject10018, 0);
+				_app->objectPresentationPauseAnimation(kObject10018, 1);
+				_app->objectPresentationPauseAnimation(kObject10020, 0);
+				_app->objectPresentationPauseAnimation(kObject10020, 1);
+				_app->objectPresentationPauseAnimation(kObject10007, 2);
+				_app->objectPresentationPauseAnimation(kObject10009, 0);
+				_app->objectPresentationPauseAnimation(kObject10009, 2);
+				_app->objectPresentationPauseAnimation(kObject10011, 2);
+				_app->objectPresentationPauseAnimation(kObject10018, 2);
+				_app->timerStopAll();
+				_app->onCall(102003);
+
+				if (!_app->varGetByte(90301)) {
+					_app->varSetByte(90301, 1);
+					_app->onCall(301);
+				}
+			}
+			break;
+		}
+		break;
+
+	case 4:
+		switch (id) {
+		default:
+			break;
+
+		case kObject10018:
+			if (!_app->bagHasClickedObject()) {
+				switch (target) {
+				default:
+					break;
+
+				case 0:
+					if (!_app->varGetByte(90401)) {
+						_app->puzzleSetActive(kPuzzle10017);
+						_app->soundPlay(4001);
+						_app->objectSetAccessibilityOff(kObject10018);
+					}
+					break;
+
+				case 4:
+					if (!_app->varGetByte(90415)) {
+						_app->puzzleSetActive(kPuzzle10017);
+						_app->soundPlay(4103);
+						_app->objectSetAccessibilityOff(kObject10018, 4, 4);
+						_app->objectSetAccessibilityOn(kObjectRedFish, 0, 0);
+						_app->varSetByte(10029, 1);
+					}
+					break;
+				}
+			} else {
+				switch (target) {
+				default:
+					break;
+
+				case 2:
+					if (_app->bagGetClickedObject() == kObjectSylphium) {
+						_app->soundPlay(10046);
+						_app->bagRemove(kObjectSylphium);
+						_app->objectSetAccessibilityOff(kObject10018, 2, 2);
+						_app->puzzleSetActive(kPuzzle10017);
+						_app->soundPlay(4094);
+					}
+					break;
+
+				case 5:
+					if (_app->bagGetClickedObject() == kObjectRedFish) {
+						_app->bagRemove(kObjectRedFish);
+						_app->objectSetAccessibilityOff(kObject10018, 5, 5);
+						_app->playMovie("S01A02-2");
+						_app->puzzleSetActive(kPuzzle10017);
+						_app->soundPlay(4104);
+					}
+					break;
+				}
+
+				_app->cursorDelete();
+			}
+			break;
+
+		case kObject10020:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				switch (target) {
+				default:
+					break;
+
+				case 0:
+					if (!_app->varGetByte(10015)) {
+						_app->objectSetAccessibilityOff(kObject10020, 0, 0);
+						_app->puzzleSetActive(kPuzzle10021);
+						_app->soundPlay(4098);
+						_app->varSetByte(10015, 1);
+					}
+					break;
+
+				case 1:
+					if (_app->varGetByte(10015) == 1) {
+						_app->objectSetAccessibilityOff(kObject10020, 1, 1);
+						_app->puzzleSetActive(kPuzzle10021);
+
+						switch (_app->varGetByte(10030)) {
+						default:
+							break;
+
+						case 1:
+							_app->soundPlay(4099);
+							break;
+
+						case 2:
+							_app->soundPlay(4100);
+							break;
+
+						case 3:
+							_app->soundPlay(4101);
+							break;
+						}
+					}
+					break;
+				}
+			}
+			break;
+
+		case kObjectEggs:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectEggs
+				 && _app->varGetByte(10016) != 2
+				 && _app->varGetByte(10016) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectEggs);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectEggs, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectEggs, 0);
+					_app->varSetByte(10016, 1);
+					_app->objectSetAccessibilityOff(kObjectEggs, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectEggs, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectTuna
+				 && _app->varGetByte(10016) != 1
+				 && _app->varGetByte(10016) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectTuna);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectTuna, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectTuna, 0);
+					_app->varSetByte(10016, 2);
+					_app->objectSetAccessibilityOff(kObjectEggs, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectEggs, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectMussels
+				 && _app->varGetByte(10016) != 1
+				 && _app->varGetByte(10016) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectMussels);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectMussels, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectMussels, 0);
+					_app->varSetByte(10016, 3);
+					_app->objectSetAccessibilityOff(kObjectEggs, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectEggs, 0, 0);
+				}
+
+				if (_app->varGetByte(10016) == 3
+				 && _app->varGetByte(10017) == 1
+				 && _app->varGetByte(10018) == 2) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->fadeOut(15, Color(0, 0, 0), 0);
+
+					_app->soundPlay(4100);
+					_app->objectPresentationHide(kObjectEggs, 0);
+					_app->objectSetAccessibilityOff(kObjectEggs);
+					_app->objectPresentationHide(kObjectTuna, 0);
+					_app->objectSetAccessibilityOff(kObjectTuna);
+					_app->objectPresentationHide(kObjectMussels, 0);
+					_app->objectSetAccessibilityOff(kObjectMussels);
+					_app->puzzleSetActive(kPuzzle10021);
+					_app->soundPlay(4100);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10016)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectEggs, 0);
+					_app->bagAdd(kObjectEggs);
+					_app->varSetByte(10016, 0);
+					_app->objectSetAccessibilityOff(kObjectEggs, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectEggs, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectTuna, 0);
+					_app->bagAdd(kObjectTuna);
+					_app->varSetByte(10016, 0);
+					_app->objectSetAccessibilityOff(kObjectEggs, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectEggs, 1, 1);
+					break;
+
+				case 3:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectMussels, 0);
+					_app->bagAdd(kObjectMussels);
+					_app->varSetByte(10016, 0);
+					_app->objectSetAccessibilityOff(kObjectEggs, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectEggs, 1, 1);
+					break;
+				}
+			}
+			break;
+
+		case kObjectTuna:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectEggs
+				 && _app->varGetByte(10017) != 2
+				 && _app->varGetByte(10017) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectEggs);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectEggs, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectEggs, 0);
+					_app->varSetByte(10017, 1);
+					_app->objectSetAccessibilityOff(kObjectTuna, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectTuna, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectTuna
+				 && _app->varGetByte(10017) != 1
+				 && _app->varGetByte(10017) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectTuna);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectTuna, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectTuna, 0);
+					_app->varSetByte(10017, 2);
+					_app->objectSetAccessibilityOff(kObjectTuna, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectTuna, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectMussels
+				 && _app->varGetByte(10017) != 1
+				 && _app->varGetByte(10017) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectMussels);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectMussels, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectMussels, 0);
+					_app->varSetByte(10017, 3);
+					_app->objectSetAccessibilityOff(kObjectTuna, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectTuna, 0, 0);
+				}
+
+				if (_app->varGetByte(10016) == 3
+				 && _app->varGetByte(10017) == 1
+				 && _app->varGetByte(10018) == 2) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->fadeOut(15, Color(0, 0, 0), 0);
+					_app->objectPresentationHide(kObjectEggs, 0);
+					_app->objectSetAccessibilityOff(kObjectEggs);
+					_app->objectPresentationHide(kObjectTuna, 0);
+					_app->objectSetAccessibilityOff(kObjectTuna);
+					_app->objectPresentationHide(kObjectMussels, 0);
+					_app->objectSetAccessibilityOff(kObjectMussels);
+					_app->puzzleSetActive(kPuzzle10021);
+					_app->soundPlay(4100);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10017)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectEggs, 0);
+					_app->bagAdd(kObjectEggs);
+					_app->varSetByte(10017, 0);
+					_app->objectSetAccessibilityOff(kObjectTuna, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectTuna, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectTuna, 0);
+					_app->bagAdd(kObjectTuna);
+					_app->varSetByte(10017, 0);
+					_app->objectSetAccessibilityOff(kObjectTuna, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectTuna, 1, 1);
+					break;
+
+				case 3:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectMussels, 0);
+					_app->bagAdd(kObjectMussels);
+					_app->varSetByte(10017, 0);
+					_app->objectSetAccessibilityOff(kObjectTuna, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectTuna, 1, 1);
+					break;
+				}
+			}
+			break;
+
+		case kObjectMussels:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectEggs
+				 && _app->varGetByte(10018) != 2
+				 && _app->varGetByte(10018) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectEggs);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectEggs, 0, Common::Point(420, 198));
+					_app->objectPresentationShow(kObjectEggs, 0);
+					_app->varSetByte(10018, 1);
+					_app->objectSetAccessibilityOff(kObjectMussels, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectMussels, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectTuna
+				 && _app->varGetByte(10018) != 1
+				 && _app->varGetByte(10018) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectTuna);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectTuna, 0, Common::Point(420, 198));
+					_app->objectPresentationShow(kObjectTuna, 0);
+					_app->varSetByte(10018, 2);
+					_app->objectSetAccessibilityOff(kObjectMussels, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectMussels, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectMussels
+				 && _app->varGetByte(10018) != 1
+				 && _app->varGetByte(10018) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectMussels);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectMussels, 0, Common::Point(420, 198));
+					_app->objectPresentationShow(kObjectMussels, 0);
+					_app->varSetByte(10018, 3);
+					_app->objectSetAccessibilityOff(kObjectMussels, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectMussels, 0, 0);
+				}
+
+				if (_app->varGetByte(10016) == 3
+				 && _app->varGetByte(10017) == 1
+				 && _app->varGetByte(10018) == 2) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->fadeOut(15, Color(0, 0, 0), 0);
+					_app->objectPresentationHide(kObjectEggs, 0);
+					_app->objectSetAccessibilityOff(kObjectEggs);
+					_app->objectPresentationHide(kObjectTuna, 0);
+					_app->objectSetAccessibilityOff(kObjectTuna);
+					_app->objectPresentationHide(kObjectMussels, 0);
+					_app->objectSetAccessibilityOff(kObjectMussels);
+					_app->puzzleSetActive(kPuzzle10021);
+					_app->soundPlay(4100);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10018)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectEggs, 0);
+					_app->bagAdd(kObjectEggs);
+					_app->varSetByte(10018, 0);
+					_app->objectSetAccessibilityOff(kObjectMussels, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectMussels, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectTuna, 0);
+					_app->bagAdd(kObjectTuna);
+					_app->varSetByte(10018, 0);
+					_app->objectSetAccessibilityOff(kObjectMussels, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectMussels, 1, 1);
+					break;
+
+				case 3:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectMussels, 0);
+					_app->bagAdd(kObjectMussels);
+					_app->varSetByte(10018, 0);
+					_app->objectSetAccessibilityOff(kObjectMussels, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectMussels, 1, 1);
+					break;
+				}
+			}
+			break;
+
+		case kObjectDuck:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectDuck && _app->varGetByte(10019) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDuck);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDuck, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectDuck, 0);
+					_app->varSetByte(10019, 1);
+					_app->objectSetAccessibilityOff(kObjectDuck, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDuck, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectDugs && _app->varGetByte(10019) != 1) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDugs);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDugs, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectDugs, 0);
+					_app->varSetByte(10019, 2);
+					_app->objectSetAccessibilityOff(kObjectDuck, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDuck, 0, 0);
+				}
+
+				if (_app->varGetByte(10019) == 2 && _app->varGetByte(10020) == 1) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->fadeOut(15, Color(0, 0, 0), 0);
+					_app->objectPresentationHide(kObjectDuck, 0);
+					_app->objectSetAccessibilityOff(kObjectDuck);
+					_app->objectPresentationHide(kObjectDugs, 0);
+					_app->objectSetAccessibilityOff(kObjectDugs);
+					_app->puzzleSetActive(kPuzzle10021);
+					_app->soundPlay(4101);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10019)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDuck, 0);
+					_app->bagAdd(kObjectDuck);
+					_app->varSetByte(10019, 0);
+					_app->objectSetAccessibilityOff(kObjectDuck, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDuck, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDugs, 0);
+					_app->bagAdd(kObjectDugs);
+					_app->varSetByte(10019, 0);
+					_app->objectSetAccessibilityOff(kObjectDuck, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDuck, 1, 1);
+					break;
+				}
+			}
+			break;
+
+		case kObjectDugs:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectDuck && _app->varGetByte(10020) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDuck);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDuck, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectDuck, 0);
+					_app->varSetByte(10020, 1);
+					_app->objectSetAccessibilityOff(kObjectDugs, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDugs, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectDugs && _app->varGetByte(10020) != 1) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDugs);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDugs, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectDugs, 0);
+					_app->varSetByte(10020, 2);
+					_app->objectSetAccessibilityOff(kObjectDugs, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDugs, 0, 0);
+				}
+
+				if (_app->varGetByte(10019) == 2 && _app->varGetByte(10020) == 1) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->fadeOut(15, Color(0, 0, 0), 0);
+					_app->objectPresentationHide(kObjectDuck, 0);
+					_app->objectSetAccessibilityOff(kObjectDuck);
+					_app->objectPresentationHide(kObjectDugs, 0);
+					_app->objectSetAccessibilityOff(kObjectDugs);
+					_app->puzzleSetActive(kPuzzle10021);
+					_app->soundPlay(4101);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10020)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDuck, 0);
+					_app->bagAdd(kObjectDuck);
+					_app->varSetByte(10020, 0);
+					_app->objectSetAccessibilityOff(kObjectDugs, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDugs, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDugs, 0);
+					_app->bagAdd(kObjectDugs);
+					_app->varSetByte(10020, 0);
+					_app->objectSetAccessibilityOff(kObjectDugs, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDugs, 1, 1);
+					break;
+				}
+			}
+			break;
+
+		case kObjectDulcia:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectDulcia
+				 && _app->varGetByte(10021) != 2
+				 && _app->varGetByte(10021) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDulcia);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDulcia, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectDulcia, 0);
+					_app->varSetByte(10021, 1);
+					_app->objectSetAccessibilityOff(kObjectDulcia, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDulcia, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectDates2
+				 && _app->varGetByte(10021) != 1
+				 && _app->varGetByte(10021) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDates2);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDates2, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectDates2, 0);
+					_app->varSetByte(10021, 2);
+					_app->objectSetAccessibilityOff(kObjectDulcia, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDulcia, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectOysters
+				 && _app->varGetByte(10021) != 1
+				 && _app->varGetByte(10021) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectOysters);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectOysters, 0, Common::Point(3, 220));
+					_app->objectPresentationShow(kObjectOysters, 0);
+					_app->varSetByte(10021, 3);
+					_app->objectSetAccessibilityOff(kObjectDulcia, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDulcia, 0, 0);
+				}
+
+				if (_app->varGetByte(10021) == 3
+				 && _app->varGetByte(10022) == 1
+				 && _app->varGetByte(10023) == 2) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->objectSetAccessibilityOff(kObjectDulcia);
+					_app->objectSetAccessibilityOff(kObjectDates2);
+					_app->objectSetAccessibilityOff(kObjectOysters);
+
+					onVisual(414);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10021)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDulcia, 0);
+					_app->bagAdd(kObjectDulcia);
+					_app->varSetByte(10021, 0);
+					_app->objectSetAccessibilityOff(kObjectDulcia, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDulcia, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDates2, 0);
+					_app->bagAdd(kObjectDates2);
+					_app->varSetByte(10021, 0);
+					_app->objectSetAccessibilityOff(kObjectDulcia, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDulcia, 1, 1);
+					break;
+
+				case 3:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectOysters, 0);
+					_app->bagAdd(kObjectOysters);
+					_app->varSetByte(10021, 0);
+					_app->objectSetAccessibilityOff(kObjectDulcia, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDulcia, 1, 1);
+					break;
+				}
+				return;
+			}
+			break;
+
+		case kObjectDates2:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectDulcia
+				 && _app->varGetByte(10022) != 2
+				 && _app->varGetByte(10022) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDulcia);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDulcia, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectDulcia, 0);
+					_app->varSetByte(10022, 1);
+					_app->objectSetAccessibilityOff(kObjectDates2, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDates2, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectDates2
+				 && _app->varGetByte(10022) != 1
+				 && _app->varGetByte(10022) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDates2);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDates2, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectDates2, 0);
+					_app->varSetByte(10022, 2);
+					_app->objectSetAccessibilityOff(kObjectDates2, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDates2, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectOysters
+				 && _app->varGetByte(10022) != 1
+				 && _app->varGetByte(10022) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectOysters);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectOysters, 0, Common::Point(207, 209));
+					_app->objectPresentationShow(kObjectOysters, 0);
+					_app->varSetByte(10022, 3);
+					_app->objectSetAccessibilityOff(kObjectDates2, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectDates2, 0, 0);
+				}
+
+				if (_app->varGetByte(10021) == 3
+				 && _app->varGetByte(10022) == 1
+				 && _app->varGetByte(10023) == 2) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->objectSetAccessibilityOff(kObjectDulcia);
+					_app->objectSetAccessibilityOff(kObjectDates2);
+					_app->objectSetAccessibilityOff(kObjectOysters);
+
+					onVisual(414);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if ( target )
+					return;
+
+				switch (_app->varGetByte(10022)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDulcia, 0);
+					_app->bagAdd(kObjectDulcia);
+					_app->varSetByte(10022, 0);
+					_app->objectSetAccessibilityOff(kObjectDates2, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDates2, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDates2, 0);
+					_app->bagAdd(kObjectDates2);
+					_app->varSetByte(10022, 0);
+					_app->objectSetAccessibilityOff(kObjectDates2, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDates2, 1, 1);
+					break;
+
+				case 3:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectOysters, 0);
+					_app->bagAdd(kObjectOysters);
+					_app->varSetByte(10022, 0);
+					_app->objectSetAccessibilityOff(kObjectDates2, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectDates2, 1, 1);
+					break;
+				}
+
+				return;
+			}
+			break;
+
+		case kObjectOysters:
+			if (_app->bagHasClickedObject()) {
+				if (_app->bagGetClickedObject() == kObjectDulcia
+				 && _app->varGetByte(10023) != 2
+				 && _app->varGetByte(10023) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDulcia);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDulcia, 0, Common::Point(420, 198));
+					_app->objectPresentationShow(kObjectDulcia, 0);
+					_app->varSetByte(10023, 1);
+					_app->objectSetAccessibilityOff(kObjectOysters, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectOysters, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectDates2
+				 && _app->varGetByte(10023) != 1
+				 && _app->varGetByte(10023) != 3) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectDates2);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectDates2, 0, Common::Point(420, 198));
+					_app->objectPresentationShow(kObjectDates2, 0);
+					_app->varSetByte(10023, 2);
+					_app->objectSetAccessibilityOff(kObjectOysters, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectOysters, 0, 0);
+				}
+
+				if (_app->bagGetClickedObject() == kObjectOysters
+				 && _app->varGetByte(10023) != 1
+				 && _app->varGetByte(10023) != 2) {
+					_app->soundPlay(10048);
+					_app->bagRemove(kObjectOysters);
+					_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectOysters, 0, Common::Point(420, 198));
+					_app->objectPresentationShow(kObjectOysters, 0);
+					_app->varSetByte(10023, 3);
+					_app->objectSetAccessibilityOff(kObjectOysters, 1, 1);
+					_app->objectSetAccessibilityOn(kObjectOysters, 0, 0);
+				}
+
+				if (_app->varGetByte(10021) == 3
+				 && _app->varGetByte(10022) == 1
+				 && _app->varGetByte(10023) == 2) {
+					_app->cursorDelete();
+
+					handleEvents();
+
+					_app->objectSetAccessibilityOff(kObjectDulcia);
+					_app->objectSetAccessibilityOff(kObjectDates2);
+					_app->objectSetAccessibilityOff(kObjectOysters);
+
+					onVisual(414);
+				}
+
+				_app->cursorDelete();
+			} else {
+				if (target)
+					break;
+
+				switch (_app->varGetByte(10023)) {
+				default:
+					break;
+
+				case 1:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDulcia, 0);
+					_app->bagAdd(kObjectDulcia);
+					_app->varSetByte(10023, 0);
+					_app->objectSetAccessibilityOff(kObjectOysters, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectOysters, 1, 1);
+					break;
+
+				case 2:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectDates2, 0);
+					_app->bagAdd(kObjectDates2);
+					_app->varSetByte(10023, 0);
+					_app->objectSetAccessibilityOff(kObjectOysters, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectOysters, 1, 1);
+					break;
+
+				case 3:
+					_app->soundPlay(10047);
+					_app->objectPresentationHide(kObjectOysters, 0);
+					_app->bagAdd(kObjectOysters);
+					_app->varSetByte(10023, 0);
+					_app->objectSetAccessibilityOff(kObjectOysters, 0, 0);
+					_app->objectSetAccessibilityOn(kObjectOysters, 1, 1);
+					break;
+				}
+			}
+			break;
+
+		case kObjectRedFish:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (!target) {
+					_app->objectSetAccessibilityOff(kObjectRedFish, 0, 0);
+					_app->objectSetAccessibilityOn(kObject10018, 5, 5);
+					_app->bagAdd(kObjectRedFish);
+				}
+			}
+			break;
+
+		case kObject10101:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				if (_app->varGetByte(90401) == 2) {
+					_app->varSetByte(90401, 3);
+					_app->onCall(4019);
+				}
+
+				_app->objectPresentationPauseAnimation(kObject10007, 0);
+				_app->objectPresentationPauseAnimation(kObject10007, 1);
+				_app->objectPresentationPauseAnimation(kObject10008, 0);
+				_app->objectPresentationPauseAnimation(kObject10008, 1);
+				_app->objectPresentationPauseAnimation(kObject10009, 1);
+				_app->objectPresentationPauseAnimation(kObject10010, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 1);
+				_app->objectPresentationPauseAnimation(kObject10018, 0);
+				_app->objectPresentationPauseAnimation(kObject10018, 1);
+				_app->objectPresentationPauseAnimation(kObject10020, 0);
+				_app->objectPresentationPauseAnimation(kObject10020, 1);
+				_app->objectPresentationPauseAnimation(kObject10007, 2);
+				_app->objectPresentationPauseAnimation(kObject10009, 0);
+				_app->objectPresentationPauseAnimation(kObject10009, 2);
+				_app->objectPresentationPauseAnimation(kObject10011, 2);
+				_app->objectPresentationPauseAnimation(kObject10018, 2);
+				_app->timerStopAll();
+				_app->onCall(10100);
+			}
+			break;
+
+		case kObject10102:
+			if (_app->bagHasClickedObject()) {
+				_app->cursorDelete();
+			} else {
+				_app->objectPresentationPauseAnimation(kObject10007, 0);
+				_app->objectPresentationPauseAnimation(kObject10007, 1);
+				_app->objectPresentationPauseAnimation(kObject10008, 0);
+				_app->objectPresentationPauseAnimation(kObject10008, 1);
+				_app->objectPresentationPauseAnimation(kObject10009, 1);
+				_app->objectPresentationPauseAnimation(kObject10010, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 0);
+				_app->objectPresentationPauseAnimation(kObject10011, 1);
+				_app->objectPresentationPauseAnimation(kObject10018, 0);
+				_app->objectPresentationPauseAnimation(kObject10018, 1);
+				_app->objectPresentationPauseAnimation(kObject10020, 0);
+				_app->objectPresentationPauseAnimation(kObject10020, 1);
+				_app->objectPresentationPauseAnimation(kObject10007, 2);
+				_app->objectPresentationPauseAnimation(kObject10009, 0);
+				_app->objectPresentationPauseAnimation(kObject10009, 2);
+				_app->objectPresentationPauseAnimation(kObject10011, 2);
+				_app->objectPresentationPauseAnimation(kObject10018, 2);
+				_app->timerStopAll();
+				_app->onCall(102003);
+			}
+			break;
+		}
+		break;
+	}
 }
 
 void Zone2Pompeii::onTimer(TimerId id) {
@@ -1128,12 +2437,10 @@ void Zone2Pompeii::onUpdateBag(const Common::Point &/*point*/) {
 }
 
 void Zone2Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
-	if (_hideBox || _app->bagGetClickedObject())
+	if (_hideBox || _app->bagHasClickedObject())
 		return;
 
-	Common::Point mouse = g_system->getEventManager()->getMousePos();
-	mouse.x -= 20;
-	mouse.y -= 16;
+	Common::Point mouse = g_system->getEventManager()->getMousePos() - Common::Point(20, 16);
 
 	switch (movabilityFrom) {
 	default:
