@@ -1072,6 +1072,14 @@ void ApplicationPompeii::onCall(Id callType) {
 	error("[ApplicationPompeii::onCall] Not implemented");
 }
 
+bool ApplicationPompeii::giveMoney(uint32 amount) {
+	error("[ApplicationPompeii::pay] Not implemented");
+}
+
+void ApplicationPompeii::takeMoney(uint32 amount) {
+	error("[ApplicationPompeii::getMoney] Not implemented");
+}
+
 void ApplicationPompeii::showEncyclopedia(uint32 index) {
 	_savedZone = getCurrentZone();
 	setCurrentZone(kZone100);

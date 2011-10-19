@@ -54,7 +54,13 @@ private:
 	bool _hideBox;
 	uint32 _frame1;
 	uint32 _frame2;
+	uint32 _frame3;
+	uint32 _frame4;
+	uint32 _presentationIndex;
 	byte _playSoundValue;
+
+	void setAnimationCoordinatesOnCubes(uint32 presentationIndex, int16 a2);
+	void showObjectTali(uint32 presentationIndex);
 };
 
 } // End of namespace Ring
