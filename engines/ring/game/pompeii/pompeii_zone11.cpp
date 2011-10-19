@@ -217,7 +217,7 @@ void Zone11Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, 
 		break;
 	case kObject11006:
 		if (_app->bagHasClickedObject()) {
-			if (target == 3 && _app->bagGetClickedObject() == 91003) {
+			if (target == 3 && _app->bagGetClickedObject() == kObjectFabricAndFlour) {
 				_app->bagRemove(kObjectFabricAndFlour);
 				_app->rotationSetFreOn(11022);
 				_app->soundPlay(100004);

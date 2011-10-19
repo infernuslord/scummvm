@@ -63,7 +63,7 @@ void SoundItem::init(SoundEntry *entry, uint32 volume, int32 pan, bool isTurnedO
 
 void SoundItem::init(SoundEntry *entry, uint32 volume, int32 pan, bool isTurnedOn, uint32 a5, uint32 a6, uint32 fadeFrames, float angle, int a9) {
 	if (fadeFrames < 1) // FIXME??? (was <= 1)
-		error( "[SoundItem::init] Fade number of frames needs to be greater then 1 (was: %d)", fadeFrames);
+		error("[SoundItem::init] Fade number of frames needs to be greater then 1 (was: %d)", fadeFrames);
 
 	_entry    = entry;
 	entry->setField125(0);

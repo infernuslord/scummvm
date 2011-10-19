@@ -324,7 +324,7 @@ void ZoneSystemRing::onInit() {
 
 	_app->setArchiveType(kArchiveFile);
 	_app->objectPresentationAddImageToPuzzle(kObjectSaveName, 0, kPuzzleSave, "osc.bmp", Common::Point(0, 0), true, kDrawType1, 1000);
-	if (_app->getConfiguration().artSY )
+	if (_app->getConfiguration().artSY)
 		_app->setArchiveType(kArchiveArt);
 
 	_app->objectPresentationShow(kObjectSaveName, 0);

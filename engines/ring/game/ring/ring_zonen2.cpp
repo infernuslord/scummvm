@@ -1473,7 +1473,7 @@ void ZoneN2Ring::onBag(ObjectId id, Id target, Id, uint32, DragControl *, byte t
 
 			_app->varSetWord(70016, (int16)offset);
 
-			if (_presentationIndexN2 == 12 ) {
+			if (_presentationIndexN2 == 12) {
 				_app->varSetByte(10104, 1);
 				_app->rotationSetMovabilityOff(70101, 1, 1);
 				_app->rotationSetMovabilityOn(70101, 2, 2);

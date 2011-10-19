@@ -1562,7 +1562,7 @@ void ZoneWARing::onButtonUp2(ObjectId objectId, uint32 index, Id, uint32, const 
 			case 0:
 			case 1:
 			case 2:
-				if (_app->bagGetClickedObject().id() == objectId) {
+				if (_app->bagGetClickedObject() == objectId) {
 					_app->bagRemove(objectId);
 					_app->objectPresentationShow(kObject50100, index);
 					_app->setField74(false);
