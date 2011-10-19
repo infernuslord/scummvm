@@ -151,6 +151,7 @@ public:
 
 	bool messageGet(Common::String messageId);
 	void messageFormat(Common::String messageId, Common::String argument);
+	void messageFormat(Common::String messageId, int arg1, int arg2);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Puzzle

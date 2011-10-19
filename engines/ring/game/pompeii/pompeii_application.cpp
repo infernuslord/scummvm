@@ -1073,11 +1073,25 @@ void ApplicationPompeii::onCall(Id callType) {
 }
 
 bool ApplicationPompeii::giveMoney(uint32 amount) {
-	error("[ApplicationPompeii::pay] Not implemented");
+	if (varGetWord(99500) - amount < 0) {
+		// Not enough money
+		messageFormat("NotEnoughMoney", varGetWord(99500), amount);
+		messageShowWarning(0);
+
+		return false;
+	}
+
+	varSetWord(99500, varGetWord(99500) - amount);
+	if (!varGetWord(99500))
+		bagRemove(kObjectSesterces);
+
+	return true;
 }
 
 void ApplicationPompeii::takeMoney(uint32 amount) {
-	error("[ApplicationPompeii::getMoney] Not implemented");
+	varSetWord(99500, varGetWord(99500) + amount);
+	if (!bagHas(kObjectSesterces))
+		bagAdd(kObjectSesterces);
 }
 
 void ApplicationPompeii::showEncyclopedia(uint32 index) {

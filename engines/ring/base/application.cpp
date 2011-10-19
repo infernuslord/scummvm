@@ -1294,6 +1294,11 @@ void Application::messageFormat(Common::String messageId, Common::String argumen
 		_message = Common::String::format(_message.c_str(), argument.c_str());
 }
 
+void Application::messageFormat(Common::String messageId, int arg1, int arg2) {
+	if (messageGet(messageId))
+		_message = Common::String::format(_message.c_str(), arg1, arg2);
+}
+
 #pragma endregion
 
 #pragma region Puzzle
