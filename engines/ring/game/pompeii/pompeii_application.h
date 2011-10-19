@@ -97,8 +97,8 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 	// Misc
 	//////////////////////////////////////////////////////////////////////////
-	bool giveMoney(uint32 amount);
-	void takeMoney(uint32 amount);
+	bool giveMoney(int16 amount);
+	void takeMoney(int16 amount);
 	void onCall(Id callType);
 	void showEncyclopedia(uint32 index);
 	void restore();
@@ -122,8 +122,8 @@ private:
 	// Saved zone when showing encyclopedia
 	ZoneId _savedZone;
 
-	bool sub_42F7B0();
-	void sub_42F8C0();
+	uint32 checkBag();
+	void setCoordinatesOnPuzzle6();
 	void showDay();
 	void setupUser(Id userId);
 
