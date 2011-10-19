@@ -42,6 +42,7 @@
 #include "ring/graphics/hotspot.h"
 #include "ring/graphics/movie.h"
 #include "ring/graphics/screen.h"
+#include "ring/graphics/visual/visual_bar.h"
 #include "ring/graphics/visual/visual_box.h"
 #include "ring/graphics/visual/visual_encyclopedia.h"
 #include "ring/graphics/visual/visual_list.h"
@@ -2472,7 +2473,7 @@ void Application::varRemoveAll() {
 
 #pragma region Visual
 
-void Application::visualAddShowToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) {
+void Application::visualBarAddToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) {
 	if (!_puzzles.has(puzzleId))
 		error("[Application::visualAddListToPuzzle] Puzzle Id doesn't exist (%d)", puzzleId.id());
 
@@ -2480,7 +2481,12 @@ void Application::visualAddShowToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a
 	if (puzzle->hasVisual(visualId))
 		error("[Application::visualAddListToPuzzle] Visual already exists on puzzle (%d)", visualId);
 
-	Visual *visual = createVisual(visualId, a3, a4, left, top, offsetY, height, progressMultiplier, progressColor);
+	VisualBar *visual = new VisualBar(visualId);
+
+	visual->init(a3, a4, left, top, offsetY, height, progressMultiplier, progressColor);
+	visual->setType(2);
+	visual->setVisible(true);
+
 	puzzle->addVisual(visual);
 }
 

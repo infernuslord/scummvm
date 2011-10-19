@@ -64,10 +64,6 @@ public:
 	virtual void draw();
 
 	//////////////////////////////////////////////////////////////////////////
-	// Visual
-	virtual Visual *createVisual(Id visualId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor);
-
-	//////////////////////////////////////////////////////////////////////////
 	// Event handlers
 	virtual void onMouseLeftButtonUp(const Common::Event &evt, bool isControlPressed);
 	virtual void onMouseLeftButtonDown(const Common::Event &evt);

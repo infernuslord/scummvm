@@ -19,9 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "ring/game/ring/ring_visual.h"
+#include "ring/graphics/visual/visual_bar.h"
 
-#include "ring/game/ring/ring_application.h"
+#include "ring/base/application.h"
+
 #include "ring/game/ring/ring_shared.h"
 
 #include "ring/graphics/screen.h"
@@ -33,9 +34,7 @@ using namespace RingGame;
 
 namespace Ring {
 
-#pragma region VisualElement
-
-VisualElementRing::VisualElementRing(Id id) : Visual(id) {
+VisualBar::VisualBar(Id id) : Visual(id) {
 	_field_D  = 0;
 	_field_11 = 0;
 	_left = 0;
@@ -51,10 +50,10 @@ VisualElementRing::VisualElementRing(Id id) : Visual(id) {
 	_progress4 = 0.0f;
 }
 
-VisualElementRing::~VisualElementRing() {
+VisualBar::~VisualBar() {
 }
 
-void VisualElementRing::alloc() {
+void VisualBar::alloc() {
 	if (_initialized)
 		return;
 
@@ -66,7 +65,7 @@ void VisualElementRing::alloc() {
 	_initialized = true;
 }
 
-void VisualElementRing::setupProgress(Id progressId, uint32 textIndex, float *width) const {
+void VisualBar::setupProgress(Id progressId, uint32 textIndex, float *width) const {
 	float progress = getApp()->varGetFloat(progressId);
 	if (progress > 100.0f)
 		progress = 100.0f;
@@ -79,11 +78,11 @@ void VisualElementRing::setupProgress(Id progressId, uint32 textIndex, float *wi
 	*width = (float)ceil(_progressMultiplier * progress * 0.01);
 }
 
-void VisualElementRing::dealloc() {
-	_initialized = true;
+void VisualBar::dealloc() {
+	_initialized = false;
 }
 
-void VisualElementRing::init(uint32 a1, uint32 a2, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) {
+void VisualBar::init(uint32 a1, uint32 a2, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) {
 	_field_D  = a1;
 	_field_11 = a2;
 	_left = left;
@@ -94,7 +93,7 @@ void VisualElementRing::init(uint32 a1, uint32 a2, uint32 left, uint32 top, uint
 	_progressColor = progressColor;
 }
 
-void VisualElementRing::draw() {
+void VisualBar::draw() {
 	if (!_visible)
 		return;
 
@@ -103,7 +102,5 @@ void VisualElementRing::draw() {
 	getApp()->getScreenManager()->drawRectangle(Common::Rect((int16)_left, (int16)(_top + 2 * _offsetY + 1), (int16)(_left + _progress3), (int16)(_top + 2 * _offsetY + _height + 1)), _progressColor);
 	getApp()->getScreenManager()->drawRectangle(Common::Rect((int16)_left, (int16)(_top + 3 * _offsetY - 1), (int16)(_left + _progress4), (int16)(_top + 3 * _offsetY + _height - 1)), _progressColor);
 }
-
-#pragma endregion
 
 } // End of namespace Ring

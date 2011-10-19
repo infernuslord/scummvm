@@ -34,7 +34,6 @@
 #include "ring/base/timer.h"
 
 #include "ring/game/ring/ring_shared.h"
-#include "ring/game/ring/ring_visual.h"
 #include "ring/game/ring/ring_zonesystem.h"
 #include "ring/game/ring/ring_zoneni.h"
 #include "ring/game/ring/ring_zonerh.h"
@@ -636,20 +635,6 @@ void ApplicationRing::setZone(ZoneId zone, SetupType type) {
 
 	// Setup zone
 	onSetup(zone, type);
-}
-
-#pragma endregion
-
-#pragma region Visual
-
-Visual *ApplicationRing::createVisual(Id visualId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) {
-	VisualElementRing *visual = new VisualElementRing(visualId);
-
-	visual->init(a3, a4, left, top, offsetY, height, progressMultiplier, progressColor);
-	visual->setType(2);
-	visual->setVisible(true);
-
-	return visual;
 }
 
 #pragma endregion

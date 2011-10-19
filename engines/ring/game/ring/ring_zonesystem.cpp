@@ -344,7 +344,7 @@ void ZoneSystemRing::onInit() {
 	_app->objectAddPresentation(kObjectStatusOk);
 	_app->objectPresentationAddImageToPuzzle(kObjectStatusOk, 0, kPuzzleGameStatus, "g_ok.tga", Common::Point(46, 95), true, kDrawType3, 1000);
 	_app->objectSetPuzzleAccessibilityKey(kObjectStatusOk, 0, Common::KEYCODE_RETURN);
-	_app->visualAddShowToPuzzle(2, kPuzzleGameStatus, 1, 4, 295, 343, 28, 4, 300, 38655);
+	_app->visualBarAddToPuzzle(2, kPuzzleGameStatus, 1, 4, 295, 343, 28, 4, 300, 38655);
 	_app->objectAdd(kObjectStatusProgress, "", "", 1);
 	_app->objectAddPresentation(kObjectStatusProgress);
 	_app->objectPresentationAddTextToPuzzle(kObjectStatusProgress, 0, kPuzzleGameStatus, "", Common::Point(600, 327), kFontDefault, Color(255, -106, 0), Color(-1, -1, -1));

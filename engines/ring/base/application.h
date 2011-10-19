@@ -335,8 +335,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	// VisualElement
-	void visualAddShowToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 width, uint32 progressMultiplier, uint32 progressColor);
-	virtual Visual *createVisual(Id visualId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 height, uint32 progressMultiplier, uint32 progressColor) = 0;
+	void visualBarAddToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3, uint32 a4, uint32 left, uint32 top, uint32 offsetY, uint32 width, uint32 progressMultiplier, uint32 progressColor);
 
 	// VisualList
 	void visualListAddToPuzzle(Id visualId, PuzzleId puzzleId, uint32 a3,

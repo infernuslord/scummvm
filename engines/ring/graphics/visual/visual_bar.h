@@ -19,19 +19,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef RING_RING_VISUAL_H
-#define RING_RING_VISUAL_H
+#ifndef RING_VISUAL_BAR_H
+#define RING_VISUAL_BAR_H
 
 #include "ring/graphics/visual/visual.h"
 
 namespace Ring {
 
-class ApplicationRing;
-
-class VisualElementRing : public Visual {
+class VisualBar : public Visual {
 public:
-	VisualElementRing(Id id);
-	virtual ~VisualElementRing();
+	VisualBar(Id id);
+	virtual ~VisualBar();
 
 	virtual void alloc();
 	virtual void dealloc();
@@ -69,4 +67,4 @@ private:
 
 } // End of namespace Ring
 
-#endif // RING_RING_VISUAL_H
+#endif // RING_VISUAL_BAR_H
