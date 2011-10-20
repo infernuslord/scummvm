@@ -1045,7 +1045,7 @@ void Zone2Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 			break;
 
 		case kObject10101:
-			if ( _app->bagHasClickedObject()) {
+			if (_app->bagHasClickedObject()) {
 				_app->cursorDelete();
 			} else {
 				if (_app->varGetByte(90103) == 2) {
@@ -1196,7 +1196,7 @@ void Zone2Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 				if (_app->varGetByte(90201) == 2) {
 					_app->varSetByte(90201, 3);
 					_app->onCall(2009);
-				} else if ( _app->varGetByte(90207) == 2) {
+				} else if (_app->varGetByte(90207) == 2) {
 					_app->varSetByte(90207, 3);
 					_app->onCall(2079);
 				}
@@ -1965,7 +1965,7 @@ void Zone2Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 
 				_app->cursorDelete();
 			} else {
-				if ( target )
+				if (target)
 					return;
 
 				switch (_app->varGetByte(10022)) {

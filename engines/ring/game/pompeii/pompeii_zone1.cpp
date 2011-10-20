@@ -3545,7 +3545,680 @@ void Zone1Pompeii::onAfterRide(Id movabilityFrom, Id movabilityTo, uint32 /*mova
 }
 
 void Zone1Pompeii::onVisual(int x) {
-	error("[Zone1Pompeii::onVisualList] Not implemented");
+	switch (x) {
+	default:
+		break;
+
+	case 0:
+		_app->objectPresentationPauseAnimation(kObject1001, 0);
+		_app->objectPresentationPauseAnimation(kObject1001, 1);
+		_app->objectPresentationPauseAnimation(kObject1001, 3);
+		_app->objectPresentationPauseAnimation(kObject1006, 0);
+		_app->objectPresentationPauseAnimation(kObject10071, 0);
+		_app->objectPresentationPauseAnimation(kObject10071, 1);
+		_app->objectPresentationPauseAnimation(kObject1009, 0);
+		_app->objectPresentationPauseAnimation(kObject1009, 1);
+		_app->objectPresentationPauseAnimation(kObject1011, 0);
+		_app->objectPresentationPauseAnimation(kObject1011, 1);
+		_app->objectPresentationPauseAnimation(kObject1013, 0);
+		_app->objectPresentationPauseAnimation(kObject1013, 1);
+		_app->objectPresentationPauseAnimation(kObject1016, 0);
+		_app->objectPresentationPauseAnimation(kObject1017, 0);
+		_app->objectPresentationPauseAnimation(kObject1017, 1);
+		_app->objectPresentationPauseAnimation(kObject1019, 0);
+		_app->objectPresentationPauseAnimation(kObject1019, 1);
+		_app->objectPresentationPauseAnimation(kObject1020, 0);
+		_app->objectPresentationPauseAnimation(kObject1020, 1);
+		_app->objectPresentationPauseAnimation(kObject1021, 0);
+		_app->objectPresentationPauseAnimation(kObject1021, 2);
+		_app->objectPresentationPauseAnimation(kObject1023, 0);
+		_app->objectPresentationPauseAnimation(kObject1023, 1);
+		_app->objectPresentationPauseAnimation(kObject1039, 0);
+		_app->objectPresentationPauseAnimation(kObject1039, 1);
+		_app->objectPresentationPauseAnimation(kObject1040, 0);
+		_app->objectPresentationPauseAnimation(kObject1035, 0);
+		_app->objectPresentationPauseAnimation(kObject1041, 0);
+		_app->objectPresentationPauseAnimation(kObject1045, 0);
+		_app->objectPresentationPauseAnimation(kObject1028, 0);
+		_app->objectPresentationPauseAnimation(kObject1028, 1);
+		_app->objectPresentationPauseAnimation(kObject1031, 0);
+		_app->objectPresentationPauseAnimation(kObject1031, 1);
+		_app->objectPresentationPauseAnimation(kObject1033, 0);
+		_app->objectPresentationPauseAnimation(kObject1033, 1);
+		_app->objectPresentationPauseAnimation(kObject1046, 0);
+		_app->objectPresentationPauseAnimation(kObject1046, 1);
+		_app->objectPresentationPauseAnimation(kObject1050, 0);
+		_app->objectPresentationPauseAnimation(kObject1051, 0);
+		_app->objectPresentationPauseAnimation(kObject1053, 0);
+		_app->objectPresentationPauseAnimation(kObject1054, 0);
+		_app->objectPresentationPauseAnimation(kObject1055, 0);
+		_app->objectPresentationPauseAnimation(kObject1049, 0);
+		_app->objectPresentationPauseAnimation(kObject1057, 0);
+		_app->objectPresentationPauseAnimation(kObject1057, 1);
+		_app->objectPresentationPauseAnimation(kObject1059, 0);
+		_app->objectPresentationPauseAnimation(kObject1059, 1);
+		_app->objectPresentationPauseAnimation(kObject10591, 0);
+		_app->objectPresentationPauseAnimation(kObject10591, 1);
+		_app->objectPresentationPauseAnimation(kObject1062, 0);
+		_app->objectPresentationPauseAnimation(kObject1062, 1);
+		_app->objectPresentationPauseAnimation(kObject1061, 2);
+		_app->objectPresentationPauseAnimation(kObject1064, 0);
+		_app->objectPresentationPauseAnimation(kObject1066, 0);
+		_app->objectPresentationPauseAnimation(kObject1067, 0);
+		_app->objectPresentationPauseAnimation(kObject1068, 0);
+		_app->objectPresentationPauseAnimation(kObject1068, 1);
+		_app->objectPresentationPauseAnimation(kObject1077, 0);
+		_app->objectPresentationPauseAnimation(kObject1077, 1);
+		_app->objectPresentationPauseAnimation(kObject1079, 0);
+		_app->objectPresentationPauseAnimation(kObject1081, 0);
+		_app->objectPresentationPauseAnimation(kObject1081, 2);
+		_app->objectPresentationPauseAnimation(kObject1084, 0);
+		_app->objectPresentationPauseAnimation(kObject1085, 0);
+		_app->objectPresentationPauseAnimation(kObject1093, 0);
+		_app->objectPresentationPauseAnimation(kObject1001, 2);
+		_app->objectPresentationPauseAnimation(kObject1001, 4);
+		_app->objectPresentationPauseAnimation(kObject10071, 2);
+		_app->objectPresentationPauseAnimation(kObject1010, 0);
+		_app->objectPresentationPauseAnimation(kObject1011, 2);
+		_app->objectPresentationPauseAnimation(kObject1013, 2);
+		_app->objectPresentationPauseAnimation(kObject1016, 1);
+		_app->objectPresentationPauseAnimation(kObject1019, 2);
+		_app->objectPresentationPauseAnimation(kObject1053, 1);
+		_app->objectPresentationPauseAnimation(kObject1054, 1);
+		_app->objectPresentationPauseAnimation(kObject1057, 2);
+		_app->objectPresentationPauseAnimation(kObject1059, 2);
+		_app->objectPresentationPauseAnimation(kObject1061, 0);
+		_app->objectPresentationPauseAnimation(kObject1061, 1);
+		_app->objectPresentationPauseAnimation(kObject1061, 3);
+		_app->objectPresentationPauseAnimation(kObject1064, 1);
+		_app->objectPresentationPauseAnimation(kObject1066, 1);
+		_app->objectPresentationPauseAnimation(kObject1068, 2);
+		_app->objectPresentationPauseAnimation(kObject1077, 2);
+		_app->objectPresentationPauseAnimation(kObject1078, 0);
+		_app->objectPresentationPauseAnimation(kObject1093, 1);
+		break;
+
+	case 9:
+		_app->objectPresentationUnpauseAnimation(kObject1001, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 3);
+		_app->objectPresentationUnpauseAnimation(kObject1006, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10071, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10071, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1009, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1009, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1011, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1011, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1013, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1013, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1016, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1017, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1017, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1019, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1019, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1020, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1020, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1021, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1021, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1023, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1023, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1039, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1039, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1040, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1035, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1041, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1045, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1028, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1028, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1031, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1031, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1033, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1033, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1046, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1046, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1050, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1051, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1053, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1054, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1055, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1049, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1057, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1057, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1059, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1059, 1);
+		_app->objectPresentationUnpauseAnimation(kObject10591, 0);
+		_app->objectPresentationUnpauseAnimation(kObject10591, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1062, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1062, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1064, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1066, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1067, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1068, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1068, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1077, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1077, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1079, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1081, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1081, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1084, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1085, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1093, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1001, 4);
+		_app->objectPresentationUnpauseAnimation(kObject10071, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1010, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1011, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1013, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1016, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1019, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1053, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1054, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1057, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1059, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1061, 3);
+		_app->objectPresentationUnpauseAnimation(kObject1064, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1066, 1);
+		_app->objectPresentationUnpauseAnimation(kObject1068, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1077, 2);
+		_app->objectPresentationUnpauseAnimation(kObject1078, 0);
+		_app->objectPresentationUnpauseAnimation(kObject1093, 1);
+		break;
+
+	case 104:
+		if (_app->varGetByte(90104) < 2) {
+			_app->bagAdd(kObjectDates);
+			_app->varSetByte(90104, 2);
+			_app->onCall(105);
+			_app->onCall(107);
+		}
+		break;
+
+	case 105:
+		if (_app->varGetByte(90105) < 2 && _app->varGetByte(1055) == 1) {
+			_app->varSetByte(90105, 2);
+			_app->onCall(106);
+		}
+		break;
+
+	case 106:
+		if (_app->varGetByte(90106) < 2 && _app->varGetByte(1056) == 1) {
+			_app->varSetByte(90106, 2);
+			_app->onCall(108);
+		}
+		break;
+
+	case 108:
+		if (_app->varGetByte(90108) < 2) {
+			_app->varSetByte(90108, 2);
+			_app->onCall(1089);
+		}
+		break;
+
+	case 109:
+		if (_app->varGetByte(90109) < 2 && _app->varGetByte(1057) == 1) {
+			_app->varSetByte(90109, 2);
+			_app->onCall(110);
+		}
+		break;
+
+	case 202:
+		if (_app->varGetByte(90202) < 2)
+			_app->varSetByte(90202, 2);
+		break;
+
+	case 203:
+		if (_app->varGetByte(90203) < 2 && _app->varGetByte(1058) == 1) {
+			_app->varSetByte(90203, 2);
+			_app->onCall(204);
+		}
+		break;
+
+	case 204:
+		if (_app->varGetByte(90204) < 2 && _app->varGetByte(1009) == 1) {
+			_app->varSetByte(90204, 2);
+			_app->onCall(205);
+		}
+		break;
+
+	case 205:
+		if (_app->varGetByte(90205) < 2 && _app->varGetByte(1059) == 1) {
+			_app->varSetByte(90205, 2);
+			_app->onCall(206);
+			_app->onCall(207);
+			_app->onCall(208);
+			_app->onCall(209);
+			_app->onCall(210);
+			_app->onCall(211);
+			_app->onCall(212);
+			_app->onCall(213);
+			_app->onCall(214);
+		}
+		break;
+
+	case 206:
+		if (_app->varGetByte(90206) < 2 && _app->varGetByte(1060) == 1)
+			_app->varSetByte(90206, 2);
+		break;
+
+	case 208:
+		if (_app->varGetByte(90208) < 2 && _app->varGetByte(1013) == 1) {
+			_app->varSetByte(90208, 2);
+			_app->objectSetAccessibilityOn(kObject10047);
+		}
+		break;
+
+	case 210:
+		if (_app->varGetByte(90210) < 2 && _app->bagHas(kObjectPerfumedOil))
+			_app->varSetByte(90210, 2);
+		break;
+
+	case 211:
+		if (_app->varGetByte(90211) < 2 && _app->varGetByte(1015) == 1)
+			_app->varSetByte(90211, 2);
+		break;
+
+	case 214:
+		if (_app->varGetByte(90214) < 2 && _app->varGetByte(1066) == 1)
+			_app->varSetByte(90214, 2);
+		break;
+
+	case 215:
+		if (_app->varGetByte(90215) < 2 && _app->varGetByte(1018) == 1)
+			_app->objectSetAccessibilityOn(kObject10046);
+		break;
+
+	case 302:
+		if (_app->varGetByte(90302) < 2 && _app->varGetByte(1029) == 1) {
+			_app->varSetByte(90302, 2);
+			_app->onCall(303);
+		}
+		break;
+
+	case 303:
+		if (_app->varGetByte(90303) < 2) {
+			_app->varSetByte(90303, 2);
+			_app->onCall(30);
+			onVisual(0);
+			_app->timerStopAll();
+			_app->onCall(305);
+			_app->onCall(10008);
+		}
+		break;
+
+	case 307:
+		if (_app->varGetByte(90307) < 2 && _app->varGetByte(1035) == 1) {
+			_app->varSetByte(90307, 2);
+			_app->onCall(308);
+		}
+		break;
+
+	case 308:
+		if (_app->varGetByte(90308) < 2 && _app->varGetByte(1070) == 1) {
+			_app->varSetByte(90308, 2);
+			_app->onCall(309);
+		}
+		break;
+
+	case 402:
+		if (_app->varGetByte(90402) < 2 && _app->varGetByte(1074) == 1)
+			_app->varSetByte(90402, 2);
+		break;
+
+	case 403:
+		if (_app->varGetByte(90403) < 2
+		 && _app->varGetByte(1075) == 1) {
+
+			_app->varSetByte(90403, 2);
+
+			if (_app->varGetByte(90404) >= 2) {
+				_app->onCall(405);
+				_app->onCall(412);
+			}
+		}
+		break;
+
+	case 405:
+		if (_app->varGetByte(90405) < 2
+		 && _app->varGetByte(1076) == 1
+		 && _app->varGetByte(1047) == 1
+		 && _app->varGetByte(1046) == 1) {
+			_app->varSetByte(90405, 2);
+			_app->onCall(406);
+			_app->onCall(408);
+			_app->onCall(411);
+		}
+		break;
+
+	case 406:
+		if (_app->varGetByte(90406) < 2 && _app->varGetByte(1077) == 1) {
+			_app->varSetByte(90406, 2);
+			_app->onCall(407);
+		}
+		break;
+
+	case 409:
+		if (_app->varGetByte(90409) < 2 && _app->varGetByte(1049) == 1)
+			_app->varSetByte(90409, 2);
+		break;
+
+	case 419:
+		if (_app->varGetByte(90419) <= 2 && _app->varGetByte(1078) == 1) {
+			_app->varSetByte(90419, 3);
+			_app->onCall(420);
+		}
+		break;
+
+	case 420:
+		if (_app->varGetByte(90420) < 2 && _app->varGetByte(1051) == 1)
+			_app->varSetByte(90420, 2);
+		break;
+
+	case 421:
+		if (_app->varGetByte(90421) < 2)
+			_app->varSetByte(90421, 2);
+		break;
+
+	case 1031:
+		_app->varSetByte(1054, 1);
+		break;
+
+	case 1032:
+	case 1033:
+	case 1034:
+	case 1035:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1004);
+		break;
+
+	case 1036:
+		_app->varSetByte(1055, 1);
+		break;
+
+	case 1037:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1007);
+		break;
+
+	case 1039:
+		_app->varSetByte(1056, 1);
+		break;
+
+	case 1040:
+	case 1041:
+	case 1042:
+	case 1043:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1010);
+		break;
+
+	case 1048:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1011);
+		break;
+
+	case 1065:
+		_app->varSetByte(1057, 1);
+		break;
+
+	case 1066:
+	case 1067:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1013);
+		break;
+
+	case 2003:
+		_app->varSetByte(1058, 1);
+		_app->varSetByte(90006, 2);
+		_app->visualBoxHide(6, kPuzzleMenu);
+		break;
+
+	case 2004:
+		_app->varSetByte(1058, 1);
+		_app->varSetByte(90006, 1);
+		_app->visualBoxHide(6, kPuzzleMenu);
+		break;
+
+	case 2006:
+	case 2007:
+	case 2008:
+	case 2012:
+	case 2014:
+	case 2015:
+	case 2016:
+	case 20061:
+	case 20071:
+	case 20081:
+	case 20091:
+	case 20092:
+	case 20121:
+	case 20141:
+	case 20151:
+	case 20161:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1017);
+		break;
+
+	case 2019:
+		_app->varSetByte(1060, 1);
+		break;
+
+	case 2022:
+		_app->varSetByte(1060, 1);
+		// Fallback to next case
+
+	case 2020:
+	case 2021:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1023);
+		break;
+
+	case 2033:
+		_app->varSetByte(1062, 1);
+		break;
+
+	case 2034:
+	case 2035:
+	case 2036:
+	case 2037:
+	case 2038:
+	case 2039:
+	case 2051:
+	case 2052:
+	case 2053:
+	case 4016:
+	case 4017:
+	case 4018:
+	case 4019:
+	case 4020:
+	case 4021:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1027);
+		break;
+
+	case 2044:
+		_app->varSetByte(1063, 1);
+		// Fallback to next case
+
+	case 2041:
+	case 2042:
+	case 2043:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1030);
+		break;
+
+	case 2063:
+		_app->varSetByte(1066, 1);
+		break;
+
+	case 2047:
+		_app->varSetByte(1064, 1);
+		// Fallback to next case
+
+	case 2045:
+	case 2046:
+	case 2048:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1033);
+		break;
+
+	case 2050:
+		_app->varSetByte(10651, 1);
+		break;
+
+	case 2064:
+	case 2065:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1007);
+		break;
+
+	case 3008:
+		_app->varSetByte(1067, 1);
+		break;
+
+	case 3009:
+	case 3010:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1030);
+		break;
+
+	case 3023:
+		_app->varSetByte(1068, 1);
+		break;
+
+	case 3024:
+	case 3025:
+	case 3026:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1045);
+		break;
+
+	case 3030:
+	case 3031:
+		_app->varSetByte(1069, 1);
+		// Fallback to next case
+
+	case 3029:
+	case 3032:
+	case 3033:
+	case 3034:
+	case 3035:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1046);
+		break;
+
+	case 3037:
+	case 3040:
+		_app->varSetByte(1071, 1);
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1048);
+		break;
+
+	case 3043:
+		_app->varSetByte(1072, 1);
+		// Fallback to next case
+
+	case 3042:
+	case 3044:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1049);
+		break;
+
+	case 3045:
+		_app->varSetByte(1073, 1);
+		break;
+
+	case 3046:
+		_app->varSetByte(1073, 1);
+		// Fallback to next case
+
+	case 3047:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1051);
+		break;
+
+	case 3041:
+		_app->varSetByte(1072, 1);
+		break;
+
+	case 4011:
+	case 4013:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1002);
+		_app->varSetByte(1074, 1);
+		break;
+
+	case 4015:
+		_app->varSetByte(1075, 1);
+		break;
+
+	case 4032:
+		_app->varSetByte(1076, 1);
+		break;
+
+	case 4033:
+	case 4034:
+	case 4035:
+	case 4036:
+	case 4037:
+	case 4038:
+	case 4039:
+	case 4040:
+	case 4041:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1053);
+		break;
+
+	case 4042:
+		_app->varSetByte(1077, 1);
+		break;
+
+	case 4047:
+		_app->varSetByte(1077, 1);
+		// Fallback to next case
+
+	case 4043:
+	case 4044:
+	case 4045:
+	case 4046:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1056);
+		break;
+
+	case 4108:
+		_app->varSetByte(1078, 1);
+		break;
+
+	case 4109:
+	case 4110:
+	case 4111:
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->puzzleSetActive(kPuzzle1060);
+		break;
+
+	case 20051:
+	case 20052:
+		_app->varSetByte(1059, 1);
+		break;
+
+	case 20331:
+		_app->varSetByte(1065, 1);
+		break;
+
+	case 20401:
+		_app->varSetByte(1063, 1);
+		break;
+
+	case 20402:
+		_app->varSetByte(1064, 1);
+		break;
+
+	case 30310:
+		_app->varSetByte(1070, 1);
+		break;
+	}
 }
 
 } // End of namespace Ring
