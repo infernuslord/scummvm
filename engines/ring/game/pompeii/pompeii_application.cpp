@@ -25,6 +25,7 @@
 #include "ring/base/bag.h"
 #include "ring/base/cursor.h"
 #include "ring/base/preferences.h"
+#include "ring/base/puzzle.h"
 #include "ring/base/rotation.h"
 #include "ring/base/saveload.h"
 #include "ring/base/timer.h"
@@ -44,6 +45,7 @@
 #include "ring/game/pompeii/pompeii_zone11.h"
 #include "ring/game/pompeii/pompeii_zone12.h"
 
+#include "ring/graphics/dragControl.h"
 #include "ring/graphics/image.h"
 #include "ring/graphics/screen.h"
 
@@ -549,7 +551,28 @@ void ApplicationPompeii::onMouseLeftButtonDown(const Common::Event &evt) {
 }
 
 void ApplicationPompeii::onMouseRightButtonUp(const Common::Event &evt) {
-	warning("[ApplicationPompeii::onMouseRightButtonUp] Not implemented (evt: %d)", evt.type);
+	debugC(kRingDebugLogic, "onMouseRightButtonUp: Coords (%d, %d)", evt.mouse.x, evt.mouse.y);
+
+	if (getDragControl()->getField20() || getCurrentGameZone())
+		return;
+
+	Puzzle *puzzleMenu = getApp()->getPuzzle(kPuzzleMenu);
+	if (puzzleMenu && puzzleMenu->getField24() == 2)
+		return;
+
+	Bag *bag = getApp()->getBag();
+	if (bag->isInitialized()) {
+		bag->reset();
+		setFreOffCurrentRotation();
+	} else {
+		getApp()->cursorDelete();
+		bag->initialize();
+
+		if (getApp()->getCurrentRotation())
+			bag->setRotationFre(getApp()->getCurrentRotation()->getFre());
+
+		getApp()->setupCurrentRotation();
+	}
 }
 
 void ApplicationPompeii::onKeyDown(Common::Event &evt) {
