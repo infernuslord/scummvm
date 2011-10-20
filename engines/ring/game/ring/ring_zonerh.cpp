@@ -104,7 +104,7 @@ void ZoneRHRing::onInit() {
 	_app->rotationAdd(20504, "RHS05N04", 0, 0);
 	_app->rotationAdd(20601, "RHS06N01", 0, 0);
 	_app->rotationAdd(20701, "RHS07N01", 0, 0);
-	_app->rotationSetJugOn(20701, 10.0f, 1.0);
+	_app->rotationSetJugOn(20701, 10.0f, 1.0f);
 	_app->rotationAddMovabilityToPuzzle(20010, kPuzzle20011, "1708", Common::Rect(274, -289, 836, 102), true, kCursorMove, 0);
 	_app->rotationSetMovabilityToPuzzle(20010, 0, 1.5f, -4.3f, 79.4f, 0, 0);
 	_app->rotationAddMovabilityToRotation(20010, 20020, "1709", Common::Rect(274, -289, 836, 102), false, kCursorMove, 1);
@@ -531,7 +531,7 @@ void ZoneRHRing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			if (_app->bagGetClickedObject() == kObjectDivingHelmet2) {
 				_app->playMovie("1668");
 				_app->soundPlay(23010, kSoundLoop);
-				_app->rotationSetAlp(20701, 0.0);
+				_app->rotationSetAlp(20701, 0.0f);
 				_app->rotationSetActive(20701);
 			}
 
@@ -762,7 +762,7 @@ void ZoneRHRing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 		if (_app->varGetByte(20202) == 2) {
 			if (!_app->bagHas(kObjectMedallion)) {
 				_app->playMovie("1678");
-				_app->rotationSetAlp(20302, 10.0);
+				_app->rotationSetAlp(20302, 10.0f);
 				_app->rotationSetActive(20302);
 				break;
 			}
@@ -785,7 +785,7 @@ void ZoneRHRing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 		case 0:
 			if (_app->bagHas(kObjectMedallion)) {
 				_app->playMovie("1682");
-				_app->rotationSetAlp(20303, 10.0);
+				_app->rotationSetAlp(20303, 10.0f);
 				_app->rotationSetActive(20303);
 				break;
 			}
@@ -941,7 +941,7 @@ void ZoneRHRing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 				if (_app->varGetByte(20500) == 3) {
 					_app->playMovie("1671");
 					_app->varSetFloat(90005, _app->varGetFloat(90005) + 2.0f);
-					_app->rotationSetAlp(20503, 0.0);
+					_app->rotationSetAlp(20503, 0.0f);
 					_app->rotationSetActive(20503);
 				}
 			} else {
@@ -1109,7 +1109,7 @@ void ZoneRHRing::onSound(Id id, SoundType, uint32, bool process) {
 		_app->soundStop(23010, 1024);
 		_app->playMovie("1687");
 		_app->soundPlay(23009);
-		_app->rotationSetAlp(20303, 325.0);
+		_app->rotationSetAlp(20303, 325.0f);
 		_app->rotationSetBet(20303, 0.3f);
 		_app->rotationSetActive(20303);
 		break;
@@ -1132,7 +1132,7 @@ void ZoneRHRing::onSound(Id id, SoundType, uint32, bool process) {
 		_app->soundPlay(23009);
 		_app->objectPresentationHide(kObject20402);
 		_app->playMovie("1702");
-		_app->rotationSetAlp(20402, 0.0);
+		_app->rotationSetAlp(20402, 0.0f);
 		_app->rotationSetActive(20402);
 		break;
 
@@ -1169,7 +1169,7 @@ void ZoneRHRing::onSound(Id id, SoundType, uint32, bool process) {
 	case 20503:
 		_app->objectPresentationHide(kObject20501, 3);
 		_app->playMovie("1704");
-		_app->rotationSetAlp(20501, 0.0);
+		_app->rotationSetAlp(20501, 0.0f);
 		_app->rotationSetActive(20501);
 		break;
 

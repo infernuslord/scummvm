@@ -853,7 +853,7 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			if (_app->bagGetClickedObject() == kObjectThread) {
 				if (_app->varGetByte(50012) == 6) {
 					_app->bagRemove(kObjectThread);
-					_app->varSetFloat(90008, 100.0);
+					_app->varSetFloat(90008, 100.0f);
 
 					_app->playMovie("1860");
 					_app->playMovie("1861");
@@ -1109,7 +1109,7 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 
 		if (_app->varGetByte(50012) > 4) {
 			_app->playMovie("1850");
-			_app->rotationSetAlp(50601, 250.0);
+			_app->rotationSetAlp(50601, 250.0f);
 			_app->rotationSetActive(50601);
 			_app->soundStop(51006, 1024);
 		}
@@ -1143,8 +1143,8 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 						handleEvents();
 
 						_app->playMovie("1853");
-						_app->rotationSetAlp(50304, 190.0);
-						_app->rotationSetBet(50304, 15.0);
+						_app->rotationSetAlp(50304, 190.0f);
+						_app->rotationSetBet(50304, 15.0f);
 						_app->rotationSetActive(50304);
 						_app->objectPresentationShow(kObjectCounch1, 1);
 
@@ -1158,8 +1158,8 @@ void ZoneWARing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 				_app->objectPresentationShow(kObjectCounch1, 0);
 				_app->varSetByte(50005, 1);
 				_app->playMovie("1852");
-				_app->rotationSetAlp(50304, 190.0);
-				_app->rotationSetBet(50304, 15.0);
+				_app->rotationSetAlp(50304, 190.0f);
+				_app->rotationSetBet(50304, 15.0f);
 				_app->rotationSetActive(50304);
 				_app->cursorDelete();
 			}
@@ -1681,7 +1681,7 @@ void ZoneWARing::onAnimation(uint32 type, Id animationId, const Common::String &
 	case 50004:
 		if (type == 2) {
 			_app->objectPresentationHide(kObject50100);
-			_app->rotationSetAlp(50601, 250.0);
+			_app->rotationSetAlp(50601, 250.0f);
 			_app->rotationSetActive(50601);
 			_app->playMovie("1872");
 		}

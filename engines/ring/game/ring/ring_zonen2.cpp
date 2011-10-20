@@ -1052,7 +1052,7 @@ void ZoneN2Ring::onSound(Id id, SoundType, uint32, bool process) {
 		_app->playMovie("1505");
 		_app->timerStopAll();
 		_app->soundStopAll(1024);
-		_app->varSetFloat(90006, 50.0);
+		_app->varSetFloat(90006, 50.0f);
 		_app->onSwitchZone(kZoneRO, 0);
 		break;
 

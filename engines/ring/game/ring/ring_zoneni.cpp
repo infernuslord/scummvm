@@ -68,7 +68,7 @@ void ZoneNIRing::onInit() {
 	_app->rotationAdd(10405, "NIS04N05", 0, 0);
 	_app->rotationAdd(10415, "NIS04N15", 0, 0);
 	_app->rotationAdd(10406, "NIS04N06", 0, 0);
-	_app->rotationSetJugOn(10406, 10.0f, 1.0);
+	_app->rotationSetJugOn(10406, 10.0f, 1.0f);
 	_app->rotationAdd(10501, "NIS05N01", 0, 0);
 	_app->rotationAdd(10601, "NIS06N01", 0, 0);
 	_app->puzzleAdd(kPuzzle12001);

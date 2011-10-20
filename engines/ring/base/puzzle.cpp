@@ -440,7 +440,7 @@ void Puzzle::add3DSound(SoundEntry *entry, uint32 volume, bool isOn, uint32 a4, 
 	SoundItem *item = new SoundItem(_id);
 	item->setField1D(a8);
 	item->setAngle(a7);
-	item->init(entry, volume, item->computePan(0.0), isOn, a4, a5, fadeFrames, a7, a8);
+	item->init(entry, volume, item->computePan(0.0f), isOn, a4, a5, fadeFrames, a7, a8);
 
 	_soundItems.push_back(item);
 }

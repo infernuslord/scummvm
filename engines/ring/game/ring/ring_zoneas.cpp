@@ -438,9 +438,9 @@ void ZoneASRing::onInit() {
 	_app->varDefineByte(80003, 0);
 	_app->varDefineByte(80004, 1);
 	_app->varDefineByte(80005, 0);
-	_app->varDefineFloat(80001, 1.0);
-	_app->varDefineFloat(80002, 2.0);
-	_app->varDefineFloat(80003, 100.0);
+	_app->varDefineFloat(80001, 1.0f);
+	_app->varDefineFloat(80002, 2.0f);
+	_app->varDefineFloat(80003, 100.0f);
 }
 
 void ZoneASRing::onSetup(SetupType type) {

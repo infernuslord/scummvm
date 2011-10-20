@@ -2062,7 +2062,7 @@ void Application::rotationSetMovabilityToPuzzle(Id rotationId, uint32 movability
 	if (movability->getType() != kMovabilityRotationToPuzzle)
 		error("[Application::rotationSetMovabilityToPuzzle] Invalid type of movability (%d)", movability->getType());
 
-	movability->update(a3, a4, a5, a6, a7, 0.0, 0.0, 85.0);
+	movability->update(a3, a4, a5, a6, a7, 0.0f, 0.0f, 85.0f);
 }
 
 void Application::rotationAddMovabilityToRotation(Id fromRotationId, Id toRotationId, Common::String name, const Common::Rect &rect, bool enabled, CursorId cursorId, uint32 a10) {

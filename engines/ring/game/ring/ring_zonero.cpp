@@ -1386,7 +1386,7 @@ void ZoneRORing::onBag(ObjectId id, Id target, Id, uint32, DragControl *, byte t
 				if (_app->varGetByte(40605) == 40)
 					_app->playMovie("1784");
 
-				_app->varSetFloat(90006, 75.0);
+				_app->varSetFloat(90006, 75.0f);
 
 				_app->puzzleSetActive(kPuzzle40012);
 			}

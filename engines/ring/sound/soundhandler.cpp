@@ -144,7 +144,7 @@ void SoundItem::setField1D(int32 val) {
 }
 
 void SoundItem::setAngle(float angle) {
-	if (angle < -360.0 || angle > 360.0)
+	if (angle < -360.0f || angle > 360.0f)
 		return;
 
 	_angle = getSoundDirection() * angle * SOUND_FRAC_VALUE;

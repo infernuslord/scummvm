@@ -969,8 +969,8 @@ void ZoneFORing::onInit() {
 	_app->varDefineByte(30209, 0);
 	_app->varDefineByte(30210, 0);
 	_app->varDefineByte(30211, 0);
-	_app->varDefineFloat(30046, -10.0);
-	_app->varDefineFloat(30042, 1.0);
+	_app->varDefineFloat(30046, -10.0f);
+	_app->varDefineFloat(30042, 1.0f);
 }
 
 void ZoneFORing::onSetup(SetupType type) {
@@ -1347,8 +1347,8 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			_app->objectPresentationShow(kObject30050, 0);
 			_app->objectPresentationShow(kObject30050, 2);
 			_app->rotationSetActive(30501);
-			_app->rotationSetAlp(30501, 88.0);
-			_app->rotationSetBet(30501, 13.0);
+			_app->rotationSetAlp(30501, 88.0f);
+			_app->rotationSetBet(30501, 13.0f);
 			_app->objectSetAccessibilityOff(kObject30002);
 			_app->objectSetAccessibilityOff(kObject30003);
 			_app->objectSetAccessibilityOff(kObject30004);
@@ -1495,8 +1495,8 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 			if (_app->varGetByte(30074)) {
 				_app->playMovie("1179");
 				_app->rotationSetActive(30101);
-				_app->rotationSetAlp(30101, 130.0);
-				_app->rotationSetBet(30101, 20.0);
+				_app->rotationSetAlp(30101, 130.0f);
+				_app->rotationSetBet(30101, 20.0f);
 			} else {
 				if (_app->varGetByte(30056))
 					_app->puzzleSetActive(kPuzzle35100);
@@ -2289,7 +2289,7 @@ void ZoneFORing::onButtonUp(ObjectId id, Id target, Id, uint32, const Common::Po
 					_app->objectPresentationShow(kObjectNotung, 3);
 					_app->playMovie("1200");
 					_app->varSetFloat(90007, 100.0f);
-					_app->rotationSetAlp(30001, 180.0);
+					_app->rotationSetAlp(30001, 180.0f);
 					_app->rotationSetActive(30001);
 					_app->soundSetMultiplier(kSoundTypeAmbientMusic, 0);
 					_app->timerStopAll();
@@ -2575,8 +2575,8 @@ void ZoneFORing::onSound(Id id, SoundType, uint32, bool process) {
 	case 30101:
 		_app->playMovie("1179");
 		_app->rotationSetActive(30101);
-		_app->rotationSetAlp(30101, 130.0);
-		_app->rotationSetBet(30101, 20.0);
+		_app->rotationSetAlp(30101, 130.0f);
+		_app->rotationSetBet(30101, 20.0f);
 
 		if (!_app->varGetByte(30074))
 			_app->varSetFloat(90007, _app->varGetFloat(90007) + 2.2f);
@@ -2626,8 +2626,8 @@ void ZoneFORing::onSound(Id id, SoundType, uint32, bool process) {
 
 	case 30118:
 		_app->rotationSetActive(30101);
-		_app->rotationSetAlp(30101, 130.0);
-		_app->rotationSetBet(30101, 20.0);
+		_app->rotationSetAlp(30101, 130.0f);
+		_app->rotationSetBet(30101, 20.0f);
 		_app->varSetByte(30078, 1);
 		break;
 
@@ -2638,8 +2638,8 @@ void ZoneFORing::onSound(Id id, SoundType, uint32, bool process) {
 		_app->objectPresentationShow(kObject30110, 3);
 		_app->objectSetAccessibilityOff(kObject30102, 1, 1);
 		_app->rotationSetActive(30101);
-		_app->rotationSetAlp(30101, 130.0);
-		_app->rotationSetBet(30101, 20.0);
+		_app->rotationSetAlp(30101, 130.0f);
+		_app->rotationSetBet(30101, 20.0f);
 		break;
 
 	case 30120:

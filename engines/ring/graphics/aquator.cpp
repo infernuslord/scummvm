@@ -94,7 +94,7 @@ void Pixel::substract(int *pixel, int val) {
 }
 
 void Pixel::multiply(int *pixel, double val) {
-	*pixel = (int)(val * 65536.0);
+	*pixel = (int)(val * 65536.0f);
 }
 
 void Pixel::multiply(PixelData *from, PixelData *pixel, float val) {

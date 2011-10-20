@@ -461,17 +461,17 @@ void Animation::saveLoadWithSerializer(Common::Serializer &s) {
 	uint32 ticks = 0;
 
 	if (s.isSaving()) {
-		if (_lastTicks > 1.0)
+		if (_lastTicks > 1)
 			field_28 = currentTicks - _lastTicks;
 		else
 			field_28 = _lastTicks;
 
-		if (_field_32 > 1.0)
+		if (_field_32 > 1)
 			field_32 = currentTicks - _field_32;
 		else
 			field_32 = _field_32;
 
-		if (_field_4A > 1.0)
+		if (_field_4A > 1)
 			field_4A = currentTicks - _field_4A;
 		else
 			field_4A = _field_4A;
@@ -516,17 +516,17 @@ void Animation::saveLoadWithSerializer(Common::Serializer &s) {
 
 	// Adjust ticks
 	if (s.isLoading()) {
-		if (field_28 > 1.0)
+		if (field_28 > 1)
 			_lastTicks = currentTicks - field_28;
 		else
 			_lastTicks = field_28;
 
-		if (field_32 > 1.0)
+		if (field_32 > 1)
 			_field_32 = currentTicks - field_32;
 		else
 			_field_32 = field_32;
 
-		if (field_4A > 1.0)
+		if (field_4A > 1)
 			_field_4A = currentTicks - field_4A;
 		else
 			_field_4A = field_4A;

@@ -243,7 +243,7 @@ void ApplicationPompeii::startMenu(bool savegame) {
 	timerStopAll();
 	setupZone(kZone1, kSetupTypeNone);
 	setSpace(kZone100);
-	puzzleSetActive(kPuzzleGeneralMenu, true, true);
+	puzzleSetActive(kPuzzleGeneralMenu);
 	puzzleSetMod(kPuzzleMenu, 1, 0);
 
 	for (uint32 i = 1; i < 8; i++) {

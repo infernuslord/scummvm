@@ -494,7 +494,7 @@ void Zone3Pompeii::onTimer(TimerId id) {
 
 	case kTimer0:
 		_app->timerStop(kTimer0);
-		_app->rotationSetRolTo(102112, 290.0, 12.0, 87.0);
+		_app->rotationSetRolTo(102112, 290.0f, 12.0f, 87.0f);
 		_app->objectPresentationShow(kObject10202, 1);
 		_app->soundPlay(1091);
 		break;
@@ -607,8 +607,8 @@ void Zone3Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*proc
 
 	case 2080:
 		_app->objectSetAccessibilityOn(kObject20001, 1, 1);
-		_app->rotationSetAlp(10241, 354.0);
-		_app->rotationSetBet(10241, 12.0);
+		_app->rotationSetAlp(10241, 354.0f);
+		_app->rotationSetBet(10241, 12.0f);
 		_app->rotationSetActive(10241);
 		break;
 
