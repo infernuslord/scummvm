@@ -134,6 +134,7 @@ public:
 
 	// Management
 	bool remove(uint32 slot) const;
+	void deleteSavegame(uint32 userId);
 
 	// Thumbnail image
 	void setThumbnail(Image *image);
@@ -142,6 +143,8 @@ public:
 	bool isSaving() const;
 	bool hasTimer(Common::String zone);
 	bool hasZoneSavegame();
+	bool hasSavegame(uint32 userId);
+
 	SavegameData *getData() { return &_data; }
 	SetupType getSetupType() const { return _setupType; }
 	Common::String *getName() { return &_header.name; }

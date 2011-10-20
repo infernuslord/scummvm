@@ -252,6 +252,14 @@ bool SaveManager::hasZoneSavegame() {
 	error("[SaveManager::hasZoneSavegame] not implemented");
 }
 
+bool SaveManager::hasSavegame(uint32 userId) {
+	error("[SaveManager::hasSavegame] not implemented");
+}
+
+void SaveManager::deleteSavegame(uint32 userId) {
+	error("[SaveManager::deleteSavegame] Not implemented");
+}
+
 bool SaveManager::has(Common::String filename) const {
 	if (g_system->getSavefileManager()->listSavefiles(filename).size() == 0)
 		return false;

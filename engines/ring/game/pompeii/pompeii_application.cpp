@@ -265,8 +265,143 @@ void ApplicationPompeii::startMenu(bool savegame) {
 	_preferenceHandler->load();
 }
 
-void ApplicationPompeii::showMenu(ZoneId zone, MenuAction menuAction) {
-	error("[ApplicationPompeii::showMenu] Not implemented");
+void ApplicationPompeii::showMenu(ZoneId /*zone*/, MenuAction menuAction) {
+	int8 byte90005, byte90006, byte90007, byte90903;
+	int16 amount;
+
+	switch (menuAction) {
+	default:
+		setSpace(kZone100);
+
+		if (menuAction >= 13) {
+			fadeOut(15, Color(0, 0, 0), 0);
+		} else {
+			varSetByte(90904, 0);
+			Common::String image = Common::String::format("end_%02d.bmp", menuAction);
+			showImage(image, Common::Point(0, 0), 6000, kLoadFromDisk, kArchiveInvalid);
+			displayFade(image, "black.bmp", 5, 0, kLoadFromDisk, _configuration.artSY ? kArchiveArt : kArchiveFile);
+			varSetByte(90904, 16);
+		}
+
+		if (getSaveManager()->hasSavegame(1))
+			getSaveManager()->deleteSavegame(1);
+
+		exitZone();
+		initZones();
+		setSpace(kZone100);
+		startMenu(false);
+		break;
+
+	case kMenuAction50:
+		exitZone();
+		initZones();
+		setupZone(kZone2, kSetupTypeNone);
+		varSetByte(98009, 1);
+		break;
+
+	case kMenuAction51:
+		exitZone();
+		initZones();
+		setupUser(2);
+		if (!getSaveManager()->hasSavegame(2)) {
+			setupZone(kZone2, kSetupType1);
+		} else if (!getSaveManager()->loadSave("SaveGame", kLoadSaveRead)) {
+			// Cannot load game
+			exitZone();
+			initZones();
+			messageFormat("CanNotLoadGame", "SaveGame");
+			messageShowWarning(0);
+		}
+		break;
+
+	case kMenuAction52:
+		if (getSaveManager()->hasSavegame(1)) {
+			exitZone();
+			initZones();
+			setupUser(1);
+			if (getSaveManager()->loadSave("SaveGame", kLoadSaveRead)) {
+				visualBoxHide(6, kPuzzleMenu);
+			} else {
+				// Cannot load game
+				exitZone();
+				initZones();
+				messageFormat("CanNotLoadGame", "SaveGame");
+				messageShowWarning(0);
+			}
+		}
+		break;
+
+	case kMenuAction99:
+		objectSetAccessibilityOff(kObject16, 0, 0);
+		objectSetAccessibilityOn(kObject16, 2, 2);
+		varSetByte(90001, 4);
+		setupZone(kZone3, kSetupTypeNone);
+		break;
+
+	case kMenuAction200:
+		byte90005 = varGetByte(90005);
+		byte90006 = varGetByte(90006);
+		byte90007 = varGetByte(90007);
+		amount    = varGetWord(99500);
+		byte90903 = varGetByte(90903);
+		exitZone();
+		initZones();
+		varSetByte(90005, byte90005);
+		varSetByte(90006, byte90006);
+		varSetByte(90007, byte90007);
+		varSetByte(90903, byte90903);
+		bagAdd(kObjectAmulet);
+		bagAdd(kObjectRopes);
+		takeMoney(amount);
+		bagAdd(kObjectDates);
+		bagAdd(kObjectKnife);
+		bagAdd(kObjectHollyWater);
+		setupZone(kZone2, kSetupType200);
+		break;
+
+	case kMenuAction300:
+		byte90005 = varGetByte(90005);
+		byte90006 = varGetByte(90006);
+		byte90007 = varGetByte(90007);
+		amount    = varGetWord(99500);
+		byte90903 = varGetByte(90903);
+		exitZone();
+		initZones();
+		varSetByte(90005, byte90005);
+		varSetByte(90006, byte90006);
+		varSetByte(90007, byte90007);
+		varSetByte(90903, byte90903);
+		bagAdd(kObjectAmulet);
+		bagAdd(kObjectRopes);
+		takeMoney(amount);
+		bagAdd(kObjectKnife);
+		bagAdd(kObjectDoveFeather);
+		bagAdd(kObjectTali2);
+		setupZone(kZone2, kSetupType300);
+		break;
+
+	case kMenuAction400:
+		byte90005 = varGetByte(90005);
+		byte90006 = varGetByte(90006);
+		byte90007 = varGetByte(90007);
+		amount    = varGetWord(99500);
+		byte90903 = varGetByte(90903);
+		exitZone();
+		initZones();
+		varSetByte(90903, byte90903);
+		varSetByte(90005, byte90005);
+		varSetByte(90006, byte90006);
+		varSetByte(90007, byte90007);
+		bagAdd(kObjectAmulet);
+		bagAdd(kObjectRopes);
+		takeMoney(amount);
+		bagAdd(kObjectKnife);
+		bagAdd(kObjectDoveFeather);
+		bagAdd(kObjectPhiltre2);
+		bagAdd(kObjectNightingale);
+		setupZone(kZone2, kSetupType400);
+		break;
+	}
 }
 
 void ApplicationPompeii::showCredits() {
@@ -1343,9 +1478,9 @@ void ApplicationPompeii::setCoordinatesOnPuzzle6() {
 	for (int i = 0; i < ARRAYSIZE(_puzzle6Coordinates); i++) {
 		if (varGetDword(99027) == _puzzle6Coordinates[i].val)
 			objectPresentationSetAnimationCoordinatesOnPuzzle(kObject6,
-			                                                  5,
-			                                                  Common::Point((int16)(_puzzle6Coordinates[i].multiplierX * varGetByte(90509) - varGetWord(99501)),
-			                                                                (int16)(_puzzle6Coordinates[i].multiplierY * varGetByte(90509) - varGetWord(99502))));
+															  5,
+															  Common::Point((int16)(_puzzle6Coordinates[i].multiplierX * varGetByte(90509) - varGetWord(99501)),
+																			(int16)(_puzzle6Coordinates[i].multiplierY * varGetByte(90509) - varGetWord(99502))));
 	}
 }
 

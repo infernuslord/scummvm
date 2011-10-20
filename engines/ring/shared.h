@@ -273,6 +273,10 @@ enum MenuAction {
 	kMenuAction10  = 10,
 	kMenuAction12  = 12,
 	kMenuAction13  = 13,
+	kMenuAction50  = 50,
+	kMenuAction51  = 51,
+	kMenuAction52  = 52,
+	kMenuAction99  = 99,
 	kMenuAction200 = 200,
 	kMenuAction300 = 300,
 	kMenuAction400 = 400
