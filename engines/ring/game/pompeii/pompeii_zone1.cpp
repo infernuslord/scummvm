@@ -2232,8 +2232,789 @@ void Zone1Pompeii::onAnimationNextFrame(Id animationId, const Common::String &/*
 	}
 }
 
-void Zone1Pompeii::onSound(Id id, SoundType type, uint32 a3, bool process) {
-	error("[Zone1Pompeii::onSound] Not implemented");
+void Zone1Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
+	switch (id) {
+	default:
+		break;
+
+	case 1025:
+		_app->objectSetAccessibilityOn(kObject1001, 0, 0);
+		_app->objectSetAccessibilityOn(kObject1005, 0, 0);
+		_app->soundPlay(1168 + rnd(2));
+		break;
+
+	case 1026:
+		_app->objectSetAccessibilityOn(kObject1006, 0, 1);
+		_app->objectSetAccessibilityOn(kObjectStick, 0, 0);
+		_app->objectSetAccessibilityOn(kObjectSalad, 0, 0);
+		_app->rotationSetActive(10012);
+		_app->timerStart(kTimer0, 10000);
+		break;
+
+	case 1029:
+		_app->playMovie("S00A0-10");
+		_app->exitToMenu(kMenuAction1);
+		break;
+
+	case 1030:
+		_app->playMovie("S00A01-1");
+		_app->objectPresentationHide(kObject1001);
+		_app->objectPresentationHide(kObject1005);
+		_app->objectPresentationHide(kObject1006);
+		_app->objectPresentationHide(kObjectRope);
+		_app->objectPresentationHide(kObjectStick);
+		_app->rotationSetActive(10012);
+		onVisual(104);
+		break;
+
+	case 1031:
+		_app->objectSetAccessibilityOn(kObject10071, 1, 1);
+		// Fallback to next case
+
+	case 1032:
+	case 1033:
+	case 1034:
+	case 1035:
+		_app->rotationSetAlp(10022, 152.0f);
+		_app->rotationSetBet(10022, 15.0f);
+		_app->rotationSetActive(10022);
+
+		if (_app->varGetByte(1054) == 1) {
+			_app->objectSetAccessibilityOff(kObject10071, 1, 1);
+			_app->playMovie("S00A02-3");
+			_app->objectSetAccessibilityOff(kObject10071, 0, 0);
+			_app->objectPresentationHide(kObject10071);
+			_app->objectSetAccessibilityOn(kObject1008, 0, 0);
+			_app->objectPresentationShow(kObject1010);
+			_app->objectPresentationShow(kObject1011);
+			_app->objectSetAccessibilityOn(kObject1011, 0, 0);
+		}
+		break;
+
+	case 1036:
+		_app->objectSetAccessibilityOn(kObject1009, 1, 1);
+		// Fallback to next case
+
+	case 1037:
+		_app->rotationSetAlp(10022, 175.0f);
+		_app->rotationSetBet(10022, 10.0f);
+		_app->rotationSetActive(10022);
+
+		if (_app->varGetByte(1055) == 1) {
+			_app->objectSetAccessibilityOff(kObject1009, 1, 1);
+			_app->rotationSetActive(10022);
+			_app->soundPlay(900004);
+			_app->objectPresentationHide(kObject1009);
+			_app->objectSetAccessibilityOn(kObject1008, 0, 0);
+			onVisual(105);
+		}
+		break;
+
+	case 1038:
+		_app->rotationSetActive(10022);
+		_app->soundPlay(900004);
+		_app->objectPresentationHide(kObject1009);
+		_app->objectSetAccessibilityOff(kObject1008, 0, 0);
+		break;
+
+	case 1039:
+		_app->objectSetAccessibilityOn(kObject1011, 1, 1);
+		// Fallback to next case
+
+	case 1040:
+	case 1041:
+	case 1042:
+	case 1043:
+		_app->rotationSetAlp(10021, 104.0f);
+		_app->rotationSetBet(10021, 15.0f);
+		_app->rotationSetActive(10021);
+
+		if (_app->varGetByte(1056) == 1) {
+			_app->objectSetAccessibilityOff(kObject1011, 1, 1);
+			_app->bagAdd(kObjectContract);
+			_app->takeMoney(100);
+			_app->playMovie("S00A02-4");
+			_app->objectPresentationHide(kObject1011);
+			onVisual(106);
+		}
+		break;
+
+	case 1046:
+		_app->rotationSetAlp(10023, 80.0f);
+		_app->rotationSetBet(10023, 10.0f);
+		_app->rotationSetActive(10023);
+		_app->objectSetAccessibilityOn(kObject1012, 1, 1);
+		break;
+
+	case 1047:
+		_app->rotationSetAlp(10023, 80.0f);
+		_app->rotationSetBet(10023, 10.0f);
+		_app->rotationSetActive(10023);
+		_app->objectSetAccessibilityOn(kObject1012, 2, 2);
+		break;
+
+	case 1048:
+		_app->rotationSetAlp(10023, 80.0f);
+		_app->rotationSetBet(10023, 10.0f);
+		_app->rotationSetActive(10023);
+		_app->objectSetAccessibilityOff(kObject1012, 2, 2);
+		_app->takeMoney(300);
+		_app->bagAdd(kObjectKnife);
+		onVisual(108);
+		break;
+
+	case 1065:
+		_app->objectSetAccessibilityOn(kObject1013, 1, 1);
+		// Fallback to next case
+
+	case 1066:
+	case 1067:
+		_app->rotationSetAlp(10023, 80.0f);
+		_app->rotationSetBet(10023, 10.0f);
+		_app->rotationSetActive(10023);
+
+		if (_app->varGetByte(1057) == 1) {
+			_app->objectSetAccessibilityOff(kObject1013, 1, 1);
+			onVisual(109);
+		}
+		break;
+
+	case 1153:
+	case 1154:
+		if (_app->varGetByte(1041) == 1 && _app->varGetByte(90403) < 2)
+			_app->soundPlay(1168 + rnd(2));
+		break;
+
+	case 2001:
+		_app->rotationSetActive(10011);
+		_app->objectPresentationHide(kObject1016);
+		onVisual(202);
+		break;
+
+	case 2002:
+		_app->objectSetAccessibilityOn(kObject1017, 0, 0);
+		_app->rotationSetAlp(10031, 125.0f);
+		_app->rotationSetBet(10031, 15.0f);
+		_app->rotationSetActive(10031);
+		// Fallback to next case
+
+	case 2003:
+	case 2004:
+		if (_app->varGetByte(1058) == 1) {
+			_app->objectSetAccessibilityOff(kObject1017, 0, 0);
+			onVisual(203);
+		}
+		break;
+
+	case 2005:
+	case 2006:
+	case 2007:
+	case 2008:
+	case 2012:
+	case 2014:
+	case 2015:
+		if (id == 2012) {
+			_app->bagAdd(kObjectGlassTube);
+			_app->bagAdd(kObjectGlassTube2);
+
+			if (_app->varGetByte(90006) == 1)
+				_app->soundPlay(2013);
+		}
+		// Fallback to next case
+
+	case 2016:
+		_app->rotationSetAlp(10032, 157.0f);
+		_app->rotationSetBet(10032, 15.0f);
+		_app->rotationSetActive(10032);
+
+		if (_app->varGetByte(1059) == 1) {
+			_app->objectSetAccessibilityOff(kObject1019, 1, 1);
+			_app->bagAdd(kObjectItemList);
+			_app->soundPlay(2017);
+		}
+		break;
+
+	case 2017:
+		_app->playMovie("S00A03-3");
+		_app->objectPresentationHide(kObject1019, 0);
+		_app->objectPresentationHide(kObject1019, 1);
+		_app->objectPresentationHide(kObject1019, 2);
+		onVisual(205);
+		break;
+
+	case 2018:
+		_app->rotationSetActive(10018);
+		break;
+
+	case 2019:
+		_app->objectSetAccessibilityOn(kObject1021, 1, 1);
+		// Fallback to next case
+
+	case 2020:
+	case 2021:
+	case 2022:
+		_app->rotationSetAlp(100110, 300.0f);
+		_app->rotationSetBet(100110, 18.0f);
+		_app->rotationSetActive(100110);
+
+		if (_app->varGetByte(1060) == 1) {
+			_app->objectSetAccessibilityOff(kObject1021, 1, 1);
+			_app->objectPresentationHide(kObject1021, 0);
+			_app->objectPresentationHide(kObject1021, 2);
+			_app->objectSetAccessibilityOn(kObject10043);
+		}
+		break;
+
+	case 2028:
+		_app->onCall(2089);
+		onVisual(208);
+		_app->rotationSetActive(10024);
+		break;
+
+	case 2032:
+	case 2040:
+		_app->rotationSetActive(10013);
+		break;
+
+	case 2033:
+		_app->objectSetAccessibilityOn(kObject1039, 1, 1);
+		// Fallback to next case
+
+	case 2034:
+	case 2035:
+		_app->rotationSetAlp(10013, 297.0f);
+		_app->rotationSetBet(10013, 0.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1062) == 1) {
+			_app->objectSetAccessibilityOff(kObject1039, 1, 1);
+			_app->objectSetAccessibilityOn(kObject1035, 0, 0);
+			_app->varSetByte(1024, 1);
+			_app->objectSetAccessibilityOn(kObjectBasket, 0, 0);
+			_app->objectSetAccessibilityOn(kObjectBasket2, 0, 0);
+			_app->objectSetAccessibilityOn(kObject10441, 0, 0);
+		}
+		break;
+
+	case 2036:
+	case 2037:
+	case 2038:
+	case 2039:
+		_app->rotationSetAlp(10013, 297.0f);
+		_app->rotationSetBet(10013, 0.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1065) == 1) {
+			_app->objectSetAccessibilityOff(kObject1039, 2, 2);
+			_app->objectSetAccessibilityOn(kObject1035, 1, 1);
+		}
+		break;
+
+	case 2041:
+	case 2042:
+	case 2043:
+	case 2044:
+		_app->rotationSetAlp(10013, 73.0f);
+		_app->rotationSetBet(10013, 10.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1063) == 1) {
+			_app->objectSetAccessibilityOff(kObject1035, 1, 1);
+			_app->objectSetAccessibilityOn(kObject1041, 0, 0);
+		}
+		break;
+
+	case 2045:
+	case 2046:
+	case 2047:
+	case 2048:
+		_app->rotationSetAlp(10013, 130.0f);
+		_app->rotationSetBet(10013, 5.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1064) == 1) {
+			_app->objectSetAccessibilityOff(kObject1041, 0, 0);
+			_app->bagAdd(kObjectCommercialAdd);
+			_app->soundPlay(1153 + rnd(2));
+		}
+		break;
+
+	case 2049:
+		_app->objectPresentationHide(kObject1045);
+		_app->puzzleSetActive(kPuzzle1027);
+		_app->soundPlay(2050);
+		break;
+
+	case 2050:
+		_app->objectSetAccessibilityOn(kObject1039, 3, 3);
+		_app->soundPlay(1168 + rnd(2));
+		_app->rotationSetAlp(10013, 297.0f);
+		_app->rotationSetBet(10013, 0.0f);
+		_app->rotationSetActive(10013);
+		break;
+
+	case 2051:
+		_app->bagAdd(kObjectFlask);
+		// Fallback to next case
+
+	case 2052:
+	case 2053:
+		_app->rotationSetAlp(10013, 297.0f);
+		_app->rotationSetBet(10013, 0.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(10651) == 1)
+			_app->objectSetAccessibilityOff(kObject1039, 3, 3);
+		break;
+
+	case 2063:
+		_app->objectSetAccessibilityOn(kObject1028, 1, 1);
+		// Fallback to next case
+
+	case 2064:
+	case 2065:
+		_app->rotationSetAlp(10022, 175.0f);
+		_app->rotationSetBet(10022, 10.0f);
+		_app->rotationSetActive(10022);
+
+		if (_app->varGetByte(1066) == 1) {
+			_app->objectSetAccessibilityOff(kObject1028, 1, 1);
+			_app->objectPresentationHide(kObject1028);
+		}
+		break;
+
+	case 2066:
+		_app->rotationSetActive(10015);
+		_app->rotationSetMovabilityOff(10015);
+		_app->soundPlay(2067);
+		break;
+
+	case 2067:
+		if (_app->varGetByte(90006) == 2)
+			_app->giveMoney(120);
+
+		_app->playMovie("S00A0-20");
+		_app->objectPresentationHide(kObject1031);
+		_app->rotationSetMovabilityOn(10015);
+		_app->bagRemove(kObjectItemListCompleted);
+		_app->bagRemove(kObjectStones);
+		_app->bagRemove(kObjectPureWine);
+		_app->bagRemove(kObjectLamp2);
+		_app->bagRemove(kObjectIncenseStick);
+		_app->bagRemove(kObjectRose);
+		_app->bagRemove(kObjectMuleToothPowder);
+		_app->bagRemove(kObjectDropOfBlood);
+		_app->bagRemove(kObjectApolloTear);
+		_app->bagRemove(kObjectIbisFeather);
+		onVisual(215);
+		break;
+
+	case 2076:
+		_app->rotationSetActive(10018);
+		break;
+
+	case 3002:
+		_app->rotationSetActive(100114);
+		break;
+
+	case 3003:
+		_app->soundPlay(3004);
+		break;
+
+	case 3005:
+		_app->rotationSetActive(10013);
+		_app->objectSetAccessibilityOn(kObject1049, 0, 0);
+		_app->bagAdd(kObjectRoses);
+		break;
+
+	case 3006:
+		_app->rotationSetActive(10013);
+		_app->objectSetAccessibilityOn(kObject1053, 0, 0);
+		_app->objectSetAccessibilityOn(kObject1050, 0, 0);
+		_app->objectSetAccessibilityOn(kObject1051, 0, 0);
+		break;
+
+	case 3008:
+		_app->objectSetAccessibilityOn(kObject1050, 1, 1);
+		// Fallback to next case
+
+	case 3009:
+	case 3010:
+		_app->rotationSetAlp(10013, 73.0f);
+		_app->rotationSetBet(10013, 10.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1067) == 1) {
+			_app->objectSetAccessibilityOff(kObject1050, 1, 1);
+
+			if (_app->varGetByte(1030) == 1
+			 && _app->varGetByte(1031) == 1
+			 && _app->varGetByte(1032) == 1
+			 && _app->varGetByte(1033) == 1
+			 && _app->varGetByte(1034) == 0) {
+				_app->varSetByte(1034, 1);
+				_app->puzzleSetActive(kPuzzle1040);
+				_app->soundPlay(3012);
+			}
+		}
+		break;
+
+	case 3007:
+	case 3011:
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1030) == 1
+		 && _app->varGetByte(1031) == 1
+		 && _app->varGetByte(1067) == 1
+		 && _app->varGetByte(1033) == 1
+		 && _app->varGetByte(1034) == 0) {
+			_app->varSetByte(1034, 1);
+			_app->puzzleSetActive(kPuzzle1040);
+			_app->soundPlay(3012);
+		}
+		break;
+
+	case 3012:
+		_app->playMovie("S00A01-4");
+		_app->objectPresentationShow(kObject1055);
+		_app->objectPresentationShow(kObject1054, 0);
+		_app->objectPresentationShow(kObject1054, 1);
+		_app->puzzleSetActive(kPuzzle1044);
+		_app->soundPlay(3013);
+		break;
+
+	case 3013:
+		_app->soundPlay(1168 + rnd(2));
+		_app->soundPlay(3014);
+		break;
+
+	case 3014:
+		_app->playMovie("S00A0-16");
+		_app->fadeOut(15, Color(0, 0, 0), 0);
+		_app->rotationSetMovabilityOn(10013);
+		onVisual(303);
+		_app->onCall(3039);
+		break;
+
+	case 3023:
+	case 3024:
+	case 3025:
+		_app->objectSetAccessibilityOn(kObject1057, 1, 1);
+
+		if (id == 3024)
+			_app->bagAdd(kObjectPhiltre1);
+
+		if (id == 3025)
+			_app->bagAdd(kObjectPhiltre2);
+		// Fallback to next case
+
+	case 3026:
+		_app->rotationSetAlp(10043, 130.0f);
+		_app->rotationSetBet(10043, 10.0f);
+		_app->rotationSetActive(10043);
+
+		if (_app->varGetByte(1068) == 1) {
+			_app->objectSetAccessibilityOff(kObject1057, 1, 1);
+			onVisual(307);
+		}
+		break;
+
+	case 3028:
+		_app->objectSetAccessibilityOn(kObject1059, 1, 1);
+		// Fallback to next case
+
+	case 3029:
+	case 3031:
+		_app->rotationSetAlp(10046, 25.0f);
+		_app->rotationSetBet(10046, 15.0f);
+		_app->rotationSetActive(10046);
+
+		if (_app->varGetByte(1069) == 1) {
+			_app->objectSetAccessibilityOff(kObject1059, 1, 1);
+			_app->objectSetAccessibilityOn(kObject1059, 2, 2);
+		}
+		break;
+
+	case 3032:
+	case 3033:
+	case 3034:
+	case 3035:
+		_app->rotationSetAlp(10046, 25.0f);
+		_app->rotationSetBet(10046, 15.0f);
+		_app->rotationSetActive(10046);
+
+		if (_app->varGetByte(1070) == 1) {
+			_app->objectSetAccessibilityOff(kObject1059, 2, 2);
+			onVisual(308);
+		}
+		break;
+
+	case 3036:
+		_app->objectSetAccessibilityOn(kObject10591, 1, 1);
+		// Fallback to next case
+
+	case 3037:
+	case 3040:
+		_app->rotationSetAlp(100413, 30.0f);
+		_app->rotationSetBet(100413, 15.0f);
+		_app->rotationSetActive(100413);
+
+		if (_app->varGetByte(1071) == 1) {
+			_app->objectSetAccessibilityOff(kObject10591, 1, 1);
+
+			if (id == 3037)
+				_app->objectSetAccessibilityOn(kObject1059, 0, 0);
+		}
+		break;
+
+	case 3038:
+		_app->objectSetAccessibilityOff(kObject1059, 0, 0);
+		// Fallback to next case
+
+	case 3030:
+		_app->exitToMenu(kMenuAction6);
+		break;
+
+	case 3041:
+		_app->objectSetAccessibilityOn(kObject1061, 1, 1);
+		// Fallback to next case
+
+	case 3042:
+	case 3043:
+	case 3044:
+		_app->rotationSetAlp(10043, 10.0f);
+		_app->rotationSetBet(10043, 15.0f);
+		_app->rotationSetActive(10043);
+
+		if (_app->varGetByte(1072) == 1) {
+			_app->objectSetAccessibilityOff(kObject1061, 1, 1);
+			_app->playMovie("S00A04-2", 0.0);
+			_app->objectPresentationHide(kObject1061, 0);
+			_app->objectPresentationHide(kObject1061, 2);
+			_app->objectPresentationHide(kObject1061, 3);
+			_app->objectPresentationShow(kObject1061, 1);
+			_app->objectSetAccessibilityOn(kObject1062, 0, 0);
+		}
+		break;
+
+	case 3045:
+		_app->objectSetAccessibilityOn(kObject1062, 1, 1);
+		// Fallback to next case
+
+	case 3046:
+	case 3047:
+		_app->rotationSetAlp(10043, 350.0f);
+		_app->rotationSetBet(10043, 15.0f);
+		_app->rotationSetActive(10043);
+
+		if (_app->varGetByte(1073) == 1) {
+			_app->objectSetAccessibilityOff(kObject1062, 1, 1);
+			_app->onCall(3091);
+		}
+		break;
+
+	case 4008:
+		_app->objectSetAccessibilityOn(kObject1064, 0, 0);
+		break;
+
+	case 4009:
+		_app->objectSetAccessibilityOn(kObject1064, 1, 1);
+		_app->rotationSetAlp(10012, 100.0f);
+		_app->rotationSetBet(10012, 15.0f);
+		_app->rotationSetActive(10012);
+		break;
+
+	case 4011:
+		_app->objectSetAccessibilityOff(kObject1064, 1, 1);
+		_app->rotationSetAlp(10012, 100.0f);
+		_app->rotationSetBet(10012, 15.0f);
+		_app->rotationSetActive(10012);
+		_app->rotationSetMovabilityOff(10012);
+		_app->soundPlay(4012);
+		break;
+
+	case 4012:
+		_app->soundPlay(4014);
+		break;
+
+	case 4013:
+		_app->objectSetAccessibilityOff(kObject1064, 1, 1);
+		_app->rotationSetAlp(10012, 100.0f);
+		_app->rotationSetBet(10012, 15.0f);
+		_app->rotationSetActive(10012);
+		_app->rotationSetMovabilityOff(10012);
+		_app->soundPlay(4014);
+		break;
+
+	case 4014:
+		_app->rotationSetMovabilityOn(10012);
+		_app->giveMoney(150);
+		break;
+
+	case 4015:
+		_app->objectSetAccessibilityOn(kObject1066, 1, 1);
+		_app->soundPlay(1153 + rnd(2));
+		// Fallback to next case
+
+	case 4016:
+	case 4017:
+	case 4018:
+	case 4019:
+	case 4020:
+	case 4021:
+		_app->rotationSetAlp(10013, 297.0f);
+		_app->rotationSetBet(10013, 0.0f);
+		_app->rotationSetActive(10013);
+
+		if (_app->varGetByte(1075) == 1)
+			_app->objectSetAccessibilityOff(kObject1066, 1, 1);
+		break;
+
+	case 4031:
+		_app->rotationSetAlp(10053, 80.0f);
+		_app->rotationSetBet(10053, 20.0f);
+		_app->rotationSetActive(10053);
+		break;
+
+	case 4032:
+		_app->objectSetAccessibilityOn(kObject1068, 1, 1);
+		// Fallback to next case
+
+	case 4033:
+	case 4034:
+	case 4035:
+	case 4036:
+	case 4037:
+		_app->bagAdd(kObjectPapyrus);
+		// Fallback to next case
+
+	case 4038:
+	case 4039:
+	case 4040:
+	case 4041:
+		_app->rotationSetAlp(10053, 80.0f);
+		_app->rotationSetBet(10053, 20.0f);
+		_app->rotationSetActive(10053);
+
+		if (_app->varGetByte(1076) == 1)
+			_app->objectSetAccessibilityOff(kObject1068, 1, 1);
+		break;
+
+	case 4042:
+		_app->objectSetAccessibilityOn(kObject1077, 1, 1);
+		// Fallback to next case
+
+	case 4043:
+	case 4044:
+	case 4045:
+	case 4046:
+	case 4047:
+		_app->rotationSetAlp(10052, 82.0f);
+		_app->rotationSetBet(10052, 10.0f);
+		_app->rotationSetActive(10052);
+
+		if (_app->varGetByte(1077) == 1) {
+			_app->objectSetAccessibilityOff(kObject1077, 1, 1);
+			_app->playMovie("S00A05-7");
+			_app->objectPresentationHide(kObject1077, 0);
+			_app->objectPresentationHide(kObject1077, 1);
+			_app->objectPresentationHide(kObject1077, 2);
+			_app->onCall(4069);
+		}
+		break;
+
+	case 4108:
+		_app->objectSetAccessibilityOn(kObject1081, 1, 1);
+		// Fallback to next case
+
+	case 4109:
+	case 4110:
+	case 4111:
+		_app->rotationSetAlp(1001202, 50.0f);
+		_app->rotationSetBet(1001202, 5.0f);
+		_app->rotationSetActive(1001202);
+
+		if (_app->varGetByte(1078) == 1) {
+			_app->objectSetAccessibilityOff(kObject1081, 1, 1);
+			_app->objectSetAccessibilityOn(kObject1081, 2, 2);
+		}
+		break;
+
+	case 4113:
+		if (_app->varGetByte(1078) == 1)
+			onVisual(419);
+		break;
+
+	case 4115:
+		_app->rotationSetMovabilityOn(1005402);
+		_app->fadeOut(15, Color(0, 0, 0), 0);
+		_app->onCall(421);
+		break;
+
+	case 4116:
+		_app->exitToMenu(kMenuAction11);
+		break;
+
+	case 4118:
+		_app->objectSetAccessibilityOn(kObject1093, 1, 1);
+		_app->rotationSetAlp(10011103, 90.0f);
+		_app->rotationSetActive(10011103);
+		break;
+
+	case 4119:
+		_app->objectSetAccessibilityOn(kObject1093, 2, 2);
+		_app->rotationSetAlp(10011103, 90.0f);
+		_app->rotationSetActive(10011103);
+		break;
+
+	case 4120:
+		_app->soundPlay(4121);
+		break;
+
+	case 4123:
+		_app->soundPlay(4124);
+		break;
+
+	case 4122:
+	case 4124:
+		_app->playMovie("S00A0-14");
+		// Fallback to next case
+
+	case 4121:
+		onVisual(421);
+		_app->fadeOut(15, Color(0, 0, 0), 0);
+		_app->exitToMenu(kMenuAction99);
+		break;
+
+	case 20071:
+	case 20081:
+	case 20091:
+	case 20092:
+	case 20121:
+	case 20141:
+	case 20151:
+		if (id == 20121) {
+			_app->bagAdd(kObjectGlassTube);
+			_app->bagAdd(kObjectGlassTube2);
+
+			if (_app->varGetByte(90006) == 1)
+				_app->soundPlay(2013);
+		}
+		// Fallback to next case
+
+	case 20061:
+	case 20161:
+		_app->rotationSetAlp(10032, 157.0f);
+		_app->rotationSetBet(10032, 15.0f);
+		_app->rotationSetActive(10032);
+
+		if (_app->varGetByte(1059) == 1) {
+			_app->objectSetAccessibilityOff(kObject1019, 1, 1);
+			_app->bagAdd(kObjectItemList);
+			_app->soundPlay(2017);
+		}
+		break;
+	}
 }
 
 void Zone1Pompeii::onUpdateBag(const Common::Point &/*point*/) {
@@ -2256,8 +3037,208 @@ void Zone1Pompeii::onBagClickedObject(ObjectId objectId) {
 	}
 }
 
-void Zone1Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 movabilityIndex, Id target, const Common::Point &point) {
-	error("[Zone1Pompeii::onUpdateBefore] Not implemented");
+void Zone1Pompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, const Common::Point &/*point*/) {
+	Common::Point mouse = g_system->getEventManager()->getMousePos() - Common::Point(20, 16);
+
+	switch (movabilityFrom) {
+	default:
+		break;
+
+	case 1009:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 1036, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1011:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 1039, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1012:
+		if (movabilityTo == 2 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 1047, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1013:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 1065, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1017:
+		if (movabilityTo == 0 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 2002, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1019:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+
+			if (_app->varGetByte(90006) == 1)
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 20052, mouse);
+
+			if (_app->varGetByte(90006) == 2)
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 20051, mouse);
+
+			_hideBox = true;
+		}
+		break;
+
+	case 1021:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 2019, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1028:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 2063, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1035:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 20401, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1039:
+		if (!_hideBox && !_app->bagHasClickedObject()) {
+
+			switch (movabilityTo) {
+			default:
+				break;
+
+			case 1:
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 2033, mouse);
+				_hideBox = true;
+				break;
+
+			case 2:
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 20331, mouse);
+				_hideBox = true;
+				break;
+
+			case 3:
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 2050, mouse);
+				_hideBox = true;
+				break;
+			}
+		}
+		break;
+
+	case 1041:
+		if (movabilityTo == 0 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 20402, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1050:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 3008, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1057:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			if (_app->varGetByte(1035) == 1) {
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 3023, mouse);
+				_hideBox = true;
+			}
+		}
+		break;
+
+	case 1059:
+		if (!_hideBox && !_app->bagHasClickedObject()) {
+
+			if (movabilityTo == 1) {
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 3028, mouse);
+				_hideBox = true;
+			}
+
+			if (movabilityTo == 2) {
+				_app->visualBoxSetParameters(6, kPuzzleMenu, 30310, mouse);
+				_hideBox = true;
+			}
+		}
+		break;
+
+	case 1061:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 3041, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1062:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 2033, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1064:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4009, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1066:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4015, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1068:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4032, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1077:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4042, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 1081:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 4108, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 10071:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 1031, mouse);
+			_hideBox = true;
+		}
+		break;
+
+	case 10591:
+		if (movabilityTo == 1 && !_hideBox && !_app->bagHasClickedObject()) {
+			_app->visualBoxSetParameters(6, kPuzzleMenu, 3036, mouse);
+			_hideBox = true;
+		}
+		break;
+	}
 }
 
 void Zone1Pompeii::onUpdateAfter(Id /*movabilityFrom*/, Id /*movabilityTo*/, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType /*movabilityType*/, const Common::Point &/*point*/) {
