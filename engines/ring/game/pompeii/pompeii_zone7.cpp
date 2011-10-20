@@ -163,7 +163,7 @@ void Zone7Pompeii::onInit() {
 	_app->objectAdd(kObjectApolloTear, "Apollo's tear", "atears", 1);
 	_app->objectAddRotationAccessibility(kObjectApolloTear, 10621, Common::Rect(950, -257, 1070, -22), true, kCursorZoom, 0);
 	_app->objectAddPresentation(kObjectApolloTear);
-	_app->objectPresentationAddAnimationToPuzzle(kObjectApolloTear, 0, kPuzzle60023, "s06a02n01p03s01", kImageTypeBMP, Common::Point(322, 173), kDrawType1, 1000, 100, 20.0f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObjectApolloTear, 0, kPuzzle60023, "s06a02n01p03s01", kImageTypeBMP, Common::Point(322, 173), kDrawTypeNormal, 1000, 100, 20.0f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObjectApolloTear, 0, 0, 60000);
 
 	for (uint32 i = 0; i < 100; i++)
@@ -179,7 +179,7 @@ void Zone7Pompeii::onInit() {
 	_app->objectPresentationAddImageToRotation(kObject10601, 0, 10615, 0);
 	_app->objectPresentationAddImageToRotation(kObject10601, 0, 10621, 0);
 	_app->objectPresentationAddAnimationToRotation(kObject10601, 0, 10612, 1, 14, 12.5f, 4);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10601, 0, kPuzzle60011, "s06a01n02p01s01", kImageTypeBMP, Common::Point(218, 182), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10601, 0, kPuzzle60011, "s06a01n02p01s01", kImageTypeBMP, Common::Point(218, 182), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnRotation(kObject10601, 0, 0, 60001);
 	_app->objectAdd(kObject60611, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject60611, 10612, Common::Rect(2183, -140, 2385, 227), false, kCursorAction, 0);

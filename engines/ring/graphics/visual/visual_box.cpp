@@ -242,7 +242,7 @@ void VisualObjectBox::init(const Common::String &/*name*/, ArchiveType archiveTy
 		path = "/VISUAL/";
 
 	// Create image
-	_background = new ImageHandle("keywords.tga", Common::Point(0, 0), true, kDrawType3, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_background = new ImageHandle("keywords.tga", Common::Point(0, 0), true, kDrawTypeAlpha, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_background->setDirectory(path);
 
 	_name = new Text();

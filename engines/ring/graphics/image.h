@@ -46,10 +46,10 @@ public:
 	Image *zoom(float xZoom, float yZoom);
 
 	// Drawing
-	Common::Rect draw(Graphics::Surface *surface, const Common::Point &dest);
-	Common::Rect draw(Graphics::Surface *surface, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset);
+	Common::Rect draw(Graphics::Surface *surface, const Common::Point &dest, bool useAlpha = false);
+	Common::Rect draw(Graphics::Surface *surface, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset, bool useAlpha = false);
 
-	static bool crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, int offset, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown = true);
+	static bool crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, int offset, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown = true, bool useAlpha = false);
 
 	// Accessors
 	byte getBPP()      { return _surface ? _surface->format.bytesPerPixel * 8: 0; }

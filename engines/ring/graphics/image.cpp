@@ -52,7 +52,7 @@ ImageHandle::ImageHandle(Common::String nameId, const Common::Point &point, bool
 }
 
 ImageHandle::ImageHandle(Common::String nameId, const Common::Point &point, bool active, ZoneId zone, LoadFrom loadFrom, ImageType imageType, ArchiveType archiveType) : Image() {
-	init(nameId, point, active, kDrawType1, 0, 0, zone, loadFrom, imageType, archiveType);
+	init(nameId, point, active, kDrawTypeNormal, 0, 0, zone, loadFrom, imageType, archiveType);
 }
 
 ImageHandle::~ImageHandle() {
@@ -252,11 +252,11 @@ Image *Image::zoom(float xZoom, float yZoom) {
 	return image;
 }
 
-Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest) {
-	return draw(screen, dest, _surface->w, _surface->h, 0, 0);
+Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, bool useAlpha) {
+	return draw(screen, dest, _surface->w, _surface->h, 0, 0, useAlpha);
 }
 
-Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset) {
+Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, uint32 srcWidth, uint32 srcHeight, int32 srcX, int32 offset, bool useAlpha) {
 	if (!_surface)
 		error("[Image::draw] Image surface not initialized properly");
 
@@ -278,7 +278,8 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 	               offset,
 	               screen->format,
 	               _surface->format,
-	               false))
+	               false,
+	               useAlpha))
 		error("[Image::draw] Cannot convert image to proper screen format");
 
 	return destRect;
@@ -286,7 +287,7 @@ Common::Rect Image::draw(Graphics::Surface *screen, const Common::Point &dest, u
 
 // Function to blit a rect from one color format to another (copied from conversion.cpp)
 // Added support for downsampling and copying data from bottom to top (our images are decoded that way)
-bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, int offset, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown) {
+bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, int w, int h, int offset, const Graphics::PixelFormat &dstFmt, const Graphics::PixelFormat &srcFmt, bool topDown, bool useAlpha) {
 
 	// Error out if conversion is impossible
 	if ((srcFmt.bytesPerPixel == 1)
@@ -301,7 +302,7 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 			return true;
 
 		for (int i = 0; i < h; i++) {
-			memcpy(dst,src,w * dstFmt.bytesPerPixel);
+			memcpy(dst, src, (size_t)(w * dstFmt.bytesPerPixel));
 			dst += dstpitch;
 			src += (topDown ? srcpitch : -srcpitch);
 		}
@@ -327,7 +328,7 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 				for (int x = 0; x < w; x++, src += 2, dst += 2) {
 					uint16 color = *(const uint16 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
-					color = dstFmt.ARGBToColor(a, r, g, b);
+					color = (uint16)dstFmt.ARGBToColor(a, r, g, b);
 					*(uint16 *)dst = color;
 				}
 				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
@@ -341,11 +342,27 @@ bool Image::crossBlit(byte *dst, const byte *src, int dstpitch, int srcpitch, in
 					uint32 color = *(const uint32 *)src;
 					srcFmt.colorToARGB(color, a, r, g, b);
 
+					// Do not draw when fully transparent
 					if (a == 0)
 						continue;
 
-					color = dstFmt.ARGBToColor(a, r, g, b);
-					*(uint16 *)dst = (uint16)color;
+					if (useAlpha) {
+						uint8 r_dst, g_dst, b_dst, a_dst;
+						uint16 color_dst = *(const uint16 *)dst;
+						dstFmt.colorToARGB(color_dst, a_dst, r_dst, g_dst, b_dst);
+
+						uint8 ialpha = (255 - a);
+						color = dstFmt.RGBToColor((r * a + (r_dst * ialpha)) >> 8,
+						                          (g * a + (g_dst * ialpha)) >> 8,
+						                          (b * a + (b_dst * ialpha)) >> 8);
+
+						*(uint16 *)dst = (uint16)color;
+					} else {
+						// Ignore alpha transparency
+						color = dstFmt.ARGBToColor(a, r, g, b);
+						*(uint16 *)dst = (uint16)color;
+					}
+
 				}
 				src += srcDelta + (topDown ? 0 : -srcpitch * 2);
 				dst += dstDelta;

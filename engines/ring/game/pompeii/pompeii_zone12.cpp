@@ -174,8 +174,8 @@ void Zone12Pompeii::onInit() {
 	_app->objectAddRotationAccessibility(kObject111001, 11121, Common::Rect(1001, -24, 1121, 176), false, kCursorAction, 9);
 	_app->objectAddRotationAccessibility(kObject111001, 11121, Common::Rect(1001, -24, 1121, 176), false, kCursorAction, 10);
 	_app->objectAddPresentation(kObject111001);
-	_app->objectPresentationAddAnimationToPuzzle(kObject111001, 0, kPuzzle111211, "s11a02n01p01s01", kImageTypeBMP, Common::Point(316, 140), kDrawType1, 1000, 15, 12.5f, 16);
-	_app->objectPresentationAddAnimationToPuzzle(kObject111001, 0, kPuzzle111212, "s11a02n01p04s01", kImageTypeBMP, Common::Point(456,  59), kDrawType1, 1000, 15, 12.5f, 16);
+	_app->objectPresentationAddAnimationToPuzzle(kObject111001, 0, kPuzzle111211, "s11a02n01p01s01", kImageTypeBMP, Common::Point(316, 140), kDrawTypeNormal, 1000, 15, 12.5f, 16);
+	_app->objectPresentationAddAnimationToPuzzle(kObject111001, 0, kPuzzle111212, "s11a02n01p04s01", kImageTypeBMP, Common::Point(456,  59), kDrawTypeNormal, 1000, 15, 12.5f, 16);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject111001, 0, 0, 11000);
 	_app->objectPresentationShow(kObject111001, 0);
 	_app->soundAdd(4048, kSoundTypeDialog, "4048.wac", _app->getConfiguration().dialog.loadFrom);

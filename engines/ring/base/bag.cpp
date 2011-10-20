@@ -327,14 +327,14 @@ void Bag::draw(){
 	ScreenManager *screen = getApp()->getScreenManager();
 
 	// Background
-	screen->draw(_background, Common::Point(_origin.x + _backgroundOffset.x, _origin.y + _backgroundOffset.y), kDrawType3);
+	screen->draw(_background, Common::Point(_origin.x + _backgroundOffset.x, _origin.y + _backgroundOffset.y), kDrawTypeAlpha);
 
 	// Bag elements
 	if (_field_28 == 0) {
 		if (_hotspots.size() > 0)
 			_hotspots[0]->disable();
 	} else {
-		screen->draw(_image3, Common::Point(_origin.x + (int16)_field_58, _origin.y + (int16)_field_5C), kDrawType3);
+		screen->draw(_image3, Common::Point(_origin.x + (int16)_field_58, _origin.y + (int16)_field_5C), kDrawTypeAlpha);
 
 		if (_hotspots.size() > 0)
 			_hotspots[0]->enable();
@@ -344,14 +344,14 @@ void Bag::draw(){
 		if (_hotspots.size() > 1)
 			_hotspots[1]->disable();
 	} else {
-		screen->draw(_image6, Common::Point(_origin.x + (int16)_field_60, _origin.y + (int16)_field_64), kDrawType3);
+		screen->draw(_image6, Common::Point(_origin.x + (int16)_field_60, _origin.y + (int16)_field_64), kDrawTypeAlpha);
 
 		if (_hotspots.size() > 1)
 			_hotspots[1]->enable();
 	}
 
 	if (_drawImage8) {
-		screen->draw(_image8, Common::Point(_origin.x + (int16)_field_88, _origin.y + (int16)_field_8C), kDrawType3);
+		screen->draw(_image8, Common::Point(_origin.x + (int16)_field_88, _origin.y + (int16)_field_8C), kDrawTypeAlpha);
 
 		_drawImage8 = false;
 	}
@@ -359,12 +359,12 @@ void Bag::draw(){
 	if (_enabled) {
 		if (_drawImageErdaGur) {
 			if (_imageErdaGur)
-				screen->draw(_imageErdaGur, Common::Point(_origin.x + 103, _origin.y), kDrawType3);
+				screen->draw(_imageErdaGur, Common::Point(_origin.x + 103, _origin.y), kDrawTypeAlpha);
 
 			_drawImageErdaGur = false;
 		} else {
 			if (_imageErdaGun)
-				screen->draw(_imageErdaGun, Common::Point(_origin.x + 103, _origin.y), kDrawType3);
+				screen->draw(_imageErdaGun, Common::Point(_origin.x + 103, _origin.y), kDrawTypeAlpha);
 		}
 	}
 
@@ -400,7 +400,7 @@ void Bag::draw(){
 			}
 
 			if (loaded)
-				screen->draw(image, Common::Point(offset + (int16)(_field_18 + image->getWidth()) / 2, _origin.y + (int16)_field_10), kDrawType3);
+				screen->draw(image, Common::Point(offset + (int16)(_field_18 + image->getWidth()) / 2, _origin.y + (int16)_field_10), kDrawTypeAlpha);
 
 		} else {
 			AnimationImage *animation = image->getAnimation();
@@ -511,7 +511,7 @@ void Bag::loadImage(Common::String filename, Image **image, ArchiveType archiveT
 	SAFE_DELETE(*image);
 	*image = new Image();
 
-	if (!(*image)->load(path, archiveType, getZoneSY(), kLoadFromDisk, kDrawType1))
+	if (!(*image)->load(path, archiveType, getZoneSY(), kLoadFromDisk, kDrawTypeNormal))
 		error("[Bag::LoadImage] Cannot load image: %s", path.c_str());
 }
 

@@ -148,7 +148,7 @@ void Puzzle::update() {
 		if (!_background->isInitialized())
 			initializeImage(_background);
 
-		_application->getScreenManager()->draw(_background, _background->getCoordinates(), kDrawType1);
+		_application->getScreenManager()->draw(_background, _background->getCoordinates(), kDrawTypeNormal);
 	}
 
 	// Handle animations

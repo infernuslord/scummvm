@@ -59,7 +59,7 @@ void ScreenManager::drawAndUpdate(Image *image) {
 }
 
 void ScreenManager::drawAndUpdate(Image *image, const Common::Point &point) {
-	draw(image, point, kDrawType1);
+	draw(image, point, kDrawTypeNormal);
 	updateScreen();
 }
 
@@ -73,9 +73,10 @@ void ScreenManager::draw(Image *image, const Common::Point &point, DrawType type
 	if (!image)
 		error("[ScreenManager::draw] Invalid image pointer!");
 
-	// Check the screen surface bit depth (we only handle 16 & 32bpp)
-	if (_screen.format.bytesPerPixel != 2 && _screen.format.bytesPerPixel != 4)
-		error("[ScreenManager::draw] Engine only handles 16/32bpp surfaces (was: %d)!", _screen.format.bytesPerPixel * 8);
+	// Check the screen surface bit depth (we only handle 16bpp)
+	// TODO handle 32bpp screen depth (and specific alpha drawing)
+	if (_screen.format.bytesPerPixel != 2)
+		error("[ScreenManager::draw] Engine only handles 16bpp surfaces (was: %d)!", _screen.format.bytesPerPixel * 8);
 
 	// Check the image bit depth
 	switch (image->getBPP()) {
@@ -89,27 +90,20 @@ void ScreenManager::draw(Image *image, const Common::Point &point, DrawType type
 
 	case 24:
 	case 32: {
-		// Adjust coordinates
-		Common::Point coords = point;
-
-		// TODO intersect image rectangle with screen and get update drawing rect
-
 		switch (type) {
 		default:
 			error("[ScreenManager::draw] Invalid draw type (%d)!", type);
 
-		case kDrawType1:
-			image->draw(&_screen, coords + _offset);
+		case kDrawTypeNormal:
+			image->draw(&_screen, point + _offset);
 			break;
 
 		case kDrawType2:
-			warning("[ScreenManager::draw] Not implemented type 2");
-			image->draw(&_screen, coords + _offset);
+			error("[ScreenManager::draw] Not implemented type 2");
 			break;
 
-		case kDrawType3:
-			warning("[ScreenManager::draw] Not implemented type 3");
-			image->draw(&_screen, coords + _offset);
+		case kDrawTypeAlpha:
+			image->draw(&_screen, point + _offset, true);
 			break;
 		}
 		}

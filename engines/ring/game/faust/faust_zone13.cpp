@@ -399,7 +399,7 @@ void Zone13Faust::onInit() {
 
 	for (uint32 i = 0; i < 11; i++) {
 		_app->objectAddPresentation(kObject91004);
-		_app->objectPresentationAddImageToPuzzle(kObject91004, i, kPuzzle91001, Common::String::format("a09s02n01p01s01.%04d.bmp", i + 1), Common::Point(74, 62), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject91004, i, kPuzzle91001, Common::String::format("a09s02n01p01s01.%04d.bmp", i + 1), Common::Point(74, 62), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAddPuzzleAccessibility(kObject91004, kPuzzle91001, Common::Rect(94, 280, 365, 400), true, kCursorDragDrop, 0);

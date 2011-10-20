@@ -230,7 +230,7 @@ void ZoneASRing::onInit() {
 	_app->objectAdd(kObject80007, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject80007, 80101, Common::Rect(1314, 183, 1397, 226), true, kCursorHotspot, 0);
 	_app->objectAdd(kObjectDeath, "Death", "AS_Nor_d", 1);
-	_app->objectAddBagAnimation(kObjectDeath, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectDeath, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectDeath, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectDeath, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAdd(kObject80012, "", "", 1);
@@ -310,7 +310,7 @@ void ZoneASRing::onInit() {
 	_app->setLoadFrom(kLoadFromDisk);
 	_app->setArchiveType(kArchiveFile);
 
-	_app->objectPresentationAddImageToPuzzle(kObject80019, 0, kPuzzle80006, "ASP01L02.bma", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject80019, 0, kPuzzle80006, "ASP01L02.bma", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 
 	_app->setLoadFrom(kLoadFromCd);
 	if (_app->getConfiguration().artAS)

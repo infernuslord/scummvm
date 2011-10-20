@@ -712,7 +712,7 @@ void Application::showImage(Common::String filename, const Common::Point &point,
 		path = Common::String::format("/IMAGE/%s", filename.c_str());
 
 	Image *image = new Image();
-	if (!image->load(path, archiveType, getCurrentZone(), loadFrom, kDrawType1)) {
+	if (!image->load(path, archiveType, getCurrentZone(), loadFrom, kDrawTypeNormal)) {
 		delete image;
 		return;
 	}
@@ -735,7 +735,7 @@ bool Application::scrollImage(Common::String filename, uint32 ticksWait, LoadFro
 		path = Common::String::format("/IMAGE/%s", filename.c_str());
 
 	Image *image = new Image();
-	if (!image->load(path, archiveType, getCurrentZone(), loadFrom, kDrawType1)) {
+	if (!image->load(path, archiveType, getCurrentZone(), loadFrom, kDrawTypeNormal)) {
 		warning("[Application::scrollImage] Cannot load image (%s)", path.c_str());
 
 		delete image;
@@ -789,13 +789,13 @@ void Application::displayFade(Common::String filenameFrom, Common::String filena
 
 	// Load images
 	Image *imageFrom = new Image();
-	if (!imageFrom->load(pathFrom, archiveType, getCurrentZone(), loadFrom, kDrawType1)) {
+	if (!imageFrom->load(pathFrom, archiveType, getCurrentZone(), loadFrom, kDrawTypeNormal)) {
 		warning("[Application::displayFade] Cannot load imageFrom (%s)", pathFrom.c_str());
 		goto cleanup;
 	}
 
 	imageTo = new Image();
-	if (!imageTo->load(pathTo, archiveType, getCurrentZone(), loadFrom, kDrawType1)) {
+	if (!imageTo->load(pathTo, archiveType, getCurrentZone(), loadFrom, kDrawTypeNormal)) {
 		warning("[Application::displayFade] Cannot load imageTo (%s)", pathTo.c_str());
 		goto cleanup;
 	}
@@ -881,7 +881,7 @@ void Application::fadeOut(uint32 frameCount, Color colorTo, uint32 ticksWait) {
 	// Get screen image
 	byte bpp = _screenManager->getSurface()->format.bytesPerPixel;
 	Image *image = new Image();
-	image->create(bpp * 8, 2, 640, 480);
+	image->create((byte)(bpp * 8), 2, 640, 480);
 	_screenManager->copySurface(image);
 	byte *buffer = (byte *)image->getSurface()->pixels;
 
@@ -3029,7 +3029,7 @@ ArchiveType Application::getArchiveType(ZoneId zone) const {
 
 #pragma region Login
 
-void Application::startLogin(PuzzleId puzzlePreferences) {
+void Application::startLogin(const PuzzleId &puzzlePreferences) {
 	// Load the list of users
 	Common::Array<SaveManager::SaveEntry *> *users = getSaveManager()->loadUsers();
 

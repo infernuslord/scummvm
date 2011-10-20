@@ -337,7 +337,7 @@ void Rotation::destroyImage() {
 
 void Rotation::drawImage() {
 	if (_imageHandle)
-		getApp()->getScreenManager()->draw(_imageHandle, _imageHandle->getCoordinates(), kDrawType1);
+		getApp()->getScreenManager()->draw(_imageHandle, _imageHandle->getCoordinates(), kDrawTypeNormal);
 }
 
 void Rotation::draw() {

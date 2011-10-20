@@ -108,10 +108,10 @@ void Zone8Pompeii::onInit() {
 	_app->objectAddPresentation(kObject10701);
 	_app->objectPresentationAddImageToRotation(kObject10701, 6, 10721, 5);
 	_app->objectAddPresentation(kObject10701);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10701, 7, kPuzzle70121, "s07a01n01p01s01", kImageTypeBMP, Common::Point(82, 67), kDrawType1, 1000, 30, 12.5, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10701, 7, kPuzzle70121, "s07a01n01p01s01", kImageTypeBMP, Common::Point(82, 67), kDrawTypeNormal, 1000, 30, 12.5, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(10701, 7, 0, 70001);
 	_app->objectAddPresentation(kObject10701);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10701, 8, kPuzzle70211, "s07a02n01p01s01", kImageTypeBMP, Common::Point(390, 116), kDrawType1, 1000, 29, 12.5, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10701, 8, kPuzzle70211, "s07a02n01p01s01", kImageTypeBMP, Common::Point(390, 116), kDrawTypeNormal, 1000, 29, 12.5, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(10701, 8, 0, 70001);
 	_app->objectAdd(kObject70701, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject70701, 10711, Common::Rect(3359, -7, 3480, 266), false, kCursorAction, 0);

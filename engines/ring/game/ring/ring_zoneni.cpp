@@ -237,11 +237,11 @@ void ZoneNIRing::onInit() {
 	_app->puzzleAddMovabilityToPuzzle(kPuzzle10521, kPuzzle10521, "1582", Common::Rect(216, 124, 406, 327), true, kCursorHotspot, 55);
 	_app->objectAdd(kObject12000, "", "", 1);
 	_app->objectAddPresentation(kObject12000);
-	_app->objectPresentationAddAnimationToPuzzle(kObject12000, 0, kPuzzle12001, "TR_NI_RH_BP01S01", kImageTypeBMP, Common::Point(239, 208), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject12000, 0, kPuzzle12001, "TR_NI_RH_BP01S01", kImageTypeBMP, Common::Point(239, 208), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAddPresentation(kObject12000);
-	_app->objectPresentationAddAnimationToPuzzle(kObject12000, 1, kPuzzle12002, "TR_NI_RH_BP02S01", kImageTypeBMP, Common::Point(187, 94), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject12000, 1, kPuzzle12002, "TR_NI_RH_BP02S01", kImageTypeBMP, Common::Point(187, 94), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAddPresentation(kObject12000);
-	_app->objectPresentationAddAnimationToPuzzle(kObject12000, 2, kPuzzle12003, "TR_NI_RH_BP03S01", kImageTypeBMP, Common::Point(207, 134), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject12000, 2, kPuzzle12003, "TR_NI_RH_BP03S01", kImageTypeBMP, Common::Point(207, 134), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAdd(kObject10003, "Bike", "", 1);
 	_app->objectAddPresentation(kObject10003);
 	_app->objectPresentationAddImageToRotation(kObject10003, 0, 10003, 1);
@@ -271,15 +271,15 @@ void ZoneNIRing::onInit() {
 	_app->objectPresentationShow(kObject10003, 0);
 	_app->objectPresentationShow(kObject10003, 1);
 	_app->objectAdd(kObjectBrutality, "SP/Brutality", "NI_Brutality", 1);
-	_app->objectAddBagAnimation(kObjectBrutality, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectBrutality, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectBrutality, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectBrutality, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAdd(kObjectMinerals, "Minerals", "NI_Minerals", 1);
-	_app->objectAddBagAnimation(kObjectMinerals, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectMinerals, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectMinerals, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectMinerals, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAdd(kObjectGlug, "Glug", "NI_Glug", 1);
-	_app->objectAddBagAnimation(kObjectGlug, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectGlug, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectGlug, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectGlug, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectGlug, kPuzzle10000, Common::Rect(227, 206, 410, 394), true, kCursorHotspot, 0);
@@ -292,7 +292,7 @@ void ZoneNIRing::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectGlug, kPuzzle10001, Common::Rect(0, 420, 640, 464), true, kCursorBack, 4);
 	_app->objectAddPuzzleAccessibility(kObjectGlug, kPuzzle10002, Common::Rect(0, 420, 640, 464), true, kCursorBack, 4);
 	_app->objectAddPresentation(kObjectGlug);
-	_app->objectPresentationAddAnimationToPuzzle(kObjectGlug, 0, kPuzzle10002, "NIS00N01P01S01", kImageTypeBMP, Common::Point(203, 191), kDrawType1, 1000, 5, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObjectGlug, 0, kPuzzle10002, "NIS00N01P01S01", kImageTypeBMP, Common::Point(203, 191), kDrawTypeNormal, 1000, 5, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObjectGlug, 0, 0, 10000);
 	_app->objectAdd(kObject10110, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject10110, kPuzzle10100, Common::Rect(236, 79, 289, 118),  false, kCursorHotspot, 1);
@@ -307,31 +307,31 @@ void ZoneNIRing::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject10100, kPuzzle10100, Common::Rect(610, 66, 640, 414), true, kCursorMove, 0);
 	_app->objectAddRotationAccessibility(kObject10100, 10101, Common::Rect(3406, 26, 3541, 155), true, kCursorHotspot, 1);
 	_app->objectAddPresentation(kObject10100);
-	_app->objectPresentationAddImageToPuzzle(kObject10100, 0, kPuzzle10100, "NIS01N01P01L01.0001.bmp", Common::Point(101, 68), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10100, 0, kPuzzle10100, "NIS01N01P01L01.0001.bmp", Common::Point(101, 68), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10100);
-	_app->objectPresentationAddImageToPuzzle(kObject10100, 1, kPuzzle10100, "NIS01N01P01L02.0001.bmp", Common::Point(80, 63), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10100, 1, kPuzzle10100, "NIS01N01P01L02.0001.bmp", Common::Point(80, 63), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10100);
-	_app->objectPresentationAddImageToPuzzle(kObject10100, 2, kPuzzle10100, "NIS01N01P01L03.0001.bmp", Common::Point(116, 159), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10100, 2, kPuzzle10100, "NIS01N01P01L03.0001.bmp", Common::Point(116, 159), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject10101, "CCButton1", "", 2);
 	_app->objectAddRotationAccessibility(kObject10101, 10101, Common::Rect(3208, 109, 3322, 184), true, kCursorHotspot, 1);
 	_app->objectAddPuzzleAccessibility(kObject10101, kPuzzle10100, Common::Rect(359, 265, 440, 304), false, kCursorHotspot, 0);
 	_app->objectAddPuzzleAccessibility(kObject10101, kPuzzle10100, Common::Rect(359, 265, 440, 304), false, kCursorHotspot, 1);
 	_app->objectAddPresentation(kObject10101);
-	_app->objectPresentationAddImageToPuzzle(kObject10101, 0, kPuzzle10100, "NIS01N01P01S03.0001.bmp", Common::Point(361, 259), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10101, 0, kPuzzle10100, "NIS01N01P01S03.0001.bmp", Common::Point(361, 259), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10101);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 1, kPuzzle10100, "NIS01N01P01S01", kImageTypeBMP, Common::Point(85, 68), kDrawType1, 1000, 36, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 1, kPuzzle10100, "NIS01N01P01S01", kImageTypeBMP, Common::Point(85, 68), kDrawTypeNormal, 1000, 36, 12.5f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10101, 1, 0, 10101);
 	_app->objectAddPresentation(kObject10101);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 2, kPuzzle10100, "NIS01N01P01L02S01", kImageTypeBMP, Common::Point(80, 63), kDrawType1, 1000, 36, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 2, kPuzzle10100, "NIS01N01P01L02S01", kImageTypeBMP, Common::Point(80, 63), kDrawTypeNormal, 1000, 36, 12.5f, 10);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10101, 2, 0, 10103);
 	_app->objectAddPresentation(kObject10101);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 3, kPuzzle10100, "NIS01N01P01S01", kImageTypeBMP, Common::Point(85, 68), kDrawType1, 1000, 36, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 3, kPuzzle10100, "NIS01N01P01S01", kImageTypeBMP, Common::Point(85, 68), kDrawTypeNormal, 1000, 36, 12.5f, 10);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10101, 3, 0, 10100);
 	_app->objectAddPresentation(kObject10101);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 4, kPuzzle10100, "NIS01N01P01L02S01", kImageTypeBMP, Common::Point(80, 63), kDrawType1, 1000, 36, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10101, 4, kPuzzle10100, "NIS01N01P01L02S01", kImageTypeBMP, Common::Point(80, 63), kDrawTypeNormal, 1000, 36, 12.5f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10101, 4, 0, 10102);
 	_app->objectAddPresentation(kObject10101);
-	_app->objectPresentationAddImageToPuzzle(kObject10101, 5, kPuzzle10100, "NIS01N01P01S03.0003.bmp", Common::Point(361, 259), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10101, 5, kPuzzle10100, "NIS01N01P01S03.0003.bmp", Common::Point(361, 259), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10101);
 	_app->objectPresentationAddImageToRotation(kObject10101, 6, 10101, 0);
 	_app->objectPresentationAddImageToRotation(kObject10101, 6, 10102, 0);
@@ -340,18 +340,18 @@ void ZoneNIRing::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject10102, kPuzzle10100, Common::Rect(382, 308, 472, 352), true, kCursorHotspot, 0);
 	_app->objectAddPuzzleAccessibility(kObject10102, kPuzzle10100, Common::Rect(382, 308, 472, 352), true, kCursorHotspot, 1);
 	_app->objectAddPresentation(kObject10102);
-	_app->objectPresentationAddImageToPuzzle(kObject10102, 0, kPuzzle10100, "NIS01N01P01S03.0004.bmp", Common::Point(385, 299), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10102, 0, kPuzzle10100, "NIS01N01P01S03.0004.bmp", Common::Point(385, 299), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10102);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10102, 1, kPuzzle10100, "NIS01N01P01S02", kImageTypeBMP, Common::Point(40, 65), kDrawType1, 1000, 46, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10102, 1, kPuzzle10100, "NIS01N01P01S02", kImageTypeBMP, Common::Point(40, 65), kDrawTypeNormal, 1000, 46, 12.5f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10102, 1, 0, 10105);
 	_app->objectAddPresentation(kObject10102);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10102, 2, kPuzzle10100, "NIS01N01P01S02", kImageTypeBMP, Common::Point(40, 65), kDrawType1, 1000, 23, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10102, 2, kPuzzle10100, "NIS01N01P01S02", kImageTypeBMP, Common::Point(40, 65), kDrawTypeNormal, 1000, 23, 12.5f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10102, 2, 0, 10104);
 	_app->objectAddPresentation(kObject10102);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10102, 3, kPuzzle10100, "NIS01N01P01S02", kImageTypeBMP, Common::Point(40, 65), kDrawType1, 1000, 23, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10102, 3, kPuzzle10100, "NIS01N01P01S02", kImageTypeBMP, Common::Point(40, 65), kDrawTypeNormal, 1000, 23, 12.5f, 10);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10102, 3, 0, 10106);
 	_app->objectAddPresentation(kObject10102);
-	_app->objectPresentationAddImageToPuzzle(kObject10102, 4, kPuzzle10100, "NIS01N01P01S03.0002.bmp", Common::Point(385, 299), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10102, 4, kPuzzle10100, "NIS01N01P01S03.0002.bmp", Common::Point(385, 299), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject10103, "CCHandle", "NI_HandSel", 4);
 	_app->objectAddPuzzleAccessibility(kObject10103, kPuzzle10100, Common::Rect(497, 192, 543, 249), true, kCursorHandSelection, 1);
 	_app->objectSetActiveDrawCursor(kObject10103, Common::Point(15, 15), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
@@ -359,7 +359,7 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 14; i++) {
 		_app->objectAddPresentation(kObject10103);
-		_app->objectPresentationAddImageToPuzzle(kObject10103, i, kPuzzle10100, Common::String::format("NIS01N01P02S01.%04d.bmp", i + 1), Common::Point(504, 194), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10103, i, kPuzzle10100, Common::String::format("NIS01N01P02S01.%04d.bmp", i + 1), Common::Point(504, 194), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10104, "CCTileHold", "", 1);
@@ -372,17 +372,17 @@ void ZoneNIRing::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject10109, kPuzzle10100, Common::Rect(256, 235, 273, 250), false, kCursorHotspot, 4);
 	_app->objectAddPuzzleAccessibility(kObject10109, kPuzzle10100, Common::Rect(230, 257, 247, 272), false, kCursorHotspot, 5);
 	_app->objectAddPresentation(kObject10109);
-	_app->objectPresentationAddImageToPuzzle(kObject10109, 0, kPuzzle10100, "NIS01N01P01L02S02.0006.bmp", Common::Point(221, 196), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10109, 0, kPuzzle10100, "NIS01N01P01L02S02.0006.bmp", Common::Point(221, 196), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10109);
-	_app->objectPresentationAddImageToPuzzle(kObject10109, 1, kPuzzle10100, "NIS01N01P01L02S02.0001.bmp", Common::Point(221, 196), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10109, 1, kPuzzle10100, "NIS01N01P01L02S02.0001.bmp", Common::Point(221, 196), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10109);
-	_app->objectPresentationAddImageToPuzzle(kObject10109, 2, kPuzzle10100, "NIS01N01P01L02S02.0002.bmp", Common::Point(221, 196), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10109, 2, kPuzzle10100, "NIS01N01P01L02S02.0002.bmp", Common::Point(221, 196), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10109);
-	_app->objectPresentationAddImageToPuzzle(kObject10109, 3, kPuzzle10100, "NIS01N01P01L02S02.0003.bmp", Common::Point(221, 196), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10109, 3, kPuzzle10100, "NIS01N01P01L02S02.0003.bmp", Common::Point(221, 196), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10109);
-	_app->objectPresentationAddImageToPuzzle(kObject10109, 4, kPuzzle10100, "NIS01N01P01L02S02.0004.bmp", Common::Point(221, 196), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10109, 4, kPuzzle10100, "NIS01N01P01L02S02.0004.bmp", Common::Point(221, 196), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10109);
-	_app->objectPresentationAddImageToPuzzle(kObject10109, 5, kPuzzle10100, "NIS01N01P01L02S02.0005.bmp", Common::Point(221, 196), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10109, 5, kPuzzle10100, "NIS01N01P01L02S02.0005.bmp", Common::Point(221, 196), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject10105, "CCHolo", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject10105, kPuzzle10100, Common::Rect(77, 132, 340, 298),  false, kCursorHotspot, 0);
 	_app->objectAddPuzzleAccessibility(kObject10105, kPuzzle10100, Common::Rect(140, 170, 430, 380), false, kCursorHotspot, 0);
@@ -393,18 +393,18 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 20; i++) {
 		_app->objectAddPresentation(kObject10106);
-		_app->objectPresentationAddImageToPuzzle(kObject10106, i, kPuzzle10102, Common::String::format("NIS01N01P03L01S01.%04d.bmp", i + 1), Common::Point(213, 254), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10106, i, kPuzzle10102, Common::String::format("NIS01N01P03L01S01.%04d.bmp", i + 1), Common::Point(213, 254), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 20; i++) {
 		_app->objectAddPresentation(kObject10106);
-		_app->objectPresentationAddImageToPuzzle(kObject10106, i, kPuzzle10102, Common::String::format("NIS01N01P03L01S01_a.%04d.bmp", i + 1), Common::Point(213, 254), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10106, i, kPuzzle10102, Common::String::format("NIS01N01P03L01S01_a.%04d.bmp", i + 1), Common::Point(213, 254), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAddPresentation(kObject10106);
-	_app->objectPresentationAddImageToPuzzle(kObject10106, 38, kPuzzle10102, "NIS01N01P03L02.0001.bmp", Common::Point(267, 283), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10106, 38, kPuzzle10102, "NIS01N01P03L02.0001.bmp", Common::Point(267, 283), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10106);
-	_app->objectPresentationAddImageToPuzzle(kObject10106, 39, kPuzzle10102, "NIS01N01P03L01.0001.bmp", Common::Point(56, 139), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10106, 39, kPuzzle10102, "NIS01N01P03L01.0001.bmp", Common::Point(56, 139), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject10107, "CCHoloDam1", "NI_HandSel", 4);
 	_app->objectAddPuzzleAccessibility(kObject10107, kPuzzle10102, Common::Rect(295, 255, 345, 315), true,  kCursorHandSelection, 0);
 	_app->objectAddPuzzleAccessibility(kObject10107, kPuzzle10102, Common::Rect(295, 315, 345, 375), false, kCursorHandSelection, 1);
@@ -413,20 +413,20 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 15; i++) {
 		_app->objectAddPresentation(kObject10107);
-		_app->objectPresentationAddImageToPuzzle(kObject10107, i, kPuzzle10102, Common::String::format("NIS01N01P03L01S02.%04d.bmp", i + 1), Common::Point(302, 264), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10107, i, kPuzzle10102, Common::String::format("NIS01N01P03L01S02.%04d.bmp", i + 1), Common::Point(302, 264), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10200, "Speaker", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject10200, kPuzzle10200, Common::Rect(150, 110, 470, 200), true, kCursorHotspot, 0);
 	_app->objectAddPresentation(kObject10200);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 0, kPuzzle10202, "NIS02N01P03S01", kImageTypeBMP, Common::Point(229, 188), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 0, kPuzzle10202, "NIS02N01P03S01", kImageTypeBMP, Common::Point(229, 188), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAddPresentation(kObject10200);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 1, kPuzzle10203, "NIS02N01P02S01", kImageTypeBMP, Common::Point(197, 44), kDrawType1, 1000, 10, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 1, kPuzzle10203, "NIS02N01P02S01", kImageTypeBMP, Common::Point(197, 44), kDrawTypeNormal, 1000, 10, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10200, 1, 0, 10200);
 	_app->objectAddPresentation(kObject10200);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 2, kPuzzle10204, "NIS02N01P02S02", kImageTypeBMP, Common::Point(311, 166), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 2, kPuzzle10204, "NIS02N01P02S02", kImageTypeBMP, Common::Point(311, 166), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAddPresentation(kObject10200);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 3, kPuzzle10205, "NIS02N01P02S03", kImageTypeBMP, Common::Point(97, 185), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10200, 3, kPuzzle10205, "NIS02N01P02S03", kImageTypeBMP, Common::Point(97, 185), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAdd(kObject10201, "Handle", "NI_HandSel", 4);
 	_app->objectAddPuzzleAccessibility(kObject10201, kPuzzle10200, Common::Rect(300, 210, 430, 270), false, kCursorHandSelection, 0);
 	_app->objectSetActiveDrawCursor(kObject10201, Common::Point(15, 15), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
@@ -434,7 +434,7 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 15; i++) {
 		_app->objectAddPresentation(kObject10201);
-		_app->objectPresentationAddImageToPuzzle(kObject10201, i, kPuzzle10200, Common::String::format("NIS02N01P01S01.%04d.bmp", i + 1), Common::Point(305, 213), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10201, i, kPuzzle10200, Common::String::format("NIS02N01P01S01.%04d.bmp", i + 1), Common::Point(305, 213), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10300, "Mime", "", 1);
@@ -444,31 +444,31 @@ void ZoneNIRing::onInit() {
 	_app->objectPresentationSetAnimationOnRotation(kObject10300, 0, 0, 10300);
 	_app->objectPresentationShow(kObject10300, 0);
 	_app->objectAddPresentation(kObject10300);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10300, 1, kPuzzle10390, "NIS03N01P01S02", kImageTypeBMP, Common::Point(289, 79), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10300, 1, kPuzzle10390, "NIS03N01P01S02", kImageTypeBMP, Common::Point(289, 79), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAddPresentation(kObject10300);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10300, 2, kPuzzle10391, "NIS03N01P01S01", kImageTypeBMP, Common::Point(260, 73), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10300, 2, kPuzzle10391, "NIS03N01P01S01", kImageTypeBMP, Common::Point(260, 73), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAddPresentation(kObject10300);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10300, 3, kPuzzle10392, "NIS03N01P03S01", kImageTypeBMP, Common::Point(246, 183), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10300, 3, kPuzzle10392, "NIS03N01P03S01", kImageTypeBMP, Common::Point(246, 183), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAdd(kObjectLogeTear, "Loge's Tear", "NI_Tear", 1);
-	_app->objectAddBagAnimation(kObjectLogeTear, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectLogeTear, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectLogeTear, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectLogeTear, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectLogeTear, kPuzzle10300, Common::Rect(470, 254, 541, 328), true, kCursorHotspot, 0);
 	_app->objectAddPresentation(kObjectLogeTear);
-	_app->objectPresentationAddImageToPuzzle(kObjectLogeTear, 0, kPuzzle10300, "NIS03N01P02L02.0001.bmp", Common::Point(466, 249), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectLogeTear, 0, kPuzzle10300, "NIS03N01P02L02.0001.bmp", Common::Point(466, 249), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectLogeTear);
-	_app->objectPresentationAddAnimationToPuzzle(kObjectLogeTear, 1, kPuzzle10300, "NIS03N01P02S01", kImageTypeBMP, Common::Point(466, 250), kDrawType1, 1000, 21, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObjectLogeTear, 1, kPuzzle10300, "NIS03N01P02S01", kImageTypeBMP, Common::Point(466, 250), kDrawTypeNormal, 1000, 21, 12.5f, 4);
 	_app->objectPresentationShow(kObjectLogeTear, 1);
 	_app->objectAdd(kObjectGold, "Rhine Gold", "RhineGold", 1);
 	_app->objectAdd(kObjectTile, "Tile", "NI_Mosaic", 1);
-	_app->objectAddBagAnimation(kObjectTile, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectTile, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectTile, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectTile, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectTile, kPuzzle10300, Common::Rect(247, 24, 337, 126), true, kCursorHotspot, 0);
 	_app->objectAddPresentation(kObjectTile);
-	_app->objectPresentationAddImageToPuzzle(kObjectTile, 0, kPuzzle10300, "NIS03N01P02L01.0001.bmp", Common::Point(251, 45), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectTile, 0, kPuzzle10300, "NIS03N01P02L01.0001.bmp", Common::Point(251, 45), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectMagicFrog, "Frog", "NI_Frog", 1);
-	_app->objectAddBagAnimation(kObjectMagicFrog, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectMagicFrog, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectMagicFrog, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectMagicFrog, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectMagicFrog, kPuzzle10300, Common::Rect(300, 230, 430, 430), true, kCursorHotspot, 0);
@@ -478,11 +478,11 @@ void ZoneNIRing::onInit() {
 	_app->objectSetActiveDrawCursor(kObject10420, Common::Point(15, 15), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectSetPassiveDrawCursor(kObject10420, Common::Point(15, 15), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPresentation(kObject10420);
-	_app->objectPresentationAddImageToPuzzle(kObject10420, 0, kPuzzle10400, "NIS04N02P01L01S01.0012.bmp", Common::Point(257, 211), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10420, 0, kPuzzle10400, "NIS04N02P01L01S01.0012.bmp", Common::Point(257, 211), true, kDrawTypeNormal, 1000);
 
 	for (uint32 i = 1; i < 13; i++) {
 		_app->objectAddPresentation(kObject10420);
-		_app->objectPresentationAddImageToPuzzle(kObject10420, i, kPuzzle10400, Common::String::format("NIS04N02P01L01S01.%04d.bmp", i), Common::Point(257, 211), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10420, i, kPuzzle10400, Common::String::format("NIS04N02P01L01S01.%04d.bmp", i), Common::Point(257, 211), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10421, "RValve", "NI_HandSel", 4);
@@ -491,11 +491,11 @@ void ZoneNIRing::onInit() {
 	_app->objectSetActiveDrawCursor(kObject10421, Common::Point(15, 15), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectSetPassiveDrawCursor(kObject10421, Common::Point(15, 15), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPresentation(kObject10421);
-	_app->objectPresentationAddImageToPuzzle(kObject10421, 0, kPuzzle10401, "NIS04N02P02L01S01.0012.bmp", Common::Point(227, 204), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10421, 0, kPuzzle10401, "NIS04N02P02L01S01.0012.bmp", Common::Point(227, 204), true, kDrawTypeNormal, 1000);
 
 	for (uint32 i = 1; i < 13; i++) {
 		_app->objectAddPresentation(kObject10421);
-		_app->objectPresentationAddImageToPuzzle(kObject10421, i, kPuzzle10401, Common::String::format("NIS04N02P02L01S01.%04d.bmp", i), Common::Point(227, 204), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10421, i, kPuzzle10401, Common::String::format("NIS04N02P02L01S01.%04d.bmp", i), Common::Point(227, 204), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10430, "TearCasing", "", 3);
@@ -503,23 +503,23 @@ void ZoneNIRing::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject10430, kPuzzle10411, Common::Rect(224, 90, 362, 209),  false, kCursorHotspot, 1);
 	_app->objectAddPuzzleAccessibility(kObject10430, kPuzzle10411, Common::Rect(293, 241, 475, 462), false, kCursorHotspot, 2);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddImageToPuzzle(kObject10430, 0, kPuzzle10411, "NIS04N03P03L01.0001.bmp", Common::Point(214, 173), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10430, 0, kPuzzle10411, "NIS04N03P03L01.0001.bmp", Common::Point(214, 173), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddImageToPuzzle(kObject10430, 1, kPuzzle10411, "NIS04N03P03L02.0001.bmp", Common::Point(270, 116), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject10430, 1, kPuzzle10411, "NIS04N03P03L02.0001.bmp", Common::Point(270, 116), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 2, kPuzzle10411, "NIS04N03P03L01S01", kImageTypeBMP, Common::Point(217, 171), kDrawType1, 1000, 27, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 2, kPuzzle10411, "NIS04N03P03L01S01", kImageTypeBMP, Common::Point(217, 171), kDrawTypeNormal, 1000, 27, 12.5f, 10);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10430, 2, 0, 10422);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 3, kPuzzle10411, "NIS04N03P03L01S01", kImageTypeBMP, Common::Point(217, 171), kDrawType1, 1000, 27, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 3, kPuzzle10411, "NIS04N03P03L01S01", kImageTypeBMP, Common::Point(217, 171), kDrawTypeNormal, 1000, 27, 12.5f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10430, 3, 0, 10423);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 4, kPuzzle10411, "NIS04N03P03L02S01", kImageTypeBMP, Common::Point(215, 111), kDrawType1, 1000, 26, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 4, kPuzzle10411, "NIS04N03P03L02S01", kImageTypeBMP, Common::Point(215, 111), kDrawTypeNormal, 1000, 26, 12.5f, 10);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10430, 4, 0, 10424);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 5, kPuzzle10411, "NIS04N03P03L02S01", kImageTypeBMP, Common::Point(215, 111), kDrawType1, 1000, 26, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 5, kPuzzle10411, "NIS04N03P03L02S01", kImageTypeBMP, Common::Point(215, 111), kDrawTypeNormal, 1000, 26, 12.5f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject10430, 5, 0, 10425);
 	_app->objectAddPresentation(kObject10430);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 6, kPuzzle10411, "NIS04N03P03L02S02", kImageTypeBMP, Common::Point(275, 126), kDrawType1, 1000, 20, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10430, 6, kPuzzle10411, "NIS04N03P03L02S02", kImageTypeBMP, Common::Point(275, 126), kDrawTypeNormal, 1000, 20, 12.5f, 4);
 	_app->objectAdd(kObject10440, "Door", "", 1);
 	_app->objectAddRotationAccessibility(kObject10440, 10404, Common::Rect(2923, -370, 3549, 460), true, kCursorMove, 0);
 	_app->objectAdd(kObject10450, "Water", "", 1);
@@ -529,9 +529,9 @@ void ZoneNIRing::onInit() {
 	_app->objectAddRotationAccessibility(kObject10460, 10406, Common::Rect(0, -600, 3599, 600), true, kCursorMove, 1);
 	_app->objectAdd(kObject10432, "", "", 1);
 	_app->objectAddPresentation(kObject10432);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10432, 0, kPuzzle10410, "NIS04N03P01S02", kImageTypeBMP, Common::Point(171, 285), kDrawType1, 1000, 13, 10.0f, 32);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10432, 0, kPuzzle10410, "NIS04N03P01S03", kImageTypeBMP, Common::Point(244, 268), kDrawType1, 1000, 12, 10.0f, 32);
-	_app->objectPresentationAddAnimationToPuzzle(kObject10432, 0, kPuzzle10410, "NIS04N03P01S04", kImageTypeBMP, Common::Point(317, 261), kDrawType1, 1000, 7, 10.0f, 32);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10432, 0, kPuzzle10410, "NIS04N03P01S02", kImageTypeBMP, Common::Point(171, 285), kDrawTypeNormal, 1000, 13, 10.0f, 32);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10432, 0, kPuzzle10410, "NIS04N03P01S03", kImageTypeBMP, Common::Point(244, 268), kDrawTypeNormal, 1000, 12, 10.0f, 32);
+	_app->objectPresentationAddAnimationToPuzzle(kObject10432, 0, kPuzzle10410, "NIS04N03P01S04", kImageTypeBMP, Common::Point(317, 261), kDrawTypeNormal, 1000, 7, 10.0f, 32);
 	_app->objectAddPresentation(kObject10432);
 	_app->objectPresentationAddAnimationToRotation(kObject10432, 1, 10401, 0, 25, 12.5f, 6);
 	_app->objectPresentationAddAnimationToRotation(kObject10432, 1, 10402, 0, 26, 12.5f, 6);
@@ -543,22 +543,22 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 1; i < 13; i++) {
 		_app->objectAddPresentation(kObject10431);
-		_app->objectPresentationAddImageToPuzzle(kObject10431, i, kPuzzle10410, Common::String::format("NIS04N03P01S01.%04d.bmp", i + 1), Common::Point(107, 155), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10431, i, kPuzzle10410, Common::String::format("NIS04N03P01S01.%04d.bmp", i + 1), Common::Point(107, 155), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObjectDivingHelmet2, "Helmet&Frog", "NI_HelmetFrog", 1);
-	_app->objectAddBagAnimation(kObjectDivingHelmet2, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectDivingHelmet2, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectDivingHelmet2, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectDivingHelmet2, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAdd(kObjectDivingHelmet, "Helmet", "NI_Helmet", 1);
-	_app->objectAddBagAnimation(kObjectDivingHelmet, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectDivingHelmet, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectDivingHelmet, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectDivingHelmet, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectDivingHelmet, kPuzzle10501, Common::Rect(218, 249, 419, 346), true, kCursorHotspot, 0);
 	_app->objectAddPresentation(kObjectDivingHelmet);
-	_app->objectPresentationAddImageToPuzzle(kObjectDivingHelmet, 0, kPuzzle10501, "NIS05N01P01L02.0001.bmp", Common::Point(229, 252), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectDivingHelmet, 0, kPuzzle10501, "NIS05N01P01L02.0001.bmp", Common::Point(229, 252), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectAntiGCells, "AGCells", "RH_AntiG", 1);
-	_app->objectAddBagAnimation(kObjectAntiGCells, kImageTypeTGA, kDrawType3, 20, 12.5f, 4);
+	_app->objectAddBagAnimation(kObjectAntiGCells, kImageTypeTGA, kDrawTypeAlpha, 20, 12.5f, 4);
 	_app->objectSetActiveCursor(kObjectAntiGCells, Common::Point(22, 22), 20, kCursorTypeAnimated, 12.5f, 4, kLoadFromListIcon);
 	_app->objectSetPassiveCursor(kObjectAntiGCells, Common::Point(22, 22), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
 	_app->objectAddRotationAccessibility(kObjectAntiGCells, 10501, Common::Rect(2921, 68, 3185, 477), true, kCursorHotspot, 0);
@@ -571,7 +571,7 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 49; i++) {
 		_app->objectAddPresentation(kObject10601);
-		_app->objectPresentationAddImageToPuzzle(kObject10601, i, kPuzzle10600, Common::String::format("NIS06N01P01S01.%04d.bmp", i + 1), Common::Point(203, 82), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10601, i, kPuzzle10600, Common::String::format("NIS06N01P01S01.%04d.bmp", i + 1), Common::Point(203, 82), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10602, "UTile2", "NI_HandSel", 4);
@@ -581,7 +581,7 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 49; i++) {
 		_app->objectAddPresentation(kObject10602);
-		_app->objectPresentationAddImageToPuzzle(kObject10602, i, kPuzzle10600, Common::String::format("NIS06N01P01S02.%04d.bmp", i + 1), Common::Point(245, 211), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10602, i, kPuzzle10600, Common::String::format("NIS06N01P01S02.%04d.bmp", i + 1), Common::Point(245, 211), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject10603, "UTile3", "NI_HandSel", 4);
@@ -591,7 +591,7 @@ void ZoneNIRing::onInit() {
 
 	for (uint32 i = 0; i < 49; i++) {
 		_app->objectAddPresentation(kObject10603);
-		_app->objectPresentationAddImageToPuzzle(kObject10603, i, kPuzzle10600, Common::String::format("NIS06N01P01S03.%04d.bmp", i + 1), Common::Point(199, 272), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject10603, i, kPuzzle10600, Common::String::format("NIS06N01P01S03.%04d.bmp", i + 1), Common::Point(199, 272), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->soundAdd(14001, kSoundTypeBackgroundMusic, "1583.was", _app->getConfiguration().backgroundMusic.loadFrom, 2, _app->getConfiguration().backgroundMusic.soundChunck);

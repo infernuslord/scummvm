@@ -140,7 +140,7 @@ void Zone3Pompeii::onInit() {
 	_app->objectAdd(kObject20000, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject20000, 102112, Common::Rect(26, 63, 135, 222), false, kCursorIdle, 0);
 	_app->objectAddPresentation(kObject20000);
-	_app->objectPresentationAddImageToPuzzle(kObject20000, 0, kPuzzle10246, "s02a04n01p06l01.bmp", Common::Point(121, 197), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject20000, 0, kPuzzle10246, "s02a04n01p06l01.bmp", Common::Point(121, 197), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectStones, "Stones", "stones", 1);
 	_app->objectAddRotationAccessibility(kObjectStones, 10242, Common::Rect(555, 350, 731, 406), false, kCursorTake, 0);
 	_app->objectAddPresentation(kObjectStones);
@@ -156,10 +156,10 @@ void Zone3Pompeii::onInit() {
 	_app->objectPresentationAddImageToRotation(kObject20001, 0, 10243, 0);
 	_app->objectPresentationSetAnimationOnRotation(kObject20001, 0, 0, 20000);
 	_app->objectAddPresentation(kObject20001);
-	_app->objectPresentationAddAnimationToPuzzle(kObject20001, 1, kPuzzle10241, "s02a04n01p01s01", kImageTypeBMP, Common::Point(109, 111), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject20001, 1, kPuzzle10241, "s02a04n01p01s01", kImageTypeBMP, Common::Point(109, 111), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject20001, 1, 0, 20000);
 	_app->objectAddPresentation(kObject20001);
-	_app->objectPresentationAddAnimationToPuzzle(kObject20001, 2, kPuzzle10241, "s02a04n01p01s02", kImageTypeBMP, Common::Point(320, 48), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject20001, 2, kPuzzle10241, "s02a04n01p01s02", kImageTypeBMP, Common::Point(320, 48), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject20001, 2, 0, 20001);
 	_app->objectAdd(kObject20002, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject20002, 10241, Common::Rect(2097, -28, 2272, 261), false, kCursorActionObject, 0);
@@ -171,10 +171,10 @@ void Zone3Pompeii::onInit() {
 	_app->objectPresentationAddImageToRotation(kObject20002, 0, 10243, 1);
 	_app->objectPresentationSetAnimationOnRotation(kObject20002, 0, 0, 20000);
 	_app->objectAddPresentation(kObject20002);
-	_app->objectPresentationAddAnimationToPuzzle(kObject20002, 1, kPuzzle10245, "s02a04n01p05s01", kImageTypeBMP, Common::Point(485, 76), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject20002, 1, kPuzzle10245, "s02a04n01p05s01", kImageTypeBMP, Common::Point(485, 76), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject20002, 1, 0, 20000);
 	_app->objectAddPresentation(kObject20002);
-	_app->objectPresentationAddAnimationToPuzzle(kObject20002, 2, kPuzzle10245, "s02a04n01p05s02", kImageTypeBMP, Common::Point(44, 18), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject20002, 2, kPuzzle10245, "s02a04n01p05s02", kImageTypeBMP, Common::Point(44, 18), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject20002, 2, 0, 20001);
 	_app->objectAdd(kObject20006, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject20006, 10215, Common::Rect(344, -14, 509, 268), false, kCursorAction, 0);
@@ -197,10 +197,10 @@ void Zone3Pompeii::onInit() {
 	_app->objectPresentationAddImageToRotation(kObject20007, 0, 10243, 0);
 	_app->objectPresentationSetAnimationOnRotation(kObject20007, 0, 0, 20000);
 	_app->objectAddPresentation(kObject20007);
-	_app->objectPresentationAddAnimationToPuzzle(kObject20007, 1, kPuzzle10241, "s02a04n01p01s01", kImageTypeBMP, Common::Point(109, 111), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject20007, 1, kPuzzle10241, "s02a04n01p01s01", kImageTypeBMP, Common::Point(109, 111), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject20007, 1, 0, 20000);
 	_app->objectAddPresentation(kObject20007);
-	_app->objectPresentationAddAnimationToPuzzle(kObject20007, 2, kPuzzle10241, "s02a04n01p01s02", kImageTypeBMP, Common::Point(320, 48), kDrawType1, 1000, 29, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject20007, 2, kPuzzle10241, "s02a04n01p01s02", kImageTypeBMP, Common::Point(320, 48), kDrawTypeNormal, 1000, 29, 12.5f, 4);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject20007, 2, 0, 20001);
 	_app->objectAdd(kObject20009, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject20009, 10241, Common::Rect(330, 438, 478, 539), false, kCursorActionObject, 0);

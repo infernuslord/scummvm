@@ -263,7 +263,7 @@ void VisualObjectEncyclopedia::draw() {
 	}
 
 	// Cleanup after movie is done playing
-	if (_field_A4 && _movie->playNextFrame(_point, kDrawType3) == _frameCount)
+	if (_field_A4 && _movie->playNextFrame(_point, kDrawTypeAlpha) == _frameCount)
 		SAFE_DELETE(_movie);
 }
 
@@ -533,22 +533,22 @@ void VisualObjectEncyclopedia::init(const Common::String &name, ArchiveType arch
 	addHotspots();
 
 	// Create images
-	_imageArrowDown_dis = new ImageHandle("ENC_AR-2.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageArrowDown_dis = new ImageHandle("ENC_AR-2.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageArrowDown_dis->setDirectory(path);
-	_imageArrowDown_hlt = new ImageHandle("ENC_AR-2.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageArrowDown_hlt = new ImageHandle("ENC_AR-2.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageArrowDown_hlt->setDirectory(path);
-	_imageArrowDown_nor = new ImageHandle("ENC_AR-1.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageArrowDown_nor = new ImageHandle("ENC_AR-1.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageArrowDown_nor->setDirectory(path);
-	_imageArrowUp_dis = new ImageHandle("ENC_AR-1.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageArrowUp_dis = new ImageHandle("ENC_AR-1.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageArrowUp_dis->setDirectory(path);
-	_imageArrowUp_hlt = new ImageHandle("ENC_AR-3.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageArrowUp_hlt = new ImageHandle("ENC_AR-3.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageArrowUp_hlt->setDirectory(path);
-	_imageArrowUp_nor = new ImageHandle("ENC_AR-4.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageArrowUp_nor = new ImageHandle("ENC_AR-4.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageArrowUp_nor->setDirectory(path);
 
-	_imageSlide = new ImageHandle("ENC_SC-1.BMP", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageSlide = new ImageHandle("ENC_SC-1.BMP", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageSlide->setDirectory(path);
-	_imageSlider = new ImageHandle("ENC_SC-1.TGA", Common::Point(0, 0), true, kDrawType1, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_imageSlider = new ImageHandle("ENC_SC-1.TGA", Common::Point(0, 0), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_imageSlider->setDirectory(path);
 
 	_text = new Text();
@@ -1069,7 +1069,7 @@ void VisualObjectEncyclopedia::loadImage(uint32 entryIndex) {
 	else
 		path = "/IMAGE/";
 
-	_image7 = new ImageHandle(_entries[entryIndex]->getFilename(), Common::Point(10, 10), true, kDrawType1, 1000, 0, getApp()->getCurrentGameZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
+	_image7 = new ImageHandle(_entries[entryIndex]->getFilename(), Common::Point(10, 10), true, kDrawTypeNormal, 1000, 0, getApp()->getCurrentGameZone(), kLoadFromDisk, kImageTypeBackground, _archiveType);
 	_image7->setDirectory(path);
 
 	if (!_image7->getNameId().empty())

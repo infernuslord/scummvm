@@ -76,7 +76,7 @@ void CursorImage::alloc() {
 	if (!_image)
 		return;
 
-	if (!_image->load(getName(), _archiveType, getZoneSY(), kLoadFromDisk, kDrawType3))
+	if (!_image->load(getName(), _archiveType, getZoneSY(), kLoadFromDisk, kDrawTypeAlpha))
 		error("[CursorImage::alloc] Cannot load image (%s)", getName().c_str());
 
 	if (_image->getBPP() != 32) {
@@ -160,7 +160,7 @@ CursorAnimation::~CursorAnimation() {
 
 void CursorAnimation::init(CursorId id, Common::String name, CursorType cursorType, byte imageCount, uint32 frameCount, float frameRate, byte a7, LoadFrom loadFrom, ArchiveType archiveType) {
 	CursorBase::init(id, name, cursorType, imageCount);
-	AnimationImage::init(name, kImageTypeTGA, Common::Point(0, 0), 0, kDrawType3, frameCount, frameRate, 1, a7, imageCount, 0, loadFrom, archiveType);
+	AnimationImage::init(name, kImageTypeTGA, Common::Point(0, 0), 0, kDrawTypeAlpha, frameCount, frameRate, 1, a7, imageCount, 0, loadFrom, archiveType);
 	setTicks(g_system->getMillis());
 }
 

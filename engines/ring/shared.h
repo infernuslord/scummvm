@@ -251,9 +251,9 @@ enum ImageType {
 
 enum DrawType {
 	kDrawTypeInvalid    = 0,
-	kDrawType1          = 1,
+	kDrawTypeNormal     = 1,
 	kDrawType2          = 2,
-	kDrawType3          = 3
+	kDrawTypeAlpha      = 3
 };
 
 enum SoundLoopType {

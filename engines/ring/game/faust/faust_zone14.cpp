@@ -394,134 +394,134 @@ void Zone14Faust::onInit() {
 	_app->objectAddRotationAccessibility(kObject112011, 111206, Common::Rect(2742, 19, 2823, 101), true, kCursorActionObject, 0);
 	_app->objectAddPuzzleAccessibility(kObject112011, kPuzzle112001, Common::Rect(0, 420, 640, 464), true, kCursorBack, 9);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 0, kPuzzle112001, "a11s02n06p01s13", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 0, kPuzzle112001, "a11s02n06p01s13", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 1, kPuzzle112001, "a11s02n06p01s14", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 1, kPuzzle112001, "a11s02n06p01s14", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 2, kPuzzle112001, "a11s02n06p01s15", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 2, kPuzzle112001, "a11s02n06p01s15", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 3, kPuzzle112001, "a11s02n06p01s16", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 3, kPuzzle112001, "a11s02n06p01s16", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 4, kPuzzle112001, "a11s02n06p01s13", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 4, kPuzzle112001, "a11s02n06p01s13", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 5, kPuzzle112001, "a11s02n06p01s14", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 5, kPuzzle112001, "a11s02n06p01s14", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 6, kPuzzle112001, "a11s02n06p01s15", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 6, kPuzzle112001, "a11s02n06p01s15", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112011);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 7, kPuzzle112001, "a11s02n06p01s16", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1500, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112011, 7, kPuzzle112001, "a11s02n06p01s16", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1500, 10, 12.5f, 10);
 	_app->objectAdd(kObject112028, "", "", 1);
 	_app->objectAddPresentation(kObject112028);
-	_app->objectPresentationAddImageToPuzzle(kObject112028, 0, kPuzzle112001, "a11s02n06p01l13.bmp", Common::Point(264, 173), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112028, 0, kPuzzle112001, "a11s02n06p01l13.bmp", Common::Point(264, 173), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112028);
-	_app->objectPresentationAddImageToPuzzle(kObject112028, 1, kPuzzle112001, "a11s02n06p01l14.bmp", Common::Point(264, 173), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112028, 1, kPuzzle112001, "a11s02n06p01l14.bmp", Common::Point(264, 173), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject112015, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject112015, kPuzzle112001, Common::Rect(74, 59, 215, 143), true, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject112015, kPuzzle112001, Common::Rect(0, 201, 192, 311), false, kCursorAction, 1);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 0, kPuzzle112001, "a11s02n06p01s03", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 0, kPuzzle112001, "a11s02n06p01s03", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddImageToPuzzle(kObject112015, 1, kPuzzle112001, "a11s02n06p01s03.bmp", Common::Point(0, 38), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112015, 1, kPuzzle112001, "a11s02n06p01s03.bmp", Common::Point(0, 38), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 2, kPuzzle112001, "a11s02n06p01s03", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 2, kPuzzle112001, "a11s02n06p01s03", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 3, kPuzzle112001, "a11s02n06p01s04", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 3, kPuzzle112001, "a11s02n06p01s04", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddImageToPuzzle(kObject112015, 4, kPuzzle112001, "a11s02n06p01s04.bmp", Common::Point(0, 38), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112015, 4, kPuzzle112001, "a11s02n06p01s04.bmp", Common::Point(0, 38), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 5, kPuzzle112001, "a11s02n06p01s04", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 5, kPuzzle112001, "a11s02n06p01s04", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 6, kPuzzle112001, "a11s02n06p01s05", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 6, kPuzzle112001, "a11s02n06p01s05", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddImageToPuzzle(kObject112015, 7, kPuzzle112001, "a11s02n06p01s05.bmp", Common::Point(0, 38), true, kDrawType1, 1000);
-	_app->objectPresentationAddImageToPuzzle(kObject112015, 7, kPuzzle112005, "a11s02n06p01s05.bmp", Common::Point(0, 38), true, kDrawType1, 500);
+	_app->objectPresentationAddImageToPuzzle(kObject112015, 7, kPuzzle112001, "a11s02n06p01s05.bmp", Common::Point(0, 38), true, kDrawTypeNormal, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112015, 7, kPuzzle112005, "a11s02n06p01s05.bmp", Common::Point(0, 38), true, kDrawTypeNormal, 500);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 8, kPuzzle112001, "a11s02n06p01s05", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 8, kPuzzle112001, "a11s02n06p01s05", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 9, kPuzzle112001, "a11s02n06p01s06", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 9, kPuzzle112001, "a11s02n06p01s06", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddImageToPuzzle(kObject112015, 10, kPuzzle112001, "a11s02n06p01s06.bmp", Common::Point(0, 38), true, kDrawType1, 1000);
-	_app->objectPresentationAddImageToPuzzle(kObject112015, 10, kPuzzle112005, "a11s02n06p01s06.bmp", Common::Point(0, 38), true, kDrawType1, 500);
+	_app->objectPresentationAddImageToPuzzle(kObject112015, 10, kPuzzle112001, "a11s02n06p01s06.bmp", Common::Point(0, 38), true, kDrawTypeNormal, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112015, 10, kPuzzle112005, "a11s02n06p01s06.bmp", Common::Point(0, 38), true, kDrawTypeNormal, 500);
 	_app->objectAddPresentation(kObject112015);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 11, kPuzzle112001, "a11s02n06p01s06", kImageTypeBMP, Common::Point(0, 38), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112015, 11, kPuzzle112001, "a11s02n06p01s06", kImageTypeBMP, Common::Point(0, 38), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAdd(kObject112014, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject112014, kPuzzle112001, Common::Rect(110, 185, 225, 252), true, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject112014, kPuzzle112001, Common::Rect(20, 340, 208, 422), false, kCursorAction, 1);
 	_app->objectAddPresentation(kObject112014);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 0, kPuzzle112001, "a11s02n06p01s01", kImageTypeBMP, Common::Point(14, 166), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 0, kPuzzle112001, "a11s02n06p01s01", kImageTypeBMP, Common::Point(14, 166), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112014);
-	_app->objectPresentationAddImageToPuzzle(kObject112014, 1, kPuzzle112001, "a11s02n06p01s01.bmp", Common::Point(14, 166), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112014, 1, kPuzzle112001, "a11s02n06p01s01.bmp", Common::Point(14, 166), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112014);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 2, kPuzzle112001, "a11s02n06p01s01", kImageTypeBMP, Common::Point(14, 166), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 2, kPuzzle112001, "a11s02n06p01s01", kImageTypeBMP, Common::Point(14, 166), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112014);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 3, kPuzzle112001, "a11s02n06p01s02", kImageTypeBMP, Common::Point(14, 166), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 3, kPuzzle112001, "a11s02n06p01s02", kImageTypeBMP, Common::Point(14, 166), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112014);
-	_app->objectPresentationAddImageToPuzzle(kObject112014, 4, kPuzzle112001, "a11s02n06p01s02.bmp", Common::Point(14, 166), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112014, 4, kPuzzle112001, "a11s02n06p01s02.bmp", Common::Point(14, 166), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112014);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 5, kPuzzle112001, "a11s02n06p01s02", kImageTypeBMP, Common::Point(14, 166), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112014, 5, kPuzzle112001, "a11s02n06p01s02", kImageTypeBMP, Common::Point(14, 166), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAdd(kObject112016, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject112016, kPuzzle112001, Common::Rect(246, 54, 390, 146), true, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject112016, kPuzzle112001, Common::Rect(217, 197, 409, 303), false, kCursorAction, 1);
 	_app->objectAddPresentation(kObject112016);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 0, kPuzzle112001, "a11s02n06p01s07", kImageTypeBMP, Common::Point(199, 39), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 0, kPuzzle112001, "a11s02n06p01s07", kImageTypeBMP, Common::Point(199, 39), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112016);
-	_app->objectPresentationAddImageToPuzzle(kObject112016, 1, kPuzzle112001, "a11s02n06p01s07.bmp", Common::Point(199, 39), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112016, 1, kPuzzle112001, "a11s02n06p01s07.bmp", Common::Point(199, 39), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112016);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 2, kPuzzle112001, "a11s02n06p01s07", kImageTypeBMP, Common::Point(199, 39), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 2, kPuzzle112001, "a11s02n06p01s07", kImageTypeBMP, Common::Point(199, 39), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112016);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 3, kPuzzle112001, "a11s02n06p01s07a", kImageTypeBMP, Common::Point(199, 39), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 3, kPuzzle112001, "a11s02n06p01s07a", kImageTypeBMP, Common::Point(199, 39), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112016);
-	_app->objectPresentationAddImageToPuzzle(kObject112016, 4, kPuzzle112001, "a11s02n06p01s07.bmp", Common::Point(199, 39), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112016, 4, kPuzzle112001, "a11s02n06p01s07.bmp", Common::Point(199, 39), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112016);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 5, kPuzzle112001, "a11s02n06p01s07a", kImageTypeBMP, Common::Point(199, 39), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112016, 5, kPuzzle112001, "a11s02n06p01s07a", kImageTypeBMP, Common::Point(199, 39), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAdd(kObject112017, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject112017, kPuzzle112001, Common::Rect(430, 59, 560, 147), true, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject112017, kPuzzle112001, Common::Rect(471, 205, 632, 292), false, kCursorAction, 1);
 	_app->objectAddPresentation(kObject112017);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 0, kPuzzle112001, "a11s02n06p01s08", kImageTypeBMP, Common::Point(411, 41), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 0, kPuzzle112001, "a11s02n06p01s08", kImageTypeBMP, Common::Point(411, 41), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112017);
-	_app->objectPresentationAddImageToPuzzle(kObject112017, 1, kPuzzle112001, "a11s02n06p01s08.bmp", Common::Point(411, 41), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112017, 1, kPuzzle112001, "a11s02n06p01s08.bmp", Common::Point(411, 41), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112017);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 2, kPuzzle112001, "a11s02n06p01s08", kImageTypeBMP, Common::Point(411, 41), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 2, kPuzzle112001, "a11s02n06p01s08", kImageTypeBMP, Common::Point(411, 41), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112017);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 3, kPuzzle112001, "a11s02n06p01s09", kImageTypeBMP, Common::Point(411, 41), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 3, kPuzzle112001, "a11s02n06p01s09", kImageTypeBMP, Common::Point(411, 41), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112017);
-	_app->objectPresentationAddImageToPuzzle(kObject112017, 4, kPuzzle112001, "a11s02n06p01s09.bmp", Common::Point(411, 41), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112017, 4, kPuzzle112001, "a11s02n06p01s09.bmp", Common::Point(411, 41), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject112017);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 5, kPuzzle112001, "a11s02n06p01s09", kImageTypeBMP, Common::Point(411, 41), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112017, 5, kPuzzle112001, "a11s02n06p01s09", kImageTypeBMP, Common::Point(411, 41), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAdd(kObject112018, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject112018, kPuzzle112001, Common::Rect(425, 187, 528, 261), true, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject112018, kPuzzle112001, Common::Rect(418, 238, 562, 321), false, kCursorAction, 1);
 	_app->objectAddPuzzleAccessibility(kObject112018, kPuzzle112001, Common::Rect(431, 338, 617, 415), false, kCursorAction, 1);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 0, kPuzzle112001, "a11s02n06p01s10", kImageTypeBMP, Common::Point(399, 163), kDrawType1, 1100, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 0, kPuzzle112001, "a11s02n06p01s10", kImageTypeBMP, Common::Point(399, 163), kDrawTypeNormal, 1100, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddImageToPuzzle(kObject112018, 1, kPuzzle112001, "a11s02n06p01s10.bmp", Common::Point(399, 163), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject112018, 1, kPuzzle112001, "a11s02n06p01s10.bmp", Common::Point(399, 163), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 2, kPuzzle112001, "a11s02n06p01s10", kImageTypeBMP, Common::Point(399, 163), kDrawType1, 1100, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 2, kPuzzle112001, "a11s02n06p01s10", kImageTypeBMP, Common::Point(399, 163), kDrawTypeNormal, 1100, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 3, kPuzzle112001, "a11s02n06p01s11a", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 3, kPuzzle112001, "a11s02n06p01s11a", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddImageToPuzzle(kObject112018, 4, kPuzzle112001, "a11s02n06p01s11.bmp", Common::Point(399, 156), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject112018, 4, kPuzzle112001, "a11s02n06p01s11.bmp", Common::Point(399, 156), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 5, kPuzzle112001, "a11s02n06p01s11a", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 5, kPuzzle112001, "a11s02n06p01s11a", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 6, kPuzzle112001, "a11s02n06p01s12a", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 6, kPuzzle112001, "a11s02n06p01s12a", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddImageToPuzzle(kObject112018, 7, kPuzzle112001, "a11s02n06p01s12.bmp", Common::Point(399, 156), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject112018, 7, kPuzzle112001, "a11s02n06p01s12.bmp", Common::Point(399, 156), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 8, kPuzzle112001, "a11s02n06p01s12a", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 8, kPuzzle112001, "a11s02n06p01s12a", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 9, kPuzzle112001, "a11s02n06p01s11", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 9, kPuzzle112001, "a11s02n06p01s11", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddImageToPuzzle(kObject112018, 10, kPuzzle112001, "a11s02n06p01s11.bmp", Common::Point(399, 156), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject112018, 10, kPuzzle112001, "a11s02n06p01s11.bmp", Common::Point(399, 156), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 11, kPuzzle112001, "a11s02n06p01s11", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 11, kPuzzle112001, "a11s02n06p01s11", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 12, kPuzzle112001, "a11s02n06p01s12", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 12, kPuzzle112001, "a11s02n06p01s12", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddImageToPuzzle(kObject112018, 13, kPuzzle112001, "a11s02n06p01s12.bmp", Common::Point(399, 156), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject112018, 13, kPuzzle112001, "a11s02n06p01s12.bmp", Common::Point(399, 156), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject112018);
-	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 14, kPuzzle112001, "a11s02n06p01s12", kImageTypeBMP, Common::Point(399, 156), kDrawType1, 1100, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject112018, 14, kPuzzle112001, "a11s02n06p01s12", kImageTypeBMP, Common::Point(399, 156), kDrawTypeNormal, 1100, 10, 12.5f, 10);
 	_app->objectAdd(kObject112027, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject112027, kPuzzle112001, Common::Rect(281, 108, 346, 194), false, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject112027, kPuzzle112002, Common::Rect(100,  50, 540, 410), false, kCursorZoom, 5);
@@ -531,8 +531,8 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectGeologicalSurveyMap, kPuzzle112001, Common::Rect(521, 362, 568, 442), true, kCursorTake, 0);
 	_app->objectAddRotationAccessibility(kObjectGeologicalSurveyMap, 111401, Common::Rect(1703, 36, 1850, 176), true, kCursorZoom, 1);
 	_app->objectAddPresentation(kObjectGeologicalSurveyMap);
-	_app->objectPresentationAddImageToPuzzle(kObjectGeologicalSurveyMap, 0, kPuzzle112001, "a11s02n06p01l15.bmp", Common::Point(522, 351), true, kDrawType1, 1000);
-	_app->objectPresentationAddImageToPuzzle(kObjectGeologicalSurveyMap, 0, kPuzzle112005, "a11s02n06p01l15.bmp", Common::Point(522, 351), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectGeologicalSurveyMap, 0, kPuzzle112001, "a11s02n06p01l15.bmp", Common::Point(522, 351), true, kDrawTypeNormal, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectGeologicalSurveyMap, 0, kPuzzle112005, "a11s02n06p01l15.bmp", Common::Point(522, 351), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject112001, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject112001, 111206, Common::Rect(1657, -48, 1691, -27), true, kCursorIdle, 0);
 	_app->objectAddRotationAccessibility(kObject112001, 111206, Common::Rect(1655,   5, 1692,  24), true, kCursorIdle, 1);
@@ -583,7 +583,7 @@ void Zone14Faust::onInit() {
 	_app->objectSetPassiveCursor(kObjectSealingRing, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectSealingRing, kPuzzle112001, Common::Rect(132, 102, 185, 153), false, kCursorTake, 0);
 	_app->objectAddPresentation(kObjectSealingRing);
-	_app->objectPresentationAddImageToPuzzle(kObjectSealingRing, 0, kPuzzle112005, "a11s02n06p09l01.tga", Common::Point(188, 96), true, kDrawType3, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectSealingRing, 0, kPuzzle112005, "a11s02n06p09l01.tga", Common::Point(188, 96), true, kDrawTypeAlpha, 1000);
 	_app->objectAdd(kObjectMagnifyingGlass2, "Magnifying glass", "a11_MagGlass", 1);
 	_app->objectSetActiveCursor(kObjectMagnifyingGlass2, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectMagnifyingGlass2, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -610,16 +610,16 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectTape1, kPuzzle112010, Common::Rect(423, 145, 467, 184), true, kCursorMenuActive, 2);
 	_app->objectAddPuzzleAccessibility(kObjectTape1, kPuzzle112010, Common::Rect(394, 155, 431, 190), false, kCursorMenuActive, 3);
 	_app->objectAddPresentation(kObjectTape1);
-	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 0, kPuzzle112010, "a11s02n06p05l03.bmp", Common::Point(253, 211), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 0, kPuzzle112010, "a11s02n06p05l03.bmp", Common::Point(253, 211), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectTape1);
-	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 1, kPuzzle112010, "a11s02n06p05l02.bmp", Common::Point(379, 54), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 1, kPuzzle112010, "a11s02n06p05l02.bmp", Common::Point(379, 54), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectTape1);
-	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 2, kPuzzle112010, "a11s02n06p05l01.bmp", Common::Point(334, 318), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 2, kPuzzle112010, "a11s02n06p05l01.bmp", Common::Point(334, 318), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectTape1);
-	_app->objectPresentationAddAnimationToPuzzle(kObjectTape1, 3, kPuzzle112010, "a11s02n06p05s01", kImageTypeBMP, Common::Point(278, 63), kDrawType1, 1000, 20, 12.5f, 8);
-	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 3, kPuzzle112010, "a11s02n06p05l04.bmp", Common::Point(424, 147), true, kDrawType1, 1100);
+	_app->objectPresentationAddAnimationToPuzzle(kObjectTape1, 3, kPuzzle112010, "a11s02n06p05s01", kImageTypeBMP, Common::Point(278, 63), kDrawTypeNormal, 1000, 20, 12.5f, 8);
+	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 3, kPuzzle112010, "a11s02n06p05l04.bmp", Common::Point(424, 147), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObjectTape1);
-	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 4, kPuzzle112010, "a11s02n06p05l05.bmp", Common::Point(394, 152), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObjectTape1, 4, kPuzzle112010, "a11s02n06p05l05.bmp", Common::Point(394, 152), true, kDrawTypeNormal, 1100);
 	_app->objectAdd(kObjectTape2, "Tape 2", "a11_Tape", 1);
 	_app->objectSetActiveCursor(kObjectTape2, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectTape2, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -646,11 +646,11 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectMatches3, kPuzzle112014, Common::Rect(276, 121, 358, 202), true, kCursorTake, 1);
 	_app->objectAddPuzzleAccessibility(kObjectMatches3, kPuzzle112014, Common::Rect(357, 185, 470, 275), true, kCursorTake, 1);
 	_app->objectAddPresentation(kObjectMatches3);
-	_app->objectPresentationAddImageToPuzzle(kObjectMatches3, 0, kPuzzle112014, "a11s02n06p02l02.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMatches3, 0, kPuzzle112014, "a11s02n06p02l02.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectMatches3);
-	_app->objectPresentationAddImageToPuzzle(kObjectMatches3, 1, kPuzzle112014, "a11s02n06p02l03.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMatches3, 1, kPuzzle112014, "a11s02n06p02l03.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectMatches3);
-	_app->objectPresentationAddImageToPuzzle(kObjectMatches3, 2, kPuzzle112014, "a11s02n06p02l04.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMatches3, 2, kPuzzle112014, "a11s02n06p02l04.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectPipe, "Pipe", "a11_Pipe", 1);
 	_app->objectSetActiveCursor(kObjectPipe, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectPipe, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -676,7 +676,7 @@ void Zone14Faust::onInit() {
 	_app->objectAddRotationAccessibility(kObject112032, 111205, Common::Rect(128, -12, 235, 137), true, kCursorZoom, 2);
 	_app->objectAddPuzzleAccessibility(kObject112032, kPuzzle112011, Common::Rect(72, 82, 560, 398), false, kCursorZoom, 3);
 	_app->objectAddPresentation(kObject112032);
-	_app->objectPresentationAddImageToPuzzle(kObject112032, 0, kPuzzle112011, "a11s02n05p04l01.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject112032, 0, kPuzzle112011, "a11s02n05p04l01.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject114201, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject114201, 111401, Common::Rect(1678, -115, 1886, 296), true, kCursorAction, 0);
 	_app->objectAddRotationAccessibility(kObject114201, 111401, Common::Rect(1699,   35, 1863, 173), true, kCursorAction, 1);
@@ -693,7 +693,7 @@ void Zone14Faust::onInit() {
 	_app->objectPresentationAddImageToRotation(kObject114201, 4, 111401, 7);
 	_app->objectAddPresentation(kObject114201);
 	_app->objectPresentationAddImageToRotation(kObject114201, 5, 111401, 0);
-	_app->objectPresentationAddImageToPuzzle(kObject114201, 5, kPuzzle114032, "a11s04n01p13l01.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114201, 5, kPuzzle114032, "a11s04n01p13l01.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject114001, "", "CUR_DRAG", 4);
 	_app->objectSetActiveDrawCursor(kObject114001, Common::Point(15, 15), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveDrawCursor(kObject114001, Common::Point(15, 15), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -720,28 +720,28 @@ void Zone14Faust::onInit() {
 
 	for (uint32 i = 0; i < 36; i++) {
 		_app->objectAddPresentation(kObject114002);
-		_app->objectPresentationAddImageToPuzzle(kObject114002, i, kPuzzle114001, Common::String::format("a11s04n01p01s01.%04d.bmp", i + 1), Common::Point(251, 286), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114002, i, kPuzzle114001, Common::String::format("a11s04n01p01s01.%04d.bmp", i + 1), Common::Point(251, 286), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114003, "", "", 1);
 
 	for (uint32 i = 0; i < 36; i++) {
 		_app->objectAddPresentation(kObject114003);
-		_app->objectPresentationAddImageToPuzzle(kObject114003, i, kPuzzle114002, Common::String::format("a11s04n01p02s01.%04d.bmp", i + 1), Common::Point(256, 287), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114003, i, kPuzzle114002, Common::String::format("a11s04n01p02s01.%04d.bmp", i + 1), Common::Point(256, 287), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114004, "", "", 1);
 
 	for (uint32 i = 0; i < 36; i++) {
 		_app->objectAddPresentation(kObject114004);
-		_app->objectPresentationAddImageToPuzzle(kObject114004, i, kPuzzle114003, Common::String::format("a11s04n01p03s01.%04d.bmp", i + 1), Common::Point(253, 288), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114004, i, kPuzzle114003, Common::String::format("a11s04n01p03s01.%04d.bmp", i + 1), Common::Point(253, 288), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114005, "", "", 1);
 
 	for (uint32 i = 0; i < 36; i++) {
 		_app->objectAddPresentation(kObject114005);
-		_app->objectPresentationAddImageToPuzzle(kObject114005, i, kPuzzle114004, Common::String::format("a11s04n01p04s01.%04d.bmp", i + 1), Common::Point(250, 289), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114005, i, kPuzzle114004, Common::String::format("a11s04n01p04s01.%04d.bmp", i + 1), Common::Point(250, 289), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114006, "", "", 1);
@@ -757,28 +757,28 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject114006, kPuzzle114005, Common::Rect(  0, 420, 640, 464), true, kCursorBack, 99);
 	_app->objectAddPuzzleAccessibility(kObject114006, kPuzzle114034, Common::Rect(245, 167, 355, 261), true, kCursorActionObject, 2);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddImageToPuzzle(kObject114006, 0, kPuzzle114005, "a11s04n01p05l01.bmp", Common::Point(260, 95), true, kDrawType1, 800);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 0, kPuzzle114005, "a11s04n01p05s01", kImageTypeBMP, Common::Point(245, 88), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddImageToPuzzle(kObject114006, 0, kPuzzle114005, "a11s04n01p05l01.bmp", Common::Point(260, 95), true, kDrawTypeNormal, 800);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 0, kPuzzle114005, "a11s04n01p05s01", kImageTypeBMP, Common::Point(245, 88), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 1, kPuzzle114005, "a11s04n01p05s01", kImageTypeBMP, Common::Point(245, 88), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 1, kPuzzle114005, "a11s04n01p05s01", kImageTypeBMP, Common::Point(245, 88), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddImageToPuzzle(kObject114006, 2, kPuzzle114005, "a11s04n01p05l01.bmp", Common::Point(260, 95), true, kDrawType1, 200);
-	_app->objectPresentationAddImageToPuzzle(kObject114006, 2, kPuzzle114005, "a11s04n01p05l02.bmp", Common::Point(280, 219), true, kDrawType1, 300);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 2, kPuzzle114005, "a11s04n01p05s02", kImageTypeBMP, Common::Point(245, 88), kDrawType1, 1000, 10, 12.5f, 6);
+	_app->objectPresentationAddImageToPuzzle(kObject114006, 2, kPuzzle114005, "a11s04n01p05l01.bmp", Common::Point(260, 95), true, kDrawTypeNormal, 200);
+	_app->objectPresentationAddImageToPuzzle(kObject114006, 2, kPuzzle114005, "a11s04n01p05l02.bmp", Common::Point(280, 219), true, kDrawTypeNormal, 300);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 2, kPuzzle114005, "a11s04n01p05s02", kImageTypeBMP, Common::Point(245, 88), kDrawTypeNormal, 1000, 10, 12.5f, 6);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 3, kPuzzle114005, "a11s04n01p05s02", kImageTypeBMP, Common::Point(245, 88), kDrawType1, 1000, 10, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 3, kPuzzle114005, "a11s04n01p05s02", kImageTypeBMP, Common::Point(245, 88), kDrawTypeNormal, 1000, 10, 12.5f, 10);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddImageToPuzzle(kObject114006, 4, kPuzzle114005, "a11s04n01p05l02.bmp", Common::Point(280, 219), true, kDrawType1, 800);
+	_app->objectPresentationAddImageToPuzzle(kObject114006, 4, kPuzzle114005, "a11s04n01p05l02.bmp", Common::Point(280, 219), true, kDrawTypeNormal, 800);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddImageToPuzzle(kObject114006, 5, kPuzzle114005, "a11s04n01p05l03.bmp", Common::Point(59, 29), true, kDrawType1, 800);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 5, kPuzzle114005, "a11s04n01p05s03", kImageTypeBMP, Common::Point(62, 16), kDrawType1, 1000, 15, 12.5f, 6);
+	_app->objectPresentationAddImageToPuzzle(kObject114006, 5, kPuzzle114005, "a11s04n01p05l03.bmp", Common::Point(59, 29), true, kDrawTypeNormal, 800);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 5, kPuzzle114005, "a11s04n01p05s03", kImageTypeBMP, Common::Point(62, 16), kDrawTypeNormal, 1000, 15, 12.5f, 6);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 6, kPuzzle114005, "a11s04n01p05s03", kImageTypeBMP, Common::Point(62, 16), kDrawType1, 1000, 15, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 6, kPuzzle114005, "a11s04n01p05s03", kImageTypeBMP, Common::Point(62, 16), kDrawTypeNormal, 1000, 15, 12.5f, 10);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddImageToPuzzle(kObject114006, 7, kPuzzle114005, "a11s04n01p05l04.bmp", Common::Point(132, 19), true, kDrawType1, 800);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 7, kPuzzle114005, "a11s04n01p05s04", kImageTypeBMP, Common::Point(131, 16), kDrawType1, 1000, 15, 12.5f, 6);
+	_app->objectPresentationAddImageToPuzzle(kObject114006, 7, kPuzzle114005, "a11s04n01p05l04.bmp", Common::Point(132, 19), true, kDrawTypeNormal, 800);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 7, kPuzzle114005, "a11s04n01p05s04", kImageTypeBMP, Common::Point(131, 16), kDrawTypeNormal, 1000, 15, 12.5f, 6);
 	_app->objectAddPresentation(kObject114006);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 8, kPuzzle114005, "a11s04n01p05s04", kImageTypeBMP, Common::Point(131, 16), kDrawType1, 1000, 15, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114006, 8, kPuzzle114005, "a11s04n01p05s04", kImageTypeBMP, Common::Point(131, 16), kDrawTypeNormal, 1000, 15, 12.5f, 10);
 	_app->objectAdd(kObject22, "", "", 3);
 	_app->objectAddPuzzleAccessibility(kObject22, kPuzzleMenu, Common::Rect(253, 233, 383, 354), false, kCursorAction, 0);
 	_app->objectAddPuzzleAccessibility(kObject22, kPuzzleMenu, Common::Rect(355, 241, 390, 280), false, kCursorDefault, 2);
@@ -804,49 +804,49 @@ void Zone14Faust::onInit() {
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114010);
-		_app->objectPresentationAddImageToPuzzle(kObject114010, i, kPuzzle114006, Common::String::format("a11s04n01p06s01.%04d.bmp", i + 1), Common::Point(267, 77), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114010, i, kPuzzle114006, Common::String::format("a11s04n01p06s01.%04d.bmp", i + 1), Common::Point(267, 77), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114011, "", "", 1);
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114011);
-		_app->objectPresentationAddImageToPuzzle(kObject114011, i, kPuzzle114006, Common::String::format("a11s04n01p06s02.%04d.bmp", i + 1), Common::Point(268, 124), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114011, i, kPuzzle114006, Common::String::format("a11s04n01p06s02.%04d.bmp", i + 1), Common::Point(268, 124), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114012, "", "", 1);
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114012);
-		_app->objectPresentationAddImageToPuzzle(kObject114012, i, kPuzzle114006, Common::String::format("a11s04n01p06s03.%04d.bmp", i + 1), Common::Point(269, 172), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114012, i, kPuzzle114006, Common::String::format("a11s04n01p06s03.%04d.bmp", i + 1), Common::Point(269, 172), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114013, "", "", 1);
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114013);
-		_app->objectPresentationAddImageToPuzzle(kObject114013, i, kPuzzle114006, Common::String::format("a11s04n01p06s04.%04d.bmp", i + 1), Common::Point(269, 219), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114013, i, kPuzzle114006, Common::String::format("a11s04n01p06s04.%04d.bmp", i + 1), Common::Point(269, 219), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114014, "", "", 1);
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114014);
-		_app->objectPresentationAddImageToPuzzle(kObject114014, i, kPuzzle114006, Common::String::format("a11s04n01p06s05.%04d.bmp", i + 1), Common::Point(271, 267), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114014, i, kPuzzle114006, Common::String::format("a11s04n01p06s05.%04d.bmp", i + 1), Common::Point(271, 267), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114015, "", "", 1);
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114015);
-		_app->objectPresentationAddImageToPuzzle(kObject114015, i, kPuzzle114006, Common::String::format("a11s04n01p06s06.%04d.bmp", i + 1), Common::Point(270, 312), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114015, i, kPuzzle114006, Common::String::format("a11s04n01p06s06.%04d.bmp", i + 1), Common::Point(270, 312), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114016, "", "", 1);
 
 	for (uint32 i = 0; i < 10; i++) {
 		_app->objectAddPresentation(kObject114016);
-		_app->objectPresentationAddImageToPuzzle(kObject114016, i, kPuzzle114006, Common::String::format("a11s04n01p06s07.%04d.bmp", i + 1), Common::Point(270, 358), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114016, i, kPuzzle114006, Common::String::format("a11s04n01p06s07.%04d.bmp", i + 1), Common::Point(270, 358), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114020, "", "", 1);
@@ -869,15 +869,15 @@ void Zone14Faust::onInit() {
 	_app->objectAddRotationAccessibility(kObject114020, 111405, Common::Rect(2972, -170, 3200, 373), true, kCursorZoom, 3);
 	_app->objectAddRotationAccessibility(kObject114020, 111405, Common::Rect(3244, -169, 3433, 362), true, kCursorZoom, 4);
 	_app->objectAddPresentation(kObject114020);
-	_app->objectPresentationAddImageToPuzzle(kObject114020, 0, kPuzzle114008, "a11s04n01p08l01.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114020, 0, kPuzzle114008, "a11s04n01p08l01.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114020);
-	_app->objectPresentationAddImageToPuzzle(kObject114020, 1, kPuzzle114008, "a11s04n01p08l02.bmp", Common::Point(21, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114020, 1, kPuzzle114008, "a11s04n01p08l02.bmp", Common::Point(21, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114020);
-	_app->objectPresentationAddImageToPuzzle(kObject114020, 2, kPuzzle114009, "a11s04n01p10l01.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114020, 2, kPuzzle114009, "a11s04n01p10l01.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114020);
-	_app->objectPresentationAddImageToPuzzle(kObject114020, 3, kPuzzle114009, "a11s04n01p10l02.bmp", Common::Point(345, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114020, 3, kPuzzle114009, "a11s04n01p10l02.bmp", Common::Point(345, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114020);
-	_app->objectPresentationAddImageToPuzzle(kObject114020, 4, kPuzzle114008, "a11s04n01p08l06.bmp", Common::Point(423, 358), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114020, 4, kPuzzle114008, "a11s04n01p08l06.bmp", Common::Point(423, 358), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject114021, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject114021, kPuzzle114009, Common::Rect(157,  57, 238,  90), false, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject114021, kPuzzle114010, Common::Rect(187, 148, 454, 333), true, kCursorZoom, 1);
@@ -890,13 +890,13 @@ void Zone14Faust::onInit() {
 	_app->objectAddRotationAccessibility(kObject114027, 111406, Common::Rect(1938, -220, 2582, 355), false, kCursorZoom, 2);
 	_app->objectAddPuzzleAccessibility(kObject114027, kPuzzle114017, Common::Rect(100, 50, 540, 410), false, kCursorZoom, 5);
 	_app->objectAddPresentation(kObject114027);
-	_app->objectPresentationAddImageToPuzzle(kObject114027, 0, kPuzzle114017, "a11s04n02p03l01.bmp", Common::Point(249, 252), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114027, 0, kPuzzle114017, "a11s04n02p03l01.bmp", Common::Point(249, 252), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114027);
-	_app->objectPresentationAddImageToPuzzle(kObject114027, 1, kPuzzle114017, "a11s04n02p03l02.bmp", Common::Point(101, 162), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114027, 1, kPuzzle114017, "a11s04n02p03l02.bmp", Common::Point(101, 162), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114027);
-	_app->objectPresentationAddImageToPuzzle(kObject114027, 2, kPuzzle114017, "a11s04n02p03l03.bmp", Common::Point(196, 193), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114027, 2, kPuzzle114017, "a11s04n02p03l03.bmp", Common::Point(196, 193), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114027);
-	_app->objectPresentationAddImageToPuzzle(kObject114027, 3, kPuzzle114017, "a11s04n02p03l04.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114027, 3, kPuzzle114017, "a11s04n02p03l04.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectPresentationShow(kObject114027, 0);
 	_app->objectAdd(kObject114316, "", "CUR_DRAG", 4);
 	_app->objectSetActiveDrawCursor(kObject114316, Common::Point(15, 15), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -931,67 +931,67 @@ void Zone14Faust::onInit() {
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114317);
-		_app->objectPresentationAddImageToPuzzle(kObject114317, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 1, i + 1), Common::Point(139, 76), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114317, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 1, i + 1), Common::Point(139, 76), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114318);
-		_app->objectPresentationAddImageToPuzzle(kObject114318, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 2, i + 1), Common::Point(234, 79), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114318, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 2, i + 1), Common::Point(234, 79), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114319);
-		_app->objectPresentationAddImageToPuzzle(kObject114319, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 3, i + 1), Common::Point(331, 71), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114319, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 3, i + 1), Common::Point(331, 71), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114320);
-		_app->objectPresentationAddImageToPuzzle(kObject114320, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 4, i + 1), Common::Point(440, 61), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114320, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 4, i + 1), Common::Point(440, 61), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114321);
-		_app->objectPresentationAddImageToPuzzle(kObject114321, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 5, i + 1), Common::Point(124, 194), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114321, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 5, i + 1), Common::Point(124, 194), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114322);
-		_app->objectPresentationAddImageToPuzzle(kObject114322, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 6, i + 1), Common::Point(224, 200), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114322, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 6, i + 1), Common::Point(224, 200), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114323);
-		_app->objectPresentationAddImageToPuzzle(kObject114323, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 7, i + 1), Common::Point(337, 197), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114323, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 7, i + 1), Common::Point(337, 197), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114324);
-		_app->objectPresentationAddImageToPuzzle(kObject114324, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 8, i + 1), Common::Point(451, 186), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114324, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 8, i + 1), Common::Point(451, 186), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114325);
-		_app->objectPresentationAddImageToPuzzle(kObject114325, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 9, i + 1), Common::Point(51, 298), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114325, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 9, i + 1), Common::Point(51, 298), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114326);
-		_app->objectPresentationAddImageToPuzzle(kObject114326, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 10, i + 1), Common::Point(152, 312), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114326, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 10, i + 1), Common::Point(152, 312), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114327);
-		_app->objectPresentationAddImageToPuzzle(kObject114327, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 11, i + 1), Common::Point(278, 315), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114327, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 11, i + 1), Common::Point(278, 315), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114328);
-		_app->objectPresentationAddImageToPuzzle(kObject114328, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 12, i + 1), Common::Point(403, 313), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114328, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 12, i + 1), Common::Point(403, 313), true, kDrawTypeNormal, 1000);
 	}
 
 	for (uint32 i = 0; i < 10; i++)  {
 		_app->objectAddPresentation(kObject114329);
-		_app->objectPresentationAddImageToPuzzle(kObject114329, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 13, i + 1), Common::Point(529, 298), true, kDrawType1, 1000);
+		_app->objectPresentationAddImageToPuzzle(kObject114329, i, kPuzzle114016, Common::String::format("a11s04n02p02s%02d.%04d.bmp", 13, i + 1), Common::Point(529, 298), true, kDrawTypeNormal, 1000);
 	}
 
 	_app->objectAdd(kObject114028, "", "", 1);
@@ -1014,7 +1014,7 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectHandle2, kPuzzle114033, Common::Rect(269, 207, 406, 315), false, kCursorTake, 0);
 	_app->objectAddRotationAccessibility(kObjectHandle2, 111103, Common::Rect(490, 120, 541, 190), true, kCursorActionObject, 1);
 	_app->objectAddPresentation(kObjectHandle2);
-	_app->objectPresentationAddImageToPuzzle(kObjectHandle2, 0, kPuzzle114033, "a11s02n05p08l02.bmp", Common::Point(240, 167), true, kDrawType1, 2000);
+	_app->objectPresentationAddImageToPuzzle(kObjectHandle2, 0, kPuzzle114033, "a11s02n05p08l02.bmp", Common::Point(240, 167), true, kDrawTypeNormal, 2000);
 	_app->objectAddPresentation(kObjectHandle2);
 	_app->objectPresentationAddImageToRotation(kObjectHandle2, 1, 111103, 0);
 	_app->objectPresentationAddImageToRotation(kObjectHandle2, 1, 111103, 1);
@@ -1040,7 +1040,7 @@ void Zone14Faust::onInit() {
 	_app->objectAdd(kObject114507, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject114507, kPuzzle114033, Common::Rect(269, 207, 406, 315), true, kCursorTake, 0);
 	_app->objectAddPresentation(kObject114507);
-	_app->objectPresentationAddImageToPuzzle(kObject114507, 0, kPuzzle114033, "a11s02n05p08l01.bmp", Common::Point(246, 193), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114507, 0, kPuzzle114033, "a11s02n05p08l01.bmp", Common::Point(246, 193), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114507);
 	_app->objectAdd(kObjectMoonMilk, "Moon Milk", "a11_MoonMilk", 1);
 	_app->objectSetActiveCursor(kObjectMoonMilk, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -1048,7 +1048,7 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectMoonMilk, kPuzzle114019, Common::Rect(211, 303, 313, 357), true, kCursorTake, 0);
 	_app->objectAddPuzzleAccessibility(kObjectMoonMilk, kPuzzle114031, Common::Rect(276, 376, 377, 416), true, kCursorZoom, 1);
 	_app->objectAddPresentation(kObjectMoonMilk);
-	_app->objectPresentationAddImageToPuzzle(kObjectMoonMilk, 0, kPuzzle114019, "a11s01n03p01l01.bmp", Common::Point(196, 300), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMoonMilk, 0, kPuzzle114019, "a11s01n03p01l01.bmp", Common::Point(196, 300), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectMonocular, "Monocular", "a11_Monocular", 1);
 	_app->objectSetActiveCursor(kObjectMonocular, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectMonocular, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -1062,9 +1062,9 @@ void Zone14Faust::onInit() {
 	_app->objectPresentationAddImageToRotation(kObjectMonocular, 0, 111108, 2);
 	_app->objectPresentationAddImageToRotation(kObjectMonocular, 0, 111109, 1);
 	_app->objectAddPresentation(kObjectMonocular);
-	_app->objectPresentationAddImageToPuzzle(kObjectMonocular, 1, kPuzzle114021, "a11s01n08p02l01.bmp", Common::Point(101, 74), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMonocular, 1, kPuzzle114021, "a11s01n08p02l01.bmp", Common::Point(101, 74), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectMonocular);
-	_app->objectPresentationAddImageToPuzzle(kObjectMonocular, 2, kPuzzle114021, "a11s01n08p03.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMonocular, 2, kPuzzle114021, "a11s01n08p03.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectPresentationShow(kObjectMonocular, 1);
 	_app->objectAdd(kObject114512, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject114512, kPuzzle114020, Common::Rect(300, 180, 450, 270), true, kCursorIdle, 0);
@@ -1082,9 +1082,9 @@ void Zone14Faust::onInit() {
 	_app->objectAddPresentation(kObject114510);
 	_app->objectPresentationAddImageToRotation(kObject114510, 1, 111108, 1);
 	_app->objectAddPresentation(kObject114510);
-	_app->objectPresentationAddImageToPuzzle(kObject114510, 2, kPuzzle114020, "a11s01n08p01l01.bmp", Common::Point(294, 158), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject114510, 2, kPuzzle114020, "a11s01n08p01l01.bmp", Common::Point(294, 158), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject114510);
-	_app->objectPresentationAddImageToPuzzle(kObject114510, 3, kPuzzle114020, "a11s01n08p01l02.bmp", Common::Point(263, 157), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114510, 3, kPuzzle114020, "a11s01n08p01l02.bmp", Common::Point(263, 157), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectMagnesium, "Magnesia", "a11_Magnesia", 1);
 	_app->objectSetActiveCursor(kObjectMagnesium, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectMagnesium, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -1095,9 +1095,9 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectHandle3, kPuzzle114022, Common::Rect(272, 198, 332, 258), true, kCursorTake, 0);
 	_app->objectAddPuzzleAccessibility(kObjectHandle3, kPuzzle114022, Common::Rect(272, 198, 332, 258), false, kCursorTake, 1);
 	_app->objectAddPresentation(kObjectHandle3);
-	_app->objectPresentationAddImageToPuzzle(kObjectHandle3, 0, kPuzzle114022, "a11s01n07p01l01.bmp", Common::Point(272, 198), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectHandle3, 0, kPuzzle114022, "a11s01n07p01l01.bmp", Common::Point(272, 198), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectHandle3);
-	_app->objectPresentationAddImageToPuzzle(kObjectHandle3, 1, kPuzzle114022, "a11s01n07p01l02.bmp", Common::Point(272, 198), true, kDrawType1, 900);
+	_app->objectPresentationAddImageToPuzzle(kObjectHandle3, 1, kPuzzle114022, "a11s01n07p01l02.bmp", Common::Point(272, 198), true, kDrawTypeNormal, 900);
 	_app->objectPresentationShow(kObjectHandle3);
 	_app->objectAdd(kObjectSulphur, "Sulphur", "a11_Sulphur", 1);
 	_app->objectSetActiveCursor(kObjectSulphur, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -1116,13 +1116,13 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject114516, kPuzzle114023, Common::Rect(379, 331, 477, 423), true, kCursorZoom, 0);
 	_app->objectAddPuzzleAccessibility(kObject114516, kPuzzle114023, Common::Rect(90, 24, 335, 238), false, kCursorAction, 1);
 	_app->objectAddPresentation(kObject114516);
-	_app->objectPresentationAddImageToPuzzle(kObject114516, 0, kPuzzle114023, "a11s01n06p01l01.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114516, 0, kPuzzle114023, "a11s01n06p01l01.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114516);
-	_app->objectPresentationAddImageToPuzzle(kObject114516, 1, kPuzzle114023, "a11s01n06p01l02.bmp", Common::Point(237, 316), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject114516, 1, kPuzzle114023, "a11s01n06p01l02.bmp", Common::Point(237, 316), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject114516);
-	_app->objectPresentationAddImageToPuzzle(kObject114516, 2, kPuzzle114023, "a11s01n06p01l03.bmp", Common::Point(353, 300), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject114516, 2, kPuzzle114023, "a11s01n06p01l03.bmp", Common::Point(353, 300), true, kDrawTypeNormal, 1100);
 	_app->objectAddPresentation(kObject114516);
-	_app->objectPresentationAddImageToPuzzle(kObject114516, 3, kPuzzle114023, "a11s01n06p01l02.bmp", Common::Point(237, 316), true, kDrawType1, 1100);
+	_app->objectPresentationAddImageToPuzzle(kObject114516, 3, kPuzzle114023, "a11s01n06p01l02.bmp", Common::Point(237, 316), true, kDrawTypeNormal, 1100);
 	_app->objectAdd(kObject114515, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject114515, 111106, Common::Rect(458, -64, 555, 150), true, kCursorActionObject, 0);
 	_app->objectAddRotationAccessibility(kObject114515, 111106, Common::Rect(458, -64, 555, 150), false, kCursorAction, 1);
@@ -1151,29 +1151,29 @@ void Zone14Faust::onInit() {
 	_app->objectPresentationShow(kObject1, 0);
 	_app->objectAdd(kObject114529, "", "", 1);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 0, kPuzzle114028, "a11s03n01p02l21.bmp", Common::Point(285, 349), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 0, kPuzzle114028, "a11s03n01p02l21.bmp", Common::Point(285, 349), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 1, kPuzzle114028, "a11s03n01p02l22.bmp", Common::Point(284, 389), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 1, kPuzzle114028, "a11s03n01p02l22.bmp", Common::Point(284, 389), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 2, kPuzzle114028, "a11s03n01p02l23.bmp", Common::Point(283, 396), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 2, kPuzzle114028, "a11s03n01p02l23.bmp", Common::Point(283, 396), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 3, kPuzzle114028, "a11s03n01p02l24.bmp", Common::Point(284, 357), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 3, kPuzzle114028, "a11s03n01p02l24.bmp", Common::Point(284, 357), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 4, kPuzzle114028, "a11s03n01p02l25.bmp", Common::Point(278, 381), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 4, kPuzzle114028, "a11s03n01p02l25.bmp", Common::Point(278, 381), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 5, kPuzzle114028, "a11s03n01p02l26.bmp", Common::Point(287, 373), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 5, kPuzzle114028, "a11s03n01p02l26.bmp", Common::Point(287, 373), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 6, kPuzzle114028, "a11s03n01p02l27.bmp", Common::Point(291, 373), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 6, kPuzzle114028, "a11s03n01p02l27.bmp", Common::Point(291, 373), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddImageToPuzzle(kObject114529, 7, kPuzzle114028, "a11s03n01p02l28.bmp", Common::Point(291, 377), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114529, 7, kPuzzle114028, "a11s03n01p02l28.bmp", Common::Point(291, 377), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 8, kPuzzle114028, "a11s03n01p02s11", kImageTypeBMP, Common::Point(181, 292), kDrawType1, 2000, 6, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 8, kPuzzle114028, "a11s03n01p02s11", kImageTypeBMP, Common::Point(181, 292), kDrawTypeNormal, 2000, 6, 12.5f, 6);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 9, kPuzzle114028, "a11s03n01p02s12", kImageTypeBMP, Common::Point(217, 353), kDrawType1, 2000, 6, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 9, kPuzzle114028, "a11s03n01p02s12", kImageTypeBMP, Common::Point(217, 353), kDrawTypeNormal, 2000, 6, 12.5f, 6);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 10, kPuzzle114028, "a11s03n01p02s13", kImageTypeBMP, Common::Point(373, 364), kDrawType1, 2000, 6, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 10, kPuzzle114028, "a11s03n01p02s13", kImageTypeBMP, Common::Point(373, 364), kDrawTypeNormal, 2000, 6, 12.5f, 6);
 	_app->objectAddPresentation(kObject114529);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 11, kPuzzle114028, "a11s03n01p02s14", kImageTypeBMP, Common::Point(431, 319), kDrawType1, 2000, 6, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114529, 11, kPuzzle114028, "a11s03n01p02s14", kImageTypeBMP, Common::Point(431, 319), kDrawTypeNormal, 2000, 6, 12.5f, 6);
 	_app->objectAdd(kObject114525, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject114525, kPuzzle114028, Common::Rect(273, 157, 355, 206), true, kCursorAction, 0);
 	_app->objectAddPuzzleAccessibility(kObject114525, kPuzzle114028, Common::Rect(393,  42, 461, 125), false, kCursorActionObject, 1);
@@ -1188,55 +1188,55 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject114525, kPuzzle114028, Common::Rect(291, 305, 332, 337), false, kCursorActionObject, 10);
 	_app->objectAddPuzzleAccessibility(kObject114525, kPuzzle114028, Common::Rect(273, 157, 355, 206), false, kCursorActionObject, 11);
 	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114525, 0, kPuzzle114028, "a11s03n01p02s01", kImageTypeBMP, Common::Point(127, 44), kDrawType1, 900, 28, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114525, 0, kPuzzle114028, "a11s03n01p02s01", kImageTypeBMP, Common::Point(127, 44), kDrawTypeNormal, 900, 28, 12.5f, 4);
 	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114525, 1, kPuzzle114028, "a11s03n01p02s02", kImageTypeBMP, Common::Point(127, 44), kDrawType1, 900, 28, 12.5f, 4);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 4, kPuzzle114028, "a11s03n01p02l01.bmp", Common::Point(253, 264), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 5, kPuzzle114028, "a11s03n01p02l02.bmp", Common::Point(253, 264), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 6, kPuzzle114028, "a11s03n01p02l03.bmp", Common::Point(253, 264), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 7, kPuzzle114028, "a11s03n01p02l04.bmp", Common::Point(309, 269), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 8, kPuzzle114028, "a11s03n01p02l05.bmp", Common::Point(309, 269), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 9, kPuzzle114028, "a11s03n01p02l06.bmp", Common::Point(309, 269), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 10, kPuzzle114028, "a11s03n01p02l07.bmp", Common::Point(342, 265), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 11, kPuzzle114028, "a11s03n01p02l08.bmp", Common::Point(342, 265), true, kDrawType1, 1000);
-	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 12, kPuzzle114028, "a11s03n01p02l09.bmp", Common::Point(342, 265), true, kDrawType1, 1000);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114525, 1, kPuzzle114028, "a11s03n01p02s02", kImageTypeBMP, Common::Point(127, 44), kDrawTypeNormal, 900, 28, 12.5f, 4);
 	_app->objectAddPresentation(kObject114525);
 	_app->objectAddPresentation(kObject114525);
 	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 4, kPuzzle114028, "a11s03n01p02l01.bmp", Common::Point(253, 264), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 16, kPuzzle114028, "a11s03n01p02l14.bmp", Common::Point(380, 315), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 5, kPuzzle114028, "a11s03n01p02l02.bmp", Common::Point(253, 264), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114525);
-	_app->objectPresentationAddImageToPuzzle(kObject114525, 17, kPuzzle114028, "a11s03n01p02l10.bmp", Common::Point(296, 302), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 6, kPuzzle114028, "a11s03n01p02l03.bmp", Common::Point(253, 264), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 7, kPuzzle114028, "a11s03n01p02l04.bmp", Common::Point(309, 269), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 8, kPuzzle114028, "a11s03n01p02l05.bmp", Common::Point(309, 269), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 9, kPuzzle114028, "a11s03n01p02l06.bmp", Common::Point(309, 269), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 10, kPuzzle114028, "a11s03n01p02l07.bmp", Common::Point(342, 265), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 11, kPuzzle114028, "a11s03n01p02l08.bmp", Common::Point(342, 265), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 12, kPuzzle114028, "a11s03n01p02l09.bmp", Common::Point(342, 265), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 16, kPuzzle114028, "a11s03n01p02l14.bmp", Common::Point(380, 315), true, kDrawTypeNormal, 1000);
+	_app->objectAddPresentation(kObject114525);
+	_app->objectPresentationAddImageToPuzzle(kObject114525, 17, kPuzzle114028, "a11s03n01p02l10.bmp", Common::Point(296, 302), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectRockSalt, "Rock Salt", "a11_SaltRock", 1);
 	_app->objectSetActiveCursor(kObjectRockSalt, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectRockSalt, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectRockSalt, kPuzzle114027, Common::Rect(386, 220, 456, 320), true, kCursorTake, 0);
 	_app->objectAddPresentation(kObjectRockSalt);
-	_app->objectPresentationAddImageToPuzzle(kObjectRockSalt, 0, kPuzzle114027, "a11s03n01p01l02.bmp", Common::Point(378, 217), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectRockSalt, 0, kPuzzle114027, "a11s03n01p01l02.bmp", Common::Point(378, 217), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectSaltOfTheWise, "Salt of the wise", "a11_SaltWise", 1);
 	_app->objectSetActiveCursor(kObjectSaltOfTheWise, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectSaltOfTheWise, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectSaltOfTheWise, kPuzzle114027, Common::Rect(457, 220, 536, 320), true, kCursorTake, 0);
 	_app->objectAddPresentation(kObjectSaltOfTheWise);
-	_app->objectPresentationAddImageToPuzzle(kObjectSaltOfTheWise, 0, kPuzzle114027, "a11s03n01p01l03.bmp", Common::Point(455, 219), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectSaltOfTheWise, 0, kPuzzle114027, "a11s03n01p01l03.bmp", Common::Point(455, 219), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObjectCommonSalt, "Common Salt", "a11_SaltComm", 1);
 	_app->objectSetActiveCursor(kObjectCommonSalt, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectCommonSalt, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectAddPuzzleAccessibility(kObjectCommonSalt, kPuzzle114027, Common::Rect(136, 220, 208, 320), true, kCursorTake, 0);
 	_app->objectAddPuzzleAccessibility(kObjectCommonSalt, kPuzzle114027, Common::Rect(0, 420, 640, 464), true, kCursorBack, 9);
 	_app->objectAddPresentation(kObjectCommonSalt);
-	_app->objectPresentationAddImageToPuzzle(kObjectCommonSalt, 0, kPuzzle114027, "a11s03n01p01l01.bmp", Common::Point(125, 216), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectCommonSalt, 0, kPuzzle114027, "a11s03n01p01l01.bmp", Common::Point(125, 216), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject114522, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject114522, 111301, Common::Rect(2877, -80, 3067,  97), true, kCursorZoom, 0);
 	_app->objectAddRotationAccessibility(kObject114522, 111301, Common::Rect(3100, -81, 3295, 102), true, kCursorZoom, 1);
@@ -1275,9 +1275,9 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectSunSpirit, kPuzzle114026, Common::Rect(449, 81, 502, 144), true, kCursorTake, 0);
 	_app->objectAddPuzzleAccessibility(kObjectSunSpirit, kPuzzle114026, Common::Rect(312, 358, 358, 401), true, kCursorTake, 1);
 	_app->objectAddPresentation(kObjectSunSpirit);
-	_app->objectPresentationAddImageToPuzzle(kObjectSunSpirit, 0, kPuzzle114026, "a11s04n02p04l01.bmp", Common::Point(306, 348), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectSunSpirit, 0, kPuzzle114026, "a11s04n02p04l01.bmp", Common::Point(306, 348), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectSunSpirit);
-	_app->objectPresentationAddAnimationToPuzzle(kObjectSunSpirit, 1, kPuzzle114026, "a11s04n02p04s01", kImageTypeBMP, Common::Point(436, 62), kDrawType1, 1000, 16, 12.5f, 4);
+	_app->objectPresentationAddAnimationToPuzzle(kObjectSunSpirit, 1, kPuzzle114026, "a11s04n02p04s01", kImageTypeBMP, Common::Point(436, 62), kDrawTypeNormal, 1000, 16, 12.5f, 4);
 	_app->objectPresentationShow(kObjectSunSpirit, 0);
 	_app->objectPresentationShow(kObjectSunSpirit, 1);
 	_app->objectAdd(kObjectLead, "Lead", "a11_Lead", 1);
@@ -1287,30 +1287,30 @@ void Zone14Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObjectLead, kPuzzle114024, Common::Rect(  0, 420, 640, 464), true, kCursorBack, 9);
 	_app->objectAdd(kObject114521, "", "", 1);
 	_app->objectAddPresentation(kObject114521);
-	_app->objectPresentationAddImageToPuzzle(kObject114521, 0, kPuzzle114024, "a11s04n02p01l01.bmp", Common::Point(302, 238), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114521, 0, kPuzzle114024, "a11s04n02p01l01.bmp", Common::Point(302, 238), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114521);
-	_app->objectPresentationAddImageToPuzzle(kObject114521, 1, kPuzzle114024, "a11s04n02p01l02.bmp", Common::Point(0, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114521, 1, kPuzzle114024, "a11s04n02p01l02.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject114521);
-	_app->objectPresentationAddImageToPuzzle(kObject114521, 2, kPuzzle114024, "a11s04n02p01l03.bmp", Common::Point(276, 16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114521, 2, kPuzzle114024, "a11s04n02p01l03.bmp", Common::Point(276, 16), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject114520, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject114520, kPuzzle114015, Common::Rect(198, 293, 323, 343), true, kCursorActionObject, 0);
 	_app->objectAddPuzzleAccessibility(kObject114520, kPuzzle114015, Common::Rect(182, 129, 229, 177), false, kCursorAction, 1);
 	_app->objectAddPuzzleAccessibility(kObject114520, kPuzzle114015, Common::Rect(264, 132, 306, 175), false, kCursorAction, 2);
 	_app->objectAddPuzzleAccessibility(kObject114520, kPuzzle114015, Common::Rect(  0, 420, 640, 464), true, kCursorBack, 9);
 	_app->objectAddPresentation(kObject114520);
-	_app->objectPresentationAddImageToPuzzle(kObject114520, 0, kPuzzle114015, "a11s04n01p07l01.bmp", Common::Point(0, 18), true, kDrawType1, 900);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 0, kPuzzle114015, "a11s04n01p07s01", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1000, 16, 12.5f, 6);
+	_app->objectPresentationAddImageToPuzzle(kObject114520, 0, kPuzzle114015, "a11s04n01p07l01.bmp", Common::Point(0, 18), true, kDrawTypeNormal, 900);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 0, kPuzzle114015, "a11s04n01p07s01", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1000, 16, 12.5f, 6);
 	_app->objectAddPresentation(kObject114520);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 1, kPuzzle114015, "a11s04n01p07s01", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1000, 16, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 1, kPuzzle114015, "a11s04n01p07s01", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1000, 16, 12.5f, 10);
 	_app->objectAddPresentation(kObject114520);
-	_app->objectPresentationAddImageToPuzzle(kObject114520, 2, kPuzzle114015, "a11s04n01p07l02.bmp", Common::Point(0, 16), true, kDrawType1, 900);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 2, kPuzzle114015, "a11s04n01p07s02", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1000, 16, 12.5f, 6);
+	_app->objectPresentationAddImageToPuzzle(kObject114520, 2, kPuzzle114015, "a11s04n01p07l02.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 900);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 2, kPuzzle114015, "a11s04n01p07s02", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1000, 16, 12.5f, 6);
 	_app->objectAddPresentation(kObject114520);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 3, kPuzzle114015, "a11s04n01p07s02", kImageTypeBMP, Common::Point(0, 16), kDrawType1, 1000, 16, 12.5f, 10);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114520, 3, kPuzzle114015, "a11s04n01p07s02", kImageTypeBMP, Common::Point(0, 16), kDrawTypeNormal, 1000, 16, 12.5f, 10);
 	_app->objectAddPresentation(kObject114520);
-	_app->objectPresentationAddImageToPuzzle(kObject114520, 4, kPuzzle114015, "a11s04n01p07l02.bmp", Common::Point(0, 16), true, kDrawType1, 900);
+	_app->objectPresentationAddImageToPuzzle(kObject114520, 4, kPuzzle114015, "a11s04n01p07l02.bmp", Common::Point(0, 16), true, kDrawTypeNormal, 900);
 	_app->objectAddPresentation(kObject114520);
-	_app->objectPresentationAddImageToPuzzle(kObject114520, 5, kPuzzle114015, "a11s04n01p07l01.bmp", Common::Point(0, 18), true, kDrawType1, 900);
+	_app->objectPresentationAddImageToPuzzle(kObject114520, 5, kPuzzle114015, "a11s04n01p07l01.bmp", Common::Point(0, 18), true, kDrawTypeNormal, 900);
 	_app->objectAdd(kObjectMirror, "Mirror", "a11_PMirror", 1);
 	_app->objectSetActiveCursor(kObjectMirror, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
 	_app->objectSetPassiveCursor(kObjectMirror, Common::Point(20, 20), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
@@ -1324,18 +1324,18 @@ void Zone14Faust::onInit() {
 	_app->objectPresentationAddImageToRotation(kObjectMirror, 0, 111401, 9);
 	_app->objectPresentationAddImageToRotation(kObjectMirror, 0, 111403, 0);
 	_app->objectAddPresentation(kObjectMirror);
-	_app->objectPresentationAddImageToPuzzle(kObjectMirror, 1, kPuzzle114025, "a11s04n01p15l01.bmp", Common::Point(243, 209), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMirror, 1, kPuzzle114025, "a11s04n01p15l01.bmp", Common::Point(243, 209), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectMirror);
-	_app->objectPresentationAddImageToPuzzle(kObjectMirror, 2, kPuzzle114025, "a11s04n01p15l02.bmp", Common::Point(241,  16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMirror, 2, kPuzzle114025, "a11s04n01p15l02.bmp", Common::Point(241,  16), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObjectMirror);
-	_app->objectPresentationAddImageToPuzzle(kObjectMirror, 3, kPuzzle114025, "a11s04n01p15l03.bmp", Common::Point(244,  16), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObjectMirror, 3, kPuzzle114025, "a11s04n01p15l03.bmp", Common::Point(244,  16), true, kDrawTypeNormal, 1000);
 	_app->objectAdd(kObject114023, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject114023, kPuzzle114008, Common::Rect(120, 318, 289, 378), false, kCursorAction, 0);
 	_app->objectAddPuzzleAccessibility(kObject114023, kPuzzle114008, Common::Rect(422, 365, 533, 458), false, kCursorTake, 1);
 	_app->objectAddPresentation(kObject114023);
-	_app->objectPresentationAddImageToPuzzle(kObject114023, 0, kPuzzle114008, "a11s04n01p18.tga", Common::Point(65, 87), true, kDrawType3, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject114023, 0, kPuzzle114008, "a11s04n01p18.tga", Common::Point(65, 87), true, kDrawTypeAlpha, 1000);
 	_app->objectAddPresentation(kObject114023);
-	_app->objectPresentationAddAnimationToPuzzle(kObject114023, 1, kPuzzle114008, "a11s04n01p08s01", kImageTypeTGA, Common::Point(68, 297), kDrawType3, 1000, 9, 12.5f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject114023, 1, kPuzzle114008, "a11s04n01p08s01", kImageTypeTGA, Common::Point(68, 297), kDrawTypeAlpha, 1000, 9, 12.5f, 6);
 	_app->objectAdd(kObject112000, "", "", 1);
 	_app->objectAddRotationAccessibility(kObject112000, 111203, Common::Rect(261, -33, 771, 552), true, kCursorMove, 0);
 	_app->objectAdd(kObjectVitriol, "V.I.T.R.I.O.L.", "a11_Vitriol", 1);

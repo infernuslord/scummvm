@@ -186,7 +186,7 @@ public:
 
 	// ImageLoaderMovie
 	bool init(Common::String filename, ArchiveType type = kArchiveFile, ZoneId zone = kZoneNone, LoadFrom loadFrom = kLoadFromCd);
-	virtual bool readImage(Image *image, byte bitdepth = 16, DrawType drawType = kDrawType1);
+	virtual bool readImage(Image *image, byte bitdepth = 16, DrawType drawType = kDrawTypeNormal);
 
 	virtual Cinematic *getCinematic()     { return (Cinematic *)_cinematic; }
 	virtual uint32 getChunkCount()        { return _header.chunkCount; }

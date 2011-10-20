@@ -86,9 +86,9 @@ void Zone6Faust::onInit() {
 	_app->objectAdd(kObject31002, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject31002, kPuzzle31001, Common::Rect(263, 205, 370, 286), true, kCursorAction, 0);
 	_app->objectAddPresentation(kObject31002);
-	_app->objectPresentationAddImageToPuzzle(kObject31002, 0, kPuzzle31001, "a03s01n03p02l01.bmp", Common::Point(261, 205), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject31002, 0, kPuzzle31001, "a03s01n03p02l01.bmp", Common::Point(261, 205), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject31002);
-	_app->objectPresentationAddAnimationToPuzzle(kObject31002, 1, kPuzzle31001, "a03s01n03p02s01", kImageTypeBMP, Common::Point(261, 205), kDrawType1, 1000, 10, 15.0f, 6);
+	_app->objectPresentationAddAnimationToPuzzle(kObject31002, 1, kPuzzle31001, "a03s01n03p02s01", kImageTypeBMP, Common::Point(261, 205), kDrawTypeNormal, 1000, 10, 15.0f, 6);
 	_app->objectPresentationSetAnimationOnPuzzle(kObject31002, 1, 0, 31000);
 	_app->objectAdd(kObject31003, "", "", 1);
 	_app->objectAdd(kObjectRolodex, "Rolodex", "A01_Dummy", 1);
@@ -97,9 +97,9 @@ void Zone6Faust::onInit() {
 	_app->objectAddPuzzleAccessibility(kObject31003, kPuzzle31002, Common::Rect(241, 109, 423, 367), true, kCursorAction, 0);
 	_app->objectAddPuzzleAccessibility(kObject31003, kPuzzle31002, Common::Rect(355, 253, 418, 365), true, kCursorTake, 1);
 	_app->objectAddPresentation(kObject31003);
-	_app->objectPresentationAddImageToPuzzle(kObject31003, 0, kPuzzle31002, "a03s01n03p01l01.bmp", Common::Point(73, 73), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject31003, 0, kPuzzle31002, "a03s01n03p01l01.bmp", Common::Point(73, 73), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject31003);
-	_app->objectPresentationAddImageToPuzzle(kObject31003, 1, kPuzzle31002, "a03s01n03p01l02.bmp", Common::Point(67, 69), true, kDrawType1, 1000);
+	_app->objectPresentationAddImageToPuzzle(kObject31003, 1, kPuzzle31002, "a03s01n03p01l02.bmp", Common::Point(67, 69), true, kDrawTypeNormal, 1000);
 	_app->objectAddPresentation(kObject31003);
 	_app->objectPresentationAddImageToRotation(31003, 2, 31013, 9);
 	_app->soundAdd(31003, kSoundTypeBackgroundMusic, "1361.wac", _app->getConfiguration().backgroundMusic.loadFrom, 2, _app->getConfiguration().backgroundMusic.soundChunck);

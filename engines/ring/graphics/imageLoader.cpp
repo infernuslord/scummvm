@@ -731,7 +731,7 @@ bool ImageLoaderCI2::readImage(Image *image, byte bitdepth, DrawType drawType) {
 	_widthAndPadding = _width + 3;
 	_stride = _widthAndPadding * 3;
 
-	if (drawType == kDrawType3) {
+	if (drawType == kDrawTypeAlpha) {
 		// Create buffer to hold the data
 		byte *buffer = (byte *)malloc(_height * _stride + 64);
 		if (!buffer) {
