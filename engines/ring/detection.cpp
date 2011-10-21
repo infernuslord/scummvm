@@ -186,7 +186,7 @@ class RingMetaEngine : public AdvancedMetaEngine {
 public:
 	RingMetaEngine() : AdvancedMetaEngine(gameDescriptions, sizeof(Ring::RingGameDescription), ringGames) {
 		_singleid = "ring";
-		_guioptions = Common::GUIO_NOSUBTITLES | Common::GUIO_NOSFX;
+		_guioptions = Common::GUIO_NOSFX;
 		_maxScanDepth = 2;
 		_directoryGlobs = directoryGlobs;
 	}

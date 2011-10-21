@@ -289,6 +289,11 @@ bool RingEngine::isMultiLanguage() const {
 	return false;
 }
 
+bool RingEngine::hasFeature(EngineFeature f) const {
+	return (f == kSupportsRTL) ||
+	       (f == kSupportsSubtitleOptions);
+}
+
 SaveStateList RingEngine::listSaves(const char *target) const {
 	const char* gameid = gameIdFromTarget(target);
 

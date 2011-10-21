@@ -102,6 +102,9 @@ public:
 	bool pollEvents(bool updateCoords = true);
 	void update();
 
+	// Features
+	virtual bool hasFeature(EngineFeature f) const;
+
 	// Game type
 	const RingGameDescription *getGameDescription() { return _gameDescription; }
 	RingGameType getGameType() { return (RingGameType)_gameDescription->gameType; }
