@@ -179,7 +179,7 @@ void ScreenManager::updateScreen() {
 	g_system->copyRectToScreen((byte *)_screen.getBasePtr(0, 0), 640 * 2, 0, 0, 640, 480);
 }
 
-void ScreenManager::debugDrawing() const {
+void ScreenManager::debugDrawing() {
 #if RING_DEBUG_DRAWING == 1
 	updateScreen();
 	g_system->updateScreen();
