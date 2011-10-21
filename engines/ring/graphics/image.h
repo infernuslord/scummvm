@@ -109,6 +109,9 @@ public:
 	void setObjectPresentation(ObjectPresentation *objectPresentation) { _objectPresentation = objectPresentation; }
 	void setAnimation(AnimationImage *animation) { _animation = animation; }
 
+	void setIndex(int index) { _index = index; }
+	int getIndex() { return _index; }
+
 private:
 	Common::String _nameId;
 	Common::String _directory;
@@ -125,6 +128,9 @@ private:
 	ZoneId _zone;
 	LoadFrom _loadFrom;
 	ArchiveType _archiveType;
+
+	// Sorting
+	int _index;
 
 	void init(Common::String nameId, const Common::Point &point, bool isActive, DrawType drawType, uint32 priority, byte imageCount, ZoneId zone, LoadFrom loadFrom, ImageType imageType, ArchiveType archiveType);
 };

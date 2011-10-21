@@ -231,8 +231,10 @@ void Puzzle::addPresentationImage(ImageHandle *image) {
 		error("[Puzzle::addPresentationImage] Image is not initialized properly");
 
 	// Insert image into presentations images, and sort by priority
+	image->setIndex(_presentationImages.size());
 	_presentationImages.push_back(image);
 
+	// FIXME: Common::sort is not stable, so we have to hack around that in our comparator
 	Common::sort(_presentationImages.begin(), _presentationImages.end(), &Puzzle::imagePriorityCompare);
 }
 
@@ -508,6 +510,14 @@ SoundItem *Puzzle::getSoundItem(Id soundId) {
 }
 
 bool Puzzle::imagePriorityCompare(ImageHandle *image1, ImageHandle *image2) {
+	if (image1->getPriority() == image2->getPriority()) {
+		// If we have the same priority, we need to keep the existing order
+		// otherwise some images will show up with the wrong priority
+		// This workaround is needed due to Common::sort not being stable
+
+		return (image1->getIndex() < image2->getIndex());
+	}
+
 	return (image1->getPriority() > image2->getPriority());
 }
 

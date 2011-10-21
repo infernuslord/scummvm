@@ -45,6 +45,8 @@ ImageHandle::ImageHandle() : Image() {
 	_zone = kZoneNone;
 	_loadFrom = kLoadFromInvalid;
 	_archiveType = kArchiveInvalid;
+
+	_index = 0;
 }
 
 ImageHandle::ImageHandle(Common::String nameId, const Common::Point &point, bool active, DrawType drawType, uint32 priority, byte imageCount, ZoneId zone, LoadFrom loadFrom, ImageType imageType, ArchiveType archiveType) : Image() {
@@ -80,6 +82,8 @@ void ImageHandle::init(Common::String nameId, const Common::Point &point, bool a
 	_filename = "";
 	_directory = "";
 	_surface = NULL;
+
+	_index = 0;
 }
 
 void ImageHandle::loadImage() {
