@@ -21,15 +21,21 @@
 
 #include "ring/game/pompeii/pompeii_zonesystem.h"
 
+#include "ring/base/object.h"
 #include "ring/base/preferences.h"
+#include "ring/base/saveload.h"
 
 #include "ring/game/pompeii/pompeii_application.h"
 #include "ring/game/pompeii/pompeii_shared.h"
 
 #include "ring/graphics/dragControl.h"
+#include "ring/graphics/image.h"
 
 #include "ring/debug.h"
+#include "ring/helpers.h"
 #include "ring/ring.h"
+
+#include "audio/mixer.h"
 
 using namespace PompeiiGame;
 
@@ -41,6 +47,8 @@ ZoneSystemPompeii::ZoneSystemPompeii(ApplicationPompeii *application) : _app(app
 	_prefsVolumeDialog  = 0;
 	_prefsReverseStereo = false;
 	_prefsSubtitles     = false;
+
+	_isObject1Visible   = false;
 }
 
 ZoneSystemPompeii::~ZoneSystemPompeii() {
@@ -319,30 +327,30 @@ void ZoneSystemPompeii::onInit() {
 	_app->objectAddPresentation(kObject99042);
 	_app->objectPresentationAddImageToPuzzle(kObject99042, 0, kPuzzlePreferences, "ok_h.bmp", Common::Point(390, 400), true, kDrawTypeNormal, 2400);
 	_app->objectSetPuzzleAccessibilityKey(kObject99042, 0, Common::KEYCODE_RETURN);
-	_app->objectAdd(kObject99043, "", "", 1);
-	_app->objectAddPuzzleAccessibility(kObject99043, kPuzzlePreferences, Common::Rect(400, 345, 560, 380), true, kCursorMenuActive, 0);
-	_app->objectAddPresentation(kObject99043);
-	_app->objectPresentationAddImageToPuzzle(kObject99043, 0, kPuzzlePreferences, "Pref_off.bmp", Common::Point(400, 345), true, kDrawTypeNormal, 2200);
-	_app->objectAddPresentation(kObject99043);
-	_app->objectPresentationAddImageToPuzzle(kObject99043, 1, kPuzzlePreferences, "Pref_on.bmp", Common::Point(400, 345), true, kDrawTypeNormal, 2200);
-	_app->objectAdd(kObject99044, "", "", 1);
-	_app->objectAddPuzzleAccessibility(kObject99044, kPuzzlePreferences, Common::Rect(400, 265, 560, 300), true, kCursorMenuActive, 0);
-	_app->objectAddPresentation(kObject99044);
-	_app->objectPresentationAddImageToPuzzle(kObject99044, 0, kPuzzlePreferences, "Pref_nor.bmp", Common::Point(400, 265), true, kDrawTypeNormal, 2200);
-	_app->objectAddPresentation(kObject99044);
-	_app->objectPresentationAddImageToPuzzle(kObject99044, 1, kPuzzlePreferences, "Pref_inv.bmp", Common::Point(400, 265), true, kDrawTypeNormal, 2300);
-	_app->objectAdd(kObject99045, "", "adrag", 4);
-	_app->objectSetActiveDrawCursor(kObject99045, Common::Point(14, 14), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
-	_app->objectSetPassiveDrawCursor(kObject99045, Common::Point(14, 14), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
-	_app->objectAddPuzzleAccessibility(kObject99045, kPuzzlePreferences, Common::Rect(350, 112, 622, 132), true, kCursorDragDrop, 0);
-	_app->objectAddPresentation(kObject99045);
-	_app->objectPresentationAddImageToPuzzle(kObject99045, 0, kPuzzlePreferences, "slider.tga", Common::Point(0, 112), true, kDrawTypeAlpha, 2200);
-	_app->objectAdd(kObject99046, "", "adrag", 4);
-	_app->objectSetActiveDrawCursor(kObject99046, Common::Point(14, 14), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
-	_app->objectSetPassiveDrawCursor(kObject99046, Common::Point(14, 14), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
-	_app->objectAddPuzzleAccessibility(kObject99046, kPuzzlePreferences, Common::Rect(350, 192, 610, 212), true, kCursorDragDrop, 0);
-	_app->objectAddPresentation(kObject99046);
-	_app->objectPresentationAddImageToPuzzle(kObject99046, 0, kPuzzlePreferences, "slider.tga", Common::Point(0, 192), true, kDrawTypeAlpha, 2200);
+	_app->objectAdd(kObjectPreferencesSubtitles, "", "", 1);
+	_app->objectAddPuzzleAccessibility(kObjectPreferencesSubtitles, kPuzzlePreferences, Common::Rect(400, 345, 560, 380), true, kCursorMenuActive, 0);
+	_app->objectAddPresentation(kObjectPreferencesSubtitles);
+	_app->objectPresentationAddImageToPuzzle(kObjectPreferencesSubtitles, 0, kPuzzlePreferences, "Pref_off.bmp", Common::Point(400, 345), true, kDrawTypeNormal, 2200);
+	_app->objectAddPresentation(kObjectPreferencesSubtitles);
+	_app->objectPresentationAddImageToPuzzle(kObjectPreferencesSubtitles, 1, kPuzzlePreferences, "Pref_on.bmp", Common::Point(400, 345), true, kDrawTypeNormal, 2200);
+	_app->objectAdd(kObjectPreferencesReverseStereo, "", "", 1);
+	_app->objectAddPuzzleAccessibility(kObjectPreferencesReverseStereo, kPuzzlePreferences, Common::Rect(400, 265, 560, 300), true, kCursorMenuActive, 0);
+	_app->objectAddPresentation(kObjectPreferencesReverseStereo);
+	_app->objectPresentationAddImageToPuzzle(kObjectPreferencesReverseStereo, 0, kPuzzlePreferences, "Pref_nor.bmp", Common::Point(400, 265), true, kDrawTypeNormal, 2200);
+	_app->objectAddPresentation(kObjectPreferencesReverseStereo);
+	_app->objectPresentationAddImageToPuzzle(kObjectPreferencesReverseStereo, 1, kPuzzlePreferences, "Pref_inv.bmp", Common::Point(400, 265), true, kDrawTypeNormal, 2300);
+	_app->objectAdd(kObjectPreferencesSliderVolume, "", "adrag", 4);
+	_app->objectSetActiveDrawCursor(kObjectPreferencesSliderVolume, Common::Point(14, 14), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
+	_app->objectSetPassiveDrawCursor(kObjectPreferencesSliderVolume, Common::Point(14, 14), 0, kCursorTypeImage, 0, 0, kLoadFromCursor);
+	_app->objectAddPuzzleAccessibility(kObjectPreferencesSliderVolume, kPuzzlePreferences, Common::Rect(350, 112, 622, 132), true, kCursorDragDrop, 0);
+	_app->objectAddPresentation(kObjectPreferencesSliderVolume);
+	_app->objectPresentationAddImageToPuzzle(kObjectPreferencesSliderVolume, 0, kPuzzlePreferences, "slider.tga", Common::Point(0, 112), true, kDrawTypeAlpha, 2200);
+	_app->objectAdd(kObjectPreferencesSliderDialog, "", "adrag", 4);
+	_app->objectSetActiveDrawCursor(kObjectPreferencesSliderDialog, Common::Point(14, 14), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
+	_app->objectSetPassiveDrawCursor(kObjectPreferencesSliderDialog, Common::Point(14, 14), 0, kCursorTypeImage, 0.0f, 0, kLoadFromCursor);
+	_app->objectAddPuzzleAccessibility(kObjectPreferencesSliderDialog, kPuzzlePreferences, Common::Rect(350, 192, 610, 212), true, kCursorDragDrop, 0);
+	_app->objectAddPresentation(kObjectPreferencesSliderDialog);
+	_app->objectPresentationAddImageToPuzzle(kObjectPreferencesSliderDialog, 0, kPuzzlePreferences, "slider.tga", Common::Point(0, 192), true, kDrawTypeAlpha, 2200);
 	_app->objectAdd(kObject90401, "", "", 1);
 	_app->objectAddPuzzleAccessibility(kObject90401, kPuzzleStatus, Common::Rect(30, 405, 70, 445), true, kCursorMenuActive, 0);
 	_app->objectAddPuzzleAccessibility(kObject90401, kPuzzleStatus, Common::Rect(30, 405, 70, 445), true, kCursorMenuActive, 0);
@@ -523,14 +531,423 @@ void ZoneSystemPompeii::onInit() {
 	_app->varDefineDword(99027, 0);
 	_app->visualAddEncyclopediaToPuzzle(5, kPuzzleEncyclopedia, "E001.out", _app->_configuration.artSY ? kArchiveArt :  kArchiveFile);
 	_app->visualEncyclopediaSetParameters(5, kPuzzleEncyclopedia, Common::Point(20, 20), Common::Rect(50, 428, 50, 580), true);
-	_app->visualAddBoxToPuzzle(6, 1, " ", kArchiveFile);
+	_app->visualAddBoxToPuzzle(6, kPuzzleMenu, " ", kArchiveFile);
 	_app->varDefineWord(99500, 0);
 	_app->varDefineDword(99028, 10111);
 	_app->varDefineByte(91300, 1);
 }
 
-void ZoneSystemPompeii::onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point) {
-	error("[ZoneSystemPompeii::onButtonUp()] Not implemented");
+void ZoneSystemPompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, uint32 /*a4*/, const Common::Point &/*point*/) {
+	switch (id) {
+	default:
+		break;
+
+	case kObject1:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			if (_isObject1Visible) {
+				_app->objectPresentationHideAndRemove(kObject1);
+				_isObject1Visible = false;
+			}
+			else
+			{
+				_app->objectPresentationShow(kObject1);
+				_isObject1Visible = true;
+			}
+		}
+		return;
+
+	case kObjectYesNo:
+		switch (target) {
+		default:
+			break;
+
+		case 0:
+			_app->objectPresentationHideAndRemove(kObjectYesNo);
+			_app->objectSetAccessibilityOff(kObjectYesNo);
+			_app->puzzleSetMod(kPuzzleMenu, 1, 0);
+			_app->objectPresentationHide(kObject99007, 0);
+			_app->varSetByte(98008, 0);
+			break;
+
+		case 1:
+			_app->showCredits();
+			Engine::quitGame();
+			break;
+		}
+		return;
+
+	case kObject3:
+		_app->messageHideWarning((uint32)target);
+		return;
+
+	case kObjectQuestion:
+		switch (target) {
+		default:
+			_app->messageHideQuestion(0);
+			break;
+
+		case 0:
+		case 1:
+			_app->messageHideQuestion(0);
+			break;
+
+		case 2:
+			_app->cursorSelect(kCursorBusy);
+			unsetFlag();
+			handleEvents();
+			_app->exitZone();
+			_app->initZones();
+			// Fallback to next case
+
+		case 3:
+			_app->messageHideQuestion(2);
+			break;
+
+		case 4: {
+			ObjectId objectId = _app->visualListGetObjectIdClicked(1, kPuzzleSave);
+			if (objectId) {
+				Common::String objectName = _app->getObject(objectId)->getName();
+				if (!_app->getSaveManager()->deleteSavegame(objectName)) {
+					warning("[ZoneSystemPompeii::onButtonUp] Cannot remove saved game: %s", objectName.c_str());
+				} else {
+					_app->visualListResetObjectClicked(1, kPuzzleSave);
+					_app->visualListRemove(1, kPuzzleSave, objectId, true);
+					_app->objectPresentationSetTextToPuzzle(99601, 1, 0, "");
+					_app->objectPresentationSetAnimationCoordinatesOnPuzzle(kObjectSaveName, 0, Common::Point((int16)(_app->objectPresentationGetTextWidth(kObjectSaveName, 1, 0) + 233), 384));
+				}
+			}
+
+			_app->messageHideQuestion(4);
+			}
+			break;
+
+		case 5:
+			_app->messageHideQuestion(4);
+			break;
+
+		case 7:
+			_app->messageHideQuestion(6);
+			break;
+
+		case 8: {
+			ObjectId objectId = _app->visualListGetObjectIdClicked(4, kPuzzleLoad);
+			if (objectId) {
+				Common::String objectName = _app->getObject(objectId)->getName();
+				if (!_app->getSaveManager()->deleteSavegame(objectName)) {
+					warning("[ZoneSystemPompeii::onButtonUp] Cannot remove saved game: %s", objectName.c_str());
+				} else {
+					_app->visualListResetObjectClicked(4, kPuzzleLoad);
+					_app->visualListRemove(4, kPuzzleLoad, objectId, true);
+					_app->objectPresentationSetTextToPuzzle(kObjectSaveName, 1, 0, "");
+					_app->objectPresentationSetAnimationCoordinatesOnPuzzle(kObjectSaveName, 0, Common::Point((int16)(_app->objectPresentationGetTextWidth(kObjectSaveName, 1, 0) + 195), 388));
+				}
+			}
+
+			_app->messageHideQuestion(8);
+			}
+			break;
+
+		case 9:
+			_app->messageHideQuestion(8);
+			break;
+		}
+		break;
+
+	case kObject5:
+		_app->objectPresentationHideAndRemove(kObject5, 0);
+		_app->puzzleSetMod(kPuzzleMenu, 1, 0);
+		_app->objectSetAccessibilityOff(kObject5);
+		switch (target) {
+		default:
+			break;
+
+		case 0:
+			_app->exitToMenu(kMenuAction52);
+			break;
+
+		case 1:
+			_app->exitToMenu(kMenuAction50);
+			break;
+		}
+		break;
+
+	case kObject6:
+		if (_app->bagHasClickedObject()) {
+			_app->cursorDelete();
+		} else {
+			_app->objectSetAccessibilityOff(kObject6, 0, 0);
+
+			switch (target) {
+			default:
+				break;
+
+			case 0:
+				_app->objectSetAccessibilityOff(kObject6);
+				_app->puzzleSetMod(kPuzzleMenu, 1, 6);
+
+				if (_app->varGetByte(90508) == 1) {
+					_app->objectSetAccessibilityOff(kObject6, 1, 4);
+					_app->objectSetAccessibilityOff(kObject6, 6, 18);
+					_app->objectPresentationHide(kObject6);
+					_app->varSetByte(90508, 0);
+					_app->varSetByte(90509, 1);
+					_app->varSetWord(99501, 6);
+					_app->varSetWord(99502, 6);
+					_app->objectPresentationHideAndRemove(kObject6);
+				}
+
+				g_system->warpMouse(320, 240);
+				return;
+
+			case 1:
+				_app->objectSetAccessibilityOn(kObject6, 19, 19);
+				_app->objectPresentationShow(kObject6, 1);
+				_app->varSetWord(99501, 6);
+				_app->varSetWord(99502, 6);
+				_app->varSetByte(90509, 2);
+				_app->objectSetAccessibilityOff(kObject6, 1, 4);
+				break;
+
+			case 2:
+				_app->objectSetAccessibilityOn(kObject6, 19, 19);
+				_app->objectPresentationShow(kObject6, 2);
+				_app->varSetWord(99501, 646);
+				_app->varSetWord(99502, 6);
+				_app->varSetByte(90509, 2);
+				_app->objectSetAccessibilityOff(kObject6, 1, 4);
+				_app->objectSetAccessibilityOn(kObject6, 14, 18);
+				break;
+
+			case 3:
+				_app->objectSetAccessibilityOn(kObject6, 19, 19);
+				_app->objectPresentationShow(kObject6, 3);
+				_app->varSetWord(99501, 6);
+				_app->varSetWord(99502, 486);
+				_app->varSetByte(90509, 2);
+				_app->objectSetAccessibilityOff(kObject6, 1, 4);
+				_app->objectSetAccessibilityOn(kObject6, 9, 13);
+				break;
+
+			case 4:
+				_app->objectSetAccessibilityOn(kObject6, 19, 19);
+				_app->objectPresentationShow(kObject6, 4);
+				_app->varSetWord(99501, 646);
+				_app->varSetWord(99502, 486);
+				_app->varSetByte(90509, 2);
+				_app->objectSetAccessibilityOff(kObject6, 1, 4);
+				_app->objectSetAccessibilityOn(kObject6, 6, 8);
+				break;
+
+			case 99:
+				_app->objectSetAccessibilityOff(kObject6);
+				_app->objectPresentationHide(kObject6);
+				_app->varSetByte(90508, 0);
+				_app->varSetByte(90509, 1);
+				_app->varSetWord(99501, 6);
+				_app->varSetWord(99502, 6);
+				_app->onKeyDown(Common::KEYCODE_SPACE, ' ');
+				return;
+			}
+
+			if (_app->hasCurrentRotation())
+				_app->varSetDword(99027, _app->getCurrentRotationId());
+
+			_app->setCoordinatesOnPuzzle6();
+		}
+		break;
+
+	case kObject7:
+		_app->objectPresentationHide(kObjectItemList);
+		_app->objectSetAccessibilityOff(kObjectItemList);
+		break;
+
+	case kObject16:
+		_app->objectPresentationHide(kObject16, 1);
+		_app->objectPresentationHide(kObject16, 2);
+		if (target == 1) {
+			_app->startMenu(false);
+		} else {
+			// Original checks the cd number in data/cd.ini
+
+			_app->setCurrentEpisode((ZoneId)target);
+			_app->setZone((ZoneId)target, _app->getSaveManager()->getSetupType());
+		}
+		break;
+
+	case kObjectExitEncyclopedia:
+		_app->restore();
+		break;
+
+	case kObject90401:
+		_app->objectPresentationHideAndRemove(kObject90401);
+		_app->puzzleSetActive(kPuzzleGeneralMenu);
+		break;
+
+	case kObject99000:
+		if (_app->getSaveManager()->hasSavegame(1)) {
+			if (_app->puzzleSetMod(kPuzzleMenu, 2, 5)) {
+				_app->objectPresentationShow(kObject5, 0);
+				_app->objectSetAccessibilityOn(kObject5);
+			}
+		} else {
+			_app->exitToMenu(kMenuAction50);
+		}
+		break;
+
+	case kObject99001:
+		_app->exitToMenu(kMenuAction51);
+		break;
+
+	case kObject99002:
+		_app->puzzleSetActive(kPuzzleSave);
+		_app->objectPresentationShow(kObject99025, 1);
+		_app->varSetByte(98003, 0);
+
+		// Store the thumbnail image
+		if (_app->getThumbnail() != NULL) {
+			Image *thumbnail = _app->getThumbnail()->zoom(0.40645f, 1.0f);
+			_app->getSaveManager()->setThumbnail(thumbnail);
+			delete thumbnail;
+		}
+
+		_app->objectPresentationShow(kObjectSaveName);
+		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectSaveName, 2, Common::Point(326, 143));
+		_app->objectPresentationSetTextToPuzzle(99601, 1, 0, "");
+		_app->objectPresentationSetAnimationCoordinatesOnPuzzle(kObjectSaveName, 0, Common::Point((int16)(_app->objectPresentationGetTextWidth(kObjectSaveName, 1, 0) + 30), 435));
+		_app->visualListSetOn(1, kPuzzleSave);
+
+		_app->loadSaveList(1, 1, kPuzzleSave);
+		break;
+
+	case kObject99003:
+		_app->puzzleSetActive(kPuzzleLoad);
+		_app->objectPresentationShow(kObject99023, 1);
+		_app->visualListSetOn(4, kPuzzleLoad);
+
+		_app->loadSaveList(1, 4, kPuzzleLoad);
+
+		// FIXME set icon folder to save folder
+		_app->visualListSetIconDirectory(4, kPuzzleLoad, "");
+		break;
+
+	case kObject99004:
+		_app->puzzleSetActive(kPuzzlePreferences);
+
+		_prefsVolume = _app->getPreferenceHandler()->getVolume();
+		_prefsVolumeDialog = _app->getPreferenceHandler()->getVolumeDialog();
+		_prefsReverseStereo = _app->getPreferenceHandler()->getReverseStereo() == 1;
+		_prefsSubtitles = _app->getPreferenceHandler()->getShowSubtitles();
+
+		_app->objectPresentationHide(kObjectPreferencesSubtitles);
+		_app->objectSetAccessibilityOn(kObjectPreferencesSubtitles);
+		_app->objectPresentationHide(kObjectPreferencesReverseStereo);
+		_app->objectSetAccessibilityOn(kObjectPreferencesReverseStereo);
+		_app->objectSetAccessibilityOn(kObjectPreferencesSliderVolume);
+		_app->objectSetAccessibilityOn(kObjectPreferencesSliderDialog);
+
+		if (!g_system->getMixer()->isReady()) {
+			_prefsSubtitles = true;
+			_app->objectSetAccessibilityOff(kObjectPreferencesSubtitles);
+			_app->objectSetAccessibilityOff(kObjectPreferencesReverseStereo);
+			_app->objectSetAccessibilityOff(kObjectPreferencesSliderVolume);
+			_app->objectSetAccessibilityOff(kObjectPreferencesSliderDialog);
+		}
+
+		_app->objectPresentationShow(kObjectPreferencesSubtitles, _prefsSubtitles);
+		_app->objectPresentationShow(kObjectPreferencesReverseStereo, _prefsReverseStereo);
+		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point((int16)((240 * _prefsVolume / 100) + 350), 112));
+		_app->objectPresentationShow(kObjectPreferencesSliderVolume, 0);
+		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderDialog, 0, 0, Common::Point((int16)((240 * _prefsVolumeDialog / 100) + 350), 192));
+		_app->objectPresentationShow(kObjectPreferencesSliderDialog, 0);
+		break;
+
+	case kObject99005:
+		_app->showEncyclopedia(1);
+		break;
+
+	case kObject99006:
+		_app->puzzleSetActive(kPuzzleStatus);
+		if (_app->varGetByte(90903) > 26)
+			_app->varSetByte(90903, 26);
+
+		for (uint32 i = 1; i <= (uint8)(_app->varGetByte(90903) + 1); i++) {
+			_app->objectPresentationShow(kObject90401, i);
+			handleEvents();
+		}
+		break;
+
+	case kObject99007:
+		_app->varSetByte(98008, 1);
+		Engine::quitGame();
+		break;
+
+	case kObject99023:
+		_app->exitZone();
+		_app->initZones();
+
+		// Load savegame
+		if (!_app->getSaveManager()->loadSave(1, kLoadSaveRead)) {
+			// Fallback to autosave
+			if (!_app->getSaveManager()->loadSave(0, kLoadSaveRead)) {
+				_app->exitZone();
+				_app->initZones();
+			}
+
+			_app->messageFormat("CanNotLoadGame", "savegame");
+			_app->messageShowWarning(0);
+			break;
+		}
+
+		_app->visualBoxHide(6, kPuzzleMenu);
+		_app->objectPresentationHide(kObject99003);
+		_app->objectPresentationHide(kObjectSaveName);
+		_app->visualListSetOff(4, kPuzzleLoad);
+		_app->visualListRemove(4, kPuzzleLoad, true);
+		_app->varSetByte(98004, 0);
+		break;
+
+	case kObject99025:
+		error("[ZoneSystemPompeii::onButtonUp] Loading of savegames not implemented");
+
+		/*_app->objectPresentationHide(kObjectSaveName);
+		_app->visualListSetOff(1, kPuzzleSave);
+		_app->visualListRemove(1, 90002, 1);
+		_app->objectSetAccessibilityOff(kObject99025);
+		_app->exitToMenu(kMenuAction52);
+		break;*/
+
+	case kObject99041:
+		_app->puzzleSetActive(kPuzzleGeneralMenu);
+		_app->varSetByte(98005, 0);
+		warning("[ZoneSystemPompeii::onButtonUp] restoring of previous values not implemented");
+		return;
+
+	case kObject99042:
+		_app->puzzleSetActive(kPuzzleGeneralMenu);
+		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _prefsReverseStereo != 0 ? 1 : -1, _prefsSubtitles);
+		_app->varSetByte(98005, 0);
+		return;
+
+	case kObjectPreferencesSubtitles:
+		_app->objectPresentationHide(kObjectPreferencesSubtitles);
+		_app->objectPresentationShow(kObjectPreferencesSubtitles, _prefsSubtitles);
+		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _prefsReverseStereo != 0 ? 1 : -1, _prefsSubtitles);
+		break;
+
+	case kObjectPreferencesReverseStereo:
+		_app->objectPresentationHide(kObjectPreferencesReverseStereo);
+		_app->objectPresentationShow(kObjectPreferencesReverseStereo, _prefsReverseStereo);
+		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _prefsReverseStereo != 0 ? 1 : -1, _prefsSubtitles);
+		break;
+
+	case kObject99022:
+	case kObject99024:
+		_app->objectPresentationHide(kObjectSaveName);
+		_app->puzzleSetActive(kPuzzleGeneralMenu);
+		break;
+	}
 }
 
 void ZoneSystemPompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*process*/) {
@@ -565,7 +982,7 @@ void ZoneSystemPompeii::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*
 	default:
 		break;
 
-	case kObject99045:
+	case kObjectPreferencesSliderVolume:
 		if (type != 1 && type != 3)
 			break;
 
@@ -576,10 +993,10 @@ void ZoneSystemPompeii::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*
 		if (_prefsVolume < 0)
 			_prefsVolume = 0;
 
-		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObject99045, 0, 0, Common::Point((int16)((240 * _prefsVolume / 100) + 350), 112));
+		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point((int16)((240 * _prefsVolume / 100) + 350), 112));
 		break;
 
-	case kObject99046:
+	case kObjectPreferencesSliderDialog:
 		switch (type) {
 		default:
 			break;
@@ -596,7 +1013,7 @@ void ZoneSystemPompeii::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*
 			if (_prefsVolumeDialog < 0)
 				_prefsVolumeDialog = 0;
 
-			_app->objectPresentationSetImageCoordinatesOnPuzzle(kObject99046, 0, 0, Common::Point((int16)((240 * _prefsVolumeDialog / 100) + 350), 192));
+			_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderDialog, 0, 0, Common::Point((int16)((240 * _prefsVolumeDialog / 100) + 350), 192));
 			break;
 
 		case 2:

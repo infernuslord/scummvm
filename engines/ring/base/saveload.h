@@ -135,6 +135,7 @@ public:
 	// Management
 	bool remove(uint32 slot) const;
 	void deleteSavegame(uint32 userId);
+	bool deleteSavegame(Common::String name);
 
 	// Thumbnail image
 	void setThumbnail(Image *image);

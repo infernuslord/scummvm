@@ -94,6 +94,8 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 	void onButtonUp(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, const Common::Point &point);
 
+	void onKeyDown(const Common::KeyCode &keycode, uint ascii);
+
 	//////////////////////////////////////////////////////////////////////////
 	// Misc
 	//////////////////////////////////////////////////////////////////////////
@@ -102,6 +104,8 @@ protected:
 	void onCall(Id callType);
 	void showEncyclopedia(uint32 index);
 	void restore();
+
+	void loadSaveList(uint32 userId, Id visualId, PuzzleId puzzleId);
 
 private:
 	// Event handlers

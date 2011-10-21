@@ -576,8 +576,10 @@ void ApplicationPompeii::onMouseRightButtonUp(const Common::Event &evt) {
 }
 
 void ApplicationPompeii::onKeyDown(Common::Event &evt) {
-	Common::KeyCode keycode = evt.kbd.keycode;
+	onKeyDown(evt.kbd.keycode, evt.kbd.ascii);
+}
 
+void ApplicationPompeii::onKeyDown(const Common::KeyCode &keycode, uint ascii) {
 	switch (getCurrentPuzzleId()) {
 	default:
 		if (keycode == Common::KEYCODE_SPACE
@@ -638,7 +640,7 @@ void ApplicationPompeii::onKeyDown(Common::Event &evt) {
 			if (objectPresentationGetTextWidth(kObjectSaveName, 1, 0) >= 235)
 				return;
 
-			*getSaveManager()->getName() += (char)evt.kbd.ascii;
+			*getSaveManager()->getName() += (char)ascii;
 			break;
 
 		case Common::KEYCODE_ESCAPE:
@@ -1594,6 +1596,10 @@ void ApplicationPompeii::restore() {
 		rotationSetActive(varGetDword(90026));
 
 	setSpace(_savedZone);
+}
+
+void ApplicationPompeii::loadSaveList(uint32 userId, Id visualId, PuzzleId puzzleId) {
+	error("[ApplicationPompeii::loadSaveList] Not implemented");
 }
 
 #pragma endregion
