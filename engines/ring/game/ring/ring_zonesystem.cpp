@@ -491,7 +491,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 			handleEvents();
 			_app->exitZone();
 			_app->initZones();
-			_app->loadPreferences();
+			_app->startGame();
 			_app->messageHideQuestion(2);
 			break;
 
@@ -635,7 +635,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 		if (!_app->getSaveManager()->loadSave(0, kLoadSaveRead)) {
 			_app->exitZone();
 			_app->initZones();
-			_app->loadPreferences();
+			_app->startGame();
 			_app->messageGet("CanNotCountineGame"); // Typo is normal :S
 			_app->messageShowWarning(0);
 		}
@@ -674,7 +674,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 			if (!_app->getSaveManager()->loadSave(0, kLoadSaveRead)) {
 				_app->exitZone();
 				_app->initZones();
-				_app->loadPreferences();
+				_app->startGame();
 			}
 
 			_app->messageFormat("CanNotLoadGame", name);
@@ -704,7 +704,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 
 			_app->exitZone();
 			_app->initZones();
-			_app->loadPreferences();
+			_app->startGame();
 
 			_app->messageFormat("CanNotSaveGame", *_app->getSaveManager()->getName());
 			_app->messageShowWarning(0);
@@ -739,6 +739,9 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 		// Check current Cd
 		if (target > 0 && target <=8) {
 			// Original checks the cd number in data/cd.ini
+			Common::ArchiveMemberList list;
+			if (!SearchMan.listMatchingMembers(list, Common::String::format("DATA/%s/*", _app->getZoneFolder((ZoneId)target).c_str())))
+				break;
 
 			_app->setZoneAndEnableBag((ZoneId)target);
 			_app->setZone((ZoneId)target, _app->getSaveManager()->getSetupType());

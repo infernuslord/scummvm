@@ -379,7 +379,7 @@ void Application::setupZone(ZoneId zone, SetupType type) {
 	} else {
 		_saveManager->setSetupType(type);
 
-		messageFormat("InsertCD", Common::String::format("%d", getEpisodeCd(zone)));
+		messageFormat("InsertCD", getEpisodeCd(zone));
 		messageInsertCd(zone);
 	}
 }
@@ -1288,6 +1288,11 @@ bool Application::messageGet(Common::String messageId) {
 	delete archive;
 
 	return false;
+}
+
+void Application::messageFormat(Common::String messageId, int argument) {
+	if (messageGet(messageId))
+		_message = Common::String::format(_message.c_str(), argument);
 }
 
 void Application::messageFormat(Common::String messageId, Common::String argument) {

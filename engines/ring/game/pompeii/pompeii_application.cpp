@@ -674,8 +674,8 @@ void ApplicationPompeii::showCredits() {
 	soundStop(90801, 1024);
 }
 
-void ApplicationPompeii::loadPreferences() {
-	error("[ApplicationPompeii::loadPreferences] Not implemented");
+void ApplicationPompeii::startGame() {
+	error("[ApplicationPompeii::startGame] Not implemented");
 }
 
 #pragma endregion

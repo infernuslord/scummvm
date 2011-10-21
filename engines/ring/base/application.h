@@ -84,7 +84,7 @@ public:
 	virtual void startMenu(bool savegame) = 0;
 	virtual void showMenu(ZoneId zone, MenuAction menuAction) = 0;
 	virtual void showCredits() = 0;
-	virtual void loadPreferences() = 0;
+	virtual void startGame() = 0;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Timer & update
@@ -150,6 +150,7 @@ public:
 	virtual void messageHideQuestion(uint32 accelerationIndex);
 
 	bool messageGet(Common::String messageId);
+	void messageFormat(Common::String messageId, int argument);
 	void messageFormat(Common::String messageId, Common::String argument);
 	void messageFormat(Common::String messageId, int arg1, int arg2);
 

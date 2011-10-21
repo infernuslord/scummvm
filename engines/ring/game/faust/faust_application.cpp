@@ -771,8 +771,8 @@ void ApplicationFaust::showCredits() {
 	soundStop(52000, 1024);
 }
 
-void ApplicationFaust::loadPreferences() {
-	error("[ApplicationFaust::loadPreferences] Not implemented");
+void ApplicationFaust::startGame() {
+	error("[ApplicationFaust::startGame] Not implemented");
 }
 
 #pragma endregion
@@ -1021,7 +1021,7 @@ void ApplicationFaust::setupZone(ZoneId zone, SetupType type) {
 		if (hasData)
 			messageGet("TurnDVD");
 		else {
-			messageFormat("InsertCD", Common::String::format("%d", getEpisodeCd(zone)));
+			messageFormat("InsertCD", getEpisodeCd(zone));
 		}
 
 		messageInsertCd(zone);

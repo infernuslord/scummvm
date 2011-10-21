@@ -192,8 +192,8 @@ void ApplicationJerusalem::showCredits() {
 	error("[ApplicationJerusalem::showCredits] Not implemented");
 }
 
-void ApplicationJerusalem::loadPreferences() {
-	error("[ApplicationJerusalem::loadPreferences] Not implemented");
+void ApplicationJerusalem::startGame() {
+	error("[ApplicationJerusalem::startGame] Not implemented");
 }
 
 #pragma endregion

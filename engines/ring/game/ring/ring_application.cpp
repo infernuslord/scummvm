@@ -358,9 +358,9 @@ void ApplicationRing::showCredits() {
 	soundStop(51002, 1024);
 }
 
-void ApplicationRing::loadPreferences() {
+void ApplicationRing::startGame() {
 	if (!_preferenceHandler)
-		error("[] Preference handler not initialized properly");
+		error("[ApplicationRing::startGame] Preference handler not initialized properly");
 
 	_preferenceHandler->load();
 
@@ -502,8 +502,9 @@ void ApplicationRing::setupZone(ZoneId zone, SetupType type) {
 		} else {
 			// The original checks for the correct CD defined in cd.ini,
 			// instead we check that the zone archive has been copied properly
-			if (!Common::File::exists(getZoneFolder(zone)))
-				hasData = false;
+			Common::ArchiveMemberList list;
+			if (SearchMan.listMatchingMembers(list, Common::String::format("DATA/%s/*", getZoneFolder(zone).c_str())))
+				hasData = true;
 		}
 	}
 
@@ -521,7 +522,7 @@ void ApplicationRing::setupZone(ZoneId zone, SetupType type) {
 		setZone(zone, type);
 	} else {
 		_saveManager->setSetupType(type);
-		messageFormat("InsertCD", Common::String::format("%d", getCdForZone(getCurrentZone())));
+		messageFormat("InsertCD", getCdForZone(getCurrentZone()));
 		messageInsertCd(zone);
 	}
 }
@@ -826,7 +827,7 @@ bool ApplicationRing::handleLeftButtonUp(Accessibility *accessibility, Id id, co
 	if (object->getFieldC() & 1) {
 		onButtonUp(object->getId(), hotspot->getTarget(), id, 1, point);
 
-		if (getState() == kStateShowMenu)
+		if (getState() == kStateShowMenu || getState() == kStateNone)
 			return true;
 	}
 

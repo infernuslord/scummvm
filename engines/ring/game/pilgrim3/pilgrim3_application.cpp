@@ -170,8 +170,8 @@ void ApplicationPilgrim3::showCredits() {
 	error("[ApplicationPilgrim3::showCredits] Not implemented");
 }
 
-void ApplicationPilgrim3::loadPreferences() {
-	error("[ApplicationPilgrim3::loadPreferences] Not implemented");
+void ApplicationPilgrim3::startGame() {
+	error("[ApplicationPilgrim3::startGame] Not implemented");
 }
 
 #pragma endregion
