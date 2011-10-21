@@ -308,6 +308,8 @@ public:
 	void soundSetPan(Id soundId, int32 pan);
 	bool soundIsPlaying(Id soundId);
 	bool soundIsPlayingType(SoundType soundType);
+	void syncSoundSettings();
+	virtual void refreshPreferences() {}
 
 	//////////////////////////////////////////////////////////////////////////
 	// Timer

@@ -58,6 +58,7 @@ public:
 	virtual void showMenu(ZoneId zone, MenuAction menuAction);
 	virtual void showCredits();
 	virtual void loadPreferences();
+	virtual void refreshPreferences();
 
 	//////////////////////////////////////////////////////////////////////////
 	// Drawing

@@ -2413,6 +2413,13 @@ Common::String Application::getSoundPath(const Common::String &filename, SoundTy
 	return path;
 }
 
+void Application::syncSoundSettings() {
+	// Reload preferences for new sound settings and refresh the screen if we are looking at preferences
+	_preferenceHandler->load();
+
+	refreshPreferences();
+}
+
 #pragma endregion
 
 #pragma region Timer

@@ -64,8 +64,8 @@ void PreferenceHandler::load() {
 	_volume       = (int32)(_volume * 100.0f/255.0f);
 	_volumeDialog = (int32)(_volumeDialog * 100.0f/255.0f);
 
-	CLIP(_volume, 0, 100);
-	CLIP(_volumeDialog, 0, 100);
+	_volume       = CLIP(_volume, 0, 100);
+	_volumeDialog = CLIP(_volumeDialog, 0, 100);
 }
 
 void PreferenceHandler::loadDefaults() {
@@ -128,8 +128,6 @@ void PreferenceHandler::setup() {
 
 	if (_app->getDialogHandler())
 		_app->getDialogHandler()->showSubtitles(_showSubtitles);
-
-	g_engine->syncSoundSettings();
 }
 
 } // End of namespace Ring

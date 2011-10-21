@@ -104,6 +104,7 @@ public:
 
 	// Features
 	virtual bool hasFeature(EngineFeature f) const;
+	virtual void syncSoundSettings();
 
 	// Game type
 	const RingGameDescription *getGameDescription() { return _gameDescription; }

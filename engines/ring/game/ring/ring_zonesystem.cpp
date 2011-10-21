@@ -542,34 +542,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 	case kObjectMenuPreferences:
 		_app->puzzleSetActive(kPuzzlePreferences);
 
-		_prefsVolume = _app->getPreferenceHandler()->getVolume();
-		_prefsVolumeDialog = _app->getPreferenceHandler()->getVolumeDialog();
-		_prefsReverseStereo = _app->getPreferenceHandler()->getReverseStereo() == 1;
-		_prefsSubtitles = _app->getPreferenceHandler()->getShowSubtitles();
-
-		// Clip volume values (we can't have a volume < 46)
-		CLIP(_prefsVolume, 46, 100);
-		CLIP(_prefsVolumeDialog, 46, 100);
-
-		// Force subtitles on if no sound is available
-		if (!g_system->getMixer()->isReady()) {
-			_prefsSubtitles = true;
-			_app->objectSetAccessibilityOff(kObjectPreferencesSubtitles);
-		}
-
-		if (_prefsSubtitles) {
-			_app->objectPresentationShow(kObjectPreferencesSubtitles, 0);
-			_app->objectPresentationHide(kObjectPreferencesSubtitles, 1);
-		} else {
-			_app->objectPresentationHide(kObjectPreferencesSubtitles, 0);
-			_app->objectPresentationShow(kObjectPreferencesSubtitles, 1);
-		}
-
-		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point((int16)(5 * _prefsVolume + 84), 155));
-		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderDialog, 0, 0, Common::Point((int16)(5 * _prefsVolumeDialog + 84), 212));
-		_app->objectPresentationHide(kObjectPreferences3dSound);
-		_app->objectPresentationShow(kObjectPreferences3dSound, _prefsReverseStereo);
-
+		showPreferences();
 		break;
 
 	case kObjectPreferences3dSound:
@@ -1091,6 +1064,36 @@ bool ZoneSystemRing::removeSavedTimers(uint32 slot) const {
 
 
 	return true;
+}
+
+void ZoneSystemRing::showPreferences() {
+	_prefsVolume = _app->getPreferenceHandler()->getVolume();
+	_prefsVolumeDialog = _app->getPreferenceHandler()->getVolumeDialog();
+	_prefsReverseStereo = _app->getPreferenceHandler()->getReverseStereo() == 1;
+	_prefsSubtitles = _app->getPreferenceHandler()->getShowSubtitles();
+
+	// Clip volume values (we can't have a volume < 46)
+	_prefsVolume       = CLIP(_prefsVolume, 46, 100);
+	_prefsVolumeDialog = CLIP(_prefsVolumeDialog, 46, 100);
+
+	// Force subtitles on if no sound is available
+	if (!g_system->getMixer()->isReady()) {
+		_prefsSubtitles = true;
+		_app->objectSetAccessibilityOff(kObjectPreferencesSubtitles);
+	}
+
+	if (_prefsSubtitles) {
+		_app->objectPresentationShow(kObjectPreferencesSubtitles, 0);
+		_app->objectPresentationHide(kObjectPreferencesSubtitles, 1);
+	} else {
+		_app->objectPresentationHide(kObjectPreferencesSubtitles, 0);
+		_app->objectPresentationShow(kObjectPreferencesSubtitles, 1);
+	}
+
+	_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point((int16)(5 * _prefsVolume + 84), 155));
+	_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderDialog, 0, 0, Common::Point((int16)(5 * _prefsVolumeDialog + 84), 212));
+	_app->objectPresentationHide(kObjectPreferences3dSound);
+	_app->objectPresentationShow(kObjectPreferences3dSound, _prefsReverseStereo);
 }
 
 #pragma endregion

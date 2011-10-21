@@ -367,6 +367,11 @@ void ApplicationRing::loadPreferences() {
 	setupZone(kZoneAS, kSetupType999);
 }
 
+void ApplicationRing::refreshPreferences() {
+	if (getCurrentPuzzleId() == kPuzzlePreferences)
+		_zoneSystem->showPreferences();
+}
+
 #pragma endregion
 
 #pragma region Drawing

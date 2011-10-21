@@ -294,6 +294,13 @@ bool RingEngine::hasFeature(EngineFeature f) const {
 	       (f == kSupportsSubtitleOptions);
 }
 
+void RingEngine::syncSoundSettings() {
+	if (!_application)
+		return;
+
+	_application->syncSoundSettings();
+}
+
 SaveStateList RingEngine::listSaves(const char *target) const {
 	const char* gameid = gameIdFromTarget(target);
 
