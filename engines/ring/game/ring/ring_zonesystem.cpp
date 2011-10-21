@@ -582,7 +582,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 
 	case kObjectPreferencesOk:
 		_app->puzzleSetActive(kPuzzleGeneralMenu);
-		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _presentationIndexSY != 0 ? 2 : 0, _prefsSubtitles);
+		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _presentationIndexSY != 0 ? 1 : -1, _prefsSubtitles);
 		break;
 
 	case kObjectCredits:
