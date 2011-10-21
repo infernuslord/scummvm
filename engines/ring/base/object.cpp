@@ -123,7 +123,7 @@ void ObjectPresentation::addImageToPuzzle(Puzzle *puzzle, Common::String filenam
 
 void ObjectPresentation::addImageToRotation(Rotation *rotation, uint32 layer) {
 	_layerImagePtr.push_back(new BaseId(layer));
-	_layImageRotationPtr.push_back(rotation);
+	_layerImageRotationPtr.push_back(rotation);
 }
 
 void ObjectPresentation::setImageCoordinatesOnPuzzle(const Common::Point &point) {
@@ -258,7 +258,7 @@ void ObjectPresentation::show() {
 		(*it)->setTicks(g_system->getMillis());
 
 	for (uint32 i = 0; i < _layerImagePtr.size(); i++)
-		_layImageRotationPtr[i]->setChannel((uint32)*(_layerImagePtr[i]), 1);
+		_layerImageRotationPtr[i]->setChannel((uint32)*(_layerImagePtr[i]), 1);
 
 	for (uint32 i = 0; i < _layerAnimationRotation.size(); i++)
 		_layerAnimationRotationPtr[i]->setChannel((uint32)_layerAnimationRotation[i]->id(), 1);
@@ -274,7 +274,7 @@ void ObjectPresentation::hide() {
 		(*it)->sub_416710();
 
 	for (uint32 i = 0; i < _layerImagePtr.size(); i++)
-		_layImageRotationPtr[i]->setChannel((uint32)*(_layerImagePtr[i]), 0);
+		_layerImageRotationPtr[i]->setChannel((uint32)*(_layerImagePtr[i]), 0);
 
 	for (uint32 i = 0; i < _layerAnimationRotation.size(); i++)
 		_layerAnimationRotationPtr[i]->setChannel((uint32)_layerAnimationRotation[i]->id(), 0);
@@ -417,6 +417,7 @@ void Object::show(uint32 presentationIndex) {
 
 	_presentations[presentationIndex]->show();
 }
+
 void Object::show() {
 	for (Common::Array<ObjectPresentation *>::iterator it = _presentations.begin(); it != _presentations.end(); it++)
 		(*it)->show();

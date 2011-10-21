@@ -113,7 +113,7 @@ private:
 	Common::Array<AnimationImage *> _animationPuzzle;
 	Common::Array<Puzzle *>         _animationPuzzlePtr;
 	Common::Array<BaseId *>         _layerImagePtr;
-	Common::Array<Rotation *>       _layImageRotationPtr;
+	Common::Array<Rotation *>       _layerImageRotationPtr;
 	Common::Array<BaseId *>         _layerAnimationRotation;
 	Common::Array<Rotation *>       _layerAnimationRotationPtr;
 	Common::Array<Animation *>      _layerAnimationRotationAnimation;
