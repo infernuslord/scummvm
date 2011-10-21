@@ -686,7 +686,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 		Common::String name = list[slot].getDescription();
 
 		// Try loading the game, and fallback to autosave if it doesn't work
-		if (_app->getSaveManager()->loadSave(slot, kLoadSaveRead)) {
+		if (!_app->getSaveManager()->loadSave(slot, kLoadSaveRead)) {
 			// Try to reload auto-save
 			if (!_app->getSaveManager()->loadSave(0, kLoadSaveRead)) {
 				_app->exitZone();

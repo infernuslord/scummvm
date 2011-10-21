@@ -93,10 +93,10 @@ public:
 	virtual bool decompress(SoundBuffer *buffer) = 0;
 	uint32 getDataSize() { return _dataSize; }
 	virtual bool getChunk() = 0;
-	int getSamplesPerSec() { return _samplesPerSec; }
-	int16 getBitsPerSample() const;
-	int16 getType() { return _type; }
-	int getBlockAlign() { return _blockAlign; }
+	uint32 getSamplesPerSec() { return (uint32)_samplesPerSec; }
+	uint16 getBitsPerSample() const;
+	uint16 getType() { return _type; }
+	uint16 getBlockAlign() { return (uint16)_blockAlign; }
 
 protected:
 	Common::SeekableReadStream  *_stream;
@@ -113,8 +113,8 @@ protected:
 	uint32                       _dataSize;
 
 	// Stream related variables
-	int16                        _offset;
-	int16                        _initialValue;
+	uint16                       _offset;
+	uint16                       _initialValue;
 
 	uint32 decode(byte delta, uint32 start, uint32 end, int16 *buffer);
 };

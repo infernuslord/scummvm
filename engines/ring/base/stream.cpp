@@ -206,8 +206,8 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 	if (!stream)
 		error("[CompressedStream::decompressIndexed] Invalid stream!");
 
-	uint32 streamStart = (uint32)stream->pos();
-	uint32 offset      = stream->readUint32LE();
+	int32 streamStart = stream->pos();
+	uint32 offset     = stream->readUint32LE();
 
 	// Read header
 	NodeHeader header;
@@ -219,7 +219,7 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 	stream->seek(sizeof(header) + 4, SEEK_SET);
 
 	// Compute buffer size
-	uint32 size = header.field_0 * header.field_4 * header.field_8 / 4;
+	uint32 size = (uint32)(header.field_0 * header.field_4 * header.field_8 / 4);
 	uint32 bufferSize = size + 129652;
 	if (bufferSize > 10000000) {
 		warning("[CompressedStream::decompressNode] Invalid node buffer size (%d)", bufferSize);
@@ -238,10 +238,10 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 	stream->read(buffer, sizeof(header));
 
 	// Decode channel and nodes
-	uint32 delta = stream->pos() - streamStart;
+	uint32 delta = (uint32)(stream->pos() - streamStart);
 	uint32 decodedChannelSize = decodeChannel(stream, delta* 8, (delta + offset) * 8, buffer + sizeof(header));
 
-	delta = stream->pos() - streamStart;
+	delta = (uint32)(stream->pos() - streamStart);
 	uint32 decodedNodeSize = decodeNode(stream, delta * 8, (delta + chunkSize) * 8, buffer + size + sizeof(header));
 
 	if ((decodedChannelSize + decodedNodeSize) > (bufferSize + 64))
@@ -256,7 +256,7 @@ Common::MemoryReadStream *CompressedStream::decompressChannel() {
 	if (!stream)
 		error("[CompressedStream::decompressNode] Invalid stream!");
 
-	uint32 streamStart = (uint32)stream->pos();
+	int32 streamStart = stream->pos();
 
 	uint32 channelCount = stream->readUint32LE();
 	stream->readUint32LE();
@@ -268,7 +268,7 @@ Common::MemoryReadStream *CompressedStream::decompressChannel() {
 	header.read(stream);
 
 	// Compute buffer size
-	uint32 channelSize = (header.field_2C / 4 * sizeof(header));
+	uint32 channelSize = (uint32)header.field_2C / (4 * sizeof(header));
 	uint32 size = channelSize * channelCount;
 	uint32 bufferSize = size + 12;
 	if (bufferSize > 10000000) {
@@ -298,7 +298,7 @@ Common::MemoryReadStream *CompressedStream::decompressChannel() {
 		pBuffer += sizeof(NodeHeader);
 
 		// Decompress channel
-		uint32 delta = stream->pos() - streamStart;
+		uint32 delta = (uint32)(stream->pos() - streamStart);
 		decodedSize += decodeChannel(stream, delta * 8, (delta + offset) * 8, pBuffer);
 		pBuffer += channelSize - sizeof(NodeHeader);
 	}

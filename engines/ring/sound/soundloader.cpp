@@ -163,7 +163,7 @@ bool CompressedSound::init(const Common::String &path) {
 	return true;
 }
 
-int16 CompressedSound::getBitsPerSample() const {
+uint16 CompressedSound::getBitsPerSample() const {
 	if (_flags & Audio::FLAG_UNSIGNED)
 		return 8;
 
@@ -198,12 +198,12 @@ uint32 CompressedSound::decode(byte delta, uint32 start, uint32, int16 *buffer) 
 			++buffer;
 			++start;
 		} else {
-			int16 decoded = (var << (32 - position)) >> (32 - delta);
+			uint16 decoded = (uint16)((var << (32 - position)) >> (32 - delta));
 
 			if (decoded >= 512)
 				decoded = 512 - decoded;
 
-			_offset = decoded << 6;
+			_offset = (uint16)(decoded << 6);
 
 			_initialValue += _offset;
 			WRITE_UINT16(buffer, _initialValue);
@@ -313,7 +313,7 @@ bool CompressedSoundStereo::decompressHeader() {
 	_field_30 = _stream->readUint32LE();
 
 	// Compute buffer size
-	uint32 bufferSize = (getType() != 0 ? 2 : 1) * getSamplesPerSec() * getBitsPerSample();
+	uint32 bufferSize = (uint32)((getType() != 0 ? 2 : 1) * getSamplesPerSec() * getBitsPerSample());
 
 	_buffer = (byte *)malloc(bufferSize + 1024);
 	if (!_buffer)
@@ -323,7 +323,7 @@ bool CompressedSoundStereo::decompressHeader() {
 }
 
 bool CompressedSoundStereo::decompress(SoundBuffer *soundBuffer) {
-	if (!_stream)
+	if (!_stream || !_resource)
 		error("[CompressedSoundStereo::decompress] Stream not initialized");
 
 	// Compute buffer size
@@ -347,8 +347,8 @@ bool CompressedSoundStereo::decompress(SoundBuffer *soundBuffer) {
 		}
 
 		// Check that the stream contains enough data
-		uint32 remainingSize = _stream->size() - _stream->pos();
-		if (remainingSize < _compressedDataOffset + 8)
+		int32 remainingSize = _stream->size() - _stream->pos();
+		if (remainingSize < 0 || remainingSize < (int32)_compressedDataOffset + 8)
 			error("[CompressedSoundStereo::decompress] Invalid remaining stream size (needed: %d, found: %d)", _compressedDataOffset + 8, remainingSize);
 
 		if (_field_30 >= size)
@@ -361,6 +361,9 @@ bool CompressedSoundStereo::decompress(SoundBuffer *soundBuffer) {
 }
 
 bool CompressedSoundStereo::getChunk() {
+	if (!_stream)
+		error("[CompressedSoundStereo::getChunk] Stream not initialized");
+
 	_stream->seek(52, SEEK_SET);
 	_compressedDataOffset = _stream->readUint32LE();
 	_field_30 = _stream->readUint32LE();
@@ -446,6 +449,9 @@ uint32 SoundLoader::getDataSize() {
 }
 
 bool SoundLoader::read(uint32 size, byte *buffer, uint32 *readSize) {
+	if (!_compressedStream)
+		error("[SoundLoader::read] Stream not initialized");
+
 	if (_field_16) {
 		*readSize = 0;
 		return false;

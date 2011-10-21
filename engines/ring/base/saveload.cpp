@@ -306,8 +306,8 @@ void SaveManager::setDescription(const Common::String &description) {
 	// Update current date/time and total playtime
 	TimeDate curTime;
 	g_system->getTimeAndDate(curTime);
-	_header.date = ((curTime.tm_mday & 0xFF) << 24) | (((curTime.tm_mon + 1) & 0xFF) << 16) | ((curTime.tm_year + 1900) & 0xFFFF);
-	_header.time = ((curTime.tm_hour & 0xFF) << 8) | ((curTime.tm_min) & 0xFF);
+	_header.date = (((uint)curTime.tm_mday & 0xFF) << 24) | ((((uint)curTime.tm_mon + 1) & 0xFF) << 16) | (((uint)curTime.tm_year + 1900) & 0xFFFF);
+	_header.time = (((uint)curTime.tm_hour & 0xFF) << 8) | ((curTime.tm_min) & 0xFF);
 	_header.playtime = g_engine->getTotalPlayTime() / 1000;
 }
 

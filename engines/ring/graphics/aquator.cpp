@@ -339,7 +339,7 @@ void ImageHeaderEntry::computeCoordinates(Common::Point *point) {
 	if (point->y >= (int16)buffer[8201])
 		point->y = buffer[8201] - 1;
 
-	int offset = (pointDiv.y << 6) + pointDiv.x;
+	int offset = ((uint16)pointDiv.y << 6) + pointDiv.x;
 	float dist = 2048.0f * 0.5f;
 
 	float a1 = (float)buffer[offset + 2]  * 0.000015258789f;
