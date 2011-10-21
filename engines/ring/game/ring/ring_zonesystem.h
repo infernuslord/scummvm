@@ -53,7 +53,7 @@ private:
 	int16        _coordX;
 
 	// Button
-	uint32       _presentationIndexSY;
+	uint32       _prefsReverseStereo;
 	int32        _prefsVolume;
 	bool         _prefsSubtitles;
 	int32        _prefsVolumeDialog;

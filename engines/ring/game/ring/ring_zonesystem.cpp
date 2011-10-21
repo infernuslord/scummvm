@@ -34,13 +34,15 @@
 #include "ring/ring.h"
 #include "ring/helpers.h"
 
+#include "audio/mixer.h"
+
 using namespace RingGame;
 
 namespace Ring {
 
 ZoneSystemRing::ZoneSystemRing(ApplicationRing *application) : _app(application) {
 	// Button
-	_presentationIndexSY = 0;
+	_prefsReverseStereo = 0;
 	_prefsVolume = 0;
 	_prefsSubtitles = false;
 	_prefsVolumeDialog = 0;
@@ -542,10 +544,18 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 
 		_prefsVolume = _app->getPreferenceHandler()->getVolume();
 		_prefsVolumeDialog = _app->getPreferenceHandler()->getVolumeDialog();
-		_presentationIndexSY = _app->getPreferenceHandler()->getReverseStereo() == 1;
+		_prefsReverseStereo = _app->getPreferenceHandler()->getReverseStereo() == 1;
 		_prefsSubtitles = _app->getPreferenceHandler()->getShowSubtitles();
 
-		// Original forces subtitles on if no sound is available
+		// Clip volume values (we can't have a volume < 46)
+		CLIP(_prefsVolume, 46, 100);
+		CLIP(_prefsVolumeDialog, 46, 100);
+
+		// Force subtitles on if no sound is available
+		if (!g_system->getMixer()->isReady()) {
+			_prefsSubtitles = true;
+			_app->objectSetAccessibilityOff(kObjectPreferencesSubtitles);
+		}
 
 		if (_prefsSubtitles) {
 			_app->objectPresentationShow(kObjectPreferencesSubtitles, 0);
@@ -558,14 +568,14 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point((int16)(5 * _prefsVolume + 84), 155));
 		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderDialog, 0, 0, Common::Point((int16)(5 * _prefsVolumeDialog + 84), 212));
 		_app->objectPresentationHide(kObjectPreferences3dSound);
-		_app->objectPresentationShow(kObjectPreferences3dSound, _presentationIndexSY);
+		_app->objectPresentationShow(kObjectPreferences3dSound, _prefsReverseStereo);
 
 		break;
 
 	case kObjectPreferences3dSound:
-		_presentationIndexSY = (_presentationIndexSY != 1) ? 1 : 0;
+		_prefsReverseStereo = (_prefsReverseStereo != 1) ? 1 : 0;
 		_app->objectPresentationHide(kObjectPreferences3dSound);
-		_app->objectPresentationShow(kObjectPreferences3dSound, _presentationIndexSY);
+		_app->objectPresentationShow(kObjectPreferences3dSound, _prefsReverseStereo);
 		break;
 
 	case kObjectPreferencesSubtitles:
@@ -582,7 +592,7 @@ void ZoneSystemRing::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/,
 
 	case kObjectPreferencesOk:
 		_app->puzzleSetActive(kPuzzleGeneralMenu);
-		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _presentationIndexSY != 0 ? 1 : -1, _prefsSubtitles);
+		_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _prefsReverseStereo != 0 ? 1 : -1, _prefsSubtitles);
 		break;
 
 	case kObjectCredits:
