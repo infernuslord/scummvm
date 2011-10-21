@@ -59,6 +59,13 @@ void PreferenceHandler::load() {
 	_volumeDialog = ConfMan.getInt("speech_volume");
 	_showSubtitles = ConfMan.getBool("subtitles");
 	_reverseStereo = ConfMan.getInt("reverse_stereo");
+
+	// We need to convert volume from ScummVM values (0-255) to in-game values (0-100)
+	_volume       = (int32)(_volume * 100.0f/255.0f);
+	_volumeDialog = (int32)(_volumeDialog * 100.0f/255.0f);
+
+	CLIP(_volume, 0, 100);
+	CLIP(_volumeDialog, 0, 100);
 }
 
 void PreferenceHandler::loadDefaults() {
@@ -98,8 +105,9 @@ void PreferenceHandler::save(int32 volume, int32 volumeDialog, int32 reverseSter
 	set(volume, volumeDialog, reverseStereo, showSubtitles);
 	setup();
 
-	ConfMan.setInt("music_volume", _volume);
-	ConfMan.setInt("speech_volume", _volumeDialog);
+	// We need to convert volume values (0-100) to ScummVM values (0-255)
+	ConfMan.setInt("music_volume", (int)(_volume * 255.0f/100.0f));
+	ConfMan.setInt("speech_volume", (int)(_volumeDialog * 255.0f/100.0f));
 	ConfMan.setBool("subtitles", _showSubtitles);
 	ConfMan.setInt("reverse_stereo", _reverseStereo);
 }
