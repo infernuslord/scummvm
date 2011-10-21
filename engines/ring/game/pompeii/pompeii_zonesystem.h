@@ -46,6 +46,13 @@ public:
 
 private:
 	ApplicationPompeii *_app;
+
+	// Button
+	uint32       _presentationIndex;
+	int32        _prefsVolume;
+	int32        _prefsVolumeDialog;
+	bool         _prefsReverseStereo;
+	bool         _prefsSubtitles;
 };
 
 } // End of namespace Ring

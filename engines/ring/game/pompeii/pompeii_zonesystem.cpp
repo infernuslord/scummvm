@@ -21,8 +21,12 @@
 
 #include "ring/game/pompeii/pompeii_zonesystem.h"
 
+#include "ring/base/preferences.h"
+
 #include "ring/game/pompeii/pompeii_application.h"
 #include "ring/game/pompeii/pompeii_shared.h"
+
+#include "ring/graphics/dragControl.h"
 
 #include "ring/debug.h"
 #include "ring/ring.h"
@@ -32,6 +36,11 @@ using namespace PompeiiGame;
 namespace Ring {
 
 ZoneSystemPompeii::ZoneSystemPompeii(ApplicationPompeii *application) : _app(application) {
+	_presentationIndex  = 0;
+	_prefsVolume        = 0;
+	_prefsVolumeDialog  = 0;
+	_prefsReverseStereo = false;
+	_prefsSubtitles     = false;
 }
 
 ZoneSystemPompeii::~ZoneSystemPompeii() {
@@ -551,8 +560,53 @@ void ZoneSystemPompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /
 	}
 }
 
-void ZoneSystemPompeii::onBag(ObjectId id, Id target, Id puzzleRotationId, uint32 a4, DragControl *dragControl, byte type) {
-	error("[ZoneSystemPompeii::onBag] Not implemented");
+void ZoneSystemPompeii::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*/, uint32 /*a4*/, DragControl *dragControl, byte type) {
+	switch (id) {
+	default:
+		break;
+
+	case kObject99045:
+		if (type != 1 && type != 3)
+			break;
+
+		_prefsVolume = (uint32)((dragControl->getCurrentCoords().x - 350.0f) * 0.4166666666666667f);
+		if (_prefsVolume > 100)
+			_prefsVolume = 100;
+
+		if (_prefsVolume < 0)
+			_prefsVolume = 0;
+
+		_app->objectPresentationSetImageCoordinatesOnPuzzle(kObject99045, 0, 0, Common::Point((int16)((240 * _prefsVolume / 100) + 350), 112));
+		break;
+
+	case kObject99046:
+		switch (type) {
+		default:
+			break;
+
+		case 1:
+			_app->soundPlay(90800, kSoundLoop);
+			// Fallback to next case
+
+		case 3:
+			_prefsVolumeDialog = (uint32)((dragControl->getCurrentCoords().x - 350.0f) * 0.4166666666666667f);
+			if (_prefsVolumeDialog > 100)
+				_prefsVolumeDialog = 100;
+
+			if (_prefsVolumeDialog < 0)
+				_prefsVolumeDialog = 0;
+
+			_app->objectPresentationSetImageCoordinatesOnPuzzle(kObject99046, 0, 0, Common::Point((int16)((240 * _prefsVolumeDialog / 100) + 350), 192));
+			break;
+
+		case 2:
+			_app->soundStop(90800, 1024);
+			break;
+		}
+		break;
+	}
+
+	_app->getPreferenceHandler()->save(_prefsVolume, _prefsVolumeDialog, _prefsReverseStereo ? 1 : -1, _prefsSubtitles);
 }
 
 void ZoneSystemPompeii::onUpdateBag(const Common::Point &/*point*/) {
@@ -677,12 +731,12 @@ void ZoneSystemPompeii::onUpdateBefore(Id movabilityFrom, Id movabilityTo, uint3
 	case kObject5:
 		_app->objectPresentationHide(kObject5, 1);
 		_app->objectPresentationHide(kObject5, 2);
-		_app->objectPresentationShow(kObject5, movabilityTo + 1);
+		_app->objectPresentationShow(kObject5, (uint32)(movabilityTo + 1));
 		break;
 
 	case kObject6:
 		if (movabilityTo >= 6 && movabilityTo <= 18)
-			_app->objectPresentationShow(kObject6, movabilityTo);
+			_app->objectPresentationShow(kObject6, (uint32)movabilityTo);
 		break;
 
 	case kObject16:
