@@ -247,9 +247,9 @@ void CursorHandler::add(CursorId id, Common::String name, CursorType cursorType,
 	_cursors.push_back(cursor);
 }
 
-void CursorHandler::removeByType(CursorType cursorType) {
+void CursorHandler::removeByFrameCount(int framecount) {
 	for (uint i = 0; i < _cursors.size();) {
-		if (_cursors[i]->getType() == cursorType) {
+		if (_cursors[i]->getFrameCount() == framecount) {
 			SAFE_DELETE(_cursors[i]);
 			_cursors.remove_at(i);
 		} else {

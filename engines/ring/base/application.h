@@ -139,7 +139,7 @@ public:
 	void cursorSetOffset(CursorId id, const Common::Point &offset);
 	void cursorSelect(CursorId id);
 	void cursorDelete();
-	void cursorRemoveByType(CursorType type);
+	void cursorRemoveByFrameCount(int framecount);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Message

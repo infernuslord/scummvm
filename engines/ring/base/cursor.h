@@ -40,13 +40,11 @@ public:
 	virtual void draw() { error("[CursorBase::draw] Invalid call to base cursor draw method"); }
 
 	// Accessors
-	void setName(Common::String name) { _name = name; }
-	Common::String getName() { return _name; }
-
 	void setOffset(Common::Point offset) { _offset = offset; }
 
-	void setType(CursorType type) { _type = type; }
+	Common::String getName() { return _name; }
 	CursorType getType() { return _type; }
+	byte getFrameCount() { return _frameCount; }
 
 protected:
 	Common::String _name;
@@ -84,9 +82,6 @@ public:
 	virtual void alloc();
 	virtual void dealloc();
 	virtual void draw();
-
-private:
-
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -96,7 +91,7 @@ public:
 	~CursorHandler();
 
 	void add(CursorId id, Common::String name, CursorType cursorType, byte imageCount, uint32 frameCount, float frameRate, byte a6, LoadFrom loadFrom, ArchiveType archiveType);
-	void removeByType(CursorType cursorType);
+	void removeByFrameCount(int framecount);
 
 	void draw();
 	void hide() const;

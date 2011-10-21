@@ -813,7 +813,7 @@ void ZoneSystemRing::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*/, 
 			}
 
 			_coordX = (int16)(5 * _offsetX + 314);
-			_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point(_coordX, (id == kObjectPreferencesSliderVolume) ? 155 : 212));
+			_app->objectPresentationSetImageCoordinatesOnPuzzle(id, 0, 0, Common::Point(_coordX, (id == kObjectPreferencesSliderVolume) ? 155 : 212));
 			break;
 
 		case 2:
@@ -822,14 +822,21 @@ void ZoneSystemRing::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*/, 
 				if (_offsetX < 0)
 					_offsetX = 0;
 
-				_prefsVolume = _offsetX + 46;
+				if (id == kObjectPreferencesSliderVolume)
+					_prefsVolume = _offsetX + 46;
+				else
+					_prefsVolumeDialog = _offsetX + 46;
 			} else {
 				_offsetX = 54;
-				_prefsVolume = 100;
+
+				if (id == kObjectPreferencesSliderVolume)
+					_prefsVolume = 100;
+				else
+					_prefsVolumeDialog = 100;
 			}
 
 			_coordX = (int16)(5 * _offsetX + 314);
-			_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point(_coordX, (id == kObjectPreferencesSliderVolume) ? 155 : 212));
+			_app->objectPresentationSetImageCoordinatesOnPuzzle(id, 0, 0, Common::Point(_coordX, (id == kObjectPreferencesSliderVolume) ? 155 : 212));
 			break;
 
 		case 3:
@@ -845,7 +852,7 @@ void ZoneSystemRing::onBag(ObjectId id, Id /*target*/, Id /*puzzleRotationId*/, 
 				_offsetX = 54;
 			}
 
-			_app->objectPresentationSetImageCoordinatesOnPuzzle(kObjectPreferencesSliderVolume, 0, 0, Common::Point(_offsetX0 + _coordX, (id == kObjectPreferencesSliderVolume) ? 155 : 212));
+			_app->objectPresentationSetImageCoordinatesOnPuzzle(id, 0, 0, Common::Point(_offsetX0 + _coordX, (id == kObjectPreferencesSliderVolume) ? 155 : 212));
 			break;
 		}
 		break;

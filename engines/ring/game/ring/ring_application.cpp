@@ -738,6 +738,8 @@ void ApplicationRing::onMouseLeftButtonUp(const Common::Event &evt) {
 	// Handle clicks on drag control
 	DragControl *dragControl = getDragControl();
 	if (dragControl->getField20()) {
+		bool stopProcessing = (dragControl->getField45() == 2);
+
 		onBag(dragControl->getObjectId(), dragControl->getTarget(), dragControl->getPuzzleRotationId(), dragControl->getField39(), dragControl, 2);
 
 		if (getState() == kStateShowMenu)
@@ -745,7 +747,7 @@ void ApplicationRing::onMouseLeftButtonUp(const Common::Event &evt) {
 
 		dragControl->reset();
 
-		if (dragControl->getField45() == 2)
+		if (stopProcessing)
 			return;
 	}
 

@@ -1183,12 +1183,12 @@ void Application::cursorDelete() {
 		_bag->setClickedObject(kObjectInvalid);
 
 	if (_cursorHandler)
-		_cursorHandler->removeByType(kCursorType2);
+		_cursorHandler->removeByFrameCount(2);
 }
 
-void Application::cursorRemoveByType(CursorType type) {
+void Application::cursorRemoveByFrameCount(int framecount) {
 	if (_cursorHandler)
-		_cursorHandler->removeByType(type);
+		_cursorHandler->removeByFrameCount(framecount);
 }
 
 #pragma endregion
@@ -1973,7 +1973,7 @@ void Application::initObjectDrawCursors(ObjectId objectId) {
 		break;
 	}
 
-	cursorSetOffset(kCursorPassive, passiveCursor->offset);
+	cursorSetOffset(kCursorPassiveDraw, passiveCursor->offset);
 
 	// Active draw cursor
 	ObjectCursor *activeCursor = object->getActiveDrawCursor();
@@ -1982,7 +1982,7 @@ void Application::initObjectDrawCursors(ObjectId objectId) {
 		break;
 
 	case kCursorTypeImage:
-		cursorAdd(kCursorActiveDraw, Common::String::format("%s_da", object->getName().empty() ? "dummy" : object->getName().c_str()), kCursorTypeImage, 2, activeCursor->loadFrom, activeCursor->archiveType);
+		cursorAdd(kCursorActiveDraw, Common::String::format("%s_da", object->getName().empty() ? "dummy" : object->getName().c_str()), kCursorTypeImage, 3, activeCursor->loadFrom, activeCursor->archiveType);
 		break;
 
 	case kCursorTypeAnimated:
@@ -1990,7 +1990,7 @@ void Application::initObjectDrawCursors(ObjectId objectId) {
 		break;
 	}
 
-	cursorSetOffset(kCursorActive, passiveCursor->offset);
+	cursorSetOffset(kCursorActiveDraw, passiveCursor->offset);
 }
 
 #pragma endregion

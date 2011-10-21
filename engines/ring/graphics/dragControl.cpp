@@ -66,7 +66,7 @@ void DragControl::init(const Common::Point &coords, const ObjectId &objectId, ui
 	_field_41 = 0;
 	_field_45 = 1;
 
-	getApp()->initObjectCursors(objectId);
+	getApp()->initObjectDrawCursors(objectId);
 }
 
 void DragControl::reset() {
@@ -85,7 +85,8 @@ void DragControl::reset() {
 
 	setHotspot(Common::Rect(0, 16, 640, 464));
 
-	getApp()->cursorRemoveByType(kCursorTypeImage);
+	// This should remove the passive/active draw cursors (set to have 3 frames)
+	getApp()->cursorRemoveByFrameCount(3);
 }
 
 void DragControl::updateCoordinates(const Common::Point &point) {
