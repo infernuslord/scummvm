@@ -704,8 +704,6 @@ void ApplicationRing::onMouseLeftButtonUp(const Common::Event &evt, bool isContr
 }
 
 void ApplicationRing::onMouseLeftButtonUp(const Common::Event &evt) {
-	debugC(kRingDebugLogic, "onMouseLeftButtonUp");
-
 	// Handle clicks on bag
 	Bag *bag = getBag();
 	if (bag->isInitialized()) {
@@ -993,8 +991,6 @@ bool ApplicationRing::handleLeftButtonUp(Movability *movability, uint32 index, I
 }
 
 void ApplicationRing::onMouseLeftButtonDown(const Common::Event &evt) {
-	debugC(kRingDebugLogic, "onMouseLeftButtonDown");
-
 	if (getBag()->isInitialized())
 		return;
 
