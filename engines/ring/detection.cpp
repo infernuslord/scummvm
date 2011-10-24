@@ -57,7 +57,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::UNK_LANG,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypePilgrim,
 		LANG_ENG,
@@ -77,7 +77,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::UNK_LANG,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypeRing,
 		LANG_ENG | LANG_FRA | LANG_GER | LANG_GRE | LANG_HEB | LANG_HOL | LANG_ITA | LANG_SLO | LANG_SPA | LANG_SWE,
@@ -96,7 +96,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::UNK_LANG,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypeFaust,
 		LANG_ENG | LANG_FRA | LANG_GER | LANG_HOL | LANG_ITA | LANG_SPA | LANG_SWE,
@@ -115,7 +115,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypePompeii,
 		LANG_ENG,
@@ -134,7 +134,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypePilgrim2,
 		LANG_ENG,
@@ -153,7 +153,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypePilgrim3,
 		LANG_ENG,
@@ -172,7 +172,7 @@ static const RingGameDescription gameDescriptions[] = {
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypeJerusalem,
 		LANG_ENG,
@@ -186,7 +186,7 @@ class RingMetaEngine : public AdvancedMetaEngine {
 public:
 	RingMetaEngine() : AdvancedMetaEngine(gameDescriptions, sizeof(Ring::RingGameDescription), ringGames) {
 		_singleid = "ring";
-		_guioptions = Common::GUIO_NOSFX;
+		_guioptions = GUIO1(GUIO_NOSFX);
 		_maxScanDepth = 2;
 		_directoryGlobs = directoryGlobs;
 	}
