@@ -957,6 +957,7 @@ begin_credits("Credits");
 				end_section();
 				begin_section("Spanish");
 					add_person("Tom&aacute;s Maidagan", "", "");
+					add_person("Jordi Vilalta Prat", "jvprat", "");
 				end_section();
 				begin_section("Swedish");
 					add_person("Hampus Flink", "", "");
@@ -1077,6 +1078,8 @@ begin_credits("Credits");
 			add_person("", "Tristan", "For additional work on the original MT-32 emulator");
 			add_person("James Woodcock", "", "Soundtrack enhancements");
 		end_persons();
+
+	add_paragraph("Some icons by Yusuke Kamiyamane");
 
 	add_paragraph(
     "Tony Warriner and everyone at Revolution Software Ltd. for sharing ".

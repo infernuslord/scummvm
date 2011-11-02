@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef TSAGE_BLUEFORCE_UI_H
-#define TSAGE_BLUEFORCE_UI_H
+#ifndef TSAGE_USER_INTERFACE_H
+#define TSAGE_USER_INTERFACE_H
 
 #include "common/scummsys.h"
 #include "tsage/core.h"
@@ -29,10 +29,6 @@
 #include "tsage/sound.h"
 
 namespace TsAGE {
-
-namespace BlueForce {
-
-using namespace TsAGE;
 
 class StripProxy: public EventHandler {
 public:
@@ -76,8 +72,6 @@ public:
 };
 
 class UIInventorySlot: public UIElement {
-private:
-	void showAmmoBelt();
 public:
 	int _objIndex;
 	InvObject *_object;
@@ -124,7 +118,7 @@ private:
 	void add(UIElement *obj);
 	void updateInvList();
 public:
-	UIElement _object1;
+	UIElement _background;
 	UIQuestion _question;
 	UIScore _score;
 	UIInventorySlot _slot1, _slot2, _slot3, _slot4;
@@ -134,6 +128,8 @@ public:
 	bool _active;
 	Common::Array<int> _itemList;
 	Visage _cursorVisage;
+	UIElement _character;
+	int _characterIndex;
 
 	UIElements();
 	virtual Common::String getClassName() { return "UIElements"; }
@@ -148,8 +144,6 @@ public:
 
 	static void loadNotifierProc(bool postFlag);
 };
-
-} // End of namespace BlueForce
 
 } // End of namespace TsAGE
 

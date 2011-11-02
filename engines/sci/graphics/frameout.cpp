@@ -37,6 +37,7 @@
 #include "sci/engine/vm.h"
 #include "sci/graphics/cache.h"
 #include "sci/graphics/coordadjuster.h"
+#include "sci/graphics/compare.h"
 #include "sci/graphics/font.h"
 #include "sci/graphics/view.h"
 #include "sci/graphics/screen.h"
@@ -90,6 +91,7 @@ void GfxFrameout::kernelAddPlane(reg_t object) {
 	newPlane.priority = readSelectorValue(_segMan, object, SELECTOR(priority));
 	newPlane.lastPriority = 0xFFFF; // hidden
 	newPlane.planeOffsetX = 0;
+	newPlane.planeOffsetY = 0;
 	newPlane.pictureId = 0xFFFF;
 	newPlane.planePictureMirrored = false;
 	newPlane.planeBack = 0;
@@ -132,9 +134,14 @@ void GfxFrameout::kernelUpdatePlane(reg_t object) {
 			} else {
 				it->planeOffsetX = 0;
 			}
-
-			if (it->planeRect.top < 0)
+			
+			if (it->planeRect.top < 0) {
+				it->planeOffsetY = -it->planeRect.top;
 				it->planeRect.top = 0;
+			} else {
+				it->planeOffsetY = 0;
+			}
+
 			// We get bad plane-bottom in sq6
 			if (it->planeRect.right > _screen->getWidth())
 				it->planeRect.right = _screen->getWidth();
@@ -447,7 +454,14 @@ void GfxFrameout::kernelFrameout() {
 					continue;
 
 				// Out of view vertically (sanity checks)
-				// TODO
+				int16 pictureCelStartY = itemEntry->picStartY + itemEntry->y;
+				int16 pictureCelEndY = pictureCelStartY + itemEntry->picture->getSci32celHeight(itemEntry->celNo);
+				int16 planeStartY = it->planeOffsetY;
+				int16 planeEndY = planeStartY + it->planeRect.height();
+				if (pictureCelEndY < planeStartY)
+					continue;
+				if (pictureCelStartY > planeEndY)
+					continue;
 
 				int16 pictureOffsetX = it->planeOffsetX;
 				int16 pictureX = itemEntry->x;
@@ -460,17 +474,24 @@ void GfxFrameout::kernelFrameout() {
 					}
 				}
 
-				// TODO: pictureOffsetY
-				itemEntry->picture->drawSci32Vga(itemEntry->celNo, pictureX, itemEntry->y, pictureOffsetX, it->planePictureMirrored);
+				int16 pictureOffsetY = it->planeOffsetY;
+				int16 pictureY = itemEntry->y;
+				if ((it->planeOffsetY) || (itemEntry->picStartY)) {
+					if (it->planeOffsetY <= itemEntry->picStartY) {
+						pictureY += itemEntry->picStartY - it->planeOffsetY;
+						pictureOffsetY = 0;
+					} else {
+						pictureOffsetY = it->planeOffsetY - itemEntry->picStartY;
+					}
+				}
+
+				itemEntry->picture->drawSci32Vga(itemEntry->celNo, pictureX, itemEntry->y, pictureOffsetX, pictureOffsetY, it->planePictureMirrored);
 //				warning("picture cel %d %d", itemEntry->celNo, itemEntry->priority);
 
-			} else if (itemEntry->viewId != 0xFFFF) {
-				GfxView *view = _cache->getView(itemEntry->viewId);
-
-//				warning("view %s %04x:%04x", _segMan->getObjectName(itemEntry->object), PRINT_REG(itemEntry->object));
-
-
-				if (view->isSci2Hires()) {
+			} else {
+				GfxView *view = (itemEntry->viewId != 0xFFFF) ? _cache->getView(itemEntry->viewId) : NULL;
+				
+				if (view && view->isSci2Hires()) {
 					int16 dummyX = 0;
 					view->adjustToUpscaledCoordinates(itemEntry->y, itemEntry->x);
 					view->adjustToUpscaledCoordinates(itemEntry->z, dummyX);
@@ -482,6 +503,7 @@ void GfxFrameout::kernelFrameout() {
 
 				// Adjust according to current scroll position
 				itemEntry->x -= it->planeOffsetX;
+				itemEntry->y -= it->planeOffsetY;
 
 				uint16 useInsetRect = readSelectorValue(_segMan, itemEntry->object, SELECTOR(useInsetRect));
 				if (useInsetRect) {
@@ -489,24 +511,27 @@ void GfxFrameout::kernelFrameout() {
 					itemEntry->celRect.left = readSelectorValue(_segMan, itemEntry->object, SELECTOR(inLeft));
 					itemEntry->celRect.bottom = readSelectorValue(_segMan, itemEntry->object, SELECTOR(inBottom)) + 1;
 					itemEntry->celRect.right = readSelectorValue(_segMan, itemEntry->object, SELECTOR(inRight)) + 1;
-					if (view->isSci2Hires()) {
+					if (view && view->isSci2Hires()) {
 						view->adjustToUpscaledCoordinates(itemEntry->celRect.top, itemEntry->celRect.left);
 						view->adjustToUpscaledCoordinates(itemEntry->celRect.bottom, itemEntry->celRect.right);
 					}
 					itemEntry->celRect.translate(itemEntry->x, itemEntry->y);
 					// TODO: maybe we should clip the cels rect with this, i'm not sure
 					//  the only currently known usage is game menu of gk1
-				} else {
-					if ((itemEntry->scaleX == 128) && (itemEntry->scaleY == 128))
-						view->getCelRect(itemEntry->loopNo, itemEntry->celNo, itemEntry->x, itemEntry->y, itemEntry->z, itemEntry->celRect);
-					else
-						view->getCelScaledRect(itemEntry->loopNo, itemEntry->celNo, itemEntry->x, itemEntry->y, itemEntry->z, itemEntry->scaleX, itemEntry->scaleY, itemEntry->celRect);
+				} else if (view) {
+						if ((itemEntry->scaleX == 128) && (itemEntry->scaleY == 128))
+							view->getCelRect(itemEntry->loopNo, itemEntry->celNo,
+								itemEntry->x, itemEntry->y, itemEntry->z, itemEntry->celRect);
+						else
+							view->getCelScaledRect(itemEntry->loopNo, itemEntry->celNo, 
+								itemEntry->x, itemEntry->y, itemEntry->z, itemEntry->scaleX,
+								itemEntry->scaleY, itemEntry->celRect);
 
 					Common::Rect nsRect = itemEntry->celRect;
 					// Translate back to actual coordinate within scrollable plane
-					nsRect.translate(it->planeOffsetX, 0);
+					nsRect.translate(it->planeOffsetX, it->planeOffsetY);
 
-					if (view->isSci2Hires()) {
+					if (view && view->isSci2Hires()) {
 						view->adjustBackUpscaledCoordinates(nsRect.top, nsRect.left);
 						view->adjustBackUpscaledCoordinates(nsRect.bottom, nsRect.right);
 					} else if (getSciVersion() == SCI_VERSION_2_1) {
@@ -516,15 +541,19 @@ void GfxFrameout::kernelFrameout() {
 						nsRect.right = (nsRect.right * scriptsRunningWidth) / _screen->getWidth();
 					}
 
-					writeSelectorValue(_segMan, itemEntry->object, SELECTOR(nsLeft), nsRect.left);
-					writeSelectorValue(_segMan, itemEntry->object, SELECTOR(nsTop), nsRect.top);
-					writeSelectorValue(_segMan, itemEntry->object, SELECTOR(nsRight), nsRect.right);
-					writeSelectorValue(_segMan, itemEntry->object, SELECTOR(nsBottom), nsRect.bottom);
+					if (g_sci->getGameId() == GID_PHANTASMAGORIA2) {
+						// HACK: Some (?) objects in Phantasmagoria 2 have no NS rect. Skip them for now.
+						// TODO: Remove once we figure out how Phantasmagoria 2 draws objects on screen.
+						if (lookupSelector(_segMan, itemEntry->object, SELECTOR(nsLeft), NULL, NULL) != kSelectorVariable)
+							continue;
+					}
+
+					g_sci->_gfxCompare->setNSRect(itemEntry->object, nsRect);
 				}
 
 				int16 screenHeight = _screen->getHeight();
 				int16 screenWidth = _screen->getWidth();
-				if (view->isSci2Hires()) {
+				if (view && view->isSci2Hires()) {
 					screenHeight = _screen->getDisplayHeight();
 					screenWidth = _screen->getDisplayWidth();
 				}
@@ -537,7 +566,8 @@ void GfxFrameout::kernelFrameout() {
 
 				Common::Rect clipRect, translatedClipRect;
 				clipRect = itemEntry->celRect;
-				if (view->isSci2Hires()) {
+
+				if (view && view->isSci2Hires()) {
 					clipRect.clip(it->upscaledPlaneClipRect);
 					translatedClipRect = clipRect;
 					translatedClipRect.translate(it->upscaledPlaneRect.left, it->upscaledPlaneRect.top);
@@ -547,16 +577,20 @@ void GfxFrameout::kernelFrameout() {
 					translatedClipRect.translate(it->planeRect.left, it->planeRect.top);
 				}
 
-				if (!clipRect.isEmpty()) {
-					if ((itemEntry->scaleX == 128) && (itemEntry->scaleY == 128))
-						view->draw(itemEntry->celRect, clipRect, translatedClipRect, itemEntry->loopNo, itemEntry->celNo, 255, 0, view->isSci2Hires());
-					else
-						view->drawScaled(itemEntry->celRect, clipRect, translatedClipRect, itemEntry->loopNo, itemEntry->celNo, 255, itemEntry->scaleX, itemEntry->scaleY);
+				if (view) {
+					if (!clipRect.isEmpty()) {
+						if ((itemEntry->scaleX == 128) && (itemEntry->scaleY == 128))
+							view->draw(itemEntry->celRect, clipRect, translatedClipRect, 
+								itemEntry->loopNo, itemEntry->celNo, 255, 0, view->isSci2Hires());
+						else
+							view->drawScaled(itemEntry->celRect, clipRect, translatedClipRect, 
+								itemEntry->loopNo, itemEntry->celNo, 255, itemEntry->scaleX, itemEntry->scaleY);
+					}
 				}
-			} else {
-				// Most likely a text entry
+
+				// Draw text, if it exists
 				if (lookupSelector(_segMan, itemEntry->object, SELECTOR(text), NULL, NULL) == kSelectorVariable) {
-					g_sci->_gfxText32->drawTextBitmap(itemEntry->object);
+					g_sci->_gfxText32->drawTextBitmap(itemEntry->x, itemEntry->y, it->planeRect, itemEntry->object);
 				}
 			}
 		}

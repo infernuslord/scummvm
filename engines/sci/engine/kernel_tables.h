@@ -498,13 +498,14 @@ static SciKernelMapEntry s_kernelMap[] = {
 	{ MAP_CALL(String),            SIG_EVERYWHERE,           "(.*)",                  NULL,            NULL },
 	{ MAP_CALL(UpdatePlane),       SIG_EVERYWHERE,           "o",                     NULL,            NULL },
 	{ MAP_CALL(UpdateScreenItem),  SIG_EVERYWHERE,           "o",                     NULL,            NULL },
+	{ MAP_CALL(ObjectIntersect),   SIG_EVERYWHERE,           "oo",                    NULL,            NULL },
+	{ MAP_CALL(EditText),          SIG_EVERYWHERE,           "o",                     NULL,            NULL },
 
 	// SCI2 unmapped functions - TODO!
 
 	// SetScroll - called by script 64909, Styler::doit()
 	// PalCycle - called by Game::newRoom. Related to RemapColors.
 	// VibrateMouse - used in QFG4
-	// ObjectIntersect - used in QFG4
 
 	// SCI2 Empty functions
 	
@@ -522,13 +523,6 @@ static SciKernelMapEntry s_kernelMap[] = {
 	// Creates the name of the save file to save into
 	// TODO: Implement once the original save/load menus are implemented.
 	{ MAP_DUMMY(MakeSaveFileName),    SIG_EVERYWHERE,          "(.*)",                  NULL,            NULL },
-
-	// Used for edit boxes in save/load dialogs. It's a rewritten version of kEditControl,
-	// but it handles events on its own, using an internal loop, instead of using SCI
-	// scripts for event management like kEditControl does. Called by script 64914,
-	// DEdit::hilite().
-	// TODO: Implement once the original save/load menus are implemented.
-	{ MAP_DUMMY(EditText),            SIG_EVERYWHERE,          "o",                     NULL,            NULL },
 
 	// Unused / debug SCI2 unused functions, always mapped to kDummy
 
@@ -626,6 +620,9 @@ static SciKernelMapEntry s_kernelMap[] = {
 	//   (inclusive) are set to 0
 	// MorphOn - used by SQ6, script 900, the datacorder reprogramming puzzle (from room 270)
 	// SetHotRectangles - used by Phantasmagoria 1
+
+	// SCI3 Kernel Functions
+	{ MAP_CALL(PlayDuck),         SIG_EVERYWHERE,           "(.*)",                  NULL,            NULL },
 #endif
 
 	{ NULL, NULL,                  SIG_EVERYWHERE,           NULL,                    NULL,            NULL }

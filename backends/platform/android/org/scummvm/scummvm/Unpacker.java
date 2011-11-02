@@ -1,4 +1,4 @@
-package org.inodes.gus.scummvm;
+package org.scummvm.scummvm;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +10,7 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -38,11 +39,14 @@ public class Unpacker extends Activity {
 	// TODO don't hardcode this
 	private final static boolean PLUGINS_ENABLED = false;
 	private final static String META_NEXT_ACTIVITY =
-		"org.inodes.gus.unpacker.nextActivity";
+		"org.scummvm.unpacker.nextActivity";
 	private ProgressBar mProgress;
 	private File mUnpackDest;  // location to unpack into
 	private AsyncTask<String, Integer, Void> mUnpacker;
 	private final static int REQUEST_MARKET = 1;
+
+	// Android 3.1+ only
+	public static final int FLAG_INCLUDE_STOPPED_PACKAGES = 32;
 
 	private static class UnpackJob {
 		public ZipFile zipfile;
@@ -272,7 +276,19 @@ public class Unpacker extends Activity {
 		extras.putStringArrayList(ScummVMApplication.EXTRA_UNPACK_LIBS,
 								  unpack_libs);
 
+		final PackageInfo info;
+		try {
+			info = getPackageManager().getPackageInfo(getPackageName(), 0);
+		} catch (PackageManager.NameNotFoundException e) {
+			Log.e(LOG_TAG, "Error finding my own info?", e);
+			return;
+		}
+		extras.putString(ScummVMApplication.EXTRA_VERSION, info.versionName);
+
 		Intent intent = new Intent(ScummVMApplication.ACTION_PLUGIN_QUERY);
+		// Android 3.1 defaults to FLAG_EXCLUDE_STOPPED_PACKAGES, and since
+		// none of our plugins will ever be running, that is not helpful
+		intent.setFlags(FLAG_INCLUDE_STOPPED_PACKAGES);
 		sendOrderedBroadcast(intent, Manifest.permission.SCUMMVM_PLUGIN,
 							 new PluginBroadcastReciever(),
 							 null, RESULT_OK, null, extras);

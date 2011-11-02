@@ -244,9 +244,9 @@ cc_check_no_clean() {
 	echo >> "$TMPLOG"
 	cat "$TMPC" >> "$TMPLOG"
 	echo >> "$TMPLOG"
-	echo "$CXX $LDFLAGS $CXXFLAGS $TMPC -o $TMPO$HOSTEXEEXT $@" >> "$TMPLOG"
+	echo "$CXX $LDFLAGS $CXXFLAGS $INCLUDES $TMPC -o $TMPO$HOSTEXEEXT $@" >> "$TMPLOG"
 	rm -f "$TMPO$HOSTEXEEXT"
-	( $CXX $LDFLAGS $CXXFLAGS "$TMPC" -o "$TMPO$HOSTEXEEXT" "$@" ) >> "$TMPLOG" 2>&1
+	( $CXX $LDFLAGS $CXXFLAGS $INCLUDES "$TMPC" -o "$TMPO$HOSTEXEEXT" "$@" ) >> "$TMPLOG" 2>&1
 	TMPR="$?"
 	echo "return code: $TMPR" >> "$TMPLOG"
 	echo >> "$TMPLOG"
@@ -1553,7 +1553,7 @@ fi
 echo "$cxx_version"
 
 #
-# Bail out now if now useable compiler was found.
+# Bail out now if no useable compiler was found.
 #
 if test "$cxx_verc_fail" = yes ; then
 	echo
@@ -1876,7 +1876,7 @@ case $_host_os in
 		# There is no way to get the prefix, so implementing a hack here
 		macport_version=`port version 2>/dev/null`
 		if test "$?" -eq 0; then
-			macport_version="`echo "${macport_version}" | sed -ne 's/Version: \([0-9]\.[0-9]\.[0-9]\)/\1/gp'sed -ne 's/Version: \([0-9]\.[0-9]\.[0-9]\)/\1/gp'`"
+			macport_version="`echo "${macport_version}" | sed -ne 's/Version: \([0-9]\.[0-9]\.[0-9]\)/\1/gp'`"
 			echo_n "You seem to be running MacPorts version ${macport_version}..."
 
 			macport_prefix=`which port`
@@ -2073,9 +2073,11 @@ case $_host_os in
 		DEFINES="$DEFINES -DUNICODE"
 		DEFINES="$DEFINES -DFPM_DEFAULT"
 		DEFINES="$DEFINES -DNONSTANDARD_PORT"
+		DEFINES="$DEFINES -DWRAP_MALLOC"
 		DEFINES="$DEFINES -DWIN32"
 		DEFINES="$DEFINES -Dcdecl="
 		DEFINES="$DEFINES -D__cdecl__="
+		add_line_to_config_mk "WRAP_MALLOC = 1"
 		;;
 esac
 
@@ -2427,12 +2429,14 @@ if test -n "$_host"; then
 		webos)
 			_backend="webos"
 			_port_mk="backends/platform/webos/webos.mk"
-			_build_scalers=no
+			_build_scalers=yes
+			_build_hq_scalers=no
 			_timidity=no
 			_mt32emu=no
 			_seq_midi=no
 			_vkeybd=no
 			_keymapper=yes
+			add_line_to_config_mk "HOST_COMPILER = `uname`"
 			;;
 		wii)
 			_backend="wii"
@@ -2471,7 +2475,7 @@ case $_backend in
 		CXXFLAGS="$CXXFLAGS -Wa,--noexecstack"
 		LDFLAGS="$LDFLAGS -Wl,-z,noexecstack"
 		;;
-  bada)
+	bada)
 		# dirent.h not available. NONSTANDARD_PORT==ensure portdefs.h is included
 		DEFINES="$DEFINES -DBADA -DDISABLE_STDIO_FILESTREAM -DNONSTANDARD_PORT"
 		DEFINES="$DEFINES -DNO_STDERR_STDOUT"
@@ -2579,7 +2583,8 @@ case $_backend in
 		;;
 	webos)
 		# There is no sdl-config in the WebOS PDK so we don't use find_sdlconfig here.
-		LIBS="$LIBS -lSDL"
+		# The PDL library acts as the WebOS device toolchain, and is required to control the virtual keyboard among other OS-level events.
+		LIBS="$LIBS -lSDL -lpdl"
 		DEFINES="$DEFINES -DWEBOS"
 		DEFINES="$DEFINES -DSDL_BACKEND"
 		add_line_to_config_mk "SDL_BACKEND = 1"

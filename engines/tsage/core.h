@@ -62,6 +62,7 @@ public:
 public:
 	InvObject(int sceneNumber, int rlbNum, int cursorNum, CursorType cursorId, const Common::String description);
 	InvObject(int visage, int strip, int frame);
+	InvObject(int visage, int strip);
 
 	bool inInventory() const { return _sceneNumber == 1; }
 	void setCursor();
@@ -371,6 +372,7 @@ public:
 	bool loadPalette(int paletteNum);
 	void refresh();
 	void setPalette(int index, int count);
+	void getEntry(int index, uint *r, uint *g, uint *b);
 	void setEntry(int index, uint r, uint g, uint b);
 	uint8 indexOf(uint r, uint g, uint b, int threshold = 0xffff);
 	void getPalette(int start = 0, int count = 256);
@@ -417,6 +419,7 @@ public:
 	virtual void destroy() {}
 	virtual bool startAction(CursorType action, Event &event);
 	virtual void doAction(int action);
+	virtual bool performAction(CursorType action, Event &event) { return startAction(action, event); }
 
 	bool contains(const Common::Point &pt);
 	void setBounds(const Rect &newBounds) { _bounds = newBounds; }
@@ -529,6 +532,10 @@ public:
 	int _moveRate;
 	Action *_endAction;
 	uint32 _regionBitList;
+
+	// Ringworld 2 specific fields
+	int _shade;
+	int _effect;
 public:
 	SceneObject();
 	SceneObject(const SceneObject &so);
@@ -576,8 +583,11 @@ public:
 	// New methods introduced by Blue Force
 	virtual void updateAngle(const Common::Point &pt);
 	virtual void changeAngle(int angle);
+	// New methods introduced by Ringworld 2
+	virtual void copy(SceneObject *src);
 
 	void setup(int visage, int stripFrameNum, int frameNum, int posX, int posY, int priority);
+	void setup(int visage, int stripFrameNum, int frameNum);
 };
 
 class BackgroundSceneObject: public SceneObject {
@@ -608,12 +618,22 @@ public:
 	virtual void updateScreen();
 };
 
+#define MAX_CHARACTERS 4
+
 class Player : public SceneObject {
 public:
 	bool _canWalk;
 	bool _uiEnabled;
 	int _field8C;
 	bool _enabled;
+
+	// Return to Ringworld specific fields
+	int _characterIndex;
+	int _oldSceneNumber;
+	int _characterScene[MAX_CHARACTERS];
+	Common::Point _characterPos[MAX_CHARACTERS];
+	int _characterStrip[MAX_CHARACTERS];
+	int _characterFrame[MAX_CHARACTERS];
 public:
 	Player();
 
@@ -624,6 +644,7 @@ public:
 
 	void disableControl();
 	void enableControl();
+	void enableControl(CursorType cursor);
 };
 
 /*--------------------------------------------------------------------------*/
@@ -799,8 +820,11 @@ public:
 	Common::Array<WRField18> _field18;
 	Common::Array<int> _idxList;
 	Common::Array<int> _idxList2;
+	Common::List<int> _disabledRegions;
 public:
 	WalkRegions() { _resNum = -1; }
+	virtual ~WalkRegions() {}
+	virtual void synchronize(Serializer &s);
 
 	void clear();
 	void load(int sceneNum);
@@ -809,8 +833,8 @@ public:
 		assert((idx >= 1) && (idx <= (int)_regionList.size()));
 		return _regionList[idx - 1];
 	}
-	void proc1(int v) { warning("TODO: WalkRegions::proc1"); }
-	void proc2(int v) { warning("TODO: WalkRegions::proc2"); }
+	void disableRegion(int regionId);
+	void enableRegion(int regionId);
 };
 
 /*--------------------------------------------------------------------------*/

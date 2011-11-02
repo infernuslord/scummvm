@@ -83,10 +83,11 @@ void SoundCommandParser::initSoundResource(MusicEntry *newSound) {
 	// effects. If the resource exists, play it using map 65535 (sound
 	// effects map)
 	bool checkAudioResource = getSciVersion() >= SCI_VERSION_1_1;
-	if (g_sci->getGameId() == GID_HOYLE4)
-		checkAudioResource = false; // hoyle 4 has garbled audio resources in place of the sound resources
-	// if we play those, we will only make the user deaf and break speakers. Sierra SCI doesn't play anything
-	// on soundblaster. FIXME: check, why this is
+	// Hoyle 4 has garbled audio resources in place of the sound resources.
+	// The demo of GK1 has no alternate sound effects.
+	if ((g_sci->getGameId() == GID_HOYLE4) || 
+		(g_sci->getGameId() == GID_GK1 && g_sci->isDemo()))
+		checkAudioResource = false;
 
 	if (checkAudioResource && _resMan->testResource(ResourceId(kResourceTypeAudio, newSound->resourceId))) {
 		// Found a relevant audio resource, create an audio stream if there is
@@ -146,9 +147,9 @@ void SoundCommandParser::processPlaySound(reg_t obj) {
 	MusicEntry *musicSlot = _music->getSlot(obj);
 	if (!musicSlot) {
 		warning("kDoSound(play): Slot not found (%04x:%04x), initializing it manually", PRINT_REG(obj));
-		// The sound hasn't been initialized for some reason, so initialize it here.
-		// Happens in KQ6, room 460, when giving the creature to the bookwork (the
-		// bookworm's child). Fixes bug #3413301.
+		// The sound hasn't been initialized for some reason, so initialize it
+		// here. Happens in KQ6, room 460, when giving the creature (child) to
+		// the bookworm. Fixes bugs #3413301 and #3421098.
 		processInitSound(obj);
 		musicSlot = _music->getSlot(obj);
 		if (!musicSlot)

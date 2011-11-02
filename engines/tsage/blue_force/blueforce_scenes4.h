@@ -133,6 +133,7 @@ class Scene415: public SceneExt {
 	class GunInset: public FocusObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
+		virtual void remove();
 	};
 	class GunAndWig: public NamedObject {
 	public:
@@ -141,6 +142,7 @@ class Scene415: public SceneExt {
 	class BulletsInset: public FocusObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
+		virtual void remove();
 	};
 	class DashDrawer: public NamedObject {
 	public:
@@ -166,12 +168,12 @@ public:
 	BulletsInset _bulletsInset;
 	DashDrawer _dashDrawer;
 	TheBullets _theBullets;
-	NamedObject _object6;
+	NamedObject _animatedSeat;
 	NamedHotspot _item1, _steeringWheel, _horn, _dashboard;
 	NamedHotspot _seat, _windowLever, _item7, _seatBelt;
 	Lever _lever;
 	SpeakerJakeRadio _jakeRadioSpeaker;
-	bool _fieldE14, _fieldE16;
+	bool _scoreWigRapFlag, _scoreBulletRapFlag;
 
 	Scene415();
 	virtual void postInit(SceneObjectList *OwnerList = NULL);
@@ -214,7 +216,7 @@ public:
 
 class Scene450: public SceneExt {
 	/* Objects */
-	class Object1: public NamedObjectExt {
+	class Weasel: public NamedObjectExt {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
@@ -222,17 +224,17 @@ class Scene450: public SceneExt {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
-	class Object3: public NamedObject {
+	class PinBoy: public NamedObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
-	class Object4: public NamedObject {
+	class Manager: public NamedObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
 
 	/* Items */
-	class Item1: public NamedHotspot {
+	class Exit: public NamedHotspot {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
@@ -245,12 +247,13 @@ public:
 	SpeakerEugene _eugeneSpeaker;
 	SpeakerWeasel _weaselSpeaker;
 	SpeakerBilly _billySpeaker;
-	Object1 _object1;
+	Weasel _weasel;
 	NamedObject _object2;
-	Object3 _object3;
-	Object4 _object4;
+	PinBoy _pinBoy;
+	Manager _manager;
 	NamedObject _door, _counterDoor;
-	NamedHotspot _exit, _interior, _shelf, _counter;
+	Exit _exit;
+	NamedHotspot _interior, _shelf, _counter;
 	int _field19AC, _field19AE;
 
 	Scene450();

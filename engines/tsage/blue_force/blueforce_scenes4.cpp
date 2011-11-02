@@ -35,6 +35,7 @@ namespace BlueForce {
  *
  *--------------------------------------------------------------------------*/
 
+// Talk to driver with backup
 void Scene410::Action1::signal() {
 	Scene410 *scene = (Scene410 *)BF_GLOBALS._sceneManager._scene;
 
@@ -62,6 +63,7 @@ void Scene410::Action1::signal() {
 	}
 }
 
+// Talk to passenger with backup
 void Scene410::Action2::signal() {
 	Scene410 *scene = (Scene410 *)BF_GLOBALS._sceneManager._scene;
 	BF_GLOBALS._player.disableControl();
@@ -90,7 +92,7 @@ void Scene410::Action2::signal() {
 	default:
 		SceneItem::display(410, 11, SET_WIDTH, 300,
 				SET_X, GLOBALS._sceneManager._scene->_sceneBounds.left + 10,
-				SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + BF_INTERFACE_Y + 2,
+				SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + UI_INTERFACE_Y + 2,
 				SET_FONT, 4, SET_BG_COLOR, 1, SET_FG_COLOR, 13, SET_EXT_BGCOLOR, 82,
 				SET_EXT_FGCOLOR, 13, LIST_END);
 		BF_GLOBALS._player.enableControl();
@@ -98,6 +100,7 @@ void Scene410::Action2::signal() {
 	}
 }
 
+// Talk to passenger without backup
 void Scene410::Action3::signal() {
 	Scene410 *scene = (Scene410 *)BF_GLOBALS._sceneManager._scene;
 	if (BF_GLOBALS.getFlag(fTalkedShooterNoBkup)) {
@@ -111,36 +114,23 @@ void Scene410::Action3::signal() {
 	}
 }
 
+// Talk to driver without backup
 void Scene410::Action4::signal() {
 	Scene410 *scene = (Scene410 *)BF_GLOBALS._sceneManager._scene;
 
-	switch (_actionIndex++) {
-	case 0:
-		if (scene->_field1FC4 == 0) {
-			ADD_PLAYER_MOVER(114, 133);
-		} else {
-			ADD_PLAYER_MOVER(195, 139);
-		}
-		break;
-	case 1:
-		BF_GLOBALS._player.updateAngle(scene->_passenger._position);
-		setDelay(3);
-		break;
-	case 2:
-		setDelay(3);
-		break;
-	case 3:
-		if (BF_GLOBALS.getFlag(fCalledBackup))
-			scene->setAction(&scene->_action2);
-		else
-			scene->setAction(&scene->_action3);
-		remove();
-		break;
-	default:
-		break;
+	if (BF_GLOBALS.getFlag(fTalkedDriverNoBkup)) {
+		BF_GLOBALS._player.disableControl();
+		scene->_sceneMode = 2;
+		scene->setAction(&scene->_sequenceManager1, scene, 4120, &scene->_passenger, &BF_GLOBALS._player, NULL);
+	} else {
+		BF_GLOBALS._player.disableControl();
+		BF_GLOBALS.setFlag(fTalkedDriverNoBkup);
+		scene->_sceneMode = 4101;
+		scene->_stripManager.start(4103, scene);
 	}
 }
 
+// Talk to passenger
 void Scene410::Action5::signal() {
 	Scene410 *scene = (Scene410 *)BF_GLOBALS._sceneManager._scene;
 
@@ -171,6 +161,7 @@ void Scene410::Action5::signal() {
 	}
 }
 
+// Talk to driver
 void Scene410::Action6::signal() {
 	Scene410 *scene = (Scene410 *)BF_GLOBALS._sceneManager._scene;
 
@@ -222,11 +213,11 @@ void Scene410::Action7::signal() {
 	case 3:
 		BF_GLOBALS._player.setObjectWrapper(new SceneObjectWrapper());
 		BF_GLOBALS._player.updateAngle(Common::Point(100, 170));
-		scene->setAction(&scene->_sequenceManager1, this, 4112, &scene->_driver, &scene->_passenger,
+		setAction(&scene->_sequenceManager1, this, 4112, &scene->_driver, &scene->_passenger,
 			&scene->_harrison, NULL);
 		break;
 	case 5:
-		BF_GLOBALS._uiElements.addScore(30);
+		T2_GLOBALS._uiElements.addScore(30);
 		setAction(&scene->_sequenceManager1, this, 4118, &BF_GLOBALS._player, NULL);
 		BF_GLOBALS._player.disableControl();
 		break;
@@ -274,7 +265,7 @@ bool Scene410::TruckFront::startAction(CursorType action, Event &event) {
 		else if (BF_GLOBALS.getFlag(fSearchedTruck))
 			SceneItem::display2(410, 13);
 		else if (BF_GLOBALS.getFlag(fGangInCar)) {
-			BF_GLOBALS._uiElements.addScore(30);
+			T2_GLOBALS._uiElements.addScore(30);
 			scene->_sceneMode = 4118;
 			scene->signal();
 		} else {
@@ -307,7 +298,7 @@ bool Scene410::Driver::startAction(CursorType action, Event &event) {
 		} else if (!scene->_field1FC0) {
 			scene->_sceneMode = 4124;
 			scene->_field1FC0 = 1;
-			BF_GLOBALS._uiElements.addScore(30);
+			T2_GLOBALS._uiElements.addScore(30);
 			scene->signal();
 		} else {
 			break;
@@ -325,7 +316,7 @@ bool Scene410::Driver::startAction(CursorType action, Event &event) {
 			scene->_sceneMode = 4123;
 			scene->_stripManager.start(4125, scene);
 			scene->_field1FBC = 1;
-			BF_GLOBALS._uiElements.addScore(30);
+			T2_GLOBALS._uiElements.addScore(30);
 		} else {
 			if (BF_GLOBALS.getFlag(fTalkedDriverNoBkup)) {
 				scene->setAction(&scene->_action4);
@@ -345,7 +336,7 @@ bool Scene410::Driver::startAction(CursorType action, Event &event) {
 			break;
 		} else {
 			scene->_field1FC2 = 1;
-			BF_GLOBALS._uiElements.addScore(30);
+			T2_GLOBALS._uiElements.addScore(30);
 			BF_GLOBALS._player.disableControl();
 			scene->_sceneMode = 4127;
 			scene->setAction(&scene->_sequenceManager1, scene, 4127, &BF_GLOBALS._player, &scene->_driver, NULL);
@@ -359,7 +350,7 @@ bool Scene410::Driver::startAction(CursorType action, Event &event) {
 			SceneItem::display2(390, 15);
 		} else {
 			BF_GLOBALS.setFlag(readFrankRights);
-			BF_GLOBALS._uiElements.addScore(30);
+			T2_GLOBALS._uiElements.addScore(30);
 			BF_GLOBALS._player.disableControl();
 			scene->_sceneMode = 0;
 
@@ -380,21 +371,27 @@ bool Scene410::Passenger::startAction(CursorType action, Event &event) {
 	switch (action) {
 	case CURSOR_USE:
 		if (!BF_GLOBALS.getFlag(fCalledBackup)) {
-			if (BF_GLOBALS.getFlag(fTalkedShooterNoBkup)) {
+			if (BF_GLOBALS.getFlag(fTalkedShooterNoBkup))
 				scene->setAction(&scene->_action3);
-			} else {
-				SceneItem::display2(410, 5);
-			}
+			else
+				SceneItem::display(410, 5, SET_WIDTH, 300,
+					SET_X, 10 + GLOBALS._sceneManager._scene->_sceneBounds.left,
+					SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + UI_INTERFACE_Y + 2,
+					SET_FONT, 4, SET_BG_COLOR, 1, SET_FG_COLOR, 96, SET_EXT_BGCOLOR, 99,
+					SET_EXT_FGCOLOR, 13, LIST_END);
 		} else if (!scene->_field1FBA) {
-			SceneItem::display2(410, 5);
+			SceneItem::display(410, 5, SET_WIDTH, 300,
+				SET_X, 10 + GLOBALS._sceneManager._scene->_sceneBounds.left,
+				SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + UI_INTERFACE_Y + 2,
+				SET_FONT, 4, SET_BG_COLOR, 1, SET_FG_COLOR, 96, SET_EXT_BGCOLOR, 99,
+				SET_EXT_FGCOLOR, 13, LIST_END);
 		} else if (!scene->_field1FBE) {
 			scene->_sceneMode = 4121;
 			scene->_field1FBE = 1;
-			BF_GLOBALS._uiElements.addScore(50);
+			T2_GLOBALS._uiElements.addScore(50);
 			scene->signal();
-		} else {
+		} else
 			break;
-		}
 		return true;
 	case CURSOR_TALK:
 		scene->setAction(&scene->_action5);
@@ -423,7 +420,7 @@ bool Scene410::Passenger::startAction(CursorType action, Event &event) {
 			SceneItem::display2(390, 15);
 		} else {
 			BF_GLOBALS.setFlag(readFrankRights);
-			BF_GLOBALS._uiElements.addScore(30);
+			T2_GLOBALS._uiElements.addScore(30);
 			BF_GLOBALS._player.disableControl();
 
 			scene->_sceneMode = 0;
@@ -452,7 +449,11 @@ bool Scene410::Harrison::startAction(CursorType action, Event &event) {
 				PlayerMover *mover = new PlayerMover();
 				BF_GLOBALS._player.addMover(mover, &destPos, scene);
 			} else {
-				SceneItem::display2(350, 13);
+				SceneItem::display(350, 13, SET_WIDTH, 300,
+					SET_X, 10 + GLOBALS._sceneManager._scene->_sceneBounds.left,
+					SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + UI_INTERFACE_Y + 2,
+					SET_FONT, 4, SET_BG_COLOR, 1, SET_FG_COLOR, 32, SET_EXT_BGCOLOR, 49,
+					SET_EXT_FGCOLOR, 13, LIST_END);
 			}
 		} else if ((scene->_field1FBA != 0) && (scene->_field1FBC != 0)) {
 			BF_GLOBALS._player.disableControl();
@@ -463,15 +464,16 @@ bool Scene410::Harrison::startAction(CursorType action, Event &event) {
 			BF_GLOBALS.clearFlag(f1098Marina);
 		} else if ((BF_INVENTORY.getObjectScene(INV_HANDCUFFS) == 1) ||
 				(!scene->_field1FBA && (scene->_talkCount < 5))) {
-			SceneItem::display2(350, 13);
+			SceneItem::display(350, 13, SET_WIDTH, 300,
+				SET_X, 10 + GLOBALS._sceneManager._scene->_sceneBounds.left,
+				SET_Y, GLOBALS._sceneManager._scene->_sceneBounds.top + UI_INTERFACE_Y + 2,
+				SET_FONT, 4, SET_BG_COLOR, 1, SET_FG_COLOR, 32, SET_EXT_BGCOLOR, 49,
+				SET_EXT_FGCOLOR, 13, LIST_END);
 		} else if (!scene->_field1FBA) {
-			if (scene->_field1FBA)
-				error("Error - want to cuff shooter, but he's cuffed already");
-
 			BF_GLOBALS._player.disableControl();
 			scene->_field1FBA = 1;
 			scene->_field1FBE = 1;
-			BF_GLOBALS._walkRegions.proc2(22);
+			BF_GLOBALS._walkRegions.enableRegion(22);
 			scene->_sceneMode = 4122;
 			scene->_stripManager.start(4112, scene);
 		} else if (scene->_field1FB6 < 1) {
@@ -482,7 +484,7 @@ bool Scene410::Harrison::startAction(CursorType action, Event &event) {
 			BF_GLOBALS._player.disableControl();
 			scene->_field1FBC = 1;
 			scene->_field1FC0 = 1;
-			BF_GLOBALS._walkRegions.proc2(22);
+			BF_GLOBALS._walkRegions.enableRegion(22);
 			scene->_sceneMode = 4109;
 			scene->_stripManager.start(4112, scene);
 		}
@@ -574,8 +576,8 @@ void Scene410::postInit(SceneObjectList *OwnerList) {
 
 		_passenger.remove();
 		_driver.remove();
-		BF_GLOBALS._walkRegions.proc1(21);
-		BF_GLOBALS._walkRegions.proc1(22);
+		BF_GLOBALS._walkRegions.disableRegion(21);
+		BF_GLOBALS._walkRegions.disableRegion(22);
 
 		_harrison.postInit();
 		_harrison.setVisage(343);
@@ -621,18 +623,18 @@ void Scene410::postInit(SceneObjectList *OwnerList) {
 				_passenger.setFrame(8);
 			}
 
-			BF_GLOBALS._walkRegions.proc1(16);
+			BF_GLOBALS._walkRegions.disableRegion(16);
 			if (BF_GLOBALS.getFlag(fDriverOutOfTruck)) {
 				_driver.setVisage(417);
 				_driver.setStrip(1);
 				_driver.setPosition(Common::Point(152, 97));
 
-				BF_GLOBALS._walkRegions.proc1(7);
+				BF_GLOBALS._walkRegions.disableRegion(7);
 			}
 
 			if (BF_GLOBALS.getFlag(fCalledBackup)) {
-				BF_GLOBALS._walkRegions.proc1(21);
-				BF_GLOBALS._walkRegions.proc1(22);
+				BF_GLOBALS._walkRegions.disableRegion(21);
+				BF_GLOBALS._walkRegions.disableRegion(22);
 
 				_harrison.postInit();
 				_harrison.setVisage(343);
@@ -675,7 +677,7 @@ void Scene410::postInit(SceneObjectList *OwnerList) {
 
 	signal();
 
-	_background.setDetails(Rect(0, 0, SCREEN_WIDTH, BF_INTERFACE_Y), 410, 0, 1, 2, 1, NULL);
+	_background.setDetails(Rect(0, 0, SCREEN_WIDTH, UI_INTERFACE_Y), 410, 0, 1, 2, 1, NULL);
 }
 
 void Scene410::signal() {
@@ -715,10 +717,11 @@ void Scene410::signal() {
 		break;
 	case 7:
 		BF_INVENTORY.setObjectScene(INV_TYRONE_ID, 1);
+		_sceneMode = 0;
 		signal();
 		break;
 	case 8:
-		BF_GLOBALS._walkRegions.proc2(22);
+		BF_GLOBALS._walkRegions.enableRegion(22);
 		BF_GLOBALS._player.changeAngle(225);
 		_harrison.changeAngle(45);
 		_sceneMode = 4114;
@@ -729,7 +732,7 @@ void Scene410::signal() {
 		_stripManager.start(4111, this);
 		_field1FBA = 1;
 		BF_GLOBALS.setFlag(fCuffedFrankie);
-		BF_GLOBALS._uiElements.addScore(30);
+		T2_GLOBALS._uiElements.addScore(30);
 		break;
 	case 10:
 		BF_GLOBALS._player.updateAngle(_harrison._position);
@@ -739,7 +742,7 @@ void Scene410::signal() {
 		BF_GLOBALS._player.disableControl();
 		_sceneMode = 0;
 		setAction(&_sequenceManager1, this, 4100, &_passenger, &_object5, NULL);
-		BF_GLOBALS._walkRegions.proc1(16);
+		BF_GLOBALS._walkRegions.disableRegion(16);
 		break;
 	case 4101:
 		// Driver gets out of the car
@@ -747,7 +750,7 @@ void Scene410::signal() {
 		_sceneMode = 0;
 		setAction(&_sequenceManager1, this, 4101, &_driver, &_object6, NULL);
 		BF_GLOBALS.setFlag(fDriverOutOfTruck);
-		BF_GLOBALS._walkRegions.proc1(7);
+		BF_GLOBALS._walkRegions.disableRegion(7);
 		break;
 	case 4103:
 		// Click on moto to ask for backup
@@ -781,19 +784,21 @@ void Scene410::signal() {
 	case 4108:
 		BF_GLOBALS._player.setObjectWrapper(new SceneObjectWrapper());
 		BF_GLOBALS._player.updateAngle(Common::Point(100, 170));
-		BF_GLOBALS._walkRegions.proc2(22);
-		BF_GLOBALS._walkRegions.proc2(16);
+		BF_GLOBALS._walkRegions.enableRegion(22);
+		BF_GLOBALS._walkRegions.enableRegion(7);
+		BF_GLOBALS._walkRegions.enableRegion(16);
 		BF_GLOBALS._player.disableControl();
 		_sceneMode = 0;
 		setAction(&_sequenceManager1, this, 4108, &_harrison, NULL);
 		break;
 	case 4109:
+		// Harrison puts handcuffs to driver
 		if ((BF_GLOBALS._player._position.x > 116) && (BF_GLOBALS._player._position.x != 195) &&
 				(BF_GLOBALS._player._position.y != 139)) {
-			ADD_PLAYER_MOVER(195, 139);
+			ADD_PLAYER_MOVER_NULL(BF_GLOBALS._player, 195, 139);
 		}
 
-		BF_GLOBALS._walkRegions.proc2(22);
+		BF_GLOBALS._walkRegions.enableRegion(22);
 		BF_GLOBALS._player.disableControl();
 		_sceneMode = 0;
 		setAction(&_sequenceManager1, this, 4109, &_driver, &_harrison, NULL);
@@ -813,14 +818,14 @@ void Scene410::signal() {
 		setAction(&_sequenceManager1, this, 4112, &_driver, &_passenger, &_harrison, NULL);
 		break;
 	case 4114:
-		BF_GLOBALS._walkRegions.proc2(22);
+		BF_GLOBALS._walkRegions.enableRegion(22);
 		BF_GLOBALS._player.disableControl();
 		_sceneMode = 4116;
 		setAction(&_sequenceManager1, this, 4114, &_harrison, &_patrolCar, NULL);
 		break;
 	case 4116:
-		BF_GLOBALS._walkRegions.proc2(21);
-		BF_GLOBALS._walkRegions.proc2(22);
+		BF_GLOBALS._walkRegions.enableRegion(21);
+		BF_GLOBALS._walkRegions.enableRegion(22);
 		_harrison.remove();
 		BF_GLOBALS._player.disableControl();
 		_sceneMode = 0;
@@ -842,7 +847,7 @@ void Scene410::signal() {
 		setAction(&_sequenceManager1, this, 4121, &BF_GLOBALS._player, &_passenger, NULL);
 		break;
 	case 4122:
-		BF_GLOBALS._walkRegions.proc2(22);
+		BF_GLOBALS._walkRegions.enableRegion(22);
 		BF_INVENTORY.setObjectScene(INV_22_SNUB, 0);
 		BF_GLOBALS._player.disableControl();
 		_sceneMode = 0;
@@ -923,6 +928,17 @@ bool Scene415::GunInset::startAction(CursorType action, Event &event) {
 	}
 }
 
+void Scene415::GunInset::remove() {
+	Scene415 *scene = (Scene415 *)BF_GLOBALS._sceneManager._scene;
+
+	BF_GLOBALS._player.disableControl();
+	scene->_gunAndWig.remove();
+	FocusObject::remove();
+
+	scene->_sceneMode = 0;
+	scene->_animatedSeat.animate(ANIM_MODE_6, scene);
+}
+
 bool Scene415::GunAndWig::startAction(CursorType action, Event &event) {
 	Scene415 *scene = (Scene415 *)BF_GLOBALS._sceneManager._scene;
 
@@ -932,19 +948,19 @@ bool Scene415::GunAndWig::startAction(CursorType action, Event &event) {
 		BF_INVENTORY.setObjectScene(INV_AUTO_RIFLE, 1);
 		BF_INVENTORY.setObjectScene(INV_WIG, 1);
 		BF_GLOBALS.setFlag(fGotAutoWeapon);
-		BF_GLOBALS._uiElements.addScore(30);
+		T2_GLOBALS._uiElements.addScore(30);
 
 		remove();
 		return true;
 	case INV_FOREST_RAP:
-		if (scene->_fieldE14)
+		if (scene->_scoreWigRapFlag)
 			break;
 
 		BF_GLOBALS._player.disableControl();
 		scene->_sceneMode = 0;
 		scene->_stripManager.start(4126, scene);
-		BF_GLOBALS._uiElements.addScore(50);
-		scene->_fieldE14 = true;
+		T2_GLOBALS._uiElements.addScore(50);
+		scene->_scoreWigRapFlag = true;
 		return true;
 	default:
 		break;
@@ -957,7 +973,7 @@ bool Scene415::BulletsInset::startAction(CursorType action, Event &event) {
 	Scene415 *scene = (Scene415 *)BF_GLOBALS._sceneManager._scene;
 
 	if (action == CURSOR_USE) {
-		if (BF_GLOBALS.getFlag(fGotAutoWeapon)) {
+		if (BF_GLOBALS.getFlag(fGotBulletsFromDash)) {
 			FocusObject::startAction(action, event);
 		} else {
 			remove();
@@ -967,6 +983,13 @@ bool Scene415::BulletsInset::startAction(CursorType action, Event &event) {
 	} else {
 		return FocusObject::startAction(action, event);
 	}
+}
+
+void Scene415::BulletsInset::remove() {
+	Scene415 *scene = (Scene415 *)BF_GLOBALS._sceneManager._scene;
+
+	scene->_theBullets.remove();
+	FocusObject::remove();
 }
 
 bool Scene415::DashDrawer::startAction(CursorType action, Event &event) {
@@ -988,23 +1011,22 @@ bool Scene415::TheBullets::startAction(CursorType action, Event &event) {
 		NamedObject::startAction(action, event);
 		BF_INVENTORY.setObjectScene(INV_22_BULLET, 1);
 		BF_GLOBALS.setFlag(fGotBulletsFromDash);
-		BF_GLOBALS._uiElements.addScore(30);
+		T2_GLOBALS._uiElements.addScore(30);
 
 		remove();
 		scene->_dashDrawer.remove();
 		return true;
 	case INV_FOREST_RAP:
-		if (scene->_fieldE16) {
+		if (scene->_scoreBulletRapFlag) {
 			SceneItem::display2(415, 35);
-			return true;
 		} else {
 			BF_GLOBALS._player.disableControl();
 			scene->_sceneMode = 0;
 			scene->_stripManager.start(4122, scene);
-			BF_GLOBALS._uiElements.addScore(50);
-			scene->_fieldE16 = true;
+			T2_GLOBALS._uiElements.addScore(50);
+			scene->_scoreBulletRapFlag = true;
 		}
-		break;
+		return true;
 	default:
 		break;
 	}
@@ -1024,7 +1046,7 @@ bool Scene415::Lever::startAction(CursorType action, Event &event) {
 		} else {
 			BF_GLOBALS._player.disableControl();
 			scene->_sceneMode = 2;
-			scene->setAction(&scene->_sequenceManager, scene, 4150, &scene->_object6, NULL);
+			scene->setAction(&scene->_sequenceManager, scene, 4150, &scene->_animatedSeat, NULL);
 		}
 		return true;
 	default:
@@ -1035,13 +1057,13 @@ bool Scene415::Lever::startAction(CursorType action, Event &event) {
 /*--------------------------------------------------------------------------*/
 
 Scene415::Scene415(): SceneExt() {
-	_fieldE14 = _fieldE16 = false;
+	_scoreWigRapFlag = _scoreBulletRapFlag = false;
 }
 
 void Scene415::synchronize(Serializer &s) {
 	SceneExt::synchronize(s);
-	s.syncAsSint16LE(_fieldE14);
-	s.syncAsSint16LE(_fieldE16);
+	s.syncAsSint16LE(_scoreWigRapFlag);
+	s.syncAsSint16LE(_scoreBulletRapFlag);
 }
 
 void Scene415::postInit(SceneObjectList *OwnerList) {
@@ -1056,11 +1078,11 @@ void Scene415::postInit(SceneObjectList *OwnerList) {
 	_dashDrawer.setPosition(Common::Point(151, 97));
 	_dashDrawer.setDetails(415, 22, -1, -1, 1, NULL);
 
-	_object6.postInit();
-	_object6.setVisage(419);
-	_object6.setStrip(1);
-	_object6.setPosition(Common::Point(306, 116));
-	_object6.fixPriority(80);
+	_animatedSeat.postInit();
+	_animatedSeat.setVisage(419);
+	_animatedSeat.setStrip(1);
+	_animatedSeat.setPosition(Common::Point(306, 116));
+	_animatedSeat.fixPriority(80);
 	
 	_windowLever.setDetails(16, 415, 25, -1, 26, 1);
 	_item7.setDetails(17, 415, 32, -1, 33, 1);
@@ -1070,7 +1092,7 @@ void Scene415::postInit(SceneObjectList *OwnerList) {
 	_dashboard.setDetails(20, 415, 11, 12, 19, 1);
 	_steeringWheel.setDetails(15, 415, 5, 6, 7, 1);
 	_horn.setDetails(31, 415, 8, 9, 10, 1);
-	_item1.setDetails(Rect(0, 0, SCREEN_WIDTH, BF_INTERFACE_Y), 415, 0, 1, 2, 1, NULL);
+	_item1.setDetails(Rect(0, 0, SCREEN_WIDTH, UI_INTERFACE_Y), 415, 0, 1, 2, 1, NULL);
 
 	BF_GLOBALS._player.enableControl();
 	BF_GLOBALS._player._canWalk = false;
@@ -1253,8 +1275,8 @@ void Scene440::postInit(SceneObjectList *OwnerList) {
 		_lyle.setPosition(Common::Point(135, 128));
 		_lyle.show();
 
-		BF_GLOBALS._walkRegions.proc1(12);
-		BF_GLOBALS._walkRegions.proc1(13);
+		BF_GLOBALS._walkRegions.disableRegion(12);
+		BF_GLOBALS._walkRegions.disableRegion(13);
 	} else {
 		_vechile.setPosition(Common::Point(169, 121));
 		_vechile.fixPriority(117);
@@ -1275,7 +1297,7 @@ void Scene440::postInit(SceneObjectList *OwnerList) {
 	}
 
 	BF_GLOBALS._sceneItems.push_back(&_vechile);
-	BF_GLOBALS._walkRegions.proc1(11);
+	BF_GLOBALS._walkRegions.disableRegion(11);
 
 	_doorway.postInit();
 	_doorway.setVisage(440);
@@ -1299,7 +1321,7 @@ void Scene440::postInit(SceneObjectList *OwnerList) {
 		BF_GLOBALS._player.enableControl();
 	}
 
-	_item1.setBounds(Rect(0, 0, SCREEN_WIDTH, BF_INTERFACE_Y - 1));
+	_item1.setBounds(Rect(0, 0, SCREEN_WIDTH, UI_INTERFACE_Y - 1));
 	BF_GLOBALS._sceneItems.push_back(&_item1);
 }
 
@@ -1326,7 +1348,7 @@ void Scene440::signal() {
  *
  *--------------------------------------------------------------------------*/
 
-bool Scene450::Object1::startAction(CursorType action, Event &event) {
+bool Scene450::Weasel::startAction(CursorType action, Event &event) {
 	Scene450 *scene = (Scene450 *)BF_GLOBALS._sceneManager._scene;
 
 	switch (action) {
@@ -1350,7 +1372,7 @@ bool Scene450::Object1::startAction(CursorType action, Event &event) {
 	case INV_FOREST_RAP:
 		BF_INVENTORY.setObjectScene(INV_FOREST_RAP, 450);
 		BF_GLOBALS._player.disableControl();
-		BF_GLOBALS._uiElements.addScore(30);
+		T2_GLOBALS._uiElements.addScore(30);
 
 		scene->_sceneMode = 4505;
 		scene->setAction(&scene->_sequenceManager, scene, 4505, &BF_GLOBALS._player, this, 
@@ -1361,7 +1383,7 @@ bool Scene450::Object1::startAction(CursorType action, Event &event) {
 	}
 }
 
-bool Scene450::Object3::startAction(CursorType action, Event &event) {
+bool Scene450::PinBoy::startAction(CursorType action, Event &event) {
 	Scene450 *scene = (Scene450 *)BF_GLOBALS._sceneManager._scene;
 
 	switch (action) {
@@ -1390,7 +1412,7 @@ bool Scene450::Object3::startAction(CursorType action, Event &event) {
 	}
 }
 
-bool Scene450::Object4::startAction(CursorType action, Event &event) {
+bool Scene450::Manager::startAction(CursorType action, Event &event) {
 	Scene450 *scene = (Scene450 *)BF_GLOBALS._sceneManager._scene;
 
 	switch (action) {
@@ -1450,7 +1472,7 @@ bool Scene450::Object4::startAction(CursorType action, Event &event) {
 				SceneItem::display2(450, 16);
 				BF_GLOBALS._player.enableControl();
 			} else {
-				BF_GLOBALS._uiElements.addScore(30);
+				T2_GLOBALS._uiElements.addScore(30);
 				scene->_sceneMode = 4510;
 				BF_INVENTORY.setObjectScene(INV_NAPKIN, 450);
 				scene->setAction(&scene->_sequenceManager, scene, 4510, &BF_GLOBALS._player, this, NULL);
@@ -1465,12 +1487,12 @@ bool Scene450::Object4::startAction(CursorType action, Event &event) {
 			BF_GLOBALS._player.disableControl();
 			
 			if (!BF_GLOBALS.getFlag(showEugeneID))
-				BF_GLOBALS._uiElements.addScore(30);
+				T2_GLOBALS._uiElements.addScore(30);
 			BF_GLOBALS.setFlag(showEugeneID);
 			
 			if ((BF_GLOBALS.getFlag(showRapEugene) || BF_GLOBALS.getFlag(showEugeneNapkin)) &&
 					!BF_GLOBALS.getFlag(fMgrCallsWeasel)) {
-				BF_GLOBALS._uiElements.addScore(30);
+				T2_GLOBALS._uiElements.addScore(30);
 				scene->_sceneMode = 4511;
 				scene->setAction(&scene->_sequenceManager, scene, 4511, &BF_GLOBALS._player, this, NULL);
 			} else {
@@ -1486,7 +1508,7 @@ bool Scene450::Object4::startAction(CursorType action, Event &event) {
 
 /*--------------------------------------------------------------------------*/
 
-bool Scene450::Item1::startAction(CursorType action, Event &event) {
+bool Scene450::Exit::startAction(CursorType action, Event &event) {
 	Scene450 *scene = (Scene450 *)BF_GLOBALS._sceneManager._scene;
 
 	if (event.eventType == EVENT_BUTTON_DOWN) {
@@ -1546,26 +1568,27 @@ void Scene450::postInit(SceneObjectList *OwnerList) {
 	_counterDoor.setDetails(450, 12, -1, 13, 1, NULL);
 
 	if (BF_GLOBALS._dayNumber != 3) {
-		_object3.postInit();
-		_object3.setVisage(463);
-		_object3.setPosition(Common::Point(138, 121));
-		_object3.fixPriority(100);
-		_object3.setFrame(_object3.getFrameCount());
-		BF_GLOBALS._sceneItems.push_back(&_object3);
+		_pinBoy.postInit();
+		_pinBoy.setVisage(463);
+		_pinBoy.setPosition(Common::Point(138, 121));
+		_pinBoy.fixPriority(100);
+		_pinBoy.setFrame(_pinBoy.getFrameCount());
+		BF_GLOBALS._sceneItems.push_back(&_pinBoy);
 	} else if (!BF_GLOBALS.getFlag(fWithLyle) || !BF_GLOBALS.getFlag(fGivenNapkin) ||
-			(BF_INVENTORY.getObjectScene(BF_ITEM_67) == 1)) {
-		_object3.postInit();
-		_object3.setVisage(463);
-		_object3.setPosition(Common::Point(138, 121));
-		_object3.fixPriority(100);
-		_object3.setFrame(_object3.getFrameCount());
-		BF_GLOBALS._sceneItems.push_back(&_object3);
+			(BF_INVENTORY.getObjectScene(INV_CARAVAN_KEY) == 1)) {
+		_pinBoy.postInit();
+		_pinBoy.setVisage(463);
+		_pinBoy.setPosition(Common::Point(138, 121));
+		_pinBoy.fixPriority(100);
+		_pinBoy.setFrame(_pinBoy.getFrameCount());
+		BF_GLOBALS._sceneItems.push_back(&_pinBoy);
 	} else {
-		_object4.postInit();
-		_object4.setVisage(467);
-		_object4.setPosition(Common::Point(138, 121));
-		_object4.changeZoom(-1);
-		BF_GLOBALS._sceneItems.push_back(&_object4);
+		_manager.postInit();
+		_manager.setVisage(467);
+		_manager.setPosition(Common::Point(138, 121));
+		_manager.changeZoom(-1);
+		_manager.fixPriority(100);
+		BF_GLOBALS._sceneItems.push_back(&_manager);
 
 		if (!BF_GLOBALS.getFlag(takenWeasel)) {
 			_object2.postInit();
@@ -1577,18 +1600,18 @@ void Scene450::postInit(SceneObjectList *OwnerList) {
 			_object2.changeZoom(-1);
 			_object2.setDetails(450, 2, 18, 3, 1, NULL);
 
-			BF_GLOBALS._walkRegions.proc1(4);
+			BF_GLOBALS._walkRegions.disableRegion(4);
 
-			_object1.postInit();
-			_object1.setVisage(466);
-			_object1.animate(ANIM_MODE_1, NULL);
-			_object1.setObjectWrapper(new SceneObjectWrapper());
-			_object1.setPosition(Common::Point(70, 80));
-			_object1.setStrip(5);
-			_object1.changeZoom(90);
-			_object1.fixPriority(65);
-			_object1._flag = 0;
-			BF_GLOBALS._sceneItems.push_back(&_object1);
+			_weasel.postInit();
+			_weasel.setVisage(466);
+			_weasel.animate(ANIM_MODE_1, NULL);
+			_weasel.setObjectWrapper(new SceneObjectWrapper());
+			_weasel.setPosition(Common::Point(70, 80));
+			_weasel.setStrip(5);
+			_weasel.changeZoom(90);
+			_weasel.fixPriority(65);
+			_weasel._flag = 0;
+			BF_GLOBALS._sceneItems.push_back(&_weasel);
 		}
 	}
 
@@ -1609,20 +1632,22 @@ void Scene450::signal() {
 		break;
 	case 4501:
 		if (BF_GLOBALS._sceneObjects->contains(&_object2)) {
+			_sceneMode = 450;
 			ADD_MOVER(_object2, -20, 135);
 		} else {
+			_sceneMode = 451;
 			ADD_PLAYER_MOVER(0, 160);
 		}
 		break;
 	case 4503:
-		_object1.fixPriority(100);
+		_weasel.fixPriority(100);
 		BF_GLOBALS._player.enableControl();
 		break;
 	case 4505:
 		BF_GLOBALS.setFlag(takenWeasel);
-		_object1.remove();
+		_weasel.remove();
 		_object2.remove();
-		BF_GLOBALS._walkRegions.proc2(4);
+		BF_GLOBALS._walkRegions.enableRegion(4);
 		BF_GLOBALS._player.enableControl();
 		break;
 	case 4507:
@@ -1631,18 +1656,18 @@ void Scene450::signal() {
 		BF_GLOBALS.setFlag(fMgrCallsWeasel);
 		_field19AC = 1;
 		_sceneMode = 4503;
-		setAction(&_sequenceManager, this, 4503, &_object1, &_door, &_object4, NULL);
+		setAction(&_sequenceManager, this, 4503, &_weasel, &_door, &_manager, NULL);
 		break;
 	case 4508:
-		_object4.remove();
+		_manager.remove();
 		BF_GLOBALS._player.enableControl();
 		BF_GLOBALS._player.setObjectWrapper(new SceneObjectWrapper());
 		break;
 	case 4517:
 		BF_GLOBALS.setFlag(gotTrailer450);
-		BF_INVENTORY.setObjectScene(BF_ITEM_67, 1);
+		BF_INVENTORY.setObjectScene(INV_CARAVAN_KEY, 1);
 		_sceneMode = 4508;
-		setAction(&_sequenceManager, this, 4508, &BF_GLOBALS._player, &_object4, &_door, NULL);
+		setAction(&_sequenceManager, this, 4508, &BF_GLOBALS._player, &_manager, &_door, NULL);
 		break;
 	default:
 		BF_GLOBALS._player.enableControl();
@@ -1653,7 +1678,7 @@ void Scene450::signal() {
 void Scene450::process(Event &event) {
 	SceneExt::process(event);
 
-	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < (BF_INTERFACE_Y - 1))) {
+	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < (UI_INTERFACE_Y - 1))) {
 		// Check if the cursor is on an exit
 		if (_exit.contains(event.mousePos)) {
 			GfxSurface surface = _cursorVisage.getFrame(EXITFRAME_SW);

@@ -20,15 +20,14 @@
  *
  */
 
-#include "tsage/blue_force/blueforce_ui.h"
+#include "tsage/user_interface.h"
+#include "tsage/core.h"
+#include "tsage/tsage.h"
 #include "tsage/blue_force/blueforce_dialogs.h"
 #include "tsage/blue_force/blueforce_logic.h"
-#include "tsage/tsage.h"
-#include "tsage/core.h"
+#include "tsage/ringworld2/ringworld2_logic.h"
 
 namespace TsAGE {
-
-namespace BlueForce {
 
 void StripProxy::process(Event &event) {
 	if (_action)
@@ -72,19 +71,34 @@ void UIQuestion::process(Event &event) {
 }
 
 void UIQuestion::showDescription(CursorType cursor) {
-	if (cursor == INV_FOREST_RAP) {
-		// Forest rap item has a graphical display
-		showItem(5, 1, 1);
-	} else {
-		// Display object description
-		SceneItem::display2(9001, (int)cursor);
+	switch (g_vm->getGameID()) {
+	case GType_BlueForce:
+		if (cursor == INV_FOREST_RAP) {
+			// Forest rap item has a graphical display
+			showItem(5, 1, 1);
+		} else {
+			// Display object description
+			SceneItem::display2(9001, (int)cursor);
+		}
+		break;
+	case GType_Ringworld2:
+		if ((cursor == R2_9) || (cursor == R2_39)) {
+			// Show communicator
+			warning("TODO: Communicator");
+		} else {
+			// Show object description
+			SceneItem::display2(3, (int)cursor);
+		}
+		break;
+	default:
+		break;
 	}
 }
 
 void UIQuestion::setEnabled(bool flag) {
 	if (_enabled != flag) {
 		UIElement::setEnabled(flag);
-		BF_GLOBALS._uiElements.draw();
+		T2_GLOBALS._uiElements.draw();
 	}
 }
 
@@ -98,16 +112,16 @@ void UIQuestion::showItem(int resNum, int rlbNum, int frameNum) {
 	imgRect.center(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
 	// Save the area behind where the image will be displayed
-	GfxSurface *savedArea = Surface_getArea(BF_GLOBALS.gfxManager().getSurface(), imgRect);
+	GfxSurface *savedArea = Surface_getArea(GLOBALS.gfxManager().getSurface(), imgRect);
 
 	// Draw the image
-	BF_GLOBALS.gfxManager().copyFrom(objImage, imgRect);
+	GLOBALS.gfxManager().copyFrom(objImage, imgRect);
 
 	// Wait for a press
-	BF_GLOBALS._events.waitForPress();
+	GLOBALS._events.waitForPress();
 
 	// Restore the old area
-	BF_GLOBALS.gfxManager().copyFrom(*savedArea, imgRect);
+	GLOBALS.gfxManager().copyFrom(*savedArea, imgRect);
 	delete savedArea;
 }
 
@@ -136,7 +150,7 @@ void UIScore::draw() {
 }
 
 void UIScore::updateScore() {
-	int score = BF_GLOBALS._uiElements._scoreValue;
+	int score = T2_GLOBALS._uiElements._scoreValue;
 
 	_digit3.setFrame(score / 1000 + 1); score %= 1000;
 	_digit2.setFrame(score / 100 + 1); score %= 100;
@@ -161,20 +175,11 @@ void UIInventorySlot::process(Event &event) {
 	if (event.eventType == EVENT_BUTTON_DOWN) {
 		event.handled = true;
 
-		if (_objIndex == INV_AMMO_BELT) {
-			// Handle showing ammo belt
-			showAmmoBelt();
-
-		} else if (_objIndex != INV_NONE) {
+		// Check if game has a select item handler, and if so, give it a chance to check
+		// whether something special happens when the item is selected
+		if (!T2_GLOBALS._onSelectItem || !T2_GLOBALS._onSelectItem((CursorType)_objIndex))
 			_object->setCursor();
-		}
 	}
-}
-
-void UIInventorySlot::showAmmoBelt() {
-	AmmoBeltDialog *dlg = new AmmoBeltDialog();
-	dlg->execute();
-	delete dlg;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -201,7 +206,7 @@ void UIInventoryScroll::process(Event &event) {
 		toggle(false);
 
 		// Scroll the inventory as necessary
-		BF_GLOBALS._uiElements.scrollInventory(_isLeft);
+		T2_GLOBALS._uiElements.scrollInventory(_isLeft);
 		event.handled = true;
 		break;
 	default:
@@ -212,7 +217,7 @@ void UIInventoryScroll::process(Event &event) {
 void UIInventoryScroll::toggle(bool pressed) {
 	if (_enabled) {
 		setFrame(pressed ? (_frameNum + 1) : _frameNum);
-		BF_GLOBALS._uiElements.draw();
+		T2_GLOBALS._uiElements.draw();
 	}
 }
 
@@ -242,9 +247,9 @@ void UICollection::show() {
 
 void UICollection::erase() {
 	if (_clearScreen) {
-		Rect tempRect(0, BF_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT);
-		BF_GLOBALS._screenSurface.fillRect(tempRect, 0);
-		BF_GLOBALS._sceneManager._scene->_backSurface.fillRect(tempRect, 0);
+		Rect tempRect(0, UI_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT);
+		GLOBALS._screenSurface.fillRect(tempRect, 0);
+		GLOBALS._sceneManager._scene->_backSurface.fillRect(tempRect, 0);
 		_clearScreen = false;
 	}
 }
@@ -264,9 +269,9 @@ void UICollection::draw() {
 			_objList[idx]->draw();
 
 		// Draw the resulting UI onto the screen
-		BF_GLOBALS._screenSurface.copyFrom(BF_GLOBALS._sceneManager._scene->_backSurface,
-			Rect(0, BF_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT),
-			Rect(0, BF_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT));
+		GLOBALS._screenSurface.copyFrom(GLOBALS._sceneManager._scene->_backSurface,
+			Rect(0, UI_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT),
+			Rect(0, UI_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT));
 
 		_clearScreen = 1;
 		g_globals->_sceneManager._scene->_sceneBounds = savedBounds;
@@ -276,8 +281,12 @@ void UICollection::draw() {
 /*--------------------------------------------------------------------------*/
 
 UIElements::UIElements(): UICollection() {
-	_cursorVisage.setVisage(1, 5);
+	if (g_vm->getGameID() == GType_Ringworld2)
+		_cursorVisage.setVisage(5, 1);
+	else
+		_cursorVisage.setVisage(1, 5);
 	g_saver->addLoadNotifier(&UIElements::loadNotifierProc);
+	_characterIndex = 0;
 }
 
 void UIElements::synchronize(Serializer &s) {
@@ -305,19 +314,24 @@ void UIElements::synchronize(Serializer &s) {
 			s.syncAsSint16LE(itemId);
 		}
 	}
+
+	if (g_vm->getGameID() == GType_Ringworld2)
+		s.syncAsSint16LE(_characterIndex);
 }
 
 void UIElements::process(Event &event) {
-	if (_clearScreen && BF_GLOBALS._player._enabled && (BF_GLOBALS._sceneManager._sceneNumber != 50)) {
+	if (_clearScreen && GLOBALS._player._enabled && 
+			((g_vm->getGameID() != GType_BlueForce) || (GLOBALS._sceneManager._sceneNumber != 50))) {
 		if (_bounds.contains(event.mousePos)) {
 			// Cursor inside UI area
 			if (!_cursorChanged) {
-				if (BF_GLOBALS._events.isInventoryIcon()) {
+				if (GLOBALS._events.isInventoryIcon()) {
 					// Inventory icon being displayed, so leave alone
 				} else {
 					// Change to the inventory use cursor
-					GfxSurface surface = _cursorVisage.getFrame(6);
-					BF_GLOBALS._events.setCursor(surface);
+					int cursorId = (g_vm->getGameID() == GType_Ringworld2) ? 11 : 6;
+					GfxSurface surface = _cursorVisage.getFrame(cursorId);
+					GLOBALS._events.setCursor(surface);
 				}
 				_cursorChanged = true;
 			}
@@ -336,14 +350,15 @@ void UIElements::process(Event &event) {
 
 		} else if (_cursorChanged) {
 			// Cursor outside UI area, so reset as necessary
-			BF_GLOBALS._events.setCursor(BF_GLOBALS._events.getCursor());
+			GLOBALS._events.setCursor(GLOBALS._events.getCursor());
 			_cursorChanged = false;
-
-			SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
+/*
+			SceneExt *scene = (SceneExt *)GLOBALS._sceneManager._scene;
 			if (scene->_focusObject) {
 				GfxSurface surface = _cursorVisage.getFrame(7);
-				BF_GLOBALS._events.setCursor(surface);
+				GLOBALS._events.setCursor(surface);
 			}
+*/
 		}
 	}
 }
@@ -356,8 +371,8 @@ void UIElements::setup(const Common::Point &pt) {
 	UICollection::setup(pt);
 	hide();
 
-	_object1.setup(1, 3, 1, 0, 0, 255);
-	add(&_object1);
+	_background.setup(1, 3, 1, 0, 0, 255);
+	add(&_background);
 
 	// Set up the inventory slots
 	int xp = 0;
@@ -379,32 +394,48 @@ void UIElements::setup(const Common::Point &pt) {
 		}
 
 		xp = idx * 63 + 2;
-		item->setup(9, 1, idx, xp, 4, 255);
+		if (g_vm->getGameID() == GType_BlueForce) {
+			item->setup(9, 1, idx, xp, 4, 255);
+		} else {
+			item->setup(7, 1, idx, xp, 4, 255);
+		}
 		add(item);
 	}
 
 	// Setup bottom-right hand buttons
 	xp += 62;
-	_question.setup(1, 4, 7, xp, 16, 255);
+	int yp = (g_vm->getGameID() == GType_BlueForce) ? 16 : 17;
+	_question.setup(1, 4, 7, xp, yp, 255);
 	_question.setEnabled(false);
 	add(&_question);
 
 	xp += 21;
-	_scrollLeft.setup(1, 4, 1, xp, 16, 255);
+	_scrollLeft.setup(1, 4, 1, xp, yp, 255);
 	add(&_scrollLeft);
 	_scrollLeft._isLeft = true;
 
 	xp += 22;
-	_scrollRight.setup(1, 4, 4, xp, 16, 255);
+	_scrollRight.setup(1, 4, 4, xp, yp, 255);
 	add(&_scrollRight);
 	_scrollRight._isLeft = false;
 
-	// Set up the score
-	_score.postInit();
-	add(&_score);
+	switch (g_vm->getGameID()) {
+	case GType_BlueForce:
+		// Set up the score
+		_score.postInit();
+		add(&_score);
+		break;
+	case GType_Ringworld2:
+		// Set up the character display
+		_character.setup(1, 5, _characterIndex, 285, 11, 255);
+		add(&_character);
+		break;
+	default:
+		break;
+	}
 
 	// Set interface area
-	_bounds = Rect(0, BF_INTERFACE_Y - 1, SCREEN_WIDTH, SCREEN_HEIGHT);
+	_bounds = Rect(0, UI_INTERFACE_Y - 1, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	updateInventory();
 }
@@ -450,7 +481,7 @@ void UIElements::updateInventory() {
 	// Loop through the inventory objects
 	SynchronizedList<InvObject *>::iterator i;
 	int objIndex = 0;
-	for (i = BF_INVENTORY._itemList.begin(); i != BF_INVENTORY._itemList.end(); ++i, ++objIndex) {
+	for (i = GLOBALS._inventory->_itemList.begin(); i != GLOBALS._inventory->_itemList.end(); ++i, ++objIndex) {
 		InvObject *obj = *i;
 
 		// Check whether the object is in any of the four inventory slots
@@ -466,6 +497,8 @@ void UIElements::updateInventory() {
 				slot->setVisage(obj->_visage);
 				slot->setStrip(obj->_strip);
 				slot->setFrame(obj->_frame);
+
+				slot->reposition();
 			}
 		}
 	}
@@ -484,7 +517,7 @@ void UIElements::updateInvList() {
 
 	SynchronizedList<InvObject *>::iterator i;
 	int itemIndex = 0;
-	for (i = BF_GLOBALS._inventory->_itemList.begin(); i != BF_GLOBALS._inventory->_itemList.end(); ++i, ++itemIndex) {
+	for (i = GLOBALS._inventory->_itemList.begin(); i != GLOBALS._inventory->_itemList.end(); ++i, ++itemIndex) {
 		InvObject *invObject = *i;
 		if (invObject->inInventory())
 			_itemList.push_back(itemIndex);
@@ -496,7 +529,7 @@ void UIElements::updateInvList() {
  */
 void UIElements::addScore(int amount) {
 	_scoreValue += amount;
-	BF_GLOBALS._sound2.play(0);
+	T2_GLOBALS._inventorySound.play(0);
 	updateInventory();
 }
 
@@ -513,10 +546,8 @@ void UIElements::scrollInventory(bool isLeft) {
 }
 
 void UIElements::loadNotifierProc(bool postFlag) {
-	if (postFlag && BF_GLOBALS._uiElements._active)
-		BF_GLOBALS._uiElements.show();
+	if (postFlag && T2_GLOBALS._uiElements._active)
+		T2_GLOBALS._uiElements.show();
 }
-
-} // End of namespace BlueForce
 
 } // End of namespace TsAGE

@@ -25,6 +25,7 @@
 #include "tsage/blue_force/blueforce_logic.h"
 #include "tsage/ringworld/ringworld_demo.h"
 #include "tsage/ringworld/ringworld_logic.h"
+#include "tsage/ringworld2/ringworld2_logic.h"
 
 namespace TsAGE {
 
@@ -75,6 +76,17 @@ Globals::Globals() : _dialogCenter(160, 140), _gfxManagerInstance(_screenSurface
 		_fontColors.background = 88;
 		_fontColors.foreground = 92;
 		_dialogCenter.y = 140;
+	} else if (g_vm->getGameID() == GType_Ringworld2) {
+		// Return to Ringworld
+		_gfxFontNumber = 50;
+		_gfxColors.background = 0;
+		_gfxColors.foreground = 59;
+		_fontColors.background = 4;
+		_fontColors.foreground = 15;
+		_color1 = 59;
+		_color2 = 15;
+		_color3 = 4;
+		_dialogCenter.y = 100;
 	} else if ((g_vm->getGameID() == GType_Ringworld) &&  (g_vm->getFeatures() & GF_CD)) {
 		_gfxFontNumber = 50;
 		_gfxColors.background = 53;
@@ -85,6 +97,7 @@ Globals::Globals() : _dialogCenter(160, 140), _gfxManagerInstance(_screenSurface
 		_color2 = 18;
 		_color3 = 18;
 	} else {
+		// Ringworld
 		_gfxFontNumber = 50;
 		_gfxColors.background = 53;
 		_gfxColors.foreground = 18;
@@ -123,6 +136,12 @@ Globals::Globals() : _dialogCenter(160, 140), _gfxManagerInstance(_screenSurface
 		_game = new BlueForce::BlueForceGame();
 		_inventory = new BlueForce::BlueForceInvObjectList();
 		_sceneHandler = new BlueForce::SceneHandlerExt();
+		break;
+
+	case GType_Ringworld2:
+		_inventory = new Ringworld2::Ringworld2InvObjectList();
+		_game = new Ringworld2::Ringworld2Game();
+		_sceneHandler = new Ringworld2::SceneHandlerExt();
 		break;
 	}
 }
@@ -169,6 +188,9 @@ void Globals::synchronize(Serializer &s) {
 	s.syncAsSint16LE(_prevSceneOffset.x); s.syncAsSint16LE(_prevSceneOffset.y);
 	SYNC_POINTER(_scrollFollower);
 	s.syncAsSint32LE(_stripNum);
+
+	if (s.getVersion() >= 8)
+		_walkRegions.synchronize(s);
 }
 
 void Globals::dispatchSound(ASound *obj) {
@@ -181,21 +203,40 @@ void Globals::dispatchSounds() {
 
 /*--------------------------------------------------------------------------*/
 
+void TsAGE2Globals::reset() {
+	Globals::reset();
+	
+	// Reset the inventory
+	T2_GLOBALS._uiElements.updateInventory();
+	T2_GLOBALS._uiElements._scoreValue = 0;
+	T2_GLOBALS._uiElements._active = false;
+}
+
+void TsAGE2Globals::synchronize(Serializer &s) {
+	Globals::synchronize(s);
+
+	s.syncAsSint16LE(_interfaceY);
+}
+
+/*--------------------------------------------------------------------------*/
+
 namespace BlueForce {
 
-BlueForceGlobals::BlueForceGlobals(): Globals() {
+BlueForceGlobals::BlueForceGlobals(): TsAGE2Globals() {
 }
 
 void BlueForceGlobals::synchronize(Serializer &s) {
-	Globals::synchronize(s);
+	TsAGE2Globals::synchronize(s);
 
 	s.syncAsSint16LE(_dayNumber);
 	s.syncAsSint16LE(_v4CEA4);
+	s.syncAsSint16LE(_v4CEAA);
 	s.syncAsSint16LE(_marinaWomanCtr);
+	s.syncAsSint16LE(_v4CEB0);
 	s.syncAsSint16LE(_v4CEB6);
 	s.syncAsSint16LE(_safeCombination);
 	s.syncAsSint16LE(_v4CEC0);
-	s.syncAsSint16LE(_v4CEC2);
+	s.syncAsSint16LE(_greenDay5TalkCtr);
 	s.syncAsSint16LE(_v4CEC4);
 	s.syncAsSint16LE(_v4CEC8);
 	s.syncAsSint16LE(_v4CECA);
@@ -211,8 +252,10 @@ void BlueForceGlobals::synchronize(Serializer &s) {
 	s.syncAsSint16LE(_deathReason);
 	s.syncAsSint16LE(_driveFromScene);
 	s.syncAsSint16LE(_driveToScene);
+	s.syncAsSint16LE(_v501F8);
 	s.syncAsSint16LE(_v501FA);
 	s.syncAsSint16LE(_v501FC);
+	s.syncAsSint16LE(_v5020C);
 	s.syncAsSint16LE(_v50696);
 	s.syncAsSint16LE(_v5098C);
 	s.syncAsSint16LE(_v5098D);
@@ -222,7 +265,6 @@ void BlueForceGlobals::synchronize(Serializer &s) {
 	s.syncAsSint16LE(_v50CC8);
 	s.syncAsSint16LE(_v51C42);
 	s.syncAsSint16LE(_v51C44);
-	s.syncAsSint16LE(_interfaceY);
 	s.syncAsSint16LE(_bookmark);
 	s.syncAsSint16LE(_mapLocationId);
 	s.syncAsSint16LE(_clip1Bullets);
@@ -230,7 +272,7 @@ void BlueForceGlobals::synchronize(Serializer &s) {
 }
 
 void BlueForceGlobals::reset() {
-	Globals::reset();
+	TsAGE2Globals::reset();
 	_scenePalette.clearListeners();
 	
 	_scrollFollower = &_player;
@@ -238,22 +280,21 @@ void BlueForceGlobals::reset() {
 
 	// Reset the inventory
 	((BlueForceInvObjectList *)_inventory)->reset();
-	BF_GLOBALS._uiElements.updateInventory();
-	BF_GLOBALS._uiElements._scoreValue = 0;
-	BF_GLOBALS._uiElements._active = false;
 
 	_mapLocationId = 1;
 	_driveFromScene = 300;
 	_driveToScene = 0;
 
-	_interfaceY = BF_INTERFACE_Y;
+	_interfaceY = UI_INTERFACE_Y;
 	_dayNumber = 0;
 	_v4CEA4 = 0;
+	_v4CEAA = 0;
 	_marinaWomanCtr = 0;
+	_v4CEB0 = 0;
 	_v4CEB6 = 0;
 	_safeCombination = 0;
 	_v4CEC0 = 0;
-	_v4CEC2 = 0;
+	_greenDay5TalkCtr = 0;
 	_v4CEC4 = 0;
 	_v4CEC8 = 1;
 	_v4CECA = 0;
@@ -283,7 +324,10 @@ void BlueForceGlobals::reset() {
 	_v4CEE8 = 0;
 	_deziTopic = 0;
 	_deathReason = 0;
+	_v501F8 = 0;
+	_v501FA = 0;
 	_v501FC = 0;
+	_v5020C = 0;
 	_v50696 = 0;
 	_v5098C = 0;
 	_v5098D = 0;
@@ -317,5 +361,31 @@ bool BlueForceGlobals::removeFlag(int flagNum) {
 }
 
 } // end of namespace BlueForce
+
+namespace Ringworld2 {
+
+void Ringworld2Globals::reset() {
+	Globals::reset();
+	
+	// Reset the inventory
+	R2_INVENTORY.reset();
+	T2_GLOBALS._uiElements.updateInventory();
+	T2_GLOBALS._uiElements._active = false;
+
+	// Reset fields
+	_v5657C = 0;
+	_v565F5 = 0;
+	_v57C2C = 0;
+}
+
+void Ringworld2Globals::synchronize(Serializer &s) {
+	TsAGE2Globals::synchronize(s);
+
+	s.syncAsSint16LE(_v5657C);
+	s.syncAsSint16LE(_v565F5);
+	s.syncAsSint16LE(_v57C2C);
+}
+
+} // end of namespace Ringworld2
 
 } // end of namespace TsAGE

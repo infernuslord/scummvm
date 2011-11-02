@@ -43,6 +43,8 @@ public:
 	virtual Scene *createScene(int sceneNumber);
 	virtual void rightClick();
 	virtual void processEvent(Event &event);
+	virtual bool canSaveGameStateCurrently();
+	virtual bool canLoadGameStateCurrently();
 };
 
 #define OBJ_ARRAY_SIZE 10
@@ -202,7 +204,7 @@ public:
 	bool _savedCanWalk;
 	int _field37A;
 
-	FocusObject *_focusObject;
+	EventHandler *_focusObject;
 	Visage _cursorVisage;
 
 	Rect _v51C34;
@@ -217,8 +219,8 @@ public:
 	virtual void loadScene(int sceneNum);
 	virtual void checkGun();
 
-	void addTimer(Timer *timer) { _timerList.add(timer); }
-	void removeTimer(Timer *timer) { _timerList.remove(timer); }
+	void addTimer(EventHandler *timer) { _timerList.add(timer); }
+	void removeTimer(EventHandler *timer) { _timerList.remove(timer); }
 	bool display(CursorType action);
 	void fadeOut();
 	void gunDisplay();
@@ -237,7 +239,7 @@ public:
 	virtual void remove();
 	PaletteFader *addFader(const byte *arrBufferRGB, int step, Action *action);
 	void add2Faders(const byte *arrBufferRGB, int step, int paletteNum, Action *action);
-	void sub15E4F(const byte *arrBufferRGB, int arg8, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag);
+	void transition(const byte *arrBufferRGB, int arg8, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag);
 };
 
 class SceneHandlerExt: public SceneHandler {
@@ -250,6 +252,8 @@ public:
 };
 
 class BlueForceInvObjectList : public InvObjectList {
+private:
+	static bool SelectItem(int objectNumber);
 public:
 	InvObject _none;
 	InvObject _colt45;
@@ -352,6 +356,35 @@ public:
 		NamedHotspot::synchronize(s);
 		s.syncAsSint16LE(_flag);
 	}
+};
+
+class SceneMessage: public Action {
+private:
+	Common::String _message;
+
+	void draw();
+	void clear();
+public:
+	void setup(const Common::String &msg) { _message = msg; }
+
+	virtual Common::String getClassName() { return "SceneMessage"; }
+	virtual void remove();
+	virtual void signal();
+	virtual void process(Event &event);
+};
+
+class IntroSceneText: public SceneText {
+public:
+	Action *_action;
+	uint32 _frameNumber;
+	int _diff;
+public:
+	IntroSceneText();
+	void setup(const Common::String &msg, Action *action);
+
+	virtual Common::String getClassName() { return "BFIntroText"; }
+	virtual void synchronize(Serializer &s);
+	virtual void dispatch();
 };
 
 } // End of namespace BlueForce

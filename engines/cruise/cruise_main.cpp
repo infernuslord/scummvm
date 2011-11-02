@@ -1804,6 +1804,8 @@ void CruiseEngine::mainLoop() {
 			bool skipEvents = false;
 
 			do {
+				g_system->updateScreen();
+
 				g_system->delayMillis(10);
 				currentTick = g_system->getMillis();
 

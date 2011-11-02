@@ -153,16 +153,25 @@ osxsnap: bundle
 	cp $(srcdir)/README ./ScummVM-snapshot/ScummVM\ ReadMe
 	mkdir ScummVM-snapshot/doc
 	cp $(srcdir)/doc/QuickStart ./ScummVM-snapshot/doc/QuickStart
+	mkdir ScummVM-snapshot/doc/cz
+	cp $(srcdir)/doc/cz/PrectiMe ./ScummVM-snapshot/doc/cz/PrectiMe
 	mkdir ScummVM-snapshot/doc/de
 	cp $(srcdir)/doc/de/Liesmich ./ScummVM-snapshot/doc/de/Liesmich
 	cp $(srcdir)/doc/de/Schnellstart ./ScummVM-snapshot/doc/de/Schnellstart
+	mkdir ScummVM-snapshot/doc/es
+	cp $(srcdir)/doc/es/InicioRapido ./ScummVM-snapshot/doc/es
 	mkdir ScummVM-snapshot/doc/fr
 	cp $(srcdir)/doc/fr/DemarrageRapide ./ScummVM-snapshot/doc/fr/DemarrageRapide
+	mkdir ScummVM-snapshot/doc/it
+	cp $(srcdir)/doc/it/GuidaRapida ./ScummVM-snapshot/doc/it/GuidaRapida
 	mkdir ScummVM-snapshot/doc/no-nb
 	cp $(srcdir)doc/no-nb/HurtigStart ./ScummVM-snapshot/doc/no-nb/HurtigStart
 	/Developer/Tools/SetFile -t ttro -c ttxt ./ScummVM-snapshot/*
+	xattr -w "com.apple.TextEncoding" "utf-8;134217984" ./ScummVM-snapshot/doc/cz/*
 	xattr -w "com.apple.TextEncoding" "utf-8;134217984" ./ScummVM-snapshot/doc/de/*
+	xattr -w "com.apple.TextEncoding" "utf-8;134217984" ./ScummVM-snapshot/doc/es/*
 	xattr -w "com.apple.TextEncoding" "utf-8;134217984" ./ScummVM-snapshot/doc/fr/*
+	xattr -w "com.apple.TextEncoding" "utf-8;134217984" ./ScummVM-snapshot/doc/it/*
 	xattr -w "com.apple.TextEncoding" "utf-8;134217984" ./ScummVM-snapshot/doc/no-nb/*
 	/Developer/Tools/CpMac -r $(bundle_name) ./ScummVM-snapshot/
 	cp $(srcdir)/dists/macosx/DS_Store ./ScummVM-snapshot/.DS_Store
@@ -187,8 +196,11 @@ win32dist: $(EXECUTABLE)
 	mkdir -p $(WIN32PATH)
 	mkdir -p $(WIN32PATH)/graphics
 	mkdir -p $(WIN32PATH)/doc
+	mkdir -p $(WIN32PATH)/doc/cz
 	mkdir -p $(WIN32PATH)/doc/de
+	mkdir -p $(WIN32PATH)/doc/es
 	mkdir -p $(WIN32PATH)/doc/fr
+	mkdir -p $(WIN32PATH)/doc/it
 	mkdir -p $(WIN32PATH)/doc/no-nb
 	$(STRIP) $(EXECUTABLE) -o $(WIN32PATH)/$(EXECUTABLE)
 	cp $(DIST_FILES_THEMES) $(WIN32PATH)
@@ -200,9 +212,12 @@ endif
 	cp $(srcdir)/COPYING.LGPL $(WIN32PATH)/COPYING.LGPL.txt
 	cp $(srcdir)/COPYRIGHT $(WIN32PATH)/COPYRIGHT.txt
 	cp $(srcdir)/NEWS $(WIN32PATH)/NEWS.txt
+	cp $(srcdir)/doc/cz/PrectiMe $(WIN32PATH)/doc/cz/PrectiMe.txt
 	cp $(srcdir)/doc/de/Neues $(WIN32PATH)/doc/de/Neues.txt
 	cp $(srcdir)/doc/QuickStart $(WIN32PATH)/doc/QuickStart.txt
+	cp $(srcdir)/doc/es/InicioRapido $(WIN32PATH)/doc/es/InicioRapido.txt
 	cp $(srcdir)/doc/fr/DemarrageRapide $(WIN32PATH)/doc/fr/DemarrageRapide.txt
+	cp $(srcdir)/doc/it/GuidaRapida $(WIN32PATH)/doc/it/GuidaRapida.txt
 	cp $(srcdir)/doc/no-nb/HurtigStart $(WIN32PATH)/doc/no-nb/HurtigStart.txt
 	cp $(srcdir)/doc/de/Schnellstart $(WIN32PATH)/doc/de/Schnellstart.txt
 	cp $(srcdir)/README $(WIN32PATH)/README.txt
@@ -213,8 +228,12 @@ endif
 	cp $(srcdir)/dists/win32/graphics/scummvm-install.ico $(WIN32PATH)/graphics
 	cp $(srcdir)/dists/win32/ScummVM.iss $(WIN32PATH)
 	unix2dos $(WIN32PATH)/*.txt
+	unix2dos $(WIN32PATH)/doc/cz/*.txt
 	unix2dos $(WIN32PATH)/doc/de/*.txt
+	unix2dos $(WIN32PATH)/doc/es/*.txt
 	unix2dos $(WIN32PATH)/doc/fr/*.txt
+	unix2dos $(WIN32PATH)/doc/it/*.txt
+	unix2dos $(WIN32PATH)/doc/no-nb/*.txt
 
 # Special target to create a win32 NSIS installer
 win32setup: $(EXECUTABLE)
