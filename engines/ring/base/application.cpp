@@ -765,6 +765,7 @@ bool Application::scrollImage(Common::String filename, uint32 ticksWait, LoadFro
 }
 
 void Application::displayFade(Common::String filenameFrom, Common::String filenameTo, uint32 frameCount, uint32 ticksWait, LoadFrom loadFrom, ArchiveType archiveType) {
+#if RING_DEBUG_SKIPMOVIES != 1
 	Graphics::Surface surface;
 	Image *imageTo = NULL;
 	Animation *animation = NULL;
@@ -872,6 +873,7 @@ cleanup:
 	SAFE_DELETE(animation);
 	SAFE_DELETE(imageFrom);
 	SAFE_DELETE(imageTo);
+#endif
 }
 
 void Application::fadeOut(uint32 frameCount, Color colorTo, uint32 ticksWait) {
@@ -937,6 +939,7 @@ void Application::waitForEscape(uint32 ticksWait) const {
 }
 
 void Application::playMovie(Common::String filename, float frameDivider) {
+#if RING_DEBUG_SKIPMOVIES != 1
 	soundStopType(kSoundTypeEffect, 256);
 	soundStopType(kSoundTypeDialog, 256);
 	cursorSelect(kCursorDefault);
@@ -953,9 +956,11 @@ void Application::playMovie(Common::String filename, float frameDivider) {
 	}
 
 	delete movie;
+#endif
 }
 
 void Application::playMovieChannel(Common::String filename, uint32 channel) {
+#if RING_DEBUG_SKIPMOVIES != 1
 	if (channel < 1 || channel > 3)
 		error("[Application::playMovieChannel] Invalid channel for movie %s (was:%d, valid=[1-3])", filename.c_str(), channel);
 
@@ -971,6 +976,7 @@ void Application::playMovieChannel(Common::String filename, uint32 channel) {
 		movie->play(Common::Point(0, 16));
 
 	delete movie;
+#endif
 }
 
 Common::String Application::getFileExtension(ImageType imageType) {

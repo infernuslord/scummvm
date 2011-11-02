@@ -34,11 +34,19 @@ namespace Ring {
 // Debug options
 //////////////////////////////////////////////////////////////////////////
 #ifndef RING_DEBUG_SKIPINIT
-#define RING_DEBUG_SKIPINIT 0	// Skip zone initialization
+#define RING_DEBUG_SKIPINIT    0    // Skip zone initialization
 #endif
 
 #ifndef RING_DEBUG_DRAWING
-#define RING_DEBUG_DRAWING  0	// Refresh screen after each drawing operation
+#define RING_DEBUG_DRAWING     0    // Refresh screen after each drawing operation
+#endif
+
+#ifndef RING_DEBUG_SKIPMOVIES
+#define RING_DEBUG_SKIPMOVIES  0    // Skip all movies and intro pictures
+#endif
+
+#ifndef RING_DEBUG_SKIPMENU
+#define RING_DEBUG_SKIPMENU    0     // Start game directly, skipping the menu
 #endif
 
 //////////////////////////////////////////////////////////////////////////
