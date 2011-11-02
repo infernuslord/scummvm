@@ -86,6 +86,10 @@ enum {
 	LANG_SWE = 1 << 9
 };
 
+// Floating point conversion
+float convertIEEEFloat(uint32 data);
+uint32 convertIEEEFloat(float value);
+
 class Application;
 class Debugger;
 

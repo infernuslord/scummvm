@@ -156,9 +156,14 @@ Common::Error RingEngine::run() {
 #if RING_DEBUG_SKIPINIT != 1
 	_application->initZones();
 
+
+#if RING_DEBUG_SKIPMENU == 1
+	_application->startGame();
+#else
 	// Start application
 	_application->showStartupScreen();
 	_application->startMenu(false);
+#endif
 #endif
 
 	while (!shouldQuit()) {
@@ -375,5 +380,35 @@ const char *RingEngine::gameIdFromTarget(const char *target) {
 
 	return Common::String::format("%s", (tok == NULL) ? target : tok).c_str();
 }
+
+#pragma region Floating point
+
+// From https://github.com/DrMcCoy/eos/blob/master/src/common/util.cpp#L95
+
+// We just directly convert here because most systems have float in IEEE 754-1985
+// format anyway. However, should we find another system that has this differently,
+// we might have to do something more here...
+union floatConvert {
+	uint32 dInt;
+	float dFloat;
+};
+
+float convertIEEEFloat(uint32 data) {
+	floatConvert conv;
+
+	conv.dInt = data;
+
+	return conv.dFloat;
+}
+
+uint32 convertIEEEFloat(float value) {
+	floatConvert conv;
+
+	conv.dFloat = value;
+
+	return conv.dInt;
+}
+
+#pragma endregion
 
 } // End of namespace Ring

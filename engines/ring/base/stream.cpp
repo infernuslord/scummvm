@@ -190,9 +190,9 @@ void CompressedStream::NodeHeader::read(Common::SeekableReadStream *stream) {
 	field_4  = stream->readUint32LE();
 	field_8  = stream->readUint32LE();
 	field_C  = stream->readUint32LE();
-	field_10 = stream->readUint32LE();
-	field_14 = stream->readUint32LE();
-	field_18 = stream->readUint32LE();
+	field_10 = convertIEEEFloat(stream->readUint32LE());
+	field_14 = convertIEEEFloat(stream->readUint32LE());
+	field_18 = convertIEEEFloat(stream->readUint32LE());
 	field_1C = stream->readUint32LE();
 	field_20 = stream->readUint32LE();
 	field_24 = stream->readUint32LE();
@@ -209,7 +209,7 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 	int32 streamStart = stream->pos();
 	uint32 offset     = stream->readUint32LE();
 
-	// Read header
+	// Read header (size: 56)
 	NodeHeader header;
 	header.read(stream);
 
@@ -239,10 +239,10 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 
 	// Decode channel and nodes
 	uint32 delta = (uint32)(stream->pos() - streamStart);
-	uint32 decodedChannelSize = decodeChannel(stream, delta* 8, (delta + offset) * 8, buffer + sizeof(header));
+	uint32 decodedChannelSize = decodeChannel(stream, 8 * delta , 8 * (delta + offset), buffer + sizeof(header));
 
 	delta = (uint32)(stream->pos() - streamStart);
-	uint32 decodedNodeSize = decodeNode(stream, delta * 8, (delta + chunkSize) * 8, buffer + size + sizeof(header));
+	uint32 decodedNodeSize = decodeNode(stream, 8 * delta, 8 * (delta + chunkSize), buffer + size + sizeof(header));
 
 	if ((decodedChannelSize + decodedNodeSize) > (bufferSize + 64))
 		warning("[CompressedStream::decompressNode] Error during decompression (buffer overrun)!");
@@ -333,7 +333,13 @@ uint32 CompressedStream::decode(Common::SeekableReadStream *stream, uint32 a2, u
 	uint32 index1 = 0;
 
 	while (start < end) {
-		stream->seek(start >> 3, SEEK_SET);
+		uint32 offset = (start >> 3);
+		if (offset >= (uint32)stream->size())
+			error("[CompressedStream::decode] Offset is past the end of the stream (%d)", offset);
+
+		stream->seek(offset, SEEK_SET);
+		if (stream->err() || stream->eos())
+			error("[CompressedStream::decode] Trying to read past the end of the stream");
 
 		uint32 var = stream->readUint32BE();
 		uint32 position = 31 - (start & 7);
