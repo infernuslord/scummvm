@@ -24,6 +24,8 @@
 #include "ring/base/application.h"
 #include "ring/base/art.h"
 
+#include "ring/graphics/aquator.h"
+
 #include "ring/helpers.h"
 #include "ring/ring.h"
 
@@ -185,22 +187,6 @@ Common::MemoryReadStream *CompressedStream::decompressIndexed(uint32 blockSize, 
 	return new Common::MemoryReadStream((byte *)buffer, bufferSize, DisposeAfterUse::YES);
 }
 
-void CompressedStream::NodeHeader::read(Common::SeekableReadStream *stream) {
-	field_0  = stream->readUint32LE();
-	field_4  = stream->readUint32LE();
-	field_8  = stream->readUint32LE();
-	field_C  = stream->readUint32LE();
-	field_10 = convertIEEEFloat(stream->readUint32LE());
-	field_14 = convertIEEEFloat(stream->readUint32LE());
-	field_18 = convertIEEEFloat(stream->readUint32LE());
-	field_1C = stream->readUint32LE();
-	field_20 = stream->readUint32LE();
-	field_24 = stream->readUint32LE();
-	field_28 = stream->readUint32LE();
-	field_2C = stream->readUint32LE();
-	field_30 = stream->readUint32LE();
-}
-
 Common::MemoryReadStream *CompressedStream::decompressNode() {
 	Common::SeekableReadStream *stream = getCompressedStream();
 	if (!stream)
@@ -210,8 +196,8 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 	uint32 channelSize = stream->readUint32LE();
 
 	// Read header
-	NodeHeader header;
-	header.read(stream);
+	ImageHeaderEntry::Header header;
+	header.load(stream);
 
 	// Get node size
 	stream->seek(streamStart + channelSize + sizeof(header) + 4, SEEK_SET);
@@ -263,8 +249,8 @@ Common::MemoryReadStream *CompressedStream::decompressChannel() {
 	stream->readUint32LE(); // offset
 
 	// Read header
-	NodeHeader header;
-	header.read(stream);
+	ImageHeaderEntry::Header header;
+	header.load(stream);
 
 	// Compute buffer size
 	uint32 channelSize = (uint32)header.field_2C / (4 * sizeof(header));
@@ -293,13 +279,13 @@ Common::MemoryReadStream *CompressedStream::decompressChannel() {
 		uint32 offset = stream->readUint32LE();
 
 		// Read header
-		stream->read(pBuffer, sizeof(NodeHeader));
-		pBuffer += sizeof(NodeHeader);
+		stream->read(pBuffer, sizeof(header));
+		pBuffer += sizeof(header);
 
 		// Decompress channel
 		uint32 delta = (uint32)(stream->pos() - streamStart);
 		decodedSize += decodeChannel(stream, delta * 8, (delta + offset) * 8, pBuffer);
-		pBuffer += channelSize - sizeof(NodeHeader);
+		pBuffer += channelSize - sizeof(header);
 	}
 
 	if (decodedSize > (bufferSize + 64))

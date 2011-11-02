@@ -77,19 +77,19 @@ public:
 class ImageHeaderEntry {
 public:
 	struct Header {
-		float field_0;
-		float field_4;
-		float field_8;
-		float field_C;
+		int32 field_0;
+		int32 field_4;
+		int32 field_8;
+		int32 field_C;
 		float field_10;
 		float field_14;
 		float field_18;
-		float field_1C;
-		float field_20;
-		float field_24;
-		float field_28;
-		uint32 field_2C;
-		float field_30;
+		int32 field_1C;
+		int32 field_20;
+		int32 field_24;
+		int32 field_28;
+		int32 field_2C;
+		int32 field_30;
 
 		Header();
 		void update(const Header &header);

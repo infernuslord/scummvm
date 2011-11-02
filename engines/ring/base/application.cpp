@@ -1479,6 +1479,8 @@ void Application::puzzleSet3DSoundVolume(PuzzleId puzzleId, Id soundId, int32 vo
 }
 
 void Application::puzzleSetActive(PuzzleId id, bool updateSoundItems, bool a3) {
+	debugC(kRingDebugGraphics, "Setting active puzzle: %d", id);
+
 	// Setup puzzle
 	if (!_puzzles.has(id))
 		return;
@@ -2274,6 +2276,8 @@ void Application::rotationSetFreOff(Id rotationId) {
 }
 
 void Application::rotationSetActive(Id id, bool updateSoundItems, bool a3) {
+	debugC(kRingDebugGraphics, "Setting active rotation: %d", id);
+
 	// Setup puzzle
 	if (!_rotations.has(id))
 		return;

@@ -24,6 +24,7 @@
 #include "ring/base/stream.h"
 
 #include "ring/helpers.h"
+#include "ring/ring.h"
 
 #include "common/archive.h"
 #include "graphics/surface.h"
@@ -156,9 +157,9 @@ void ImageHeaderEntry::Header::load(Common::SeekableReadStream *stream) {
 	field_4  = stream->readUint32LE();
 	field_8  = stream->readUint32LE();
 	field_C  = stream->readUint32LE();
-	field_10 = stream->readUint32LE();
-	field_14 = stream->readUint32LE();
-	field_18 = stream->readUint32LE();
+	field_10 = convertIEEEFloat(stream->readUint32LE());
+	field_14 = convertIEEEFloat(stream->readUint32LE());
+	field_18 = convertIEEEFloat(stream->readUint32LE());
 	field_1C = stream->readUint32LE();
 	field_20 = stream->readUint32LE();
 	field_24 = stream->readUint32LE();
