@@ -206,17 +206,16 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 	if (!stream)
 		error("[CompressedStream::decompressIndexed] Invalid stream!");
 
-	int32 streamStart = stream->pos();
-	uint32 offset     = stream->readUint32LE();
+	int32 streamStart  = stream->pos();
+	uint32 channelSize = stream->readUint32LE();
 
-	// Read header (size: 56)
+	// Read header
 	NodeHeader header;
 	header.read(stream);
 
-	// Get chunk size
-	stream->seek(offset, SEEK_CUR);
-	uint32 chunkSize = stream->readUint32LE();
-	stream->seek(sizeof(header) + 4, SEEK_SET);
+	// Get node size
+	stream->seek(streamStart + channelSize + sizeof(header) + 4, SEEK_SET);
+	uint32 nodeSize = stream->readUint32LE();
 
 	// Compute buffer size
 	uint32 size = (uint32)(header.field_0 * header.field_4 * header.field_8 / 4);
@@ -239,10 +238,10 @@ Common::MemoryReadStream *CompressedStream::decompressNode() {
 
 	// Decode channel and nodes
 	uint32 delta = (uint32)(stream->pos() - streamStart);
-	uint32 decodedChannelSize = decodeChannel(stream, 8 * delta , 8 * (delta + offset), buffer + sizeof(header));
+	uint32 decodedChannelSize = decodeChannel(stream, 8 * delta , 8 * (delta + channelSize), buffer + sizeof(header));
 
 	delta = (uint32)(stream->pos() - streamStart);
-	uint32 decodedNodeSize = decodeNode(stream, 8 * delta, 8 * (delta + chunkSize), buffer + size + sizeof(header));
+	uint32 decodedNodeSize = decodeNode(stream, 8 * delta, 8 * (delta + nodeSize), buffer + size + sizeof(header));
 
 	if ((decodedChannelSize + decodedNodeSize) > (bufferSize + 64))
 		warning("[CompressedStream::decompressNode] Error during decompression (buffer overrun)!");
@@ -315,11 +314,11 @@ uint32 CompressedStream::decodeSound(Common::SeekableReadStream *stream, uint32 
 }
 
 uint32 CompressedStream::decodeNode(Common::SeekableReadStream *stream, uint32 start, uint32 end, byte *buffer) {
-	return decode(stream, 16, 8, start, end, buffer);
+	return decode(stream, 16, 6, start, end, buffer);
 }
 
 uint32 CompressedStream::decodeChannel(Common::SeekableReadStream *stream, uint32 start, uint32 end, byte *buffer) {
-	return decode(stream, 13, 8, start, end, buffer);
+	return decode(stream, 13, 6, start, end, buffer);
 }
 
 uint32 CompressedStream::decode(Common::SeekableReadStream *stream, uint32 a2, uint32 a3, uint32 start, uint32 end, byte* buffer, uint32 multiplier) {
