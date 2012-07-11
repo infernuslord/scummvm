@@ -28,7 +28,10 @@
 #include "common/EventRecorder.h"
 #include "common/file.h"
 #include "common/fs.h"
+#include "engines/advancedDetector.h"
 #include "engines/util.h"
+#include "gui/message.h"
+
 #include "cge/cge.h"
 #include "cge/vga13h.h"
 #include "cge/cge_main.h"
@@ -49,13 +52,11 @@ CGEEngine::CGEEngine(OSystem *syst, const ADGameDescription *gameDescription)
 	DebugMan.addDebugChannel(kCGEDebugEngine, "engine", "CGE Engine debug channel");
 
 	_startupMode = 1;
-	_demoText    = kDemo;
 	_oldLev      = 0;
 	_pocPtr      = 0;
 	_bitmapPalette = NULL;
-
-
-
+	_quitFlag = false;
+	_showBoundariesFl = false;
 }
 
 void CGEEngine::initSceneValues() {
@@ -91,7 +92,7 @@ void CGEEngine::init() {
 	_font = new Font(this, "CGE");
 	_text = new Text(this, "CGE");
 	_talk = NULL;
-	_vga = new Vga();
+	_vga = new Vga(this);
 	_sys = new System(this);
 	_pocLight = new PocLight(this);
 	for (int i = 0; i < kPocketNX; i++)
@@ -122,7 +123,7 @@ void CGEEngine::init() {
 	_maxScene   =  0;
 	_dark       = false;
 	_game       = false;
-	_finis      = false;
+	_endGame    = false;
 	_now        =  1;
 	_lev        = -1;
 	_recentStep = -2;
@@ -134,7 +135,6 @@ void CGEEngine::init() {
 	_soundOk = 1;
 	_sprTv = NULL;
 	_gameCase2Cpt = 0;
-	_offUseCount = 0;
 
 	_startGameSlot = ConfMan.hasKey("save_slot") ? ConfMan.getInt("save_slot") : -1;
 }
@@ -144,7 +144,6 @@ void CGEEngine::deinit() {
 	DebugMan.clearAllDebugChannels();
 
 	delete _console;
-	_midiPlayer->killMidi();
 
 	// Delete engine objects
 	delete _vga;
@@ -161,8 +160,9 @@ void CGEEngine::deinit() {
 	delete _keyboard;
 	delete _mouse;
 	delete _eventManager;
-	delete _fx;
 	delete _sound;
+	delete _fx;
+	delete _midiPlayer;
 	delete _font;
 	delete _commandHandler;
 	delete _commandHandlerTurbo;
@@ -196,6 +196,16 @@ Common::Error CGEEngine::run() {
 	// Run the game
 	cge_main();
 
+	// If game is finished, display ending message
+	if (_flag[3]) {
+		Common::String msg = Common::String(_text->getText(kSayTheEnd));
+		if (msg.size() != 0) {
+			g_system->delayMillis(10);
+			GUI::MessageDialog dialog(msg, "OK");
+			dialog.runModal();
+		}
+	}
+
 	// Remove game objects
 	deinit();
 
@@ -214,7 +224,8 @@ bool CGEEngine::canLoadGameStateCurrently() {
 }
 
 bool CGEEngine::canSaveGameStateCurrently() {
-	return (_startupMode == 0) && _mouse->_active;
+	return (_startupMode == 0) && _mouse->_active &&
+				_commandHandler->idle() && !_hero->_flags._hide;
 }
 
 } // End of namespace CGE

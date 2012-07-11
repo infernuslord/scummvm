@@ -74,13 +74,13 @@ static const ADGameDescription teenAgentGameDescriptions[] = {
 		Common::CZ_CZE,
 		Common::kPlatformPC,
 		ADGF_CD,
-		GUIO1(GUIO_NONE)
+		GUIO0()
 	},
 	AD_TABLE_END_MARKER,
 };
 
 enum {
-    MAX_SAVES = 20
+	MAX_SAVES = 20
 };
 
 class TeenAgentMetaEngine : public AdvancedMetaEngine {
@@ -123,16 +123,15 @@ public:
 
 	virtual SaveStateList listSaves(const char *target) const {
 		Common::String pattern = target;
-		pattern += ".*";
+		pattern += ".??";
 
 		Common::StringArray filenames = g_system->getSavefileManager()->listSavefiles(pattern);
 		Common::sort(filenames.begin(), filenames.end());
 
 		SaveStateList saveList;
 		for (Common::StringArray::const_iterator file = filenames.begin(); file != filenames.end(); ++file) {
-			int slot;
-			const char *ext = strrchr(file->c_str(), '.');
-			if (ext && (slot = atoi(ext + 1)) >= 0 && slot < MAX_SAVES) {
+			int slot = atoi(file->c_str() + file->size() - 2);
+			if (slot >= 0 && slot < MAX_SAVES) {
 				Common::ScopedPtr<Common::InSaveFile> in(g_system->getSavefileManager()->openForLoading(*file));
 				if (!in)
 					continue;
@@ -174,7 +173,6 @@ public:
 			return SaveStateDescriptor(slot, desc);
 
 		SaveStateDescriptor ssd(slot, desc);
-		ssd.setDeletableFlag(true);
 
 		//checking for the thumbnail
 		if (Graphics::Surface *const thumb = Graphics::loadThumbnail(*in))

@@ -366,7 +366,7 @@ const uint16 freddypharkasPatchLadderEvent[] = {
 //    script, description,                                      magic DWORD,                                  adjust
 const SciScriptSignature freddypharkasSignatures[] = {
 	{      0, "CD: score early disposal",                    1, PATCH_MAGICDWORD(0x39, 0x0d, 0x43, 0x75),    -3, freddypharkasSignatureScoreDisposal, freddypharkasPatchScoreDisposal },
-	{    235, "CD: canister pickup hang",                   3, PATCH_MAGICDWORD(0x39, 0x07, 0x39, 0x08),    -4, freddypharkasSignatureCanisterHang, freddypharkasPatchCanisterHang },
+	{    235, "CD: canister pickup hang",                   3, PATCH_MAGICDWORD(0x39, 0x07, 0x39, 0x08),     -4, freddypharkasSignatureCanisterHang,  freddypharkasPatchCanisterHang },
 	{    320, "ladder event issue",                          2, PATCH_MAGICDWORD(0x6d, 0x76, 0x38, 0xf5),    -1, freddypharkasSignatureLadderEvent,   freddypharkasPatchLadderEvent },
 	SCI_SIGNATUREENTRY_TERMINATOR
 };
@@ -437,8 +437,68 @@ const uint16 gk1PatchDay5PhoneFreeze[] = {
 	PATCH_END
 };
 
+// Floppy version: Interrogation::dispose() compares an object reference
+// (stored in the view selector) with a number, leading to a crash (this kind
+// of comparison was not used in SCI32). The view selector is used to store
+// both a view number (in some cases), and a view reference (in other cases).
+// In the floppy version, the checks are in the wrong order, so there is a
+// comparison between a number an an object. In the CD version, the checks are
+// in the correct order, thus the comparison is correct, thus we use the code
+// from the CD version in the floppy one.
+const byte gk1SignatureInterrogationBug[] = {
+	43,
+	0x65, 0x4c,        // aTop 4c
+	0x67, 0x50,        // pTos 50
+	0x34, 0x10, 0x27,  // ldi 2710
+	0x1e,              // gt?
+	0x31, 0x08,        // bnt 08  [05a0]
+	0x67, 0x50,        // pTos 50
+	0x34, 0x10, 0x27,  // ldi 2710
+	0x04,              // sub
+	0x65, 0x50,        // aTop 50
+	0x63, 0x50,        // pToa 50
+	0x31, 0x15,        // bnt 15  [05b9]
+	0x39, 0x0e,        // pushi 0e
+	0x76,              // push0
+	0x4a, 0x04, 0x00,  // send 0004
+	0xa5, 0x00,        // sat 00
+	0x38, 0x93, 0x00,  // pushi 0093
+	0x76,              // push0
+	0x63, 0x50,        // pToa 50
+	0x4a, 0x04, 0x00,  // send 0004
+	0x85, 0x00,        // lat 00
+	0x65, 0x50,        // aTop 50
+	0
+};
+
+const uint16 gk1PatchInterrogationBug[] = {
+	0x65, 0x4c,        // aTop 4c
+	0x63, 0x50,        // pToa 50
+	0x31, 0x15,        // bnt 15  [05b9]
+	0x39, 0x0e,        // pushi 0e
+	0x76,              // push0
+	0x4a, 0x04, 0x00,  // send 0004
+	0xa5, 0x00,        // sat 00
+	0x38, 0x93, 0x00,  // pushi 0093
+	0x76,              // push0
+	0x63, 0x50,        // pToa 50
+	0x4a, 0x04, 0x00,  // send 0004
+	0x85, 0x00,        // lat 00
+	0x65, 0x50,        // aTop 50
+	0x67, 0x50,        // pTos 50
+	0x34, 0x10, 0x27,  // ldi 2710
+	0x1e,              // gt?
+	0x31, 0x08,        // bnt 08  [05b9]
+	0x67, 0x50,        // pTos 50
+	0x34, 0x10, 0x27,  // ldi 2710
+	0x04,              // sub
+	0x65, 0x50,        // aTop 50
+	PATCH_END
+};
+
 //    script, description,                                      magic DWORD,                                 adjust
 const SciScriptSignature gk1Signatures[] = {
+	{     51, "interrogation bug",                           1, PATCH_MAGICDWORD(0x65, 0x4c, 0x67, 0x50),     0, gk1SignatureInterrogationBug, gk1PatchInterrogationBug },
 	{    212, "day 5 phone freeze",                          1, PATCH_MAGICDWORD(0x35, 0x03, 0x65, 0x1a),     0, gk1SignatureDay5PhoneFreeze, gk1PatchDay5PhoneFreeze },
 	{    230, "day 6 police beignet timer issue",            1, PATCH_MAGICDWORD(0x34, 0xdc, 0x00, 0x65),   -16, gk1SignatureDay6PoliceBeignet, gk1PatchDay6PoliceBeignet },
 	{    230, "day 6 police sleep timer issue",              1, PATCH_MAGICDWORD(0x34, 0xdc, 0x00, 0x65),    -5, gk1SignatureDay6PoliceSleep, gk1PatchDay6PoliceSleep },
@@ -715,7 +775,7 @@ const uint16 mothergoose256PatchReplay[] = {
 	PATCH_END
 };
 
-// when saving, it also checks if the savegame-id is below 13.
+// when saving, it also checks if the savegame ID is below 13.
 //  we change this to check if below 113 instead
 const byte mothergoose256SignatureSaveLimit[] = {
 	5,
@@ -918,7 +978,27 @@ const uint16 sq4CdPatchTextOptionsButton[] = {
 	PATCH_END
 };
 
-// Patch 2: Add the ability to toggle among the three available options,
+// Patch 2: Adjust a check in babbleIcon::init, which handles the babble icon
+// (e.g. the two guys from Andromeda) shown when dying/quitting.
+// Fixes bug #3538418.
+const byte sq4CdSignatureBabbleIcon[] = {
+	7,
+	0x89, 0x5a,      // lsg 5a
+	0x35, 0x02,      // ldi 02
+	0x1a,            // eq?
+	0x31, 0x26,      // bnt 26  [02a7]
+	0
+};
+
+const uint16 sq4CdPatchBabbleIcon[] = {
+	0x89, 0x5a,      // lsg 5a
+	0x35, 0x01,      // ldi 01
+	0x1a,            // eq?
+	0x2f, 0x26,      // bt 26  [02a7]
+	PATCH_END
+};
+
+// Patch 3: Add the ability to toggle among the three available options,
 // when the text options button is clicked: "Speech", "Text" and "Both".
 // Refer to the patch above for additional details.
 // iconTextSwitch::doit (called when the text options button is clicked)
@@ -970,6 +1050,7 @@ const SciScriptSignature sq4Signatures[] = {
 	{    298, "Floppy: endless flight",                      1, PATCH_MAGICDWORD(0x67, 0x08, 0x63, 0x44),    -3,       sq4FloppySignatureEndlessFlight, sq4FloppyPatchEndlessFlight },
 	{    298, "Floppy (German): endless flight",             1, PATCH_MAGICDWORD(0x67, 0x08, 0x63, 0x4c),    -3, sq4FloppySignatureEndlessFlightGerman, sq4FloppyPatchEndlessFlight },
 	{    818, "CD: Speech and subtitles option",             1, PATCH_MAGICDWORD(0x89, 0x5a, 0x3c, 0x35),     0,             sq4CdSignatureTextOptions,       sq4CdPatchTextOptions },
+	{      0, "CD: Babble icon speech and subtitles fix",    1, PATCH_MAGICDWORD(0x89, 0x5a, 0x35, 0x02),     0,              sq4CdSignatureBabbleIcon,        sq4CdPatchBabbleIcon },
 	{    818, "CD: Speech and subtitles option button",      1, PATCH_MAGICDWORD(0x35, 0x01, 0xa1, 0x53),     0,       sq4CdSignatureTextOptionsButton, sq4CdPatchTextOptionsButton },
 	SCI_SIGNATUREENTRY_TERMINATOR
 };

@@ -28,6 +28,7 @@
 namespace Gob {
 
 class ANIFile;
+class CMPFile;
 class Surface;
 
 /** An ANI object, controlling an animation within an ANI file. */
@@ -38,7 +39,10 @@ public:
 		kModeOnce        ///< Play the animation only once.
 	};
 
+	/** Create an animation object from an ANI file. */
 	ANIObject(const ANIFile &ani);
+	/** Create an animation object from a CMP sprite. */
+	ANIObject(const CMPFile &cmp);
 	virtual ~ANIObject();
 
 	/** Make the object visible/invisible. */
@@ -57,9 +61,9 @@ public:
 	void setMode(Mode mode);
 
 	/** Set the current position to the animation's default. */
-	void setPosition();
+	virtual void setPosition();
 	/** Set the current position. */
-	void setPosition(int16 x, int16 y);
+	virtual void setPosition(int16 x, int16 y);
 
 	/** Return the current position. */
 	void getPosition(int16 &x, int16 &y) const;
@@ -69,11 +73,19 @@ public:
 	/** Return the current frame size. */
 	void getFrameSize(int16 &width, int16 &height) const;
 
+	/** Are there coordinates within the animation sprite? */
+	bool isIn(int16 x, int16 y) const;
+	/** Is this object within the animation sprite? */
+	bool isIn(const ANIObject &obj) const;
+
 	/** Set the animation number. */
 	void setAnimation(uint16 animation);
 
 	/** Rewind the current animation to the first frame. */
 	void rewind();
+
+	/** Set the animation to a specific frame. */
+	void setFrame(uint16 frame);
 
 	/** Return the current animation number. */
 	uint16 getAnimation() const;
@@ -84,15 +96,16 @@ public:
 	bool lastFrame() const;
 
 	/** Draw the current frame onto the surface and return the affected rectangle. */
-	void draw(Surface &dest, int16 &left, int16 &top, int16 &right, int16 &bottom);
+	virtual bool draw(Surface &dest, int16 &left, int16 &top, int16 &right, int16 &bottom);
 	/** Draw the current frame from the surface and return the affected rectangle. */
-	void clear(Surface &dest, int16 &left , int16 &top, int16 &right, int16 &bottom);
+	virtual bool clear(Surface &dest, int16 &left, int16 &top, int16 &right, int16 &bottom);
 
 	/** Advance the animation to the next frame. */
 	virtual void advance();
 
 private:
 	const ANIFile *_ani; ///< The managed ANI file.
+	const CMPFile *_cmp; ///< The managed CMP file.
 
 	uint16 _animation; ///< The current animation number
 	uint16 _frame;     ///< The current frame.
@@ -112,6 +125,9 @@ private:
 	int16 _backgroundTop;    ///< The top of the saved background.
 	int16 _backgroundRight;  ///< The right position of the saved background.
 	int16 _backgroundBottom; ///< The bottom position of the saved background.
+
+	bool drawCMP(Surface &dest, int16 &left, int16 &top, int16 &right, int16 &bottom);
+	bool drawANI(Surface &dest, int16 &left, int16 &top, int16 &right, int16 &bottom);
 };
 
 } // End of namespace Gob

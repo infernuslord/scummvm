@@ -74,7 +74,6 @@ enum {
 class TSageMetaEngine : public AdvancedMetaEngine {
 public:
 	TSageMetaEngine() : AdvancedMetaEngine(TsAGE::gameDescriptions, sizeof(TsAGE::tSageGameDescription), tSageGameTitles) {
-		_md5Bytes = 5000;
 		_singleid = "tsage";
 		_guioptions = GUIO1(GUIO_NOSPEECH);
 	}
@@ -165,8 +164,6 @@ public:
 
 			// Create the return descriptor
 			SaveStateDescriptor desc(slot, header.saveName);
-			desc.setDeletableFlag(true);
-			desc.setWriteProtectedFlag(false);
 			desc.setThumbnail(header.thumbnail);
 			desc.setSaveDate(header.saveYear, header.saveMonth, header.saveDay);
 			desc.setSaveTime(header.saveHour, header.saveMinutes);

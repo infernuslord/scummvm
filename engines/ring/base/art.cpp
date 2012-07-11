@@ -87,11 +87,11 @@ void Art::init(const Common::String &path, ZoneId zone, LoadFrom loadFrom) {
 	delete archive;
 }
 
-bool Art::hasFile(const Common::String &name) {
+bool Art::hasFile(const Common::String &name) const {
 	return (_records.find(name) != _records.end());
 }
 
-int Art::listMembers(Common::ArchiveMemberList &list) {
+int Art::listMembers(Common::ArchiveMemberList &list) const {
 	int numMembers = 0;
 
 	for (RecordMap::const_iterator i = _records.begin(); i != _records.end(); ++i) {
@@ -102,7 +102,7 @@ int Art::listMembers(Common::ArchiveMemberList &list) {
 	return numMembers;
 }
 
-Common::ArchiveMemberPtr Art::getMember(const Common::String &name) {
+const Common::ArchiveMemberPtr Art::getMember(const Common::String &name) const {
 	if (!hasFile(name))
 		return Common::ArchiveMemberPtr();
 
@@ -175,7 +175,6 @@ void ArtHandler::open(ZoneId zone, LoadFrom loadFrom) {
 		path = Common::String::format("%s/%s.at3", getArtFolder(zone).c_str(), _app->getZoneFolder(zone).c_str());
 		break;
 	}
-
 
 	// Create new archive
 	Art *art = new Art();

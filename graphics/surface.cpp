@@ -20,6 +20,7 @@
  */
 
 #include "common/algorithm.h"
+#include "common/endian.h"
 #include "common/util.h"
 #include "common/rect.h"
 #include "common/textconsole.h"
@@ -95,10 +96,10 @@ void Surface::hLine(int x, int y, int x2, uint32 color) {
 		memset(ptr, (byte)color, x2 - x + 1);
 	} else if (format.bytesPerPixel == 2) {
 		uint16 *ptr = (uint16 *)getBasePtr(x, y);
-		Common::set_to(ptr, ptr + (x2 - x + 1), (uint16)color);
+		Common::fill(ptr, ptr + (x2 - x + 1), (uint16)color);
 	} else if (format.bytesPerPixel == 4) {
 		uint32 *ptr = (uint32 *)getBasePtr(x, y);
-		Common::set_to(ptr, ptr + (x2 - x + 1), color);
+		Common::fill(ptr, ptr + (x2 - x + 1), color);
 	} else {
 		error("Surface::hLine: bytesPerPixel must be 1, 2, or 4");
 	}
@@ -172,13 +173,13 @@ void Surface::fillRect(Common::Rect r, uint32 color) {
 		if (format.bytesPerPixel == 2) {
 			uint16 *ptr = (uint16 *)getBasePtr(r.left, r.top);
 			while (height--) {
-				Common::set_to(ptr, ptr + width, (uint16)color);
+				Common::fill(ptr, ptr + width, (uint16)color);
 				ptr += pitch / 2;
 			}
 		} else {
 			uint32 *ptr = (uint32 *)getBasePtr(r.left, r.top);
 			while (height--) {
-				Common::set_to(ptr, ptr + width, color);
+				Common::fill(ptr, ptr + width, color);
 				ptr += pitch / 4;
 			}
 		}
@@ -268,6 +269,84 @@ void Surface::move(int dx, int dy, int height) {
 			dst += pitch - (pitch + dx * format.bytesPerPixel);
 		}
 	}
+}
+
+Graphics::Surface *Surface::convertTo(const PixelFormat &dstFormat, const byte *palette) const {
+	assert(pixels);
+
+	Graphics::Surface *surface = new Graphics::Surface();
+
+	// If the target format is the same, just copy
+	if (format == dstFormat) {
+		surface->copyFrom(*this);
+		return surface;
+	}
+
+	if (format.bytesPerPixel == 0 || format.bytesPerPixel > 4)
+		error("Surface::convertTo(): Can only convert from 1Bpp, 2Bpp, 3Bpp, and 4Bpp");
+
+	if (dstFormat.bytesPerPixel != 2 && dstFormat.bytesPerPixel != 4)
+		error("Surface::convertTo(): Can only convert to 2Bpp and 4Bpp");
+
+	surface->create(w, h, dstFormat);
+
+	if (format.bytesPerPixel == 1) {
+		// Converting from paletted to high color
+		assert(palette);
+
+		for (int y = 0; y < h; y++) {
+			const byte *srcRow = (const byte *)getBasePtr(0, y);
+			byte *dstRow = (byte *)surface->getBasePtr(0, y);
+
+			for (int x = 0; x < w; x++) {
+				byte index = *srcRow++;
+				byte r = palette[index * 3];
+				byte g = palette[index * 3 + 1];
+				byte b = palette[index * 3 + 2];
+
+				uint32 color = dstFormat.RGBToColor(r, g, b);
+
+				if (dstFormat.bytesPerPixel == 2)
+					*((uint16 *)dstRow) = color;
+				else
+					*((uint32 *)dstRow) = color;
+
+				dstRow += dstFormat.bytesPerPixel;
+			}
+		}
+	} else {
+		// Converting from high color to high color
+		for (int y = 0; y < h; y++) {
+			const byte *srcRow = (const byte *)getBasePtr(0, y);
+			byte *dstRow = (byte *)surface->getBasePtr(0, y);
+
+			for (int x = 0; x < w; x++) {
+				uint32 srcColor;
+				if (format.bytesPerPixel == 2)
+					srcColor = READ_UINT16(srcRow);
+				else if (format.bytesPerPixel == 3)
+					srcColor = READ_UINT24(srcRow);
+				else
+					srcColor = READ_UINT32(srcRow);
+
+				srcRow += format.bytesPerPixel;
+
+				// Convert that color to the new format
+				byte r, g, b, a;
+				format.colorToARGB(srcColor, a, r, g, b);
+				uint32 color = dstFormat.ARGBToColor(a, r, g, b);
+
+				if (dstFormat.bytesPerPixel == 2)
+					*((uint16 *)dstRow) = color;
+				else
+					*((uint32 *)dstRow) = color;
+
+				dstRow += dstFormat.bytesPerPixel;
+			}
+		}
+	}
+
+	return surface;
 }
 
 } // End of namespace Graphics

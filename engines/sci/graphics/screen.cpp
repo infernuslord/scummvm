@@ -97,6 +97,13 @@ GfxScreen::GfxScreen(ResourceManager *resMan) : _resMan(resMan) {
 		break;
 	}
 
+	// Phantasmagoria 1 sets a window area of 630x450
+	if (g_sci->getGameId() == GID_PHANTASMAGORIA) {
+		// TODO: Also set width to 630 (can't be set right now, as it messes up
+		// the pitch). For now, a hack has been placed in GfxFrameout::kernelAddPlane()
+		_height = 450;
+	}
+
 	_displayPixels = _displayWidth * _displayHeight;
 	_visualScreen = (byte *)calloc(_pixels, 1);
 	_priorityScreen = (byte *)calloc(_pixels, 1);
@@ -438,7 +445,7 @@ void GfxScreen::bitsSaveScreen(Common::Rect rect, byte *screen, uint16 screenWid
 	screen += (rect.top * screenWidth) + rect.left;
 
 	for (y = rect.top; y < rect.bottom; y++) {
-		memcpy(memoryPtr, (void*)screen, width); memoryPtr += width;
+		memcpy(memoryPtr, (void *)screen, width); memoryPtr += width;
 		screen += screenWidth;
 	}
 }
@@ -458,7 +465,7 @@ void GfxScreen::bitsSaveDisplayScreen(Common::Rect rect, byte *&memoryPtr) {
 	}
 
 	for (y = rect.top; y < rect.bottom; y++) {
-		memcpy(memoryPtr, (void*)screen, width); memoryPtr += width;
+		memcpy(memoryPtr, (void *)screen, width); memoryPtr += width;
 		screen += _displayWidth;
 	}
 }
@@ -503,7 +510,7 @@ void GfxScreen::bitsRestoreScreen(Common::Rect rect, byte *&memoryPtr, byte *scr
 	screen += (rect.top * screenWidth) + rect.left;
 
 	for (y = rect.top; y < rect.bottom; y++) {
-		memcpy((void*) screen, memoryPtr, width); memoryPtr += width;
+		memcpy((void *) screen, memoryPtr, width); memoryPtr += width;
 		screen += screenWidth;
 	}
 }
@@ -523,7 +530,7 @@ void GfxScreen::bitsRestoreDisplayScreen(Common::Rect rect, byte *&memoryPtr) {
 	}
 
 	for (y = rect.top; y < rect.bottom; y++) {
-		memcpy((void*) screen, memoryPtr, width); memoryPtr += width;
+		memcpy((void *) screen, memoryPtr, width); memoryPtr += width;
 		screen += _displayWidth;
 	}
 }

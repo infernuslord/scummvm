@@ -179,10 +179,10 @@ void Screen::drawSurface(Graphics::Surface *sourceSurface, int x, int y, int16 f
 		clipHeight = clipInfo.clipRect.bottom - y;
 	}
 
-	source = (byte*)sourceSurface->getBasePtr(0, startY);
-	dest = (byte*)clipInfo.destSurface->getBasePtr(x, y);
+	source = (byte *)sourceSurface->getBasePtr(0, startY);
+	dest = (byte *)clipInfo.destSurface->getBasePtr(x, y);
 	if (_vm->getGameID() != GID_RTZ)
-		maskp = (byte*)_maskDrawCtx.destSurface->getBasePtr(x, y);
+		maskp = (byte *)_maskDrawCtx.destSurface->getBasePtr(x, y);
 
 	int32 sourcePitch, linePtrAdd, sourceAdd;
 	byte *linePtr;
@@ -349,7 +349,7 @@ void Screen::updateSprites() {
 	drawSpriteChannels(_backgroundScreenDrawCtx, 3, 0);
 	drawSpriteChannels(_workScreenDrawCtx, 1, 2);
 
-	_vm->_system->copyRectToScreen((const byte*)_workScreen->pixels, _workScreen->pitch, 0, 0, _workScreen->w, _workScreen->h);
+	_vm->_system->copyRectToScreen(_workScreen->pixels, _workScreen->pitch, 0, 0, _workScreen->w, _workScreen->h);
 	_vm->_screen->updateScreenAndWait(10);
 }
 
@@ -633,7 +633,7 @@ void Screen::printChar(uint c, int16 x, int16 y, byte color) {
 		return;
 
 	byte p;
-	byte *dest = (byte*)_fontDrawCtx.destSurface->getBasePtr(x, y);
+	byte *dest = (byte *)_fontDrawCtx.destSurface->getBasePtr(x, y);
 
 	for (uint yc = 0; yc < height; yc++) {
 		p = charData[yc];
@@ -775,10 +775,10 @@ void Screen::unlockScreen() {
 }
 
 void Screen::showWorkScreen() {
-	_vm->_system->copyRectToScreen((const byte*)_workScreen->pixels, _workScreen->pitch, 0, 0, _workScreen->w, _workScreen->h);
+	_vm->_system->copyRectToScreen(_workScreen->pixels, _workScreen->pitch, 0, 0, _workScreen->w, _workScreen->h);
 }
 
-void Screen::copyRectToScreen(const byte *buf, int pitch, int x, int y, int w, int h) {
+void Screen::copyRectToScreen(const void *buf, int pitch, int x, int y, int w, int h) {
 	_vm->_system->copyRectToScreen(buf, pitch, x, y, w, h);
 }
 

@@ -29,6 +29,7 @@
 #define CGE_VGA13H_H
 
 #include "common/serializer.h"
+#include "common/events.h"
 #include "graphics/surface.h"
 #include "cge/general.h"
 #include "cge/bitmap.h"
@@ -91,7 +92,7 @@ public:
 		uint16 _near : 1;       // Near action lock
 		uint16 _drag : 1;       // sprite is moveable
 		uint16 _hold : 1;       // sprite is held with mouse
-		uint16 _____ : 1;       // intrrupt driven animation
+		uint16 _dummy : 1;       // intrrupt driven animation
 		uint16 _slav : 1;       // slave object
 		uint16 _syst : 1;       // system object
 		uint16 _kill : 1;       // dispose memory after remove
@@ -128,7 +129,6 @@ public:
 	virtual ~Sprite();
 	BitmapPtr shp();
 	BitmapPtr *setShapeList(BitmapPtr *shp);
-	void moveShapes(uint8 *buf);
 	Sprite *expand();
 	Sprite *contract();
 	Sprite *backShow(bool fast = false);
@@ -147,7 +147,7 @@ public:
 	void step(int nr = -1);
 	Seq *setSeq(Seq *seq);
 	CommandHandler::Command *snList(SnList type);
-	virtual void touch(uint16 mask, int x, int y);
+	virtual void touch(uint16 mask, int x, int y, Common::KeyCode keyCode);
 	virtual void tick();
 	void sync(Common::Serializer &s);
 private:
@@ -178,6 +178,7 @@ public:
 };
 
 class Vga {
+	CGEEngine *_vm;
 	bool _setPal;
 	Dac *_oldColors;
 	Dac *_newColors;
@@ -197,7 +198,7 @@ public:
 	Graphics::Surface *_page[4];
 	Dac *_sysPal;
 
-	Vga();
+	Vga(CGEEngine *vm);
 	~Vga();
 
 	uint8 *glass(Dac *pal, const uint8 colR, const uint8 colG, const uint8 colB);

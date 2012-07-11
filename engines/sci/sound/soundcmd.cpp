@@ -35,17 +35,19 @@ namespace Sci {
 SoundCommandParser::SoundCommandParser(ResourceManager *resMan, SegManager *segMan, Kernel *kernel, AudioPlayer *audio, SciVersion soundVersion) :
 	_resMan(resMan), _segMan(segMan), _kernel(kernel), _audio(audio), _soundVersion(soundVersion) {
 
-	_music = new SciMusic(_soundVersion);
-	_music->init();
 	// Check if the user wants synthesized or digital sound effects in SCI1.1
-	// or later games
-	_bMultiMidi = ConfMan.getBool("multi_midi");
+	// games based on the prefer_digitalsfx config setting
+
 	// In SCI2 and later games, this check should always be true - there was
 	// always only one version of each sound effect or digital music track
 	// (e.g. the menu music in GK1 - there is a sound effect with the same
 	// resource number, but it's totally unrelated to the menu music).
-	if (getSciVersion() >= SCI_VERSION_2)
-		_bMultiMidi = true;
+	// The GK1 demo (very late SCI1.1) does the same thing
+	// TODO: Check the QFG4 demo
+	_useDigitalSFX = (getSciVersion() >= SCI_VERSION_2 || g_sci->getGameId() == GID_GK1 || ConfMan.getBool("prefer_digitalsfx"));
+
+	_music = new SciMusic(_soundVersion, _useDigitalSFX);
+	_music->init();
 }
 
 SoundCommandParser::~SoundCommandParser() {
@@ -59,7 +61,7 @@ reg_t SoundCommandParser::kDoSoundInit(int argc, reg_t *argv, reg_t acc) {
 }
 
 int SoundCommandParser::getSoundResourceId(reg_t obj) {
-	int resourceId = obj.segment ? readSelectorValue(_segMan, obj, SELECTOR(number)) : -1;
+	int resourceId = obj.getSegment() ? readSelectorValue(_segMan, obj, SELECTOR(number)) : -1;
 	// Modify the resourceId for the Windows versions that have an alternate MIDI soundtrack, like SSCI did.
 	if (g_sci && g_sci->_features->useAltWinGMSound()) {
 		// Check if the alternate MIDI song actually exists...
@@ -84,16 +86,14 @@ void SoundCommandParser::initSoundResource(MusicEntry *newSound) {
 	// effects map)
 	bool checkAudioResource = getSciVersion() >= SCI_VERSION_1_1;
 	// Hoyle 4 has garbled audio resources in place of the sound resources.
-	// The demo of GK1 has no alternate sound effects.
-	if ((g_sci->getGameId() == GID_HOYLE4) || 
-		(g_sci->getGameId() == GID_GK1 && g_sci->isDemo()))
+	if (g_sci->getGameId() == GID_HOYLE4)
 		checkAudioResource = false;
 
 	if (checkAudioResource && _resMan->testResource(ResourceId(kResourceTypeAudio, newSound->resourceId))) {
 		// Found a relevant audio resource, create an audio stream if there is
 		// no associated sound resource, or if both resources exist and the
 		// user wants the digital version.
-		if (_bMultiMidi || !newSound->soundRes) {
+		if (_useDigitalSFX || !newSound->soundRes) {
 			int sampleLen;
 			newSound->pStreamAud = _audio->getAudioStream(newSound->resourceId, 65535, &sampleLen);
 			newSound->soundType = Audio::Mixer::kSpeechSoundType;
@@ -291,7 +291,7 @@ reg_t SoundCommandParser::kDoSoundPause(int argc, reg_t *argv, reg_t acc) {
 
 	reg_t obj = argv[0];
 	uint16 value = argc > 1 ? argv[1].toUint16() : 0;
-	if (!obj.segment) {		// pause the whole playlist
+	if (!obj.getSegment()) {		// pause the whole playlist
 		_music->pauseAll(value);
 	} else {	// pause a playlist slot
 		MusicEntry *musicSlot = _music->getSlot(obj);
@@ -368,8 +368,13 @@ reg_t SoundCommandParser::kDoSoundFade(int argc, reg_t *argv, reg_t acc) {
 	case 4: // SCI01+
 	case 5: // SCI1+ (SCI1 late sound scheme), with fade and continue
 		musicSlot->fadeTo = CLIP<uint16>(argv[1].toUint16(), 0, MUSIC_VOLUME_MAX);
+		// Check if the song is already at the requested volume. If it is, don't
+		// perform any fading. Happens for example during the intro of Longbow.
+		if (musicSlot->fadeTo == musicSlot->volume)
+			return acc;
+
 		// sometimes we get objects in that position, fix it up (ffs. workarounds)
-		if (!argv[1].segment)
+		if (!argv[1].getSegment())
 			musicSlot->fadeStep = volume > musicSlot->fadeTo ? -argv[3].toUint16() : argv[3].toUint16();
 		else
 			musicSlot->fadeStep = volume > musicSlot->fadeTo ? -5 : 5;
@@ -485,7 +490,7 @@ void SoundCommandParser::processUpdateCues(reg_t obj) {
 	} else {
 		// Slot actually has no data (which would mean that a sound-resource w/
 		// unsupported data is used.
-		//  (example lsl5 - sound resource 744 - it's roland exclusive
+		//  (example lsl5 - sound resource 744 - it's Roland exclusive
 		writeSelectorValue(_segMan, obj, SELECTOR(signal), SIGNAL_OFFSET);
 		// If we don't set signal here, at least the switch to the mud wrestling
 		// room in lsl5 will not work.
@@ -497,12 +502,7 @@ void SoundCommandParser::processUpdateCues(reg_t obj) {
 		// fireworks).
 		// It is also needed in other games, e.g. LSL6 when talking to the
 		// receptionist (bug #3192166).
-		if (g_sci->getGameId() == GID_LONGBOW && g_sci->getEngineState()->currentRoomNumber() == 95) {
-			// HACK: Don't set a signal here in the intro of Longbow, as that makes some dialog
-			// boxes disappear too soon (bug #3044844).
-		} else {
-			writeSelectorValue(_segMan, obj, SELECTOR(signal), SIGNAL_OFFSET);
-		}
+		writeSelectorValue(_segMan, obj, SELECTOR(signal), SIGNAL_OFFSET);
 		if (_soundVersion <= SCI_VERSION_0_LATE) {
 			processStopSound(obj, false);
 		} else {

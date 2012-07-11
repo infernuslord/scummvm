@@ -54,7 +54,7 @@ static const ADGameDescription gameDescriptions[] = {
 		"sword25",
 		"",
 		AD_ENTRY1s("lang_hr.b25c", "e881054d1f8ec1e527422fc521c25405", 1273217),
-		Common::HU_HUN,
+		Common::HR_HRV,
 		Common::kPlatformUnknown,
 		ADGF_UNSTABLE,
 		GUIO1(GUIO_NOASPECT)
@@ -100,6 +100,17 @@ static const ADGameDescription gameDescriptions[] = {
 		"",
 		AD_ENTRY1s("lang_es.b25c", "384c19072d83725f351bb9ecb4d3f02b", 987965),
 		Common::ES_ESP,
+		Common::kPlatformUnknown,
+		ADGF_UNSTABLE,
+		GUIO1(GUIO_NOASPECT)
+	},
+	// Hungarian "psylog" version.
+	// Submitted by goodoldgeorg in bug report #3428644.
+	{
+		"sword25",
+		"psylog version",
+		AD_ENTRY1s("lang_hu.b25c", "7de51a3b4926a192549e75b1a7d81667", 1864915),
+		Common::HU_HUN,
 		Common::kPlatformUnknown,
 		ADGF_UNSTABLE,
 		GUIO1(GUIO_NOASPECT)

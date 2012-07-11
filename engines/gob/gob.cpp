@@ -147,9 +147,9 @@ GobEngine::GobEngine(OSystem *syst) : Engine(syst), _rnd("gob") {
 }
 
 GobEngine::~GobEngine() {
-	delete _console;
-
 	deinitGameParts();
+
+	delete _console;
 }
 
 const char *GobEngine::getLangDesc(int16 language) const {
@@ -231,6 +231,10 @@ bool GobEngine::isTrueColor() const {
 
 bool GobEngine::isDemo() const {
 	return (isSCNDemo() || isBATDemo());
+}
+
+bool GobEngine::hasResourceSizeWorkaround() const {
+	return _resourceSizeWorkaround;
 }
 
 bool GobEngine::isCurrentTot(const Common::String &tot) const {
@@ -389,6 +393,8 @@ void GobEngine::pauseGame() {
 }
 
 bool GobEngine::initGameParts() {
+	_resourceSizeWorkaround = false;
+
 	// just detect some devices some of which will be always there if the music is not disabled
 	_noMusic = MidiDriver::getMusicType(MidiDriver::detectDevice(MDT_PCSPK | MDT_MIDI | MDT_ADLIB)) == MT_NULL ? true : false;
 	_saveLoad = 0;
@@ -460,6 +466,33 @@ bool GobEngine::initGameParts() {
 		_goblin   = new Goblin_v2(this);
 		_scenery  = new Scenery_v2(this);
 		_saveLoad = new SaveLoad_v2(this, _targetName.c_str());
+		break;
+
+	case kGameTypeLittleRed:
+		_init     = new Init_v2(this);
+		_video    = new Video_v2(this);
+		_inter    = new Inter_LittleRed(this);
+		_mult     = new Mult_v2(this);
+		_draw     = new Draw_v2(this);
+		_map      = new Map_v2(this);
+		_goblin   = new Goblin_v2(this);
+		_scenery  = new Scenery_v2(this);
+
+		// WORKAROUND: Little Red Riding Hood has a small resource size glitch in the
+		//             screen where Little Red needs to find the animals' homes.
+		_resourceSizeWorkaround = true;
+		break;
+
+	case kGameTypeAJWorld:
+		_init     = new Init_v2(this);
+		_video    = new Video_v2(this);
+		_inter    = new Inter_v2(this);
+		_mult     = new Mult_v2(this);
+		_draw     = new Draw_v2(this);
+		_map      = new Map_v2(this);
+		_goblin   = new Goblin_v2(this);
+		_scenery  = new Scenery_v2(this);
+		_saveLoad = new SaveLoad_AJWorld(this, _targetName.c_str());
 		break;
 
 	case kGameTypeGob3:

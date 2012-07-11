@@ -82,7 +82,7 @@ void UIQuestion::showDescription(CursorType cursor) {
 		}
 		break;
 	case GType_Ringworld2:
-		if ((cursor == R2_9) || (cursor == R2_39)) {
+		if ((cursor == R2_COM_SCANNER) || (cursor == R2_COM_SCANNER_2)) {
 			// Show communicator
 			warning("TODO: Communicator");
 		} else {
@@ -199,9 +199,9 @@ void UIInventoryScroll::process(Event &event) {
 		// Draw the button as selected
 		toggle(true);
 
-		event.handled = true;
-		break;
-	case EVENT_BUTTON_UP:
+		// Wait for the mouse to be released
+		BF_GLOBALS._events.waitForPress(EVENT_BUTTON_UP);
+
 		// Restore unselected version
 		toggle(false);
 
@@ -286,7 +286,6 @@ UIElements::UIElements(): UICollection() {
 	else
 		_cursorVisage.setVisage(1, 5);
 	g_saver->addLoadNotifier(&UIElements::loadNotifierProc);
-	_characterIndex = 0;
 }
 
 void UIElements::synchronize(Serializer &s) {
@@ -314,13 +313,10 @@ void UIElements::synchronize(Serializer &s) {
 			s.syncAsSint16LE(itemId);
 		}
 	}
-
-	if (g_vm->getGameID() == GType_Ringworld2)
-		s.syncAsSint16LE(_characterIndex);
 }
 
 void UIElements::process(Event &event) {
-	if (_clearScreen && GLOBALS._player._enabled && 
+	if (_clearScreen && GLOBALS._player._enabled &&
 			((g_vm->getGameID() != GType_BlueForce) || (GLOBALS._sceneManager._sceneNumber != 50))) {
 		if (_bounds.contains(event.mousePos)) {
 			// Cursor inside UI area
@@ -427,7 +423,7 @@ void UIElements::setup(const Common::Point &pt) {
 		break;
 	case GType_Ringworld2:
 		// Set up the character display
-		_character.setup(1, 5, _characterIndex, 285, 11, 255);
+		_character.setup(1, 5, R2_GLOBALS._player._characterIndex, 285, 11, 255);
 		add(&_character);
 		break;
 	default:
@@ -456,7 +452,16 @@ void UIElements::add(UIElement *obj) {
  * Handles updating the visual inventory in the user interface
  */
 void UIElements::updateInventory() {
-	_score.updateScore();
+	switch (g_vm->getGameID()) {
+	case GType_BlueForce:
+		// Update the score
+		_score.updateScore();
+		break;
+	case GType_Ringworld2:
+		_character.setFrame(R2_GLOBALS._player._characterIndex);
+		break;
+	}
+
 	updateInvList();
 
 	// Enable scroll buttons if the player has more than four items

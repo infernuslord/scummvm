@@ -137,7 +137,7 @@ class Scene110: public SceneExt {
 		virtual void signal();
 	};
 public:
-	NamedObject _object1, _object2, _object3, _object4, _object5, _object6, _object7, _object8, _object9, _object10; 
+	NamedObject _object1, _object2, _object3, _object4, _object5, _object6, _object7, _object8, _object9, _object10;
 	ASound _sound;
 	Action1 _action1;
 	Action2 _action2;
@@ -171,13 +171,13 @@ public:
 
 class Scene115: public SceneExt {
 	/* Objects */
-	class Object1: public NamedObject {
+	class Kate: public NamedObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
-	class Object2: public NamedObject {
+	class Tony: public NamedObject {
 	public:
-		int _field15F8;
+		int _talkToTonyCtr2;
 		virtual bool startAction(CursorType action, Event &event);
 	};
 	class Object3: public NamedObject {
@@ -197,12 +197,12 @@ class Scene115: public SceneExt {
 	};
 
 	/* Items */
-	class Item1: public NamedHotspot {
+	class Jukebox: public NamedHotspot {
 		SequenceManager _sequenceManager6;
 	public:
-		int _field1F8A;
+		int _jokeboxPlayingCtr;
 
-		Item1();
+		Jukebox();
 		virtual bool startAction(CursorType action, Event &event);
 		virtual void signal();
 		virtual void synchronize(Serializer &s);
@@ -259,13 +259,13 @@ class Scene115: public SceneExt {
 	SequenceManager _sequenceManager3;
 	SequenceManager _sequenceManager4;
 	SequenceManager _sequenceManager5;
-	Object1 _object1;
-	Object2 _object2;
+	Kate _kate;
+	Tony _tony;
 	Object3 _object3;
 	Object4 _object4;
-	SceneObject _object5,  _object6,  _object7,  _object8,  _object9;
+	SceneObject _object5,  _object6,  _neonSign,  _object8,  _object9;
 	SceneObject _object10, _object11, _object12, _object13;
-	Item1 _item1;
+	Jukebox _itemJukebox;
 	EventHandler1 _eventHandler1;
 	NamedHotspot _item2, _item3, _item4, _item5, _item6, _item7, _item8, _item9;
 	Item10 _item10;
@@ -287,9 +287,9 @@ class Scene115: public SceneExt {
 	SpeakerJakeUniform _jakeUniformSpeaker;
 	SpeakerLyleHat _lyleHatSpeaker;
 	ASound _sound1;
-	int _field168A;
-	int _field31E8;
-	int _field31EA;
+	int _lineNumModifier;
+	int _jukeboxPlaying;
+	int _talkToTonyCtr;
 public:
 	Scene115();
 	virtual void synchronize(Serializer &s);
@@ -354,7 +354,7 @@ public:
 	NamedObject _object1;
 	NamedObject _object2;
 	IntroSceneText _text;
-	
+
 	void postInit(SceneObjectList *OwnerList);
 };
 
@@ -420,7 +420,7 @@ public:
 	GarageExit _garageExit;
 	ASoundExt _sound1;
 	SceneMessage _sceneMessage;
-	int _fieldC56;
+	int _dispatchMode;
 
 	Scene180();
 	virtual void synchronize(Serializer &s);
@@ -432,7 +432,7 @@ public:
 
 class Scene190: public SceneExt {
 	/* Objects */
-	class Object4: public NamedObject {
+	class LyleCar: public NamedObject {
 	public:
 		virtual bool startAction(CursorType action, Event &event);
 	};
@@ -459,8 +459,8 @@ class Scene190: public SceneExt {
 public:
 	SequenceManager _sequenceManager;
 	FollowerObject _object1;
-	NamedObject _object2, _object3;
-	Object4 _object4;
+	NamedObject _door, _flag;
+	LyleCar _lyleCar;
 	Item1 _item1;
 	Item2 _item2;
 	NamedHotspot _item3, _item4, _item5, _item6;
@@ -476,10 +476,7 @@ public:
 	virtual void signal();
 	virtual void process(Event &event);
 	virtual void dispatch();
-	virtual void synchronize(Serializer &s) {
-		SceneExt::synchronize(s);
-		s.syncAsSint16LE(_fieldB52);
-	}
+	virtual void synchronize(Serializer &s);
 };
 
 } // End of namespace BlueForce

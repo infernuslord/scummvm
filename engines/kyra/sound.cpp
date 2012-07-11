@@ -229,8 +229,8 @@ bool MixedSoundDriver::isPlaying() const {
 	return _music->isPlaying() | _sfx->isPlaying();
 }
 
-void MixedSoundDriver::playSoundEffect(uint8 track) {
-	_sfx->playSoundEffect(track);
+void MixedSoundDriver::playSoundEffect(uint8 track, uint8 volume) {
+	_sfx->playSoundEffect(track, volume);
 }
 
 void MixedSoundDriver::stopAllSoundEffects() {
@@ -266,7 +266,7 @@ void KyraEngine_v1::snd_playTheme(int file, int track) {
 }
 
 void KyraEngine_v1::snd_playSoundEffect(int track, int volume) {
-	_sound->playSoundEffect(track);
+	_sound->playSoundEffect(track, volume);
 }
 
 void KyraEngine_v1::snd_playWanderScoreViaMap(int command, int restart) {
@@ -334,16 +334,7 @@ namespace {
 // A simple wrapper to create VOC streams the way like creating MP3, OGG/Vorbis and FLAC streams.
 // Possible TODO: Think of making this complete and moving it to sound/voc.cpp ?
 Audio::SeekableAudioStream *makeVOCStream(Common::SeekableReadStream *stream, DisposeAfterUse::Flag disposeAfterUse) {
-
-#ifdef STREAM_AUDIO_FROM_DISK
 	Audio::SeekableAudioStream *as = Audio::makeVOCStream(stream, Audio::FLAG_UNSIGNED, disposeAfterUse);
-#else
-	Audio::SeekableAudioStream *as = Audio::makeVOCStream(stream, Audio::FLAG_UNSIGNED, DisposeAfterUse::NO);
-
-	if (disposeAfterUse)
-		delete stream;
-#endif
-
 	return as;
 }
 

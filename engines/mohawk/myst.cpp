@@ -27,9 +27,9 @@
 #include "common/textconsole.h"
 
 #include "mohawk/cursors.h"
-#include "mohawk/graphics.h"
 #include "mohawk/myst.h"
 #include "mohawk/myst_areas.h"
+#include "mohawk/myst_graphics.h"
 #include "mohawk/myst_scripts.h"
 #include "mohawk/myst_state.h"
 #include "mohawk/dialogs.h"
@@ -252,8 +252,7 @@ Common::Error MohawkEngine_Myst::run() {
 	_gfx = new MystGraphics(this);
 	_console = new MystConsole(this);
 	_gameState = new MystGameState(this, _saveFileMan);
-	_loadDialog = new GUI::SaveLoadChooser(_("Load game:"), _("Load"));
-	_loadDialog->setSaveMode(false);
+	_loadDialog = new GUI::SaveLoadChooser(_("Load game:"), _("Load"), false);
 	_optionsDialog = new MystOptionsDialog(this);
 	_cursor = new MystCursorManager(this);
 	_rnd = new Common::RandomSource("myst");

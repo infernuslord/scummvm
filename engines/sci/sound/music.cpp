@@ -37,8 +37,8 @@
 
 namespace Sci {
 
-SciMusic::SciMusic(SciVersion soundVersion)
-	: _soundVersion(soundVersion), _soundOn(true), _masterVolume(0), _globalReverb(0) {
+SciMusic::SciMusic(SciVersion soundVersion, bool useDigitalSFX)
+	: _soundVersion(soundVersion), _soundOn(true), _masterVolume(0), _globalReverb(0), _useDigitalSFX(useDigitalSFX) {
 
 	// Reserve some space in the playlist, to avoid expensive insertion
 	// operations
@@ -78,11 +78,21 @@ void SciMusic::init() {
 	if (getSciVersion() >= SCI_VERSION_1_EGA_ONLY && getSciVersion() <= SCI_VERSION_1_1)
 		deviceFlags |= MDT_CMS;
 
-	if (g_sci->getPlatform() == Common::kPlatformFMTowns && g_sci->getGameId() == GID_KQ5)
-		deviceFlags = MDT_TOWNS;
+	if (g_sci->getPlatform() == Common::kPlatformFMTowns) {
+		if (getSciVersion() > SCI_VERSION_1_EARLY)
+			deviceFlags = MDT_TOWNS;
+		else
+			deviceFlags |= MDT_TOWNS;
+	}
 
 	uint32 dev = MidiDriver::detectDevice(deviceFlags);
 	_musicType = MidiDriver::getMusicType(dev);
+
+	if (g_sci->_features->useAltWinGMSound() && _musicType != MT_GM) {
+		warning("A Windows CD version with an alternate MIDI soundtrack has been chosen, "
+				"but no MIDI music device has been selected. Reverting to the DOS soundtrack");
+		g_sci->_features->forceDOSTracks();
+	}
 
 	switch (_musicType) {
 	case MT_ADLIB:
@@ -117,8 +127,6 @@ void SciMusic::init() {
 	} else {
 		error("Failed to initialize sound driver");
 	}
-
-	_bMultiMidi = ConfMan.getBool("multi_midi");
 
 	// Find out what the first possible channel is (used, when doing channel
 	// remapping).
@@ -281,10 +289,10 @@ void SciMusic::soundInitSnd(MusicEntry *pSnd) {
 	SoundResource::Track *track = pSnd->soundRes->getTrackByType(_pMidiDrv->getPlayId());
 
 	// If MIDI device is selected but there is no digital track in sound
-	// resource try to use adlib's digital sample if possible. Also, if the
+	// resource try to use Adlib's digital sample if possible. Also, if the
 	// track couldn't be found, load the digital track, as some games depend on
 	// this (e.g. the Longbow demo).
-	if (!track || (_bMultiMidi && track->digitalChannelNr == -1)) {
+	if (!track || (_useDigitalSFX && track->digitalChannelNr == -1)) {
 		SoundResource::Track *digital = pSnd->soundRes->getDigitalTrack();
 		if (digital)
 			track = digital;

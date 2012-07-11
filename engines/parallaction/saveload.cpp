@@ -49,7 +49,7 @@ Common::String SaveLoad::genSaveFileName(uint slot) {
 	assert(slot < NUM_SAVESLOTS || slot == SPECIAL_SAVESLOT);
 
 	char s[20];
-	sprintf(s, "%s.%.3d", _saveFilePrefix.c_str(), slot);
+	sprintf(s, "%s.%.3u", _saveFilePrefix.c_str(), slot);
 
 	return Common::String(s);
 }
@@ -180,20 +180,13 @@ void SaveLoad_ns::doSaveGame(uint16 slot, const char* name) {
 }
 
 int SaveLoad::selectSaveFile(Common::String &selectedName, bool saveMode, const Common::String &caption, const Common::String &button) {
-	GUI::SaveLoadChooser slc(caption, button);
-	slc.setSaveMode(saveMode);
+	GUI::SaveLoadChooser slc(caption, button, saveMode);
 
 	selectedName.clear();
 
-	Common::String gameId = ConfMan.get("gameid");
-
-	const EnginePlugin *plugin = 0;
-	EngineMan.findGame(gameId, &plugin);
-
-	int idx = slc.runModalWithPluginAndTarget(plugin, ConfMan.getActiveDomainName());
+	int idx = slc.runModalWithCurrentTarget();
 	if (idx >= 0) {
 		selectedName = slc.getResultString();
-		slc.close();
 	}
 
 	return idx;

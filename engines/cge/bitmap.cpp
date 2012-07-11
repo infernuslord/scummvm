@@ -123,12 +123,15 @@ Bitmap::~Bitmap() {
 
 Bitmap &Bitmap::operator=(const Bitmap &bmp) {
 	debugC(1, kCGEDebugBitmap, "&Bitmap::operator =");
+	if (this == &bmp)
+		return *this;
 
 	uint8 *v0 = bmp._v;
 	_w = bmp._w;
 	_h = bmp._h;
 	_m = NULL;
 	_map = 0;
+	_vm = bmp._vm;
 	delete[] _v;
 
 	if (v0 == NULL) {
@@ -136,7 +139,7 @@ Bitmap &Bitmap::operator=(const Bitmap &bmp) {
 	} else {
 		uint16 vsiz = (uint8 *)bmp._b - (uint8 *)v0;
 		uint16 siz = vsiz + _h * sizeof(HideDesc);
-		uint8 *v1 = (uint8 *)malloc(sizeof(uint8) * siz);
+		uint8 *v1 = new uint8[siz];
 		assert(v1 != NULL);
 		memcpy(v1, v0, siz);
 		_b = (HideDesc *)((_v = v1) + vsiz);
@@ -154,25 +157,11 @@ char *Bitmap::forceExt(char *buf, const char *name, const char *ext) {
 	return buf;
 }
 
-uint16 Bitmap::moveVmap(uint8 *buf) {
-	debugC(1, kCGEDebugBitmap, "Bitmap::moveVmap(buf)");
-
-	if (!_v)
-		return 0;
-
-	uint16 vsiz = (uint8 *)_b - (uint8 *)_v;
-	uint16 siz = vsiz + _h * sizeof(HideDesc);
-	memcpy(buf, _v, siz);
-	delete[] _v;
-	_b = (HideDesc *)((_v = buf) + vsiz);
-	return siz;
-}
-
 BitmapPtr Bitmap::code() {
 	debugC(1, kCGEDebugBitmap, "Bitmap::code()");
 
 	if (!_m)
-		return false;
+		return NULL;
 
 	uint16 cnt;
 
@@ -212,7 +201,7 @@ BitmapPtr Bitmap::code() {
 					if ((pix == kPixelTransp) != skip || cnt >= 0x3FF0) { // end of block
 						cnt |= (skip) ? kBmpSKP : kBmpCPY;
 						if (_v)
-							*cp = TO_LE_16(cnt);                          // store block description uint16
+							WRITE_LE_UINT16(cp, cnt); // store block description uint16
 
 						cp = (uint16 *) im;
 						im += 2;
@@ -234,7 +223,7 @@ BitmapPtr Bitmap::code() {
 					} else {
 						cnt |= kBmpCPY;
 						if (_v)
-							*cp = TO_LE_16(cnt);
+							WRITE_LE_UINT16(cp, cnt);
 
 						cp = (uint16 *) im;
 						im += 2;
@@ -246,13 +235,13 @@ BitmapPtr Bitmap::code() {
 			if (cnt && ! skip) {
 				cnt |= kBmpCPY;
 				if (_v)
-					*cp = TO_LE_16(cnt);
+					WRITE_LE_UINT16(cp, cnt);
 
 				cp = (uint16 *) im;
 				im += 2;
 			}
 			if (_v)
-				*cp = TO_LE_16(kBmpEOI);
+				WRITE_LE_UINT16(cp, kBmpEOI);
 			cp = (uint16 *) im;
 			im += 2;
 		}

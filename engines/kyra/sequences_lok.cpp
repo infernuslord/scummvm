@@ -381,10 +381,10 @@ void KyraEngine_LoK::seq_createAmuletJewel(int jewel, int page, int noSound, int
 			}
 		}
 	}
-	_screen->drawShape(page, _shapes[323+jewel], _amuletX2[jewel], _amuletY2[jewel], 0, 0);
+	_screen->drawShape(page, _shapes[323 + jewel], _amuletX2[jewel], _amuletY2[jewel], 0, 0);
 	_screen->updateScreen();
 	_screen->showMouse();
-	setGameFlag(0x55+jewel);
+	setGameFlag(0x55 + jewel);
 }
 
 void KyraEngine_LoK::seq_brandonHealing() {
@@ -764,7 +764,7 @@ void KyraEngine_LoK::seq_makeBrandonWisp() {
 
 	if (_flags.platform == Common::kPlatformAmiga) {
 		if ((_currentCharacter->sceneId >= 229 && _currentCharacter->sceneId <= 245) ||
-			(_currentCharacter->sceneId >= 118 && _currentCharacter->sceneId <= 186))
+		        (_currentCharacter->sceneId >= 118 && _currentCharacter->sceneId <= 186))
 			_screen->fadePalette(_screen->getPalette(10), 0x54);
 	} else {
 		if (_currentCharacter->sceneId >= 229 && _currentCharacter->sceneId <= 245)
@@ -838,9 +838,7 @@ void KyraEngine_LoK::seq_fillFlaskWithWater(int item, int type) {
 	if (newItem == -1)
 		return;
 
-	_screen->hideMouse();
 	setMouseItem(newItem);
-	_screen->showMouse();
 	_itemInHand = newItem;
 
 	assert(_fullFlask);
@@ -1258,9 +1256,9 @@ void KyraEngine_LoK::seq_playCredits() {
 
 	do {
 		currentString = nextString;
-		nextString = (uint8 *)strpbrk((const char *)currentString, stringTerms);
+		nextString = (uint8 *)strpbrk((char *)currentString, stringTerms);
 		if (!nextString)
-			nextString = (uint8 *)strchr((const char *)currentString, 0);
+			nextString = (uint8 *)strchr((char *)currentString, 0);
 
 		CreditsLine line;
 
@@ -1730,7 +1728,7 @@ int KyraEngine_LoK::handleBeadState() {
 			if (_system->getMillis() > _beadStateTimer2 && _malcolmFlag == 7 && !_unkAmuletVar && !_text->printed()) {
 				snd_playSoundEffect(0x0B);
 				if (_currentCharacter->x1 > 233 && _currentCharacter->x1 < 305 && _currentCharacter->y1 > 85 && _currentCharacter->y1 < 105 &&
-					(_brandonStatusBit & 0x20)) {
+				        (_brandonStatusBit & 0x20)) {
 					_beadState1.unk8 = 290;
 					_beadState1.unk9 = 40;
 					_beadStateVar = 5;
