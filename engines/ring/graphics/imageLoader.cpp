@@ -30,7 +30,7 @@
 
 #include "common/archive.h"
 
-#include "graphics/imagedec.h"
+#include "graphics/decoders/bmp.h"
 
 namespace Ring {
 
@@ -48,12 +48,16 @@ bool ImageLoaderBMP::load(Image *image, ArchiveType, ZoneId, LoadFrom, DrawType)
 	}
 
 	// Get image surface
-	Graphics::Surface *surface = Graphics::ImageDecoder::loadFile(*stream, g_system->getScreenFormat());
-	if (!surface) {
+	Graphics::BitmapDecoder *bmp = new Graphics::BitmapDecoder();
+	bool loaded = bmp->loadStream(*stream);
+	if (!loaded) {
 		warning("[ImageLoaderBMP::load] Cannot decode image (%s)", image->getName().c_str());
 		delete stream;
 		return false;
 	}
+
+	Graphics::Surface *surface = new Graphics::Surface();
+	surface->copyFrom(*bmp->getSurface());
 
 	image->setSurface(surface);
 
