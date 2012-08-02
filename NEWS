@@ -1,7 +1,10 @@
 For a more comprehensive changelog of the latest experimental code, see:
         https://github.com/scummvm/scummvm/commits/
 
-1.5.0 (????-??-??)
+1.6.0 (????-??-??)
+
+
+1.5.0 (2012-07-27)
  New Games:
    - Added support for Backyard Baseball 2003.
    - Added support for Blue Force.
@@ -61,6 +64,10 @@ For a more comprehensive changelog of the latest experimental code, see:
      the red pointer cursor for example.
    - Added aspect ratio correction feature.
    - Implemented 16 bits per pixel support for games.
+
+ Maemo port:
+   - Added support for Nokia 770 running OS2008 HE.
+   - Added configurable keymap.
 
  Windows port:
    - Changed default savegames location for Windows NT4/2000/XP/Vista/7.
