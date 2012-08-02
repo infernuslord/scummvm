@@ -46,6 +46,30 @@ static const PlainGameDescriptor cryoGames[] = {
 
 static const CryoGameDescription gameDescriptions[] = {
 
+	//////////////////////////////////////////////////////////////////////////
+	/// Atlantis (GOG.com version)
+	{
+		{
+			"atlantis",
+			"",
+			{
+				{"Atlantis.exe", 0, "f54b69b5df342e221512636be61ea9b0", 714240},
+				{"BIGCD1.BIG", 0, "cd45d84446a2c9fd3fe4eabc98a1de2b", 493992},
+				{"BIGCD2.BIG", 0, "cd45d84446a2c9fd3fe4eabc98a1de2b", 493992},
+				{"BIGCD3.BIG", 0, "cd45d84446a2c9fd3fe4eabc98a1de2b", 493992},
+				{"BIGCD4.BIG", 0, "cd45d84446a2c9fd3fe4eabc98a1de2b", 493992},
+			},
+			Common::EN_ANY,
+			Common::kPlatformWindows,
+			ADGF_UNSTABLE,
+			GUIO1(GUIO_NOASPECT)
+		},
+		GameTypeAtlantis,
+		0
+	},
+
+	//////////////////////////////////////////////////////////////////////////
+	/// China
 	{
 		{
 			"china",
@@ -63,6 +87,8 @@ static const CryoGameDescription gameDescriptions[] = {
 		0
 	},
 
+	//////////////////////////////////////////////////////////////////////////
+	/// Egypt
 	{
 		{
 			"egypt",
@@ -86,7 +112,6 @@ static const CryoGameDescription gameDescriptions[] = {
 class CryoMetaEngine : public AdvancedMetaEngine {
 public:
 	CryoMetaEngine() : AdvancedMetaEngine(gameDescriptions, sizeof(Cryo::CryoGameDescription), cryoGames) {
-		_singleid = "cryo";
 		_guioptions = GUIO2(GUIO_NOSUBTITLES, GUIO_NOSFX);
 	}
 
