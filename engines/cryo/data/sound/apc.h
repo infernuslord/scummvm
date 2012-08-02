@@ -35,6 +35,7 @@ namespace Cryo {
 class Apc {
 public:
 	Apc(const Common::String &filename, bool dispose = true);
+	Apc(Common::SeekableReadStream *stream, bool dispose = true);
 	~Apc();
 
 	void play();
@@ -69,6 +70,7 @@ private:
 	Audio::RewindableAudioStream *_stream;
 
 	void load(const Common::String &filename);
+	void load(Common::SeekableReadStream *stream);
 };
 
 } // End of namespace Cryo

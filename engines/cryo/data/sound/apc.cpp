@@ -44,25 +44,31 @@ Apc::Apc(const Common::String &filename, bool dispose) : _stream (NULL), _dispos
 	load(filename);
 }
 
+Apc::Apc(Common::SeekableReadStream *stream, bool dispose) : _stream (NULL), _dispose(dispose) {
+	load(stream);
+}
+
 Apc::~Apc() {
 	if (!_dispose)
 		SAFE_DELETE(_stream);
 }
 
 void Apc::load(const Common::String &filename) {
-	// Open a stream to the apc file
+	// Open a stream to the APC file
 	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember(filename);
 	if (!archive)
 		error("[Apc::load] Error opening file (%s)", filename.c_str());
 
-	// Read APC header
-	_header.load(archive);
+	load(archive);
+}
 
-	if (archive->err() || archive->eos())
-		error("[Apc::load] Error loading header (%s)", filename.c_str());
+void Apc::load(Common::SeekableReadStream *stream) {
+
+	// Read APC header
+	_header.load(stream);
 
 	// Create ADPCM stream
-	_stream = makeADPCMStream(archive, DisposeAfterUse::YES, 0, Audio::kADPCMMSIma, _header.sampleRate, _header.stereo ? 2 : 1, 4);
+	_stream = makeADPCMStream(stream, DisposeAfterUse::YES, 0, Audio::kADPCMMSIma, _header.sampleRate, _header.stereo ? 2 : 1, 4);
 
 	// archive stream will be disposed when the stream is deleted
 }
