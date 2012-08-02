@@ -251,7 +251,7 @@ bool MoviePlayerDXA::load() {
 	}
 
 	Common::String videoName = Common::String::format("%s.dxa", baseName);
-	Common::SeekableReadStream *videoStream = _vm->_archives.open(videoName);
+	Common::SeekableReadStream *videoStream = _vm->_archives.createReadStreamForMember(videoName);
 	if (!videoStream)
 		error("Failed to load video file %s", videoName.c_str());
 	if (!loadStream(videoStream))
@@ -312,7 +312,7 @@ void MoviePlayerDXA::startSound() {
 
 			_fileStream->seek(size, SEEK_CUR);
 
-			in.open((const char *)"audio.wav");
+			in.open("audio.wav");
 			if (!in.isOpen()) {
 				error("Can't read offset file 'audio.wav'");
 			}
@@ -333,7 +333,7 @@ void MoviePlayerDXA::startSound() {
 
 	if (_bgSoundStream != NULL) {
 		_vm->_mixer->stopHandle(_bgSound);
-		_vm->_mixer->playStream(Audio::Mixer::kSFXSoundType, &_bgSound, _bgSoundStream);
+		_vm->_mixer->playStream(Audio::Mixer::kSFXSoundType, &_bgSound, _bgSoundStream, -1, getVolume(), getBalance());
 	}
 }
 
@@ -399,6 +399,16 @@ bool MoviePlayerDXA::processFrame() {
 	return false;
 }
 
+void MoviePlayerDXA::updateVolume() {
+	if (g_system->getMixer()->isSoundHandleActive(_bgSound))
+		g_system->getMixer()->setChannelVolume(_bgSound, getVolume());
+}
+
+void MoviePlayerDXA::updateBalance() {
+	if (g_system->getMixer()->isSoundHandleActive(_bgSound))
+		g_system->getMixer()->setChannelBalance(_bgSound, getBalance());
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Movie player for Smacker movies
 ///////////////////////////////////////////////////////////////////////////////
@@ -415,7 +425,7 @@ MoviePlayerSMK::MoviePlayerSMK(AGOSEngine_Feeble *vm, const char *name)
 bool MoviePlayerSMK::load() {
 	Common::String videoName = Common::String::format("%s.smk", baseName);
 
-	Common::SeekableReadStream *videoStream = _vm->_archives.open(videoName);
+	Common::SeekableReadStream *videoStream = _vm->_archives.createReadStreamForMember(videoName);
 	if (!videoStream)
 		error("Failed to load video file %s", videoName.c_str());
 	if (!loadStream(videoStream))
@@ -525,25 +535,25 @@ MoviePlayer *makeMoviePlayer(AGOSEngine_Feeble *vm, const char *name) {
 		memcpy(shortName, baseName, 6);
 
 		sprintf(filename, "%s~1.dxa", shortName);
-		if (Common::File::exists(filename)) {
+		if (vm->_archives.hasFile(filename)) {
 			memset(baseName, 0, sizeof(baseName));
 			memcpy(baseName, filename, 8);
 		}
 
 		sprintf(filename, "%s~1.smk", shortName);
-		if (Common::File::exists(filename)) {
+		if (vm->_archives.hasFile(filename)) {
 			memset(baseName, 0, sizeof(baseName));
 			memcpy(baseName, filename, 8);
 		}
 	}
 
 	sprintf(filename, "%s.dxa", baseName);
-	if (Common::File::exists(filename)) {
+	if (vm->_archives.hasFile(filename)) {
 		return new MoviePlayerDXA(vm, baseName);
 	}
 
 	sprintf(filename, "%s.smk", baseName);
-	if (Common::File::exists(filename)) {
+	if (vm->_archives.hasFile(filename)) {
 		return new MoviePlayerSMK(vm, baseName);
 	}
 

@@ -79,6 +79,9 @@ public:
 			Audio::Mixer::SoundType soundType = Audio::Mixer::kPlainSoundType);
 	~CoktelDecoder();
 
+	/** Replace the current video stream with this identical one. */
+	virtual bool reloadStream(Common::SeekableReadStream *stream) = 0;
+
 	virtual bool seek(int32 frame, int whence = SEEK_SET, bool restart = false) = 0;
 
 	/** Draw directly onto the specified video memory. */
@@ -237,6 +240,8 @@ public:
 			Audio::Mixer::SoundType soundType = Audio::Mixer::kPlainSoundType);
 	~PreIMDDecoder();
 
+	bool reloadStream(Common::SeekableReadStream *stream);
+
 	bool seek(int32 frame, int whence = SEEK_SET, bool restart = false);
 
 
@@ -268,6 +273,8 @@ public:
 	IMDDecoder(Audio::Mixer *mixer, Audio::Mixer::SoundType soundType = Audio::Mixer::kPlainSoundType);
 	~IMDDecoder();
 
+	bool reloadStream(Common::SeekableReadStream *stream);
+
 	bool seek(int32 frame, int whence = SEEK_SET, bool restart = false);
 
 	void setXY(uint16 x, uint16 y);
@@ -283,6 +290,11 @@ public:
 	const Graphics::Surface *decodeNextFrame();
 
 	Graphics::PixelFormat getPixelFormat() const;
+
+protected:
+	// VideoDecoder API
+	void updateVolume();
+	void updateBalance();
 
 private:
 	enum Command {
@@ -359,6 +371,8 @@ public:
 	VMDDecoder(Audio::Mixer *mixer, Audio::Mixer::SoundType soundType = Audio::Mixer::kPlainSoundType);
 	~VMDDecoder();
 
+	bool reloadStream(Common::SeekableReadStream *stream);
+
 	bool seek(int32 frame, int whence = SEEK_SET, bool restart = false);
 
 	void setXY(uint16 x, uint16 y);
@@ -387,6 +401,11 @@ public:
 	const Graphics::Surface *decodeNextFrame();
 
 	Graphics::PixelFormat getPixelFormat() const;
+
+protected:
+	// VideoDecoder API
+	void updateVolume();
+	void updateBalance();
 
 private:
 	enum PartType {
@@ -436,9 +455,6 @@ private:
 		Frame();
 		~Frame();
 	};
-
-	// Tables for the audio decompressors
-	static const uint16 _tableDPCM[128];
 
 	Common::SeekableReadStream *_stream;
 
@@ -508,15 +524,10 @@ private:
 
 	uint8 evaluateMask(uint32 mask, bool *fillInfo, uint8 &max);
 
-	// Generating sound slices
-	byte *soundEmpty     (uint32 &size);
-	byte *sound8bitRaw   (uint32 &size);
-	byte *sound16bitDPCM (uint32 &size);
-	byte *sound16bitADPCM(uint32 &size);
-
-	// Sound decompression
-	byte *deDPCM (const byte *data, uint32 &size, int32 init[2]);
-	byte *deADPCM(const byte *data, uint32 &size, int32 init, int32 index);
+	// Generating audio streams
+	Audio::AudioStream *create8bitRaw   (Common::SeekableReadStream *stream);
+	Audio::AudioStream *create16bitDPCM (Common::SeekableReadStream *stream);
+	Audio::AudioStream *create16bitADPCM(Common::SeekableReadStream *stream);
 
 	bool getPartCoords(int16 frame, PartType type, int16 &x, int16 &y, int16 &width, int16 &height);
 };

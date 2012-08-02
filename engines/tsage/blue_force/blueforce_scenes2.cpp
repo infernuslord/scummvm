@@ -67,7 +67,7 @@ void Scene200::Action1::signal() {
 		rot->setDelay(10);
 		rot = BF_GLOBALS._scenePalette.addRotation(96, 111, 1);
 		rot->setDelay(10);
-		
+
 		scene->setAction(&scene->_sequenceManager, this, 201, &scene->_object1, &scene->_object2,
 			&scene->_object3, &scene->_object4, &scene->_object5, &scene->_object6, NULL);
 		break;
@@ -86,18 +86,20 @@ void Scene200::Action2::signal() {
 
 	switch (_actionIndex++) {
 	case 1:
-		owner->setPosition(owner->_position);
+		owner->setPosition(owner->_position, 0);
 		owner->animate(ANIM_MODE_5, this);
 		break;
 	case 2:
-		owner->setPosition(owner->_position);
+		owner->setPosition(owner->_position, 1000);
 		owner->setFrame(1);
+		_actionIndex = 0;
+		setDelay(1);
 		break;
 	default:
 		break;
 	}
 }
-	
+
 
 /*--------------------------------------------------------------------------*/
 
@@ -131,7 +133,7 @@ void Scene200::postInit(SceneObjectList *OwnerList) {
 	_object11.setVisage(200);
 	_object11.setPosition(Common::Point(96, 112), 1000);
 	_object11.setStrip(3);
-	_object11.setFrame(1); 
+	_object11.setFrame(1);
 	_object11.changeZoom(100);
 
 	_object10.setAction(&_action1);
@@ -166,7 +168,7 @@ void Scene210::Action1::signal() {
 		rot->setDelay(10);
 		rot = BF_GLOBALS._scenePalette.addRotation(96, 111, 1);
 		rot->setDelay(10);
-		
+
 		scene->setAction(&scene->_sequenceManager, this, 210, &scene->_object10, &scene->_object11,
 			&scene->_object12, &scene->_object13, &scene->_object14, &scene->_object15, NULL);
 		break;
@@ -184,6 +186,12 @@ void Scene210::Action1::signal() {
 void Scene210::postInit(SceneObjectList *OwnerList) {
 	SceneExt::postInit();
 	loadScene(210);
+
+// FIXME: This fixes an obvious glitch during scene transition.
+//        Shouldn't it be included in the 2 previous functions?
+	clearScreen();
+//
+
 	BF_GLOBALS._scenePalette.loadPalette(235);
 	BF_GLOBALS._scenePalette.refresh();
 
@@ -293,7 +301,7 @@ void Scene220::Action1::signal() {
 		rot->setDelay(10);
 		rot = BF_GLOBALS._scenePalette.addRotation(96, 111, 1);
 		rot->setDelay(10);
-		
+
 		scene->setAction(&scene->_sequenceManager, this, 220, &scene->_object4, &scene->_object5,
 			&scene->_object6, &scene->_object7, &scene->_object8, &scene->_object9, NULL);
 		break;
@@ -348,6 +356,11 @@ void Scene220::Action2::signal() {
 void Scene220::postInit(SceneObjectList *OwnerList) {
 	SceneExt::postInit();
 	loadScene(220);
+
+// FIXME: This fixes an obvious glitch during scene transition.
+//        Shouldn't it be included in the 2 previous functions?
+	clearScreen();
+//
 
 	_object2.postInit();
 	_object2.setVisage(220);
@@ -495,7 +508,7 @@ void Scene225::Action1::signal() {
 		rot->setDelay(10);
 		rot = BF_GLOBALS._scenePalette.addRotation(96, 111, 1);
 		rot->setDelay(10);
-		
+
 		scene->setAction(&scene->_sequenceManager, this, 225, &scene->_object15, &scene->_object16,
 			&scene->_object17, &scene->_object18, &scene->_object19, &scene->_object20, NULL);
 		break;
@@ -648,7 +661,7 @@ void Scene225::postInit(SceneObjectList *OwnerList) {
 	_object11._frame = 1;
 	_object11.changeZoom(100);
 	_object11._numFrames = 2;
-	
+
 	_object12.postInit();
 	_object12.setVisage(1225);
 	_object12.setPosition(Common::Point(368, 35));
@@ -708,7 +721,7 @@ void Scene225::remove() {
 }
 
 /*--------------------------------------------------------------------------
- * Scene 265 - Graduation Article
+ * Scene 265 - Intro - Graduation Article
  *
  *--------------------------------------------------------------------------*/
 
@@ -754,7 +767,7 @@ void Scene265::postInit(SceneObjectList *OwnerList) {
 
 void Scene265::remove() {
 	clearScreen();
-	remove();
+	SceneExt::remove();
 }
 
 /*--------------------------------------------------------------------------
@@ -857,7 +870,7 @@ bool Scene270::Item::startAction(CursorType action, Event &event) {
 		scene->_object2.postInit();
 		scene->_object2.hide();
 		scene->_sceneMode = 2705;
-		scene->setAction(&scene->_sequenceManager1, this, 2705, &BF_GLOBALS._player, &scene->_object2, NULL);
+		scene->setAction(&scene->_sequenceManager1, scene, 2705, &BF_GLOBALS._player, &scene->_object2, NULL);
 		return true;
 	} else {
 		return NamedHotspot::startAction(action, event);
@@ -924,9 +937,9 @@ void Scene270::postInit(SceneObjectList *OwnerList) {
 				(BF_INVENTORY.getObjectScene(INV_BASEBALL_CARD) != 2) &&
 				(BF_INVENTORY.getObjectScene(INV_BASEBALL_CARD) != 1)) ||
 			((BF_GLOBALS._dayNumber == 3) && BF_GLOBALS.getFlag(fGotGreen355fTalkedToGrannyDay3))) {
-		BF_GLOBALS._walkRegions.proc1(6);
-		BF_GLOBALS._walkRegions.proc1(14);
-		BF_GLOBALS._walkRegions.proc1(19);
+		BF_GLOBALS._walkRegions.disableRegion(6);
+		BF_GLOBALS._walkRegions.disableRegion(14);
+		BF_GLOBALS._walkRegions.disableRegion(19);
 
 		_grandma.postInit();
 		_grandma.setVisage(274);
@@ -970,17 +983,17 @@ void Scene270::postInit(SceneObjectList *OwnerList) {
 	_fireplace.animate(ANIM_MODE_2, NULL);
 
 	_fridge.setDetails(Rect(0, 56, 56, 130), 270, 9, 10, 11, 1, NULL);
-	_object3.setDetails(270, 12, 13, 14, 1, NULL);
-	_laura.setDetails(270, 15, -1, -1, 1, NULL);
-	_skip.setDetails(270, 14, -1, -1, 1, NULL);
-	_lyle.setDetails(270, 34, 35, 36, 1, NULL);
-	_tv.setDetails(270, 3, 4, 5, 1, NULL);
-	_fireplace.setDetails(270, 6, 7, 8, 1, NULL);
+	_object3.setDetails(270, 12, 13, 14, 1, (SceneItem *)NULL);
+	_laura.setDetails(270, 15, -1, -1, 1, (SceneItem *)NULL);
+	_skip.setDetails(270, 14, -1, -1, 1, (SceneItem *)NULL);
+	_lyle.setDetails(270, 34, 35, 36, 1, (SceneItem *)NULL);
+	_tv.setDetails(270, 3, 4, 5, 1, (SceneItem *)NULL);
+	_fireplace.setDetails(270, 6, 7, 8, 1, (SceneItem *)NULL);
 
 	if ((BF_GLOBALS._sceneManager._previousScene == 710) && (BF_GLOBALS._bookmark == bTalkedToGrannyAboutSkipsCard)) {
-		_grandma.setDetails(270, 15, 16, 17, 1, NULL);
+		_grandma.setDetails(270, 15, 16, 17, 1, (SceneItem *)NULL);
 	} else {
-		_grandma.setDetails(270, 40, 16, 17, 1, NULL);
+		_grandma.setDetails(270, 40, 16, 17, 1, (SceneItem *)NULL);
 	}
 
 	_afgan.setDetails(4, 270, 27, 28, 29, 1);
@@ -994,14 +1007,14 @@ void Scene270::postInit(SceneObjectList *OwnerList) {
 	BF_GLOBALS._player._moveDiff.x = 8;
 	BF_GLOBALS._player.changeZoom(-1);
 	BF_GLOBALS._player.disableControl();
-	
+
 	switch (BF_GLOBALS._sceneManager._previousScene) {
 	case 560:
 		if (BF_GLOBALS._bookmark == bTalkedToGrannyAboutSkipsCard) {
 			_field219A = 1;
 			BF_GLOBALS._player._moveDiff.x = 5;
 			_field386 = 0;
-			
+
 			_grandma.animate(ANIM_MODE_1, NULL);
 			setAction(&_sequenceManager1, NULL, 2720, &BF_GLOBALS._player, &_grandma, NULL);
 			BF_GLOBALS._bookmark = bLyleStoppedBy;
@@ -1091,7 +1104,7 @@ void Scene270::signal() {
 				SceneItem::display2(270, 37);
 				BF_GLOBALS._player.enableControl();
 			} else {
-				BF_GLOBALS._uiElements.addScore(30);
+				T2_GLOBALS._uiElements.addScore(30);
 				BF_GLOBALS.setFlag(shownLyleCrate1Day1);
 				_sceneMode = 12;
 				ADD_PLAYER_MOVER(192, 135);
@@ -1125,13 +1138,13 @@ void Scene270::signal() {
 	case 2717:
 		_sceneMode = 2718;
 		_lyle.setFrame2(-1);
-		setAction(&_sequenceManager1, this, 2718, &BF_GLOBALS._player, &_laura, &_skip, 
+		setAction(&_sequenceManager1, this, 2718, &BF_GLOBALS._player, &_laura, &_skip,
 			&_lyle, &_grandma, NULL);
 		break;
 	case 2718:
-		BF_GLOBALS._walkRegions.proc1(6);
-		BF_GLOBALS._walkRegions.proc1(14);
-		BF_GLOBALS._walkRegions.proc1(19);
+		BF_GLOBALS._walkRegions.disableRegion(6);
+		BF_GLOBALS._walkRegions.disableRegion(14);
+		BF_GLOBALS._walkRegions.disableRegion(19);
 
 		_field219A = 1;
 		BF_GLOBALS._bookmark = bTalkedToGrannyAboutSkipsCard;
@@ -1139,7 +1152,7 @@ void Scene270::signal() {
 		_grandma.setStrip(8);
 		_grandma._frame = 5;
 		_field384 = 1;
-		_field384 = 1;
+		_field386 = 1;
 
 		BF_GLOBALS._player._moveDiff.x = 8;
 		BF_GLOBALS._player.enableControl();
@@ -1154,7 +1167,7 @@ void Scene270::signal() {
 		break;
 	default:
 		break;
-	}		
+	}
 }
 
 void Scene270::process(Event &event) {
@@ -1169,7 +1182,7 @@ void Scene270::process(Event &event) {
 
 	SceneExt::process(event);
 
-	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < (BF_INTERFACE_Y - 1)) &&
+	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < (UI_INTERFACE_Y - 1)) &&
 			!_field384 && !_field386) {
 		// Check if the cursor is on an exit
 		if (_exit.contains(event.mousePos)) {
@@ -1277,7 +1290,7 @@ void Scene270::dispatch() {
 void Scene271::Action1::signal() {
 	Scene271 *scene = (Scene271 *)BF_GLOBALS._sceneManager._scene;
 
-	scene->setAction(&scene->_sequenceManager2, this, 2703, &scene->_tv, NULL);
+	setAction(&scene->_sequenceManager2, this, 2703, &scene->_tv, NULL);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1361,7 +1374,7 @@ Scene271::Scene271() {
 
 void Scene271::synchronize(Serializer &s) {
 	PalettedScene::synchronize(s);
-	
+
 	s.syncAsSint16LE(_field796);
 	s.syncAsSint16LE(_field2E16);
 	s.syncAsSint16LE(_tempPos.x);
@@ -1383,7 +1396,7 @@ void Scene271::postInit(SceneObjectList *OwnerList) {
 	_stripManager.addSpeaker(&_gameTextSpeaker);
 	_stripManager.addSpeaker(&_granTextSpeaker);
 	_stripManager.addSpeaker(&_lyleTextSpeaker);
-	
+
 	_exit.setDetails(Rect(310, 115, 320, 167), 270, -1, -1, -1, 1, NULL);
 
 	_tv.postInit();
@@ -1407,20 +1420,20 @@ void Scene271::postInit(SceneObjectList *OwnerList) {
 	_object5.hide();
 
 	_item5.setDetails(Rect(0, 56, 56, 130), 270, 9, 10, 11, 1, NULL);
-	_object6.setDetails(270, 12, 13, 14, 1, NULL);
-	_object7.setDetails(270, 15, -1, -1, 1, NULL);
-	_object8.setDetails(270, 14, -1, -1, 1, NULL);
-	_object11.setDetails(270, -1, -1, -1, 1, NULL);
-	_tv.setDetails(270, 3, 4, 5, 1, NULL);
-	_object10.setDetails(270, 6, 7, 8, 1, NULL);
-	_object12.setDetails(270, 15, 16, 17, 1, NULL);
+	_object6.setDetails(270, 12, 13, 14, 1, (SceneItem *)NULL);
+	_object7.setDetails(270, 15, -1, -1, 1, (SceneItem *)NULL);
+	_object8.setDetails(270, 14, -1, -1, 1, (SceneItem *)NULL);
+	_object11.setDetails(270, -1, -1, -1, 1, (SceneItem *)NULL);
+	_tv.setDetails(270, 3, 4, 5, 1, (SceneItem *)NULL);
+	_object10.setDetails(270, 6, 7, 8, 1, (SceneItem *)NULL);
+	_object12.setDetails(270, 15, 16, 17, 1, (SceneItem *)NULL);
 	_item3.setDetails(4, 270, 27, 28, 29, 1);
 	_item1.setDetails(1, 270, 18, 19, 20, 1);
 	_item6.setDetails(Rect(278, 50, 318, 72), 270, 21, 22, 23, 1, NULL);
 	_item2.setDetails(3, 270, 24, 25, 26, 1);
 	_item4.setDetails(2, 270, 30, 31, 32, 1);
-	_item11.setDetails(Rect(0, 0, SCREEN_WIDTH, BF_INTERFACE_Y), 270, 0, 1, 2, 1, NULL);
-	
+	_item11.setDetails(Rect(0, 0, SCREEN_WIDTH, UI_INTERFACE_Y), 270, 0, 1, 2, 1, NULL);
+
 	BF_GLOBALS._player.postInit();
 	BF_GLOBALS._player._moveDiff.x = 8;
 	BF_GLOBALS._player.changeZoom(-1);
@@ -1437,11 +1450,11 @@ void Scene271::postInit(SceneObjectList *OwnerList) {
 
 	switch (BF_GLOBALS._sceneManager._previousScene) {
 	case 180:
-		BF_GLOBALS._walkRegions.proc1(6);
-		BF_GLOBALS._walkRegions.proc1(14);
-		BF_GLOBALS._walkRegions.proc1(19);
+		BF_GLOBALS._walkRegions.disableRegion(6);
+		BF_GLOBALS._walkRegions.disableRegion(14);
+		BF_GLOBALS._walkRegions.disableRegion(19);
 
-		BF_GLOBALS._player.setVisage(151);
+		BF_GLOBALS._player.setVisage(275);
 		BF_GLOBALS._player.setPosition(Common::Point(348, 151));
 
 		_object12.postInit();
@@ -1464,13 +1477,13 @@ void Scene271::postInit(SceneObjectList *OwnerList) {
 		_object11.setStrip(1);
 		_object11._frame = 2;
 		_object11.setPosition(Common::Point(35, 136));
-		
+
 		_object6.postInit();
 		_object6.hide();
 
-		BF_GLOBALS._walkRegions.proc1(6);
-		BF_GLOBALS._walkRegions.proc1(14);
-		BF_GLOBALS._walkRegions.proc1(19);
+		BF_GLOBALS._walkRegions.disableRegion(6);
+		BF_GLOBALS._walkRegions.disableRegion(14);
+		BF_GLOBALS._walkRegions.disableRegion(19);
 
 		_object12.postInit();
 		_object12.setVisage(274);
@@ -1495,15 +1508,15 @@ void Scene271::postInit(SceneObjectList *OwnerList) {
 		_object7.setVisage(277);
 		_object7.setStrip(7);
 		_object7.setPosition(Common::Point(48, 149));
-		
-		BF_GLOBALS._walkRegions.proc1(6);
-		BF_GLOBALS._walkRegions.proc1(14);
-		BF_GLOBALS._walkRegions.proc1(19);
-		
+
+		BF_GLOBALS._walkRegions.disableRegion(6);
+		BF_GLOBALS._walkRegions.disableRegion(14);
+		BF_GLOBALS._walkRegions.disableRegion(19);
+
 		_object12.postInit();
 		_object12.setVisage(276);
 		_object12.setPosition(Common::Point(129, 130));
-		
+
 		_object2.postInit();
 		_object2.setVisage(270);
 		_object2.setStrip(3);
@@ -1530,9 +1543,9 @@ void Scene271::postInit(SceneObjectList *OwnerList) {
 		BF_GLOBALS._player.setFrame(1);
 		BF_GLOBALS._player.setPosition(Common::Point(239, 145));
 
-		BF_GLOBALS._walkRegions.proc1(6);
-		BF_GLOBALS._walkRegions.proc1(14);
-		BF_GLOBALS._walkRegions.proc1(19);
+		BF_GLOBALS._walkRegions.disableRegion(6);
+		BF_GLOBALS._walkRegions.disableRegion(14);
+		BF_GLOBALS._walkRegions.disableRegion(19);
 
 		_object12.postInit();
 		_object12.setVisage(274);
@@ -1618,16 +1631,16 @@ void Scene271::signal() {
 
 		_object1.remove();
 		_field796 = 0;
-		ADD_PLAYER_MOVER(_tempPos.x, _tempPos.y);
+		ADD_PLAYER_MOVER_NULL(BF_GLOBALS._player, _tempPos.x, _tempPos.y);
 		break;
 	case 2707:
 		BF_GLOBALS._player.enableControl();
 		_field796 = 1;
 		_field2E16 = 1;
-		
+
 		_object1.remove();
 		_object11.remove();
-		
+
 		BF_INVENTORY.setObjectScene(INV_LYLE_CARD, 1);
 		break;
 	case 2709:
@@ -1672,7 +1685,7 @@ void Scene271::process(Event &event) {
 
 	SceneExt::process(event);
 
-	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < BF_INTERFACE_Y)) {
+	if (BF_GLOBALS._player._enabled && !_focusObject && (event.mousePos.y < UI_INTERFACE_Y)) {
 		if (_exit.contains(event.mousePos)) {
 			GfxSurface cursor = _cursorVisage.getFrame(EXITFRAME_E);
 			BF_GLOBALS._events.setCursor(cursor);
@@ -1741,7 +1754,7 @@ void Scene280::Action1::signal() {
 		scene->_jake.setFrame(1);
 		scene->_jake.animate(ANIM_MODE_8, NULL);
 		scene->_jake._numFrames = 5;
-		
+
 		scene->_stripManager.start(2800, this);
 		break;
 	case 2:

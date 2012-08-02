@@ -192,6 +192,23 @@ Scene *RingworldGame::createScene(int sceneNumber) {
 	}
 }
 
+/**
+ * Returns true if it is currently okay to restore a game
+ */
+bool RingworldGame::canLoadGameStateCurrently() {
+	// Don't allow a game to be loaded if a dialog is active
+	return !g_globals->getFlag(50) && (g_globals->_gfxManagers.size() == 1);
+
+}
+
+/**
+ * Returns true if it is currently okay to save the game
+ */
+bool RingworldGame::canSaveGameStateCurrently() {
+	// Don't allow a game to be saved if a dialog is active
+	return !g_globals->getFlag(50) && (g_globals->_gfxManagers.size() == 1);
+}
+
 /*--------------------------------------------------------------------------*/
 
 DisplayHotspot::DisplayHotspot(int regionId, ...) {
@@ -298,7 +315,7 @@ void SceneArea::wait() {
 	// Wait until a mouse or keypress
 	Event event;
 	while (!g_vm->shouldQuit() && !g_globals->_events.getEvent(event)) {
-		g_system->updateScreen();
+		GLOBALS._screenSurface.updateScreen();
 		g_system->delayMillis(10);
 	}
 
@@ -571,6 +588,54 @@ void RingworldGame::rightClick() {
 	dlg->execute();
 	delete dlg;
 }
+
+/*--------------------------------------------------------------------------*/
+
+NamedHotspot::NamedHotspot() : SceneHotspot() {
+	_resNum = 0;
+	_lookLineNum = _useLineNum = _talkLineNum = -1;
+}
+
+void NamedHotspot::doAction(int action) {
+	switch (action) {
+	case CURSOR_WALK:
+		// Nothing
+		return;
+	case CURSOR_LOOK:
+		if (_lookLineNum == -1)
+			break;
+
+		SceneItem::display(_resNum, _lookLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
+		return;
+	case CURSOR_USE:
+		if (_useLineNum == -1)
+			break;
+		
+		SceneItem::display(_resNum, _useLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
+		return;
+	case CURSOR_TALK:
+		if (_talkLineNum == -1)
+			break;
+
+		SceneItem::display(_resNum, _lookLineNum, SET_Y, 20, SET_WIDTH, 200, SET_EXT_BGCOLOR, 7, LIST_END);
+		return;
+	default:
+		break;
+	}
+
+	SceneHotspot::doAction(action);
+}
+
+void NamedHotspot::synchronize(Serializer &s) {
+	SceneHotspot::synchronize(s);
+	s.syncAsSint16LE(_resNum);
+	s.syncAsSint16LE(_lookLineNum);
+	s.syncAsSint16LE(_useLineNum);
+
+	if (g_vm->getGameID() == GType_BlueForce)
+		s.syncAsSint16LE(_talkLineNum);
+}
+
 
 } // End of namespace Ringworld
 

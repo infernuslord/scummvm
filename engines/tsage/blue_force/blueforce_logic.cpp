@@ -20,6 +20,7 @@
  *
  */
 
+#include "common/config-manager.h"
 #include "tsage/blue_force/blueforce_logic.h"
 #include "tsage/blue_force/blueforce_dialogs.h"
 #include "tsage/blue_force/blueforce_scenes0.h"
@@ -42,8 +43,25 @@ namespace TsAGE {
 namespace BlueForce {
 
 void BlueForceGame::start() {
-	// Start the game
-	g_globals->_sceneManager.changeScene(20);
+	int slot = -1;
+
+	// Check for a savegame to load straight from the launcher
+	if (ConfMan.hasKey("save_slot")) {
+		slot = ConfMan.getInt("save_slot");
+		Common::String file = g_vm->generateSaveName(slot);
+		Common::InSaveFile *in = g_vm->_system->getSavefileManager()->openForLoading(file);
+		if (in)
+			delete in;
+		else
+			slot = -1;
+	}
+
+	if (slot >= 0)
+		// Set the savegame slot to load in the main loop
+		g_globals->_sceneHandler->_loadGameSlot = slot;
+	else
+		// Switch to the title screen
+		g_globals->_sceneManager.setNewScene(20);
 }
 
 Scene *BlueForceGame::createScene(int sceneNumber) {
@@ -63,16 +81,29 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Tsnunami Title Screen #2
 		return new Scene100();
 	case 109:
-		// Introduction Bar Room
+		// Introduction - Bar Room
 		return new Scene109();
 	case 110:
+		// Introduction - Outside the bar
+		return new Scene110();
 	case 114:
+		// Outside Tony's Bar
+		return new Scene114();
 	case 115:
+		// Inside Tony's Bar
+		return new Scene115();
 	case 125:
+		// Intro - Chase in the city
+		return new Scene125();
 	case 140:
+		// Intro - Burglar near the House
+		return new Scene140();
 	case 150:
+		// Intro - Burglar inside the house
+		return new Scene150();
 	case 160:
-		error("Scene group 1 not implemented");
+		// Intro - Burial
+		return new Scene160();
 	case 180:
 		// Front of Home
 		return new Scene180();
@@ -92,7 +123,7 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Credits - Gun Training
 		return new Scene225();
 	case 265:
-		// Graduation Article
+		// Intro - Graduation Article
 		return new Scene265();
 	case 270:
 		// Living Room & Kitchen
@@ -185,6 +216,7 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Decking
 		return new Scene690();
 	case 710:
+		// Beach
 		return new Scene710();
 	case 800:
 		// Jamison & Ryan
@@ -214,12 +246,13 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Beach Path
 		return new Scene880();
 	case 900:
-		// Outside Warehouse
+		// Outside the Warehouse
 		return new Scene900();
 	case 910:
+		// Inside the Warehouse
 		return new Scene910();
 	case 920:
-		// Inside Warehouse: Secret room
+		// Inside the Warehouse: Secret room
 		return new Scene920();
 	case 930:
 		// Inside the caravan
@@ -228,11 +261,28 @@ Scene *BlueForceGame::createScene(int sceneNumber) {
 		// Hidden in the wardrobe
 		return new Scene935();
 	case 940:
+		// Jail ending animation
 		return new Scene940();
 	default:
 		error("Unknown scene number - %d", sceneNumber);
 		break;
 	}
+}
+
+/**
+ * Returns true if it is currently okay to restore a game
+ */
+bool BlueForceGame::canLoadGameStateCurrently() {
+	// Don't allow a game to be loaded if a dialog is active
+	return g_globals->_gfxManagers.size() == 1;
+}
+
+/**
+ * Returns true if it is currently okay to save the game
+ */
+bool BlueForceGame::canSaveGameStateCurrently() {
+	// Don't allow a game to be saved if a dialog is active
+	return g_globals->_gfxManagers.size() == 1;
 }
 
 void BlueForceGame::rightClick() {
@@ -283,6 +333,24 @@ void BlueForceGame::processEvent(Event &event) {
 			break;
 		}
 	}
+}
+
+void BlueForceGame::restart() {
+	g_globals->_scenePalette.clearListeners();
+	g_globals->_soundHandler.stop();
+
+	// Reset the globals
+	g_globals->reset();
+
+	// Clear save/load slots
+	g_globals->_sceneHandler->_saveGameSlot = -1;
+	g_globals->_sceneHandler->_loadGameSlot = -1;
+
+	g_globals->_stripNum = 0;
+	g_globals->_events.setCursor(CURSOR_WALK);
+
+	// Change to the first game scene
+	g_globals->_sceneManager.changeScene(190);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -485,35 +553,6 @@ bool NamedObject::startAction(CursorType action, Event &event) {
 	return handled;
 }
 
-void NamedObject::setDetails(int resNum, int lookLineNum, int talkLineNum, int useLineNum, int mode, SceneItem *item) {
-	_resNum = resNum;
-	_lookLineNum = lookLineNum;
-	_talkLineNum = talkLineNum;
-	_useLineNum = useLineNum;
-
-	switch (mode) {
-	case 2:
-		g_globals->_sceneItems.push_front(this);
-		break;
-	case 4:
-		g_globals->_sceneItems.addBefore(item, this);
-		break;
-	case 5:
-		g_globals->_sceneItems.addAfter(item, this);
-		break;
-	default:
-		g_globals->_sceneItems.push_back(this);
-		break;
-	}
-}
-
-void NamedObject::setDetails(int resNum, int lookLineNum, int talkLineNum, int useLineNum) {
-	_resNum = resNum;
-	_lookLineNum = lookLineNum;
-	_talkLineNum = talkLineNum;
-	_useLineNum = useLineNum;
-}
-
 /*--------------------------------------------------------------------------*/
 
 CountdownObject::CountdownObject(): NamedObject() {
@@ -574,15 +613,15 @@ void FollowerObject::dispatch() {
 	} else if ((_object->_visage != 308) || (_object->_strip != 1)) {
 		show();
 		setStrip(_object->_strip);
-		setPosition(_object->_position, _object->_yDiff);
+		setPosition(Common::Point(_object->_position.x + 1, _object->_position.y), _yDiff);
 	}
 }
 
 void FollowerObject::reposition() {
 	assert(_object);
 	setStrip(_object->_strip);
-	setPosition(_object->_position, _object->_yDiff);
-	reposition();
+	setPosition(_object->_position, _yDiff);
+	NamedObject::reposition();
 }
 
 void FollowerObject::setup(SceneObject *object, int visage, int frameNum, int yDiff) {
@@ -676,16 +715,16 @@ void SceneExt::postInit(SceneObjectList *OwnerList) {
 	Scene::postInit(OwnerList);
 	if (BF_GLOBALS._dayNumber) {
 		// Blank out the bottom portion of the screen
-		BF_GLOBALS._interfaceY = BF_INTERFACE_Y;
+		BF_GLOBALS._interfaceY = UI_INTERFACE_Y;
 
-		Rect r(0, BF_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT);
+		Rect r(0, UI_INTERFACE_Y, SCREEN_WIDTH, SCREEN_HEIGHT);
 		BF_GLOBALS.gfxManager().getSurface().fillRect(r, 0);
 	}
 }
 
 void SceneExt::remove() {
-	BF_GLOBALS._uiElements.hide();
-	BF_GLOBALS._uiElements.resetClear();
+	T2_GLOBALS._uiElements.hide();
+	T2_GLOBALS._uiElements.resetClear();
 
 	// Below code originally in Blue Force Scene::remove(). Placed here to avoid contaminating
 	// core class with Blue Force specific code
@@ -694,7 +733,7 @@ void SceneExt::remove() {
 			_action->_endHandler = NULL;
 		_action->remove();
 	}
-	
+
 	_focusObject = NULL;
 }
 
@@ -709,8 +748,8 @@ void SceneExt::dispatch() {
 
 	if (_field37A) {
 		if ((--_field37A == 0) && BF_GLOBALS._dayNumber) {
-			if (BF_GLOBALS._uiElements._active && BF_GLOBALS._player._enabled) {
-				BF_GLOBALS._uiElements.show();
+			if (T2_GLOBALS._uiElements._active && BF_GLOBALS._player._enabled) {
+				T2_GLOBALS._uiElements.show();
 			}
 
 			_field37A = 0;
@@ -725,6 +764,7 @@ void SceneExt::loadScene(int sceneNum) {
 
 	_v51C34.top = 0;
 	_v51C34.bottom = 300;
+	BF_GLOBALS._sceneHandler->_delayTicks = 1;
 }
 
 void SceneExt::checkGun() {
@@ -799,8 +839,8 @@ void SceneExt::startStrip() {
 		scene->_savedCanWalk = BF_GLOBALS._player._canWalk;
 		BF_GLOBALS._player.disableControl();
 
-		if (!BF_GLOBALS._v50696 && BF_GLOBALS._uiElements._active)
-			BF_GLOBALS._uiElements.hide();
+		if (!BF_GLOBALS._v50696 && T2_GLOBALS._uiElements._active)
+			T2_GLOBALS._uiElements.hide();
 	}
 }
 
@@ -813,8 +853,8 @@ void SceneExt::endStrip() {
 		BF_GLOBALS._player._uiEnabled = scene->_savedUiEnabled;
 		BF_GLOBALS._player._canWalk = scene->_savedCanWalk;
 
-		if (!BF_GLOBALS._v50696 && BF_GLOBALS._uiElements._active)
-			BF_GLOBALS._uiElements.show();
+		if (!BF_GLOBALS._v50696 && T2_GLOBALS._uiElements._active)
+			T2_GLOBALS._uiElements.show();
 	}
 }
 
@@ -867,12 +907,12 @@ void PalettedScene::add2Faders(const byte *arrBufferRGB, int step, int paletteNu
 	BF_GLOBALS._scenePalette.addFader(_palette._palette, 256, step, action);
 }
 
-void PalettedScene::sub15E4F(const byte *arrBufferRGB, int arg8, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag) {
+void PalettedScene::transition(const byte *arrBufferRGB, int percent, int paletteNum, Action *action, int fromColor1, int fromColor2, int toColor1, int toColor2, bool flag) {
 	byte tmpPalette[768];
 
 	_palette.loadPalette(paletteNum);
 	_palette.loadPalette(2);
-	if (!flag) {
+	if (flag) {
 		for (int i = fromColor1; i <= fromColor2; i++) {
 			tmpPalette[(3 * i)]     = BF_GLOBALS._scenePalette._palette[(3 * i)];
 			tmpPalette[(3 * i) + 1] = BF_GLOBALS._scenePalette._palette[(3 * i) + 1];
@@ -887,9 +927,9 @@ void PalettedScene::sub15E4F(const byte *arrBufferRGB, int arg8, int paletteNum,
 	}
 
 	for (int i = toColor1; i <= toColor2; i++) {
-		tmpPalette[i] = _palette._palette[i] - ((_palette._palette[i] - arrBufferRGB[0]) * (100 - arg8)) / 100;
-		tmpPalette[i + 1] = _palette._palette[i + 1] - ((_palette._palette[i + 1] - arrBufferRGB[1]) * (100 - arg8)) / 100;
-		tmpPalette[i + 2] = _palette._palette[i + 2] - ((_palette._palette[i + 2] - arrBufferRGB[2]) * (100 - arg8)) / 100;
+		tmpPalette[i * 3] = _palette._palette[i * 3] - ((_palette._palette[i * 3] - arrBufferRGB[i * 3]) * (100 - percent)) / 100;
+		tmpPalette[i * 3 + 1] = _palette._palette[i * 3 + 1] - ((_palette._palette[i * 3 + 1] - arrBufferRGB[i * 3 + 1]) * (100 - percent)) / 100;
+		tmpPalette[i * 3 + 2] = _palette._palette[i * 3 + 2] - ((_palette._palette[i * 3 + 2] - arrBufferRGB[i * 3 + 2]) * (100 - percent)) / 100;
 	}
 
 	BF_GLOBALS._scenePalette.addFader((const byte *)tmpPalette, 256, 100, action);
@@ -911,8 +951,8 @@ void SceneHandlerExt::process(Event &event) {
 	if (scene && scene->_focusObject)
 		scene->_focusObject->process(event);
 
-	if (BF_GLOBALS._uiElements._active) {
-		BF_GLOBALS._uiElements.process(event);
+	if (T2_GLOBALS._uiElements._active) {
+		T2_GLOBALS._uiElements.process(event);
 		if (event.handled)
 			return;
 	}
@@ -925,7 +965,7 @@ void SceneHandlerExt::process(Event &event) {
 			return;
 	}
 
-	// If the user clicks the button whislt the introduction is active, prompt for playing the game
+	// If the user clicks the button whilst the introduction is active, prompt for playing the game
 	if ((BF_GLOBALS._dayNumber == 0) && (event.eventType == EVENT_BUTTON_DOWN)) {
 		// Prompt user for whether to start play or watch introduction
 		BF_GLOBALS._player.enableControl();
@@ -1169,6 +1209,9 @@ void BlueForceInvObjectList::reset() {
 	setObjectScene(INV_DOG_WHISTLE, 880);
 	setObjectScene(INV_YELLOW_CORD, 910);
 	setObjectScene(INV_BLACK_CORD, 910);
+
+	// Set up the select item handler method
+	T2_GLOBALS._onSelectItem = SelectItem;
 }
 
 void BlueForceInvObjectList::setObjectScene(int objectNum, int sceneNumber) {
@@ -1183,7 +1226,7 @@ void BlueForceInvObjectList::setObjectScene(int objectNum, int sceneNumber) {
 		BF_GLOBALS._events.setCursor(CURSOR_USE);
 
 	// Update the user interface if necessary
-	BF_GLOBALS._uiElements.updateInventory();
+	T2_GLOBALS._uiElements.updateInventory();
 }
 
 void BlueForceInvObjectList::alterInventory(int mode) {
@@ -1275,7 +1318,188 @@ void BlueForceInvObjectList::alterInventory(int mode) {
 	}
 }
 
+/**
+ * When an inventory item is selected, check if it's the gun belt, since that has a specific dialog
+ */
+bool BlueForceInvObjectList::SelectItem(int objectNumber) {
+	if (objectNumber == INV_AMMO_BELT) {
+		AmmoBeltDialog *dlg = new AmmoBeltDialog();
+		dlg->execute();
+		delete dlg;
+
+		return true;
+	}
+
+	return false;
+}
+
 /*--------------------------------------------------------------------------*/
+
+NamedHotspot::NamedHotspot() : SceneHotspot() {
+	_resNum = 0;
+	_lookLineNum = _useLineNum = _talkLineNum = -1;
+}
+
+bool NamedHotspot::startAction(CursorType action, Event &event) {
+	switch (action) {
+	case CURSOR_WALK:
+		// Nothing
+		return false;
+	case CURSOR_LOOK:
+		if (_lookLineNum == -1)
+			return SceneHotspot::startAction(action, event);
+
+		SceneItem::display2(_resNum, _lookLineNum);
+		return true;
+	case CURSOR_USE:
+		if (_useLineNum == -1)
+			return SceneHotspot::startAction(action, event);
+
+		SceneItem::display2(_resNum, _useLineNum);
+		return true;
+	case CURSOR_TALK:
+		if (_talkLineNum == -1)
+			return SceneHotspot::startAction(action, event);
+
+		SceneItem::display2(_resNum, _talkLineNum);
+		return true;
+	default:
+		return SceneHotspot::startAction(action, event);
+	}
+}
+
+void NamedHotspot::synchronize(Serializer &s) {
+	SceneHotspot::synchronize(s);
+	s.syncAsSint16LE(_resNum);
+	s.syncAsSint16LE(_lookLineNum);
+	s.syncAsSint16LE(_useLineNum);
+
+	if (g_vm->getGameID() == GType_BlueForce)
+		s.syncAsSint16LE(_talkLineNum);
+}
+
+/*--------------------------------------------------------------------------*/
+
+void SceneMessage::remove() {
+	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
+	if (scene->_focusObject == this)
+		scene->_focusObject = NULL;
+
+	Action::remove();
+}
+
+void SceneMessage::signal() {
+	SceneExt *scene = (SceneExt *)BF_GLOBALS._sceneManager._scene;
+
+	switch (_actionIndex++) {
+	case 0:
+		scene->_focusObject = this;
+		BF_GLOBALS._events.setCursor(CURSOR_WALK);
+		draw();
+		setDelay(180);
+		break;
+	case 1:
+		clear();
+		remove();
+		break;
+	default:
+		break;
+	}
+}
+
+void SceneMessage::process(Event &event) {
+	if ((event.eventType == EVENT_BUTTON_DOWN) ||
+		((event.eventType == EVENT_KEYPRESS) && (event.kbd.keycode == Common::KEYCODE_RETURN))) {
+		signal();
+	}
+}
+
+
+void SceneMessage::draw() {
+	GfxSurface &surface = BF_GLOBALS._screenSurface;
+
+	// Clear the game area
+	surface.fillRect(Rect(0, 0, SCREEN_WIDTH, UI_INTERFACE_Y), 0);
+
+	// Disable scene fade in
+	BF_GLOBALS._paneRefreshFlag[0] = 0;
+
+	// Set up the font
+	GfxFont &font = BF_GLOBALS._gfxManagerInstance._font;
+	BF_GLOBALS._scenePalette.setEntry(font._colors.foreground, 255, 255, 255);
+	BF_GLOBALS._scenePalette.setPalette(font._colors.foreground, 1);
+
+	// Write out the message
+	Rect textRect(0, UI_INTERFACE_Y / 2 - (font.getHeight() / 2), SCREEN_WIDTH,
+			UI_INTERFACE_Y / 2 + (font.getHeight() / 2));
+	BF_GLOBALS._gfxManagerInstance._font.writeLines(_message.c_str(), textRect, ALIGN_CENTER);
+
+	// TODO: Ideally, saving and loading should be disabled here until the message display is complete
+}
+
+void SceneMessage::clear() {
+	// Fade out the text display
+	static const uint32 black = 0;
+	BF_GLOBALS._scenePalette.fade((const byte *)&black, false, 100);
+
+	// Refresh the background
+	BF_GLOBALS._paneRefreshFlag[0] = 0;
+
+	// Set up to fade in the game scene
+	g_globals->_sceneManager._fadeMode = FADEMODE_GRADUAL;
+	g_globals->_sceneManager._hasPalette = true;
+}
+
+IntroSceneText::IntroSceneText(): SceneText() {
+	_action = NULL;
+	_frameNumber = 0;
+	_diff = 0;
+}
+
+void IntroSceneText::setup(const Common::String &msg, Action *action) {
+	_frameNumber = BF_GLOBALS._events.getFrameNumber();
+	_diff = 180;
+	_action = action;
+	_fontNumber = 4;
+	_width = 300;
+	_textMode = ALIGN_CENTER;
+	_color1 = BF_GLOBALS._scenePalette._colors.background;
+	_color2 = _color3 = 0;
+
+	SceneText::setup(msg);
+
+	// Center the text on-screen
+	reposition();
+	_bounds.center(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+
+	// Set the new position
+	_position.x = _bounds.left;
+	_position.y = _bounds.top;
+}
+
+void IntroSceneText::synchronize(Serializer &s) {
+	SceneText::synchronize(s);
+	SYNC_POINTER(_action);
+	s.syncAsUint32LE(_frameNumber);
+	s.syncAsSint16LE(_diff);
+}
+
+void IntroSceneText::dispatch() {
+	if (_diff) {
+		uint32 frameNumber = BF_GLOBALS._events.getFrameNumber();
+		if (_frameNumber < frameNumber) {
+			_diff -= frameNumber - _frameNumber;
+			_frameNumber = frameNumber;
+
+			if (_diff <= 0) {
+				// Time has expired, so remove the text and signal the designated action
+				remove();
+				if (_action)
+					_action->signal();
+			}
+		}
+	}
+}
 
 } // End of namespace BlueForce
 

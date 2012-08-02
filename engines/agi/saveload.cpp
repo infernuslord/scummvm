@@ -29,6 +29,10 @@
 #include "common/config-manager.h"
 #include "common/savefile.h"
 #include "common/textconsole.h"
+#include "common/translation.h"
+
+#include "gui/saveload.h"
+
 #include "graphics/thumbnail.h"
 #include "graphics/surface.h"
 
@@ -38,7 +42,7 @@
 #include "agi/keyboard.h"
 #include "agi/menu.h"
 
-#define SAVEGAME_VERSION 5
+#define SAVEGAME_VERSION 6
 
 //
 // Version 0 (Sarien): view table has 64 entries
@@ -47,6 +51,7 @@
 // Version 3 (ScummVM): added AGIPAL save/load support
 // Version 4 (ScummVM): added thumbnails and save creation date/time
 // Version 5 (ScummVM): Added game md5
+// Version 6 (ScummVM): Added game played time
 //
 
 namespace Agi {
@@ -82,12 +87,14 @@ int AgiEngine::saveGame(const Common::String &fileName, const Common::String &de
 
 	uint32 saveDate = ((curTime.tm_mday & 0xFF) << 24) | (((curTime.tm_mon + 1) & 0xFF) << 16) | ((curTime.tm_year + 1900) & 0xFFFF);
 	uint16 saveTime = ((curTime.tm_hour & 0xFF) << 8) | ((curTime.tm_min) & 0xFF);
+	uint32 playTime = g_engine->getTotalPlayTime() / 1000;
 
 	out->writeUint32BE(saveDate);
 	debugC(5, kDebugLevelMain | kDebugLevelSavegame, "Writing save date (%d)", saveDate);
 	out->writeUint16BE(saveTime);
 	debugC(5, kDebugLevelMain | kDebugLevelSavegame, "Writing save time (%d)", saveTime);
-	// TODO: played time
+	out->writeUint32BE(playTime);
+	debugC(5, kDebugLevelMain | kDebugLevelSavegame, "Writing play time (%d)", playTime);
 
 	out->writeByte(_game.state);
 	debugC(5, kDebugLevelMain | kDebugLevelSavegame, "Writing game state (%d)", _game.state);
@@ -221,8 +228,8 @@ int AgiEngine::saveGame(const Common::String &fileName, const Common::String &de
 
 	// Save image stack
 
-	for (i = 0; i < _imageStack.size(); i++) {
-		ImageStackElement ise = _imageStack[i];
+	for (Common::Stack<ImageStackElement>::size_type j = 0; j < _imageStack.size(); ++j) {
+		const ImageStackElement &ise = _imageStack[j];
 		out->writeByte(ise.type);
 		out->writeSint16BE(ise.parm1);
 		out->writeSint16BE(ise.parm2);
@@ -294,13 +301,16 @@ int AgiEngine::loadGame(const Common::String &fileName, bool checkId) {
 
 		in->readUint32BE();	// save date
 		in->readUint16BE(); // save time
-		// TODO: played time
+		if (saveVersion >= 6) {
+			uint32 playTime = in->readUint32BE();
+			g_engine->setTotalPlayTime(playTime * 1000);
+		}
 	}
 
 	_game.state = (State)in->readByte();
 
 	in->read(loadId, 8);
-	if (strcmp(loadId, _game.id) && checkId) {
+	if (strcmp(loadId, _game.id) != 0 && checkId) {
 		delete in;
 		warning("This save seems to be from a different AGI game (save from %s, running %s), not loaded", loadId, _game.id);
 		return errBadFileOpen;
@@ -331,7 +341,7 @@ int AgiEngine::loadGame(const Common::String &fileName, bool checkId) {
 			warning("Since your game was only detected via the fallback detector, there is no possibility to assure the save is compatible with your game version");
 
 			debug(0, "The game used for saving is \"%s\".", md5);
-		} else if (strcmp(md5, getGameMD5())) {
+		} else if (strcmp(md5, getGameMD5()) != 0) {
 			warning("Game was saved with different gamedata - you may encounter problems");
 
 			debug(0, "Your game is \"%s\" and save is \"%s\".", getGameMD5(), md5);
@@ -609,8 +619,8 @@ int AgiEngine::selectSlot() {
 	AllowSyntheticEvents on(this);
 	int oldFirstSlot = _firstSlot + 1;
 	int oldActive = active + 1;
-
-	while (!(shouldQuit() || _restartGame)) {
+	bool exitSelectSlot = false;
+	while (!exitSelectSlot && !(shouldQuit() || _restartGame)) {
 		int sbPos = 0;
 
 		// Use the extreme scrollbar positions only if the extreme
@@ -661,119 +671,122 @@ int AgiEngine::selectSlot() {
 		// out of the dead loop
 		if (getflag(fRestoreJustRan)) {
 			rc = -2;
-			goto getout;
+			exitSelectSlot = true;
 		}
 
-		switch (key) {
-		case KEY_ENTER:
-			rc = active;
-			strncpy(_game.strings[MAX_STRINGS], desc[i], MAX_STRINGLEN);
-			goto press;
-		case KEY_ESCAPE:
-			rc = -1;
-			goto getout;
-		case BUTTON_LEFT:
-			if (_gfx->testButton(buttonX[0], buttonY, buttonText[0])) {
+		if (!exitSelectSlot) {
+			switch (key) {
+			case KEY_ENTER:
 				rc = active;
 				strncpy(_game.strings[MAX_STRINGS], desc[i], MAX_STRINGLEN);
-				goto press;
-			}
-			if (_gfx->testButton(buttonX[1], buttonY, buttonText[1])) {
+				debugC(8, kDebugLevelMain | kDebugLevelInput, "Button pressed: %d", rc);
+				exitSelectSlot = true;
+				break;
+			case KEY_ESCAPE:
 				rc = -1;
-				goto getout;
-			}
-			slotClicked = ((int)_mouse.y - 1) / CHAR_COLS - (vm + 4);
-			xmin = (hm + 1) * CHAR_COLS;
-			xmax = xmin + CHAR_COLS * 34;
-			if ((int)_mouse.x >= xmin && (int)_mouse.x <= xmax) {
-				if (slotClicked >= 0 && slotClicked < NUM_VISIBLE_SLOTS)
-					active = slotClicked;
-			}
-			xmin = (hm + 36) * CHAR_COLS;
-			xmax = xmin + CHAR_COLS;
-			if ((int)_mouse.x >= xmin && (int)_mouse.x <= xmax) {
-				if (slotClicked >= 0 && slotClicked < NUM_VISIBLE_SLOTS) {
-					if (slotClicked == 0)
-						keyEnqueue(KEY_UP);
-					else if (slotClicked == NUM_VISIBLE_SLOTS - 1)
-						keyEnqueue(KEY_DOWN);
-					else if (slotClicked < sbPos)
-						keyEnqueue(KEY_UP_RIGHT);
-					else if (slotClicked > sbPos)
-						keyEnqueue(KEY_DOWN_RIGHT);
+				exitSelectSlot = true;
+				break;
+			case BUTTON_LEFT:
+				if (_gfx->testButton(buttonX[0], buttonY, buttonText[0])) {
+					rc = active;
+					strncpy(_game.strings[MAX_STRINGS], desc[i], MAX_STRINGLEN);
+					debugC(8, kDebugLevelMain | kDebugLevelInput, "Button pressed: %d", rc);
+					exitSelectSlot = true;
+				} else if (_gfx->testButton(buttonX[1], buttonY, buttonText[1])) {
+					rc = -1;
+					exitSelectSlot = true;
+				} else {
+					slotClicked = ((int)_mouse.y - 1) / CHAR_COLS - (vm + 4);
+					xmin = (hm + 1) * CHAR_COLS;
+					xmax = xmin + CHAR_COLS * 34;
+					if ((int)_mouse.x >= xmin && (int)_mouse.x <= xmax) {
+						if (slotClicked >= 0 && slotClicked < NUM_VISIBLE_SLOTS)
+							active = slotClicked;
+					}
+					xmin = (hm + 36) * CHAR_COLS;
+					xmax = xmin + CHAR_COLS;
+					if ((int)_mouse.x >= xmin && (int)_mouse.x <= xmax) {
+						if (slotClicked >= 0 && slotClicked < NUM_VISIBLE_SLOTS) {
+							if (slotClicked == 0)
+								keyEnqueue(KEY_UP);
+							else if (slotClicked == NUM_VISIBLE_SLOTS - 1)
+								keyEnqueue(KEY_DOWN);
+							else if (slotClicked < sbPos)
+								keyEnqueue(KEY_UP_RIGHT);
+							else if (slotClicked > sbPos)
+								keyEnqueue(KEY_DOWN_RIGHT);
+						}
+					}
 				}
-			}
-			break;
-		case KEY_DOWN:
-			active++;
-			if (active >= NUM_VISIBLE_SLOTS) {
-				if (_firstSlot + NUM_VISIBLE_SLOTS < NUM_SLOTS) {
+				break;
+
+			case KEY_DOWN:
+				active++;
+				if (active >= NUM_VISIBLE_SLOTS) {
+					if (_firstSlot + NUM_VISIBLE_SLOTS < NUM_SLOTS) {
+						_firstSlot++;
+						for (i = 1; i < NUM_VISIBLE_SLOTS; i++)
+							memcpy(desc[i - 1], desc[i], sizeof(desc[0]));
+						getSavegameDescription(_firstSlot + NUM_VISIBLE_SLOTS - 1, desc[NUM_VISIBLE_SLOTS - 1]);
+					}
+					active = NUM_VISIBLE_SLOTS - 1;
+				}
+				break;
+			case KEY_UP:
+				active--;
+				if (active < 0) {
+					active = 0;
+					if (_firstSlot > 0) {
+						_firstSlot--;
+						for (i = NUM_VISIBLE_SLOTS - 1; i > 0; i--)
+							memcpy(desc[i], desc[i - 1], sizeof(desc[0]));
+						getSavegameDescription(_firstSlot, desc[0]);
+					}
+				}
+				break;
+
+			// Page Up/Down and mouse wheel scrolling all leave 'active'
+			// unchanged so that a visible slot will remain selected.
+
+			case WHEEL_DOWN:
+				if (_firstSlot < NUM_SLOTS - NUM_VISIBLE_SLOTS) {
 					_firstSlot++;
 					for (i = 1; i < NUM_VISIBLE_SLOTS; i++)
 						memcpy(desc[i - 1], desc[i], sizeof(desc[0]));
 					getSavegameDescription(_firstSlot + NUM_VISIBLE_SLOTS - 1, desc[NUM_VISIBLE_SLOTS - 1]);
 				}
-				active = NUM_VISIBLE_SLOTS - 1;
-			}
-			break;
-		case KEY_UP:
-			active--;
-			if (active < 0) {
-				active = 0;
+				break;
+			case WHEEL_UP:
 				if (_firstSlot > 0) {
 					_firstSlot--;
 					for (i = NUM_VISIBLE_SLOTS - 1; i > 0; i--)
 						memcpy(desc[i], desc[i - 1], sizeof(desc[0]));
 					getSavegameDescription(_firstSlot, desc[0]);
 				}
+				break;
+			case KEY_DOWN_RIGHT:
+				// This is probably triggered by Page Down.
+				_firstSlot += NUM_VISIBLE_SLOTS;
+				if (_firstSlot > NUM_SLOTS - NUM_VISIBLE_SLOTS) {
+					_firstSlot = NUM_SLOTS - NUM_VISIBLE_SLOTS;
+				}
+				for (i = 0; i < NUM_VISIBLE_SLOTS; i++)
+					getSavegameDescription(_firstSlot + i, desc[i]);
+				break;
+			case KEY_UP_RIGHT:
+				// This is probably triggered by Page Up.
+				_firstSlot -= NUM_VISIBLE_SLOTS;
+				if (_firstSlot < 0) {
+					_firstSlot = 0;
+				}
+				for (i = 0; i < NUM_VISIBLE_SLOTS; i++)
+					getSavegameDescription(_firstSlot + i, desc[i]);
+				break;
 			}
-			break;
-
-		// Page Up/Down and mouse wheel scrolling all leave 'active'
-		// unchanged so that a visible slot will remain selected.
-
-		case WHEEL_DOWN:
-			if (_firstSlot < NUM_SLOTS - NUM_VISIBLE_SLOTS) {
-				_firstSlot++;
-				for (i = 1; i < NUM_VISIBLE_SLOTS; i++)
-					memcpy(desc[i - 1], desc[i], sizeof(desc[0]));
-				getSavegameDescription(_firstSlot + NUM_VISIBLE_SLOTS - 1, desc[NUM_VISIBLE_SLOTS - 1]);
-			}
-			break;
-		case WHEEL_UP:
-			if (_firstSlot > 0) {
-				_firstSlot--;
-				for (i = NUM_VISIBLE_SLOTS - 1; i > 0; i--)
-					memcpy(desc[i], desc[i - 1], sizeof(desc[0]));
-				getSavegameDescription(_firstSlot, desc[0]);
-			}
-			break;
-		case KEY_DOWN_RIGHT:
-			// This is probably triggered by Page Down.
-			_firstSlot += NUM_VISIBLE_SLOTS;
-			if (_firstSlot > NUM_SLOTS - NUM_VISIBLE_SLOTS) {
-				_firstSlot = NUM_SLOTS - NUM_VISIBLE_SLOTS;
-			}
-			for (i = 0; i < NUM_VISIBLE_SLOTS; i++)
-				getSavegameDescription(_firstSlot + i, desc[i]);
-			break;
-		case KEY_UP_RIGHT:
-			// This is probably triggered by Page Up.
-			_firstSlot -= NUM_VISIBLE_SLOTS;
-			if (_firstSlot < 0) {
-				_firstSlot = 0;
-			}
-			for (i = 0; i < NUM_VISIBLE_SLOTS; i++)
-				getSavegameDescription(_firstSlot + i, desc[i]);
-			break;
 		}
 		_gfx->doUpdate();
 	}
 
-press:
-	debugC(8, kDebugLevelMain | kDebugLevelInput, "Button pressed: %d", rc);
-
-getout:
 	closeWindow();
 
 	_noSaveLoadAllowed = false;
@@ -781,7 +794,78 @@ getout:
 	return rc;
 }
 
+int AgiEngine::scummVMSaveLoadDialog(bool isSave) {
+	GUI::SaveLoadChooser *dialog;
+	Common::String desc;
+	int slot;
+
+	if (isSave) {
+		dialog = new GUI::SaveLoadChooser(_("Save game:"), _("Save"), true);
+
+		slot = dialog->runModalWithCurrentTarget();
+		desc = dialog->getResultString();
+
+		if (desc.empty()) {
+			// create our own description for the saved game, the user didnt enter it
+			desc = dialog->createDefaultSaveDescription(slot);
+		}
+
+		if (desc.size() > 28)
+			desc = Common::String(desc.c_str(), 28);
+	} else {
+		dialog = new GUI::SaveLoadChooser(_("Restore game:"), _("Restore"), false);
+		slot = dialog->runModalWithCurrentTarget();
+	}
+
+	delete dialog;
+
+	if (slot < 0)
+		return true;
+	
+	if (isSave)
+		return doSave(slot, desc);
+	else
+		return doLoad(slot, false);
+}
+
+int AgiEngine::doSave(int slot, const Common::String &desc) {
+	Common::String fileName = getSavegameFilename(slot);
+	debugC(8, kDebugLevelMain | kDebugLevelResources, "file is [%s]", fileName.c_str());
+
+	// Make sure all graphics was blitted to screen. This fixes bug
+	// #2960567: "AGI: Ego partly erased in Load/Save thumbnails"
+	_gfx->doUpdate();
+
+	return saveGame(fileName, desc);
+}
+
+int AgiEngine::doLoad(int slot, bool showMessages) {
+	Common::String fileName = getSavegameFilename(slot);
+	debugC(8, kDebugLevelMain | kDebugLevelResources, "file is [%s]", fileName.c_str());
+
+	_sprites->eraseBoth();
+	_sound->stopSound();
+	closeWindow();
+
+	int result = loadGame(fileName);
+
+	if (result == errOK) {
+		if (showMessages)
+			messageBox("Game restored.");
+		_game.exitAllLogics = 1;
+		_menu->enableAll();
+	} else {
+		if (showMessages)
+			messageBox("Error restoring game.");
+	}
+
+	return result;
+}
+
 int AgiEngine::saveGameDialog() {
+	if (!ConfMan.getBool("originalsaveload"))
+		return scummVMSaveLoadDialog(true);
+
 	char *desc;
 	const char *buttons[] = { "Do as I say!", "I regret", NULL };
 	char dstr[200];
@@ -851,14 +935,7 @@ int AgiEngine::saveGameDialog() {
 		return errOK;
 	}
 
-	Common::String fileName = getSavegameFilename(_firstSlot + slot);
-	debugC(8, kDebugLevelMain | kDebugLevelResources, "file is [%s]", fileName.c_str());
-
-	// Make sure all graphics was blitted to screen. This fixes bug
-	// #2960567: "AGI: Ego partly erased in Load/Save thumbnails"
-	_gfx->doUpdate();
-
-	int result = saveGame(fileName, desc);
+	int result = doSave(_firstSlot + slot, desc);
 
 	if (result == errOK)
 		messageBox("Game saved.");
@@ -869,6 +946,9 @@ int AgiEngine::saveGameDialog() {
 }
 
 int AgiEngine::saveGameSimple() {
+	if (!ConfMan.getBool("originalsaveload"))
+		return scummVMSaveLoadDialog(true);
+
 	Common::String fileName = getSavegameFilename(0);
 
 	int result = saveGame(fileName, "Default savegame");
@@ -878,7 +958,10 @@ int AgiEngine::saveGameSimple() {
 }
 
 int AgiEngine::loadGameDialog() {
-	int rc, slot = 0;
+	if (!ConfMan.getBool("originalsaveload"))
+		return scummVMSaveLoadDialog(false);
+
+	int slot = 0;
 	int hm, vm, hp, vp;	// box margins
 	int w;
 
@@ -904,37 +987,14 @@ int AgiEngine::loadGameDialog() {
 		return errOK;
 	}
 
-	Common::String fileName = getSavegameFilename(_firstSlot + slot);
-
-	if ((rc = loadGame(fileName)) == errOK) {
-		messageBox("Game restored.");
-		_game.exitAllLogics = 1;
-		_menu->enableAll();
-	} else {
-		messageBox("Error restoring game.");
-	}
-
-	return rc;
+	return doLoad(_firstSlot + slot, true);
 }
 
 int AgiEngine::loadGameSimple() {
-	int rc = 0;
-
-	Common::String fileName = getSavegameFilename(0);
-
-	_sprites->eraseBoth();
-	_sound->stopSound();
-	closeWindow();
-
-	if ((rc = loadGame(fileName)) == errOK) {
-		messageBox("Game restored.");
-		_game.exitAllLogics = 1;
-		_menu->enableAll();
-	} else {
-		messageBox("Error restoring game.");
-	}
-
-	return rc;
+	if (!ConfMan.getBool("originalsaveload"))
+		return scummVMSaveLoadDialog(false);
+	else
+		return doLoad(0, true);
 }
 
 void AgiEngine::recordImageStackCall(uint8 type, int16 p1, int16 p2, int16 p3,

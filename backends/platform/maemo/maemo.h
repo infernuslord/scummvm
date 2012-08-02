@@ -26,20 +26,43 @@
 #define PLATFORM_SDL_MAEMO_H
 
 #include "backends/platform/sdl/posix/posix.h"
+#include "backends/platform/maemo/maemo-common.h"
+
+namespace Maemo {
+class MaemoSdlEventObserver;
 
 class OSystem_SDL_Maemo : public OSystem_POSIX {
 public:
 	OSystem_SDL_Maemo();
+	~OSystem_SDL_Maemo();
 
 	virtual void initBackend();
 	virtual void quit();
 	virtual void fatalError();
 	virtual void setWindowCaption(const char *caption);
+	virtual void setupIcon();
+#ifdef ENABLE_KEYMAPPER
+	virtual Common::HardwareInputSet *getHardwareInputSet();
+	virtual Common::Keymap *getGlobalKeymap();
+	virtual Common::KeymapperDefaultBindings *getKeymapperDefaultBindings() { return _keymapperDefaultBindings; }
+#endif
+
+	Model getModel() { return _model; }
 
 private:
 	virtual void setXWindowName(const char *caption);
+	void initObserver();
 
+	const Model detectModel();
+	Model _model;
+	MaemoSdlEventObserver *_eventObserver;
+#ifdef ENABLE_KEYMAPPER
+	Common::KeymapperDefaultBindings *_keymapperDefaultBindings;
+#endif
 };
-#endif
 
-#endif
+} // namespace Maemo
+
+#endif // ifndef PLATFORM_SDL_MAEMO_H
+
+#endif // if defined(MAEMO)

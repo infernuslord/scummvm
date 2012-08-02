@@ -33,7 +33,7 @@ namespace Sci {
 
 reg_t kStrEnd(EngineState *s, int argc, reg_t *argv) {
 	reg_t address = argv[0];
-	address.offset += s->_segMan->strlen(address);
+	address.incOffset(s->_segMan->strlen(address));
 
 	return address;
 }
@@ -96,7 +96,7 @@ reg_t kStrAt(EngineState *s, int argc, reg_t *argv) {
 
 	byte value;
 	byte newvalue = 0;
-	unsigned int offset = argv[1].toUint16();
+	uint16 offset = argv[1].toUint16();
 	if (argc > 2)
 		newvalue = argv[2].toSint16();
 
@@ -123,18 +123,22 @@ reg_t kStrAt(EngineState *s, int argc, reg_t *argv) {
 			oddOffset = !oddOffset;
 
 		if (!oddOffset) {
-			value = tmp.offset & 0x00ff;
+			value = tmp.getOffset() & 0x00ff;
 			if (argc > 2) { /* Request to modify this char */
-				tmp.offset &= 0xff00;
-				tmp.offset |= newvalue;
-				tmp.segment = 0;
+				uint16 tmpOffset = tmp.toUint16();
+				tmpOffset &= 0xff00;
+				tmpOffset |= newvalue;
+				tmp.setOffset(tmpOffset);
+				tmp.setSegment(0);
 			}
 		} else {
-			value = tmp.offset >> 8;
+			value = tmp.getOffset() >> 8;
 			if (argc > 2)  { /* Request to modify this char */
-				tmp.offset &= 0x00ff;
-				tmp.offset |= newvalue << 8;
-				tmp.segment = 0;
+				uint16 tmpOffset = tmp.toUint16();
+				tmpOffset &= 0x00ff;
+				tmpOffset |= newvalue << 8;
+				tmp.setOffset(tmpOffset);
+				tmp.setSegment(0);
 			}
 		}
 	}
@@ -147,7 +151,7 @@ reg_t kReadNumber(EngineState *s, int argc, reg_t *argv) {
 	Common::String source_str = s->_segMan->getString(argv[0]);
 	const char *source = source_str.c_str();
 
-	while (isspace((unsigned char)*source))
+	while (Common::isSpace(*source))
 		source++; /* Skip whitespace */
 
 	int16 result = 0;
@@ -204,7 +208,7 @@ reg_t kFormat(EngineState *s, int argc, reg_t *argv) {
 	int strLength = 0; /* Used for stuff like "%13s" */
 	bool unsignedVar = false;
 
-	if (position.segment)
+	if (position.getSegment())
 		startarg = 2;
 	else {
 		// WORKAROUND: QFG1 VGA Mac calls this without the first parameter (dest). It then
@@ -246,14 +250,14 @@ reg_t kFormat(EngineState *s, int argc, reg_t *argv) {
 
 			/* int writelength; -- unused atm */
 
-			if (xfer && (isdigit(static_cast<unsigned char>(xfer)) || xfer == '-' || xfer == '=')) {
+			if (xfer && (Common::isDigit(xfer) || xfer == '-' || xfer == '=')) {
 				char *destp;
 
 				if (xfer == '0')
 					fillchar = '0';
 				else if (xfer == '=')
 					align = ALIGN_CENTER;
-				else if (isdigit(static_cast<unsigned char>(xfer)) || (xfer == '-'))
+				else if (Common::isDigit(xfer) || (xfer == '-'))
 					source--; // Go to start of length argument
 
 				strLength = strtol(source, &destp, 10);
@@ -291,7 +295,7 @@ reg_t kFormat(EngineState *s, int argc, reg_t *argv) {
 				if (extralen < 0)
 					extralen = 0;
 
-				if (reg.segment) /* Heap address? */
+				if (reg.getSegment()) /* Heap address? */
 					paramindex++;
 				else
 					paramindex += 2; /* No, text resource address */
@@ -653,10 +657,16 @@ reg_t kString(EngineState *s, int argc, reg_t *argv) {
 	case 1: // Size
 		return make_reg(0, s->_segMan->getString(argv[1]).size());
 	case 2: { // At (return value at an index)
-		if (argv[1].segment == s->_segMan->getStringSegmentId())
-			return make_reg(0, s->_segMan->lookupString(argv[1])->getRawData()[argv[2].toUint16()]);
-
-		return make_reg(0, s->_segMan->getString(argv[1])[argv[2].toUint16()]);
+		// Note that values are put in bytes to avoid sign extension
+		if (argv[1].getSegment() == s->_segMan->getStringSegmentId()) {
+			SciString *string = s->_segMan->lookupString(argv[1]);
+			byte val = string->getRawData()[argv[2].toUint16()];
+			return make_reg(0, val);
+		} else {
+			Common::String string = s->_segMan->getString(argv[1]);
+			byte val = string[argv[2].toUint16()];
+			return make_reg(0, val);
+		}
 	}
 	case 3: { // Atput (put value at an index)
 		SciString *string = s->_segMan->lookupString(argv[1]);
@@ -697,13 +707,15 @@ reg_t kString(EngineState *s, int argc, reg_t *argv) {
 	case 6: { // Cpy
 		const char *string2 = 0;
 		uint32 string2Size = 0;
+		Common::String string;
 
-		if (argv[3].segment == s->_segMan->getStringSegmentId()) {
-			SciString *string = s->_segMan->lookupString(argv[3]);
-			string2 = string->getRawData();
-			string2Size = string->getSize();
+		if (argv[3].getSegment() == s->_segMan->getStringSegmentId()) {
+			SciString *sstr;
+			sstr = s->_segMan->lookupString(argv[3]);
+			string2 = sstr->getRawData();
+			string2Size = sstr->getSize();
 		} else {
-			Common::String string = s->_segMan->getString(argv[3]);
+			string = s->_segMan->getString(argv[3]);
 			string2 = string.c_str();
 			string2Size = string.size() + 1;
 		}
@@ -743,27 +755,15 @@ reg_t kString(EngineState *s, int argc, reg_t *argv) {
 			return make_reg(0, strcmp(string1.c_str(), string2.c_str()));
 	}
 	case 8: { // Dup
-		const char *rawString = 0;
-		uint32 size = 0;
 		reg_t stringHandle;
-		// We allocate the new string first because if the StringTable needs to
-		// grow, our rawString pointer will be invalidated
+
 		SciString *dupString = s->_segMan->allocateString(&stringHandle);
 
-		if (argv[1].segment == s->_segMan->getStringSegmentId()) {
-			SciString *string = s->_segMan->lookupString(argv[1]);
-			rawString = string->getRawData();
-			size = string->getSize();
+		if (argv[1].getSegment() == s->_segMan->getStringSegmentId()) {
+			*dupString = *s->_segMan->lookupString(argv[1]);
 		} else {
-			Common::String string = s->_segMan->getString(argv[1]);
-			rawString = string.c_str();
-			size = string.size() + 1;
+			dupString->fromString(s->_segMan->getString(argv[1]));
 		}
-
-		dupString->setSize(size);
-
-		for (uint32 i = 0; i < size; i++)
-			dupString->setValue(i, rawString[i]);
 
 		return stringHandle;
 	}

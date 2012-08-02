@@ -57,7 +57,7 @@ static const CryoGameDescription gameDescriptions[] = {
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypeChina,
 		0
@@ -73,7 +73,7 @@ static const CryoGameDescription gameDescriptions[] = {
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
-			Common::GUIO_NONE
+			GUIO1(GUIO_NOASPECT)
 		},
 		GameTypeEgypt,
 		0
@@ -86,7 +86,8 @@ static const CryoGameDescription gameDescriptions[] = {
 class CryoMetaEngine : public AdvancedMetaEngine {
 public:
 	CryoMetaEngine() : AdvancedMetaEngine(gameDescriptions, sizeof(Cryo::CryoGameDescription), cryoGames) {
-		_guioptions = Common::GUIO_NOSUBTITLES | Common::GUIO_NOSFX;
+		_singleid = "cryo";
+		_guioptions = GUIO2(GUIO_NOSUBTITLES, GUIO_NOSFX);
 	}
 
 	const char *getName() const {

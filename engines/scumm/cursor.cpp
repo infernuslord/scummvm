@@ -121,13 +121,13 @@ void ScummEngine::updateCursor() {
 	CursorMan.replaceCursor(_grabbedCursor, _cursor.width, _cursor.height,
 							_cursor.hotspotX, _cursor.hotspotY,
 							(_game.platform == Common::kPlatformNES ? _grabbedCursor[63] : transColor),
-							(_game.heversion == 70 ? 2 : 1),
+							(_game.heversion == 70 ? true : false),
 							&format);
 #else
 	CursorMan.replaceCursor(_grabbedCursor, _cursor.width, _cursor.height,
 							_cursor.hotspotX, _cursor.hotspotY,
 							(_game.platform == Common::kPlatformNES ? _grabbedCursor[63] : transColor),
-							(_game.heversion == 70 ? 2 : 1));
+							(_game.heversion == 70 ? true : false));
 #endif
 }
 
@@ -636,7 +636,7 @@ void ScummEngine_v5::setBuiltinCursor(int idx) {
 				byte *dst2 = (_textSurfaceMultiplier == 2) ? dst1 + 16 * scl : dst1;
 				if (_outputPixelFormat.bytesPerPixel == 2) {
 					for (int b = 0; b < scl; b += 2) {
-						*((uint16*)dst1) = *((uint16*)dst2) = color;
+						*((uint16 *)dst1) = *((uint16 *)dst2) = color;
 						dst1 += 2;
 						dst2 += 2;
 					}

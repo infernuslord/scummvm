@@ -165,7 +165,7 @@ void DosSoundMan_ns::playCharacterMusic(const char *character) {
 		return;
 	}
 
-	char *name = const_cast<char*>(character);
+	char *name = const_cast<char *>(character);
 	const char *newMusicFile = 0;
 
 	if (!scumm_stricmp(name, _dinoName)) {
@@ -237,7 +237,7 @@ AmigaSoundMan_ns::~AmigaSoundMan_ns() {
 	stopSfx(2);
 	stopSfx(3);
 
-	delete []beepSoundBuffer;
+	delete[] beepSoundBuffer;
 }
 
 Audio::AudioStream *AmigaSoundMan_ns::loadChannelData(const char *filename, Channel *ch, bool looping) {

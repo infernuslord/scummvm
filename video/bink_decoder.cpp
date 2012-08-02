@@ -30,6 +30,7 @@
 #include "common/textconsole.h"
 #include "common/math.h"
 #include "common/stream.h"
+#include "common/substream.h"
 #include "common/file.h"
 #include "common/str.h"
 #include "common/bitstream.h"
@@ -112,7 +113,22 @@ BinkDecoder::BinkDecoder() {
 	}
 
 	_audioStream = 0;
-	_audioStarted = false;
+}
+
+void BinkDecoder::startAudio() {
+	if (_audioTrack < _audioTracks.size()) {
+		const AudioTrack &audio = _audioTracks[_audioTrack];
+
+		_audioStream = Audio::makeQueuingAudioStream(audio.outSampleRate, audio.outChannels == 2);
+		g_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_audioHandle, _audioStream, -1, getVolume(), getBalance());
+	} // else no audio
+}
+
+void BinkDecoder::stopAudio() {
+	if (_audioStream) {
+		g_system->getMixer()->stopHandle(_audioHandle);
+		_audioStream = 0;
+	}
 }
 
 BinkDecoder::~BinkDecoder() {
@@ -122,13 +138,8 @@ BinkDecoder::~BinkDecoder() {
 void BinkDecoder::close() {
 	reset();
 
-	if (_audioStream) {
-		// Stop audio
-		g_system->getMixer()->stopHandle(_audioHandle);
-		_audioStream = 0;
-	}
-
-	_audioStarted = false;
+	// Stop audio
+	stopAudio();
 
 	for (int i = 0; i < 4; i++) {
 		delete[] _curPlanes[i]; _curPlanes[i] = 0;
@@ -170,9 +181,9 @@ void BinkDecoder::close() {
 	_frames.clear();
 }
 
-uint32 BinkDecoder::getElapsedTime() const {
+uint32 BinkDecoder::getTime() const {
 	if (_audioStream && g_system->getMixer()->isSoundHandleActive(_audioHandle))
-		return g_system->getMixer()->getSoundElapsedTime(_audioHandle);
+		return g_system->getMixer()->getSoundElapsedTime(_audioHandle) + _audioStartOffset;
 
 	return g_system->getMillis() - _startTime;
 }
@@ -199,28 +210,37 @@ const Graphics::Surface *BinkDecoder::decodeNextFrame() {
 			error("Audio packet too big for the frame");
 
 		if (audioPacketLength >= 4) {
+			uint32 audioPacketStart = _bink->pos();
+			uint32 audioPacketEnd   = _bink->pos() + audioPacketLength;
+
 			if (i == _audioTrack) {
 				// Only play one audio track
 
 				//                  Number of samples in bytes
 				audio.sampleCount = _bink->readUint32LE() / (2 * audio.channels);
 
-				audio.bits = new Common::BitStream32LE(*_bink, (audioPacketLength - 4) * 8);
+				audio.bits =
+					new Common::BitStream32LELSB(new Common::SeekableSubReadStream(_bink,
+					    audioPacketStart + 4, audioPacketEnd), true);
 
 				audioPacket(audio);
 
 				delete audio.bits;
 				audio.bits = 0;
+			}
 
-			} else
-				// Skip the rest
-				_bink->skip(audioPacketLength);
+			_bink->seek(audioPacketEnd);
 
 			frameSize -= audioPacketLength;
 		}
 	}
 
-	frame.bits = new Common::BitStream32LE(*_bink, frameSize * 8);
+	uint32 videoPacketStart = _bink->pos();
+	uint32 videoPacketEnd   = _bink->pos() + frameSize;
+
+	frame.bits =
+		new Common::BitStream32LELSB(new Common::SeekableSubReadStream(_bink,
+		    videoPacketStart, videoPacketEnd), true);
 
 	videoPacket(frame);
 
@@ -230,11 +250,6 @@ const Graphics::Surface *BinkDecoder::decodeNextFrame() {
 	_curFrame++;
 	if (_curFrame == 0)
 		_startTime = g_system->getMillis();
-
-	if (!_audioStarted && _audioStream) {
-		_audioStarted = true;
-		g_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &_audioHandle, _audioStream);
-	}
 
 	return &_surface;
 }
@@ -500,6 +515,11 @@ void BinkDecoder::mergeHuffmanSymbols(VideoFrame &video, byte *dst, const byte *
 }
 
 bool BinkDecoder::loadStream(Common::SeekableReadStream *stream) {
+	Graphics::PixelFormat format = g_system->getScreenFormat();
+	return loadStream(stream, format);
+}
+
+bool BinkDecoder::loadStream(Common::SeekableReadStream *stream, const Graphics::PixelFormat &format) {
 	close();
 
 	_id = stream->readUint32BE();
@@ -579,7 +599,6 @@ bool BinkDecoder::loadStream(Common::SeekableReadStream *stream) {
 	_hasAlpha   = _videoFlags & kVideoFlagAlpha;
 	_swapPlanes = (_id == kBIKhID) || (_id == kBIKiID); // BIKh and BIKi swap the chroma planes
 
-	Graphics::PixelFormat format = g_system->getScreenFormat();
 	_surface.create(width, height, format);
 
 	// Give the planes a bit extra space
@@ -608,11 +627,8 @@ bool BinkDecoder::loadStream(Common::SeekableReadStream *stream) {
 	initBundles();
 	initHuffman();
 
-	if (_audioTrack < _audioTracks.size()) {
-		const AudioTrack &audio = _audioTracks[_audioTrack];
-
-		_audioStream = Audio::makeQueuingAudioStream(audio.outSampleRate, audio.outChannels == 2);
-	}
+	startAudio();
+	_audioStartOffset = 0;
 
 	return true;
 }
@@ -701,15 +717,15 @@ void BinkDecoder::initBundles() {
 	for (int i = 0; i < 2; i++) {
 		int width = MAX<uint32>(cw[i], 8);
 
-		_bundles[kSourceBlockTypes   ].countLengths[i] = Common::intLog2((width  >> 3)    + 511) + 1;
-		_bundles[kSourceSubBlockTypes].countLengths[i] = Common::intLog2((width  >> 4)    + 511) + 1;
-		_bundles[kSourceColors       ].countLengths[i] = Common::intLog2((cbw[i]     )*64 + 511) + 1;
-		_bundles[kSourceIntraDC      ].countLengths[i] = Common::intLog2((width  >> 3)    + 511) + 1;
-		_bundles[kSourceInterDC      ].countLengths[i] = Common::intLog2((width  >> 3)    + 511) + 1;
-		_bundles[kSourceXOff         ].countLengths[i] = Common::intLog2((width  >> 3)    + 511) + 1;
-		_bundles[kSourceYOff         ].countLengths[i] = Common::intLog2((width  >> 3)    + 511) + 1;
-		_bundles[kSourcePattern      ].countLengths[i] = Common::intLog2((cbw[i] << 3)    + 511) + 1;
-		_bundles[kSourceRun          ].countLengths[i] = Common::intLog2((cbw[i]     )*48 + 511) + 1;
+		_bundles[kSourceBlockTypes   ].countLengths[i] = Common::intLog2((width       >> 3) + 511) + 1;
+		_bundles[kSourceSubBlockTypes].countLengths[i] = Common::intLog2(((width + 7) >> 4) + 511) + 1;
+		_bundles[kSourceColors       ].countLengths[i] = Common::intLog2((cbw[i])     * 64  + 511) + 1;
+		_bundles[kSourceIntraDC      ].countLengths[i] = Common::intLog2((width       >> 3) + 511) + 1;
+		_bundles[kSourceInterDC      ].countLengths[i] = Common::intLog2((width       >> 3) + 511) + 1;
+		_bundles[kSourceXOff         ].countLengths[i] = Common::intLog2((width       >> 3) + 511) + 1;
+		_bundles[kSourceYOff         ].countLengths[i] = Common::intLog2((width       >> 3) + 511) + 1;
+		_bundles[kSourcePattern      ].countLengths[i] = Common::intLog2((cbw[i]      << 3) + 511) + 1;
+		_bundles[kSourceRun          ].countLengths[i] = Common::intLog2((cbw[i])     * 48  + 511) + 1;
 	}
 }
 
@@ -1629,6 +1645,16 @@ void BinkDecoder::IDCTPut(DecodeContext &ctx, int16 *block) {
 	for (i = 0; i < 8; i++) {
 		IDCT_ROW( (&ctx.dest[i*ctx.pitch]), (&temp[8*i]) );
 	}
+}
+
+void BinkDecoder::updateVolume() {
+	if (g_system->getMixer()->isSoundHandleActive(_audioHandle))
+		g_system->getMixer()->setChannelVolume(_audioHandle, getVolume());
+}
+
+void BinkDecoder::updateBalance() {
+	if (g_system->getMixer()->isSoundHandleActive(_audioHandle))
+		g_system->getMixer()->setChannelBalance(_audioHandle, getBalance());
 }
 
 } // End of namespace Video

@@ -317,6 +317,14 @@ public:
 	 */
 	void createProject(const BuildSetup &setup);
 
+	/**
+	 * Returns the last path component.
+	 *
+	 * @param path Path string.
+	 * @return Last path component.
+	 */
+	static std::string getLastPathComponent(const std::string &path);
+
 protected:
 	const int _version;                                      ///< Target project version
 	StringList &_globalWarnings;                             ///< Global warnings
@@ -371,7 +379,7 @@ protected:
 	 *
 	 * @param output File stream to write to.
 	 */
-	virtual void writeReferences(const BuildSetup &, std::ofstream &) {};
+	virtual void writeReferences(const BuildSetup &, std::ofstream &) {}
 
 	/**
 	 * Get the file extension for project files

@@ -194,7 +194,7 @@ void CommandHandler::runCommand() {
 			break;
 		case kCmdInf:
 			if (_talkEnable) {
-				_vm->inf(_vm->_text->getText(tailCmd->_val));
+				_vm->inf(_vm->_text->getText(tailCmd->_val), true);
 				_vm->_sys->_funDel = kHeroFun0;
 			}
 			break;
@@ -375,6 +375,10 @@ bool CommandHandler::idle() {
 	return (_head == _tail);
 }
 
+void CommandHandler::reset() {
+	_tail = _head;
+}
+
 /**
  * Handles mini-Games logic
  * @param com			Command
@@ -406,7 +410,7 @@ void CGEEngine::snGame(Sprite *spr, int num) {
 			Stage++;
 			if (hand && Stage > kDressed)
 				++hand;
-			if (i >= 0 || (dup[i] == spr && newRandom(3) == 0)) {
+			if (i >= 0 && (dup[i] == spr && newRandom(3) == 0)) {
 				_commandHandler->addCommand(kCmdSeq, -1, 3, dup[0]);               // Yes
 				_commandHandler->addCommand(kCmdSeq, -1, 3, dup[1]);               // Yes
 				_commandHandler->addCommand(kCmdSeq, -1, 3, dup[2]);               // Yes
@@ -443,7 +447,7 @@ void CGEEngine::snGame(Sprite *spr, int num) {
 				_commandHandler->addCommand(kCmdSeq, -1, 0, dup[2]);               // Get Away (Her)
 				_commandHandler->addCommand(kCmdSetXY, -1, 182 + kScrWidth * 62, dup[2]);
 				_commandHandler->addCommand(kCmdSetZ, -1, 9, dup[2]);
-				_game = 0;
+				_game = false;
 				return;
 			} else {
 				_commandHandler->addCommand(kCmdSeq, -1, 2, dup[0]);               // reset animation sequence
@@ -489,7 +493,7 @@ void CGEEngine::snGame(Sprite *spr, int num) {
 		_sprK2->step(newRandom(6));
 		_sprK3->step(newRandom(6));
 
-		if (spr->_ref == 1 && _keyboard->_key[kKeyAlt]) {
+		if (spr->_ref == 1 && _keyboard->_keyAlt) {
 			_sprK1->step(5);
 			_sprK2->step(5);
 			_sprK3->step(5);
@@ -1002,7 +1006,6 @@ void CGEEngine::snSetZ(Sprite *spr, int z) {
 
 	if (spr) {
 		spr->_z = z;
-		//SNPOST_(SNZTRIM, -1, 0, spr);
 		snZTrim(spr);
 	}
 }
@@ -1098,6 +1101,11 @@ void CGEEngine::snKeep(Sprite *spr, int stp) {
 	selectPocket(-1);
 }
 
+/**
+ * Remove an object from the inventory and (if specified) trigger an animation
+ * @param spr			Inventory item
+ * @param stp			Animation
+ */
 void CGEEngine::snGive(Sprite *spr, int stp) {
 	debugC(1, kCGEDebugEngine, "CGEEngine::snGive(spr, %d)", stp);
 
@@ -1149,8 +1157,13 @@ void CGEEngine::snLevel(Sprite *spr, int lev) {
 	_maxScene = _maxSceneArr[_lev];
 }
 
-void CGEEngine::snFlag(int indx, bool v) {
-	_flag[indx] = v;
+/**
+ * Set a flag to a value
+ * @param indx			Flag index
+ * @param val			Flag value
+ */
+void CGEEngine::snFlag(int indx, bool val) {
+	_flag[indx] = val;
 }
 
 void CGEEngine::snSetRef(Sprite *spr, int nr) {
@@ -1193,12 +1206,22 @@ void CGEEngine::snLight(bool in) {
 	_dark = !in;
 }
 
+/**
+ * Set an horizontal boundary
+ * @param scene			Scene number
+ * @param barX			Horizontal boundary value
+ */
 void CGEEngine::snHBarrier(const int scene, const int barX) {
 	debugC(1, kCGEDebugEngine, "CGEEngine::snHBarrier(%d, %d)", scene, barX);
 
 	_barriers[(scene > 0) ? scene : _now]._horz = barX;
 }
 
+/**
+ * Set a vertical boundary
+ * @param scene			Scene number
+ * @param barY			Vertical boundary value
+ */
 void CGEEngine::snVBarrier(const int scene, const int barY) {
 	debugC(1, kCGEDebugEngine, "CGEEngine::snVBarrier(%d, %d)", scene, barY);
 

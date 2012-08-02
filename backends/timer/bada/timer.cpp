@@ -20,7 +20,7 @@
  *
  */
 
-#if defined (BADA)
+#if defined(BADA)
 
 #include "backends/timer/bada/timer.h"
 
@@ -76,7 +76,7 @@ BadaTimerManager::BadaTimerManager() {
 
 BadaTimerManager::~BadaTimerManager() {
 	for (Common::List<TimerSlot>::iterator slot = _timers.begin();
-			 slot != _timers.end(); ++slot) {
+			 slot != _timers.end(); ) {
 		slot->Stop();
 		slot = _timers.erase(slot);
 	}

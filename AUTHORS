@@ -32,7 +32,7 @@ ScummVM Team
        Max Horn              - (retired)
        Travis Howell
        Pawel Kolodziejski    - Codecs, iMUSE, Smush, etc.
-       Gregory Montoir
+       Gregory Montoir       - (retired)
        Eugene Sandulenko     - FT INSANE, MM NES, MM C64, game detection,
                                Herc/CGA
        Ludvig Strigeus       - (retired)
@@ -40,7 +40,7 @@ ScummVM Team
     HE:
        Jonathan Gray         - (retired)
        Travis Howell
-       Gregory Montoir
+       Gregory Montoir       - (retired)
        Eugene Sandulenko
 
     AGI:
@@ -67,9 +67,12 @@ ScummVM Team
     Cine:
        Vincent Hamm          - (retired)
        Pawel Kolodziejski
-       Gregory Montoir
+       Gregory Montoir       - (retired)
        Kari Salminen
        Eugene Sandulenko
+
+    Composer:
+       Alyssa Milburn
 
     CruisE:
        Paul Gilbert
@@ -86,7 +89,9 @@ ScummVM Team
     DreamWeb:
        Torbjorn Andersson
        Bertrand Augereau
-       Vladimir Menshakov
+       Filippos Karapetis
+       Vladimir Menshakov    - (retired)
+       Willem Jan Palenstijn
 
     Gob:
        Torbjorn Andersson
@@ -108,7 +113,7 @@ ScummVM Team
        Torbjorn Andersson    - VQA Player
        Oystein Eftevaag
        Florian Kagerer
-       Gregory Montoir
+       Gregory Montoir       - (retired)
        Johannes Schickel
 
     Lastexpress:
@@ -118,12 +123,6 @@ ScummVM Team
 
     Lure:
        Paul Gilbert
-
-    M4:
-       Torbjorn Andersson
-       Paul Gilbert
-       Benjamin Haisch
-       Filippos Karapetis
 
     MADE:
        Benjamin Haisch
@@ -142,11 +141,13 @@ ScummVM Team
 
     Queen:
        David Eriksson        - (retired)
-       Gregory Montoir
+       Gregory Montoir       - (retired)
        Joost Peters
 
     SAGA:
        Torbjorn Andersson
+       Daniel Balsom         - Original engine reimplementation author
+                               (retired)
        Filippos Karapetis
        Andrew Kurushin
        Eugene Sandulenko
@@ -186,7 +187,7 @@ ScummVM Team
 
     TeenAgent:
        Robert Megone         - Help with callback rewriting
-       Vladimir Menshakov
+       Vladimir Menshakov    - (retired)
 
     Tinsel:
        Torbjorn Andersson
@@ -201,14 +202,14 @@ ScummVM Team
        Sylvain Dupont
 
     Touche:
-       Gregory Montoir
+       Gregory Montoir       - (retired)
 
     TsAGE:
        Arnaud Boutonne
        Paul Gilbert
 
     Tucker:
-       Gregory Montoir
+       Gregory Montoir       - (retired)
 
   Backend Teams
   -------------
@@ -392,6 +393,9 @@ Other contributions
   ------------
      Thierry Crozat        - Translation Lead
 
+    Basque:
+       Mikel Iturbe Urretxa
+
     Catalan:
        Jordi Vilalta Prat
 
@@ -416,10 +420,10 @@ Other contributions
        Matteo Angelino
 
     Norwegian (Bokmaal):
-       Einar Johan T. Somaae
+       Einar Johan Somaaen
 
     Norwegian (Nynorsk):
-       Einar Johan T. Somaae
+       Einar Johan Somaaen
 
     Polish:
        GrajPoPolsku.pl Team
@@ -432,6 +436,7 @@ Other contributions
 
     Spanish:
        Tomas Maidagan
+       Jordi Vilalta Prat
 
     Swedish:
        Hampus Flink
@@ -479,6 +484,7 @@ Other contributions
      Daniel Schepler       - Final MI1 CD music support, initial Ogg Vorbis
                              support
      Andre Souza           - SDL-based OpenGL renderer
+     Tom Frost             - WebOS port contributions
 
   FreeSCI Contributors
   --------------------
@@ -537,6 +543,7 @@ Other contributions
 
 Special thanks to
 *****************
+   Daniel Balsom    - For the original Reinherit (SAGA) code
    Sander Buskens   - For his work on the initial reversing of Monkey2
    Canadacow        - For the original MT-32 emulator
    Kevin Carnes     - For Scumm16, the basis of ScummVM's older gfx codecs
@@ -556,6 +563,8 @@ Special thanks to
    Jimmi Thogersen  - For ScummRev, and much obscure code/documentation
    Tristan          - For additional work on the original MT-32 emulator
    James Woodcock   - Soundtrack enhancements
+
+   Some icons by Yusuke Kamiyamane
 
    Tony Warriner and everyone at Revolution Software Ltd. for sharing with us
    the source of some of their brilliant games, allowing us to release
@@ -589,4 +598,11 @@ Special thanks to
 
    Broken Sword 2.5 team for providing sources of their engine and their
    great support.
+
+   Neil Dodwell and David Dew from Creative Reality for providing the source
+   of Dreamweb and for their tremendous support.
+
+   Janusz Wisniewski and Miroslaw Liminowicz from Laboratorium Komputerowe
+   Avalon for providing full source code for Soltys and letting us to
+   redistribute the game.
 
