@@ -26,16 +26,16 @@
 
 namespace Cryo {
 
-class Hnm6 {
+class Hnm {
 public:
-	Hnm6(const Common::String &filename);
-	~Hnm6();
+	Hnm(const Common::String &filename);
+	~Hnm();
 
 
 	Common::String toString();
 
 private:
-	struct Header {
+	struct Headerv4 {
 		char   signature[4];
 		uint32 version;
 		uint16 width;
@@ -49,7 +49,7 @@ private:
 		char   creator[17];
 		char   copyright[17];
 
-		Header() {
+		Headerv4() {
 			memset(signature, 0, sizeof(signature));
 			version   = 0;
 			width     = 0;
@@ -67,7 +67,7 @@ private:
 		void load(Common::SeekableReadStream *stream);
 	};
 
-	Header  _header;
+	Headerv4  _header;
 
 	void load(const Common::String &filename);
 };

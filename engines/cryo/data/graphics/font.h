@@ -22,6 +22,8 @@
 #ifndef CRYO_FONT_H
 #define CRYO_FONT_H
 
+#include "common/stream.h"
+
 namespace Cryo {
 
 class Font {
@@ -30,7 +32,29 @@ public:
 	~Font();
 
 private:
+	struct Header {
+		char  signature[8];
+		int16 field_8;
+		int16 field_A;
+		int16 count;
+		int16 field_E;
+		byte  notes[32];
 
+		Header() {
+			memset(signature, 0, sizeof(signature));
+			field_8  = 0;
+			field_A  = 0;
+			count    = 0;
+			field_E  = 0;
+			memset(notes, 0, sizeof(notes));
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	Header  _header;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo

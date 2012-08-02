@@ -22,6 +22,8 @@
 #ifndef CRYO_BIGFILE_H
 #define CRYO_BIGFILE_H
 
+#include "common/stream.h"
+
 namespace Cryo {
 
 class BigFile {
@@ -30,7 +32,23 @@ public:
 	~BigFile();
 
 private:
+	struct Header {
+		char   signature[24];
+		uint32 tailPointer;
+		uint32 dataStart;
 
+		Header() {
+			memset(signature, 0, sizeof(signature));
+			tailPointer = 0;
+			dataStart = 0;
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	Header  _header;
+
+	void load(const Common::String &filename);
 };
 
 } // End of namespace Cryo

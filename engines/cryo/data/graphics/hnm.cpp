@@ -27,7 +27,7 @@
 
 namespace Cryo {
 
-void Hnm6::Header::load(Common::SeekableReadStream *stream) {
+void Hnm::Headerv4::load(Common::SeekableReadStream *stream) {
 	stream->read(&signature, sizeof(signature));
 	version   = stream->readUint32LE();
 	width     = stream->readUint16LE();
@@ -42,14 +42,14 @@ void Hnm6::Header::load(Common::SeekableReadStream *stream) {
 	stream->read(&copyright, sizeof(copyright) - 1);
 }
 
-Hnm6::Hnm6(const Common::String &filename) {
+Hnm::Hnm(const Common::String &filename) {
 	load(filename);
 }
 
-Hnm6::~Hnm6() {
+Hnm::~Hnm() {
 }
 
-Common::String Hnm6::toString() {
+Common::String Hnm::toString() {
 	Common::String info;
 
 	info += Common::String::format("Version: %.2x - File size: %d\n", _header.version, _header.filesize);
@@ -60,17 +60,17 @@ Common::String Hnm6::toString() {
 	return info;
 }
 
-void Hnm6::load(const Common::String &filename) {
+void Hnm::load(const Common::String &filename) {
 	// Open a stream to the hnm file
 	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember(filename);
 	if (!archive)
-		error("[Hnm6::load] Error opening file (%s)", filename.c_str());
+		error("[Hnm::load] Error opening file (%s)", filename.c_str());
 
 	// Read sprite header
 	_header.load(archive);
 
 	if (archive->err() || archive->eos())
-		error("[Hnm6::load] Error loading header (%s)", filename.c_str());
+		error("[Hnm::load] Error loading header (%s)", filename.c_str());
 
 
 
