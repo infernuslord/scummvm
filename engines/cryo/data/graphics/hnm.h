@@ -55,6 +55,20 @@ public:
 	Common::String toString();
 
 private:
+	enum Chunk {
+
+		// HNM4
+		kChunkPL = 0x5040, // Palette
+		kChunkIZ = 0x495A, // Keyframe
+		kChunkIU = 0x4955, // Interframe
+		kChunkSD = 0x5344, // Sound data
+
+		// HNM6
+		kChunkAA = 0x4141, // Audio
+		kChunkBB = 0x4242, // Audio continuation
+		kChunkIX = 0x4958  // Video frame
+	};
+
 	struct Header {
 		uint32 signature;
 		byte field_4;
@@ -154,6 +168,12 @@ private:
 	Graphics::Surface *_surface;
 
 	void loadHeader(Common::SeekableReadStream *stream);
+
+	// Chunk decoding
+	void decodeChunkv4();
+	void decodeChunkv6();
+
+	Common::String twoCC2str(uint16 tag);
 };
 
 } // End of namespace Cryo

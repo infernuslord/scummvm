@@ -95,9 +95,14 @@ bool Debugger::cmdHnm(int argc, const char **argv) {
 		hnm->loadFile(name);
 
 		// Show information
-		DebugPrintf("%s\n", hnm->toString().c_str());
+		DebugPrintf("%s\n\n", hnm->toString().c_str());
 
 		// TODO Play video
+
+		const Graphics::Surface *surface = hnm->decodeNextFrame();
+		g_system->fillScreen(0);
+		g_system->copyRectToScreen(surface->getBasePtr(0, 0), 640, 0, 0, 640, 480);
+		g_system->updateScreen();
 
 		delete hnm;
 

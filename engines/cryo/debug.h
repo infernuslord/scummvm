@@ -27,6 +27,8 @@
 
 #include "audio/mixer.h"
 
+#include "common/debug.h"
+
 namespace Cryo {
 
 enum {

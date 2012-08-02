@@ -21,9 +21,11 @@
 
 #include "cryo/data/graphics/hnm.h"
 
+#include "cryo/debug.h"
 #include "cryo/helpers.h"
 
 #include "common/file.h"
+#include "common/rect.h"
 #include "common/stream.h"
 
 namespace Cryo {
@@ -68,7 +70,7 @@ Common::String Hnm::Headerv4::toString() const {
 	info += Common::String::format("File size: %d\n", filesize);
 	info += Common::String::format("Frame size: %dx%d - %d frame(s)\n", width, height, frames);
 	info += Common::String::format("Sound: %d bits - %d channel(s)\n", bits, channels);
-	info += Common::String::format("Info: %s - %s", creator, copyright);
+	info += Common::String::format("Info: %s - %s\n", creator, copyright);
 
 	return info;
 }
@@ -94,7 +96,7 @@ Common::String Hnm::Headerv6::toString() const {
 	info += Common::String::format("File size: %d\n", filesize);
 	info += Common::String::format("Frame size: %dx%d - %d frame(s)\n", width, height, frames);
 	info += Common::String::format("Max buffer/chunk size: 0x%.2x - 0x%.2x\n", maxBuffer, maxChunk);
-	info += Common::String::format("Info: %s - %s", creator, copyright);
+	info += Common::String::format("Info: %s - %s\n", creator, copyright);
 
 	return info;
 }
@@ -120,6 +122,7 @@ bool Hnm::loadStream(Common::SeekableReadStream *stream) {
 
 	_surface = new Graphics::Surface();
 	_surface->create(_header->getWidth(), _header->getHeight(), _header->getPixelFormat());
+	_surface->fillRect(Common::Rect(0, 0, 640, 480), 0);
 
 	return true;
 }
@@ -150,7 +153,48 @@ void Hnm::loadHeader(Common::SeekableReadStream *stream) {
 }
 
 const Graphics::Surface *Hnm::decodeNextFrame() {
-	error("[Hnm::decodeNextFrame] Not implemented");
+	switch (_header->signature) {
+	default:
+		error("[Hnm::loadHeader] Unknown signature: %s", tag2str(_header->signature));
+
+	case ID_HNM4:
+		decodeChunkv4();
+		break;
+
+	case ID_HNM6:
+		decodeChunkv6();
+		break;
+	}
+
+	return _surface;
+}
+
+void Hnm::decodeChunkv4() {
+	error("[Hnm::decodeChunkv4] Not implemented");
+}
+
+void Hnm::decodeChunkv6() {
+	// Read chunk header
+	uint32 size = _fileStream->readUint32LE();
+	uint32 size2 = _fileStream->readUint32LE();
+	uint16 id = _fileStream->readUint16BE();
+	uint16 reserved = _fileStream->readUint16LE();
+
+	debugC(6, kCryoDebugGraphics, "Decoding chunk: %s (size: %u, reserved: %u)", twoCC2str(id).c_str(), size, reserved);
+
+	switch (id) {
+	default:
+		error("[Hnm::decodeChunkv6] Unknown chunk id (%s)", twoCC2str(id).c_str());
+
+	case kChunkAA:
+		break;
+
+	case kChunkBB:
+		break;
+
+	case kChunkIX:
+		break;
+	}
 }
 
 void Hnm::close() {
@@ -180,6 +224,21 @@ Common::String Hnm::toString() {
 		error("[Hnm::toString] Video not loaded");
 
 	return _header->toString();
+}
+
+Common::String Hnm::twoCC2str(uint16 tag) {
+	char str[3];
+	str[0] = (char)(tag >> 8);
+	str[1] = (char)tag;
+	str[2] = '\0';
+
+	// Replace non-printable chars by dot
+	for (int i = 0; i < 2; ++i) {
+		if (!isprint((unsigned char)str[i]))
+			str[i] = '.';
+	}
+
+	return Common::String(str);
 }
 
 } // End of namespace Cryo
