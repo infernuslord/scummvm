@@ -57,6 +57,7 @@ private:
 	bool cmdHelp(int argc, const char **argv);
 
 	// Data
+	bool cmdListFiles(int argc, const char **argv);
 	bool cmdHnm(int argc, const char **argv);
 	bool cmdMusic(int argc, const char **argv);
 	bool cmdSync(int argc, const char **argv);

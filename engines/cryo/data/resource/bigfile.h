@@ -22,33 +22,74 @@
 #ifndef CRYO_BIGFILE_H
 #define CRYO_BIGFILE_H
 
-#include "common/stream.h"
+#include "common/archive.h"
+#include "common/hash-str.h"
+#include "common/hashmap.h"
 
 namespace Cryo {
 
-class BigFile {
+class BigFile : public Common::Archive {
 public:
-	BigFile();
-	~BigFile();
+	BigFile(const Common::String &path);
+
+	bool hasFile(const Common::String &name) const;
+	int listMembers(Common::ArchiveMemberList &list) const;
+	const Common::ArchiveMemberPtr getMember(const Common::String &name) const;
+	Common::SeekableReadStream *createReadStreamForMember(const Common::String &name) const;
+
+	int count() { return _files.size(); }
 
 private:
 	struct Header {
-		char   signature[24];
-		uint32 tailPointer;
-		uint32 dataStart;
+		char   signature[16];
+		uint32 count;
+		uint32 dataSize;
+		uint32 headerSize;
+		uint32 dummy;
 
 		Header() {
 			memset(signature, 0, sizeof(signature));
-			tailPointer = 0;
-			dataStart = 0;
+			count      = 0;
+			dataSize   = 0;
+			headerSize = 0;
+			dummy      = 0;
 		}
 
 		void load(Common::SeekableReadStream *stream);
 	};
 
-	Header  _header;
+	// File entry
+	struct Entry {
+		uint32 nameSize;
+		uint32 field_4;
+		uint32 size;
+		uint32 size2;
+		uint32 size3;
+		uint32 field_20;
+		uint32 offset;          ///< Offset
+		uint32 field_28;
 
-	void load(const Common::String &filename);
+		Common::String filename;
+
+		Entry() {
+			nameSize = 0;
+			field_4  = 0;
+			size     = 0;
+			size2    = 0;
+			size3    = 0;
+			field_20 = 0;
+			offset   = 0;
+			field_28 = 0;
+		}
+
+		void load(Common::SeekableReadStream *stream);
+	};
+
+	typedef Common::HashMap<Common::String, Entry, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> FileMap;
+
+	Header _header;
+	FileMap _files;             ///< List of files
+	Common::String _filename;   ///< Filename of the archive
 };
 
 } // End of namespace Cryo
