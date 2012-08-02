@@ -91,10 +91,13 @@ bool Debugger::cmdHnm(int argc, const char **argv) {
 		if (!name.contains('.'))
 			name += ".HNM";
 
-		Hnm *hnm = new Hnm(name);
+		Hnm *hnm = new Hnm();
+		hnm->loadFile(name);
 
 		// Show information
 		DebugPrintf("%s\n", hnm->toString().c_str());
+
+		// TODO Play video
 
 		delete hnm;
 

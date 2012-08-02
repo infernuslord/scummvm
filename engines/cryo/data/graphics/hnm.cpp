@@ -24,12 +24,31 @@
 #include "cryo/helpers.h"
 
 #include "common/file.h"
+#include "common/stream.h"
 
 namespace Cryo {
 
+void Hnm::Header::load(Common::SeekableReadStream *stream) {
+	signature = stream->readUint32BE();
+	field_4 = stream->readByte();
+	field_5 = stream->readByte();
+	field_6 = stream->readByte();
+	bpp = stream->readByte();
+}
+
+Common::String Hnm::Header::toString() const {
+	Common::String info;
+
+	info += Common::String::format("Signature: %s\n", tag2str(signature));
+	info += Common::String::format("Unknown: %.2x / %.2x / %.2x\n", field_4, field_5, field_6);
+	info += Common::String::format("Bpp: %dbpp\n", bpp);
+
+	return info;
+}
+
 void Hnm::Headerv4::load(Common::SeekableReadStream *stream) {
-	stream->read(&signature, sizeof(signature));
-	version   = stream->readUint32LE();
+	Header::load(stream);
+
 	width     = stream->readUint16LE();
 	height    = stream->readUint16LE();
 	filesize  = stream->readUint32LE();
@@ -42,39 +61,125 @@ void Hnm::Headerv4::load(Common::SeekableReadStream *stream) {
 	stream->read(&copyright, sizeof(copyright) - 1);
 }
 
-Hnm::Hnm(const Common::String &filename) {
-	load(filename);
-}
-
-Hnm::~Hnm() {
-}
-
-Common::String Hnm::toString() {
+Common::String Hnm::Headerv4::toString() const {
 	Common::String info;
 
-	info += Common::String::format("Version: %.2x - File size: %d\n", _header.version, _header.filesize);
-	info += Common::String::format("Frame size: %dx%d - %d frame(s)\n", _header.width, _header.height, _header.frames);
-	info += Common::String::format("Sound: %d bits - %d channel(s)\n", _header.bits, _header.channels);
-	info += Common::String::format("Info: %s - %s", _header.creator, _header.copyright);
+	info += Header::toString();
+	info += Common::String::format("File size: %d\n", filesize);
+	info += Common::String::format("Frame size: %dx%d - %d frame(s)\n", width, height, frames);
+	info += Common::String::format("Sound: %d bits - %d channel(s)\n", bits, channels);
+	info += Common::String::format("Info: %s - %s", creator, copyright);
 
 	return info;
 }
 
-void Hnm::load(const Common::String &filename) {
-	// Open a stream to the hnm file
-	Common::SeekableReadStream *archive = SearchMan.createReadStreamForMember(filename);
-	if (!archive)
-		error("[Hnm::load] Error opening file (%s)", filename.c_str());
+void Hnm::Headerv6::load(Common::SeekableReadStream *stream) {
+	Header::load(stream);
 
-	// Read sprite header
-	_header.load(archive);
+	width     = stream->readUint16LE();
+	height    = stream->readUint16LE();
+	filesize  = stream->readUint32LE();
+	frames    = stream->readUint32LE();
+	reserved  = stream->readUint32LE();
+	maxBuffer = stream->readUint32LE();
+	maxChunk  = stream->readUint32LE();
+	stream->read(&creator, sizeof(creator) - 1);
+	stream->read(&copyright, sizeof(copyright) - 1);
+}
 
-	if (archive->err() || archive->eos())
-		error("[Hnm::load] Error loading header (%s)", filename.c_str());
+Common::String Hnm::Headerv6::toString() const {
+	Common::String info;
 
+	info += Header::toString();
+	info += Common::String::format("File size: %d\n", filesize);
+	info += Common::String::format("Frame size: %dx%d - %d frame(s)\n", width, height, frames);
+	info += Common::String::format("Max buffer/chunk size: 0x%.2x - 0x%.2x\n", maxBuffer, maxChunk);
+	info += Common::String::format("Info: %s - %s", creator, copyright);
 
+	return info;
+}
 
-	delete archive;
+//////////////////////////////////////////////////////////////////////////
+/// HNM video player
+Hnm::Hnm() {
+	_fileStream = NULL;
+	_surface = NULL;
+}
+
+Hnm::~Hnm() {
+	close();
+}
+
+bool Hnm::loadStream(Common::SeekableReadStream *stream) {
+	close();
+
+	_fileStream = stream;
+
+	// Check file version and load header
+	loadHeader(_fileStream);
+
+	_surface = new Graphics::Surface();
+	_surface->create(_header->getWidth(), _header->getHeight(), _header->getPixelFormat());
+
+	return true;
+}
+
+void Hnm::loadHeader(Common::SeekableReadStream *stream) {
+	// Save stream position
+	uint32 position = stream->pos();
+
+	// Check header signature and version
+	Header header;
+	header.load(stream);
+	stream->seek(position, SEEK_SET);
+
+	switch (header.signature) {
+	default:
+		error("[Hnm::loadHeader] Unknown signature: %s", tag2str(header.signature));
+
+	case ID_HNM4:
+		_header = new Headerv4();
+		break;
+
+	case ID_HNM6:
+		_header = new Headerv6();
+		break;
+	}
+
+	_header->load(stream);
+}
+
+const Graphics::Surface *Hnm::decodeNextFrame() {
+	error("[Hnm::decodeNextFrame] Not implemented");
+}
+
+void Hnm::close() {
+	if (!_fileStream)
+		return;
+
+	SAFE_DELETE(_fileStream);
+
+	if (_surface != NULL) {
+		_surface->free();
+		delete _surface;
+		_surface = NULL;
+	}
+
+	reset();
+}
+
+uint32 Hnm::getTimeToNextFrame() const {
+	if (endOfVideo() || _curFrame < 0)
+		return 0;
+
+	error("[Hnm::getTimeToNextFrame] Not implemented");
+}
+
+Common::String Hnm::toString() {
+	if (_header == NULL)
+		error("[Hnm::toString] Video not loaded");
+
+	return _header->toString();
 }
 
 } // End of namespace Cryo
