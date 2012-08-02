@@ -180,7 +180,7 @@ void Hnm::decodeChunkv6() {
 	uint16 id = _fileStream->readUint16BE();
 	uint16 reserved = _fileStream->readUint16LE();
 
-	debugC(6, kCryoDebugGraphics, "Decoding chunk: %s (size: %u, reserved: %u)", twoCC2str(id).c_str(), size, reserved);
+	debugC(6, kCryoDebugGraphics, "Decoding chunk: %s (size: %u, size2: %u, reserved: %u)", twoCC2str(id).c_str(), size, size2, reserved);
 
 	switch (id) {
 	default:
@@ -193,8 +193,13 @@ void Hnm::decodeChunkv6() {
 		break;
 
 	case kChunkIX:
+		decodeIX();
 		break;
 	}
+}
+
+void Hnm::decodeIX() {
+	warning("[Hnm::decodeIX] Not implemented");
 }
 
 void Hnm::close() {

@@ -173,6 +173,10 @@ private:
 	void decodeChunkv4();
 	void decodeChunkv6();
 
+	void decodeAA();
+	void decodeBB();
+	void decodeIX();
+
 	Common::String twoCC2str(uint16 tag);
 };
 
