@@ -1479,7 +1479,7 @@ void Application::puzzleSet3DSoundVolume(PuzzleId puzzleId, Id soundId, int32 vo
 }
 
 void Application::puzzleSetActive(PuzzleId id, bool updateSoundItems, bool a3) {
-	debugC(kRingDebugGraphics, "Setting active puzzle: %d", id);
+	debugC(kRingDebugGraphics, "Setting active puzzle: %d", id.id());
 
 	// Setup puzzle
 	if (!_puzzles.has(id))

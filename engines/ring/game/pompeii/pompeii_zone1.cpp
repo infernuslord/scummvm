@@ -2684,7 +2684,7 @@ void Zone1Pompeii::onButtonUp(ObjectId id, Id target, Id /*puzzleRotationId*/, u
 
 	case kObject1080:
 		if (_app->bagHasClickedObject()) {
-			if (target || _app->bagGetClickedObject() != kObjectKnife && _app->bagGetClickedObject() != kObjectStone2) {
+			if (target || (_app->bagGetClickedObject() != kObjectKnife && _app->bagGetClickedObject() != kObjectStone2)) {
 				_app->cursorDelete();
 			} else {
 				_app->exitToMenu(kMenuAction10);

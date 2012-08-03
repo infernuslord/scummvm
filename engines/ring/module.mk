@@ -9,8 +9,8 @@ MODULE_OBJS := \
 	base/dialog.o \
 	base/font.o \
 	base/language.o \
-	base/object.o \
 	base/movability.o \
+	base/object.o \
 	base/preferences.o \
 	base/puzzle.o \
 	base/rotation.o \
@@ -43,7 +43,6 @@ MODULE_OBJS := \
 ifdef ENABLE_RING1
 MODULE_OBJS += \
 	game/ring/ring_application.o \
-	game/ring/ring_visual.o \
 	game/ring/ring_zonesystem.o \
 	game/ring/ring_zoneni.o \
 	game/ring/ring_zonerh.o \

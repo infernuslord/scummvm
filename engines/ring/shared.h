@@ -314,7 +314,7 @@ enum ProgressState {
 
 enum PuzzleIdEnum {
 	kPuzzleInvalid          = 0,
-	kPuzzleMenu             = 1,
+	kPuzzleMenu             = 1
 };
 
 enum ObjectIdEnum {

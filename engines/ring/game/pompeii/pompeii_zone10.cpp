@@ -321,8 +321,8 @@ void Zone10Pompeii::onSound(Id id, SoundType /*type*/, uint32 /*a3*/, bool /*pro
 
 void Zone10Pompeii::onBeforeRide(Id movabilityFrom, Id movabilityTo, uint32 /*movabilityIndex*/, Id /*target*/, MovabilityType movabilityType) {
 	if (movabilityType == kMovabilityRotationToRotation) {
-		if (movabilityFrom == 10925 && movabilityTo == 10911
-		 || movabilityFrom == 10911 && movabilityTo == 10925)
+		if ((movabilityFrom == 10925 && movabilityTo == 10911)
+		 || (movabilityFrom == 10911 && movabilityTo == 10925))
 			_app->fadeOut(15, Color(0, 0, 0), 0);
 	}
 }
