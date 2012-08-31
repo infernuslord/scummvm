@@ -31,6 +31,7 @@
 #include "common/archive.h"
 
 #include "graphics/decoders/bmp.h"
+#include "graphics/decoders/tga.h"
 
 namespace Ring {
 
@@ -52,6 +53,7 @@ bool ImageLoaderBMP::load(Image *image, ArchiveType, ZoneId, LoadFrom, DrawType)
 	bool loaded = bmp->loadStream(*stream);
 	if (!loaded) {
 		warning("[ImageLoaderBMP::load] Cannot decode image (%s)", image->getName().c_str());
+		delete bmp;
 		delete stream;
 		return false;
 	}
@@ -62,6 +64,7 @@ bool ImageLoaderBMP::load(Image *image, ArchiveType, ZoneId, LoadFrom, DrawType)
 	image->setSurface(surface);
 
 	delete stream;
+	delete bmp;
 
 	return true;
 }
@@ -228,28 +231,29 @@ bool ImageLoaderTGC::load(Image *image, ArchiveType type, ZoneId zone, LoadFrom 
 	Common::SeekableReadStream *decompressedData = init(type, zone, loadFrom);
 	if (!decompressedData){
 		warning("[ImageLoaderTGC::load] Error opening image file (%s)", _filename.c_str());
-		goto cleanup;
+		deinit();
+		return false;
 	}
 
-	// Read header
-	if (!readHeader(decompressedData)) {
-		warning("[ImageLoaderTGC::load] Error reading header (%s)", _filename.c_str());
-		goto cleanup;
+	// Get image surface
+	Graphics::TGADecoder *tga = new Graphics::TGADecoder();
+	bool loaded = tga->loadStream(*decompressedData);
+	if (!loaded) {
+		warning("[ImageLoaderBMP::load] Cannot decode image (%s)", image->getName().c_str());
+		delete tga;
+		deinit();
+		return false;
 	}
 
-	// Read image data
-	if (!readImage(decompressedData, image)) {
-		warning("[ImageLoaderTGC::load] Error reading image (%s)", _filename.c_str());
-		goto cleanup;
-	}
+	Graphics::Surface *surface = new Graphics::Surface();
+	copy(surface, tga->getSurface());
 
+	image->setSurface(surface);
+
+	delete tga;
 	deinit();
 
 	return true;
-
-cleanup:
-	deinit();
-	return false;
 }
 
 Common::SeekableReadStream *ImageLoaderTGC::init(ArchiveType type, ZoneId zone, LoadFrom loadFrom) {
@@ -298,115 +302,31 @@ bool ImageLoaderTGA::load(Image *image, ArchiveType, ZoneId, LoadFrom, DrawType)
 	Common::SeekableReadStream *stream = SearchMan.createReadStreamForMember(_filename);
 	if (!stream) {
 		warning("[ImageLoaderTGA::load] Error opening image file (%s)", _filename.c_str());
-		goto cleanup;
-	}
-
-	// Read header
-	if (!readHeader(stream)) {
-		warning("[ImageLoaderTGA::load] Error reading header (%s)", _filename.c_str());
-		goto cleanup;
-	}
-
-	// Read image data
-	if (!readImage(stream, image)) {
-		warning("[ImageLoaderTGA::load] Error reading image (%s)", _filename.c_str());
-		goto cleanup;
-	}
-
-	delete stream;
-	return true;
-
-cleanup:
-	delete stream;
-	return false;
-}
-
-bool ImageLoaderTGA::readHeader(Common::SeekableReadStream *stream) {
-	if (!stream) {
-		warning("[ImageLoaderTGA::readHeader] Invalid stream (%s)", _filename.c_str());
+		delete stream;
 		return false;
 	}
 
-	memset(&_header, 0, sizeof(_header));
-
-	_header.identsize       = stream->readByte();
-	_header.colourmaptype   = stream->readByte();
-	_header.imagetype       = stream->readByte();
-
-	_header.colourmapstart  = stream->readUint16LE();
-	_header.colourmaplength = stream->readUint16LE();
-	_header.colourmapbits   = stream->readByte();
-
-	_header.xstart          = stream->readUint16LE();
-	_header.ystart          = stream->readUint16LE();
-	_header.width           = stream->readUint16LE();
-	_header.height          = stream->readUint16LE();
-	_header.bits            = stream->readByte();
-	_header.descriptor      = stream->readByte();
-
-	// Check that we support the image format
-	if (_header.imagetype != kImageTypeRGB) {
-		warning("[ImageLoaderTGA::readHeader] Only RGB TGA files are supported (%s)", _filename.c_str());
+	// Get image surface
+	Graphics::TGADecoder *tga = new Graphics::TGADecoder();
+	bool loaded = tga->loadStream(*stream);
+	if (!loaded) {
+		warning("[ImageLoaderBMP::load] Cannot decode image (%s)", image->getName().c_str());
+		delete stream;
 		return false;
-	}
-
-	// Check bits per pixel
-	if (_header.bits <= 16) {
-		warning("[ImageLoaderTGA::readHeader] Only 24 and 32bpp TGA files are supported (%s)", _filename.c_str());
-		return false;
-	}
-
-	// Skip id string
-	stream->skip(_header.identsize);
-
-	return true;
-}
-
-bool ImageLoaderTGA::readImage(Common::SeekableReadStream *stream, Image *image) {
-	// Check that we are not called with an unsupported format
-	if (_header.imagetype != kImageTypeRGB || _header.bits <= 16)
-		error("[ImageLoaderTGA::readImage] Unsupported image type (%s)!", _filename.c_str());
-
-	Graphics::PixelFormat format;
-
-	switch (_header.bits) {
-	default:
-		error("[ImageLoaderTGA::readImage] Unsupported pixel depth - only 24bpp and 32bpp supported(%s)!", _filename.c_str());
-		break;
-
-	case 24:
-		format = Graphics::PixelFormat(3, 8, 8, 8, 0, 16, 8, 0, 0);  // RGB888
-		break;
-
-	case 32:
-		format = Graphics::PixelFormat(4, 8, 8, 8, 8, 16, 8, 0, 24); // ARGB8888
-		break;
 	}
 
 	Graphics::Surface *surface = new Graphics::Surface();
-	surface->create(_header.width, _header.height, format);
-
-	uint32 size = _header.width * _header.height;
-
-	switch (_header.bits) {
-	default:
-		warning("[ImageLoaderTGA::readImage] Unsupported pixel depth (%s)", _filename.c_str());
-		surface->free();
-		delete surface;
-		return false;
-
-	case 24:
-		stream->read(surface->pixels, size * 3);
-		break;
-
-	case 32:
-		stream->read(surface->pixels, size * 4);
-		break;
-	}
+	copy(surface, tga->getSurface());
 
 	image->setSurface(surface);
 
+	delete stream;
+
 	return true;
+}
+
+void ImageLoaderTGA::copy(Graphics::Surface *out, const Graphics::Surface *in) {
+	out->copyFrom(*in);
 }
 
 #pragma endregion
