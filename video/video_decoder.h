@@ -102,16 +102,14 @@ public:
 	/**
 	 * Begin playback of the video.
 	 *
-	 * @note This has no effect is the video is already playing.
+	 * @note This has no effect if the video is already playing.
 	 */
 	void start();
 
 	/**
 	 * Stop playback of the video.
 	 *
-	 * @note This will close() the video if it is not rewindable.
-	 * @note If the video is rewindable, the video will be rewound on the
-	 * next start() call unless rewind() or seek() is called before then.
+	 * @note This has no effect if the video is not playing.
 	 */
 	void stop();
 
@@ -180,6 +178,9 @@ public:
 	/**
 	 * Set the time for this video to end at. At this time in the video,
 	 * all audio will stop and endOfVideo() will return true.
+	 *
+	 * While the setting is stored even if a video is not playing,
+	 * endOfVideo() is only affected when the video is playing.
 	 */
 	void setEndTime(const Audio::Timestamp &endTime);
 
@@ -762,7 +763,7 @@ private:
 	TrackList _tracks;
 
 	// Current playback status
-	bool _isPlaying, _needsRewind, _needsUpdate;
+	bool _isPlaying, _needsUpdate;
 	Audio::Timestamp _lastTimeChange, _endTime;
 	bool _endTimeSet;
 
@@ -777,6 +778,7 @@ private:
 	void stopAudio();
 	void startAudio();
 	void startAudioLimit(const Audio::Timestamp &limit);
+	bool hasFramesLeft() const;
 
 	int32 _startTime;
 	uint32 _pauseLevel;

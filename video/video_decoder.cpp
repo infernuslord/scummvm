@@ -35,7 +35,6 @@ namespace Video {
 
 VideoDecoder::VideoDecoder() {
 	_startTime = 0;
-	_needsRewind = false;
 	_dirtyPalette = false;
 	_palette = 0;
 	_isPlaying = false;
@@ -62,7 +61,6 @@ void VideoDecoder::close() {
 		delete *it;
 
 	_tracks.clear();
-	_needsRewind = false;
 	_dirtyPalette = false;
 	_palette = 0;
 	_startTime = 0;
@@ -87,7 +85,7 @@ bool VideoDecoder::loadFile(const Common::String &filename) {
 }
 
 bool VideoDecoder::needsUpdate() const {
-	return !endOfVideo() && getTimeToNextFrame() == 0;
+	return hasFramesLeft() && getTimeToNextFrame() == 0;
 }
 
 void VideoDecoder::pauseVideo(bool pause) {
@@ -249,18 +247,8 @@ uint32 VideoDecoder::getTimeToNextFrame() const {
 }
 
 bool VideoDecoder::endOfVideo() const {
-	if (!isVideoLoaded())
-		return true;
-
-	if (_endTimeSet) {
-		const VideoTrack *track = findNextVideoTrack();
-
-		if (track && track->getNextFrameStartTime() >= (uint)_endTime.msecs())
-			return true;
-	}
-
 	for (TrackList::const_iterator it = _tracks.begin(); it != _tracks.end(); it++)
-		if (!(*it)->endOfTrack())
+		if (!(*it)->endOfTrack() && (!isPlaying() || (*it)->getTrackType() != Track::kTrackTypeVideo || !_endTimeSet || ((VideoTrack *)*it)->getNextFrameStartTime() < (uint)_endTime.msecs()))
 			return false;
 
 	return true;
@@ -280,8 +268,6 @@ bool VideoDecoder::isRewindable() const {
 bool VideoDecoder::rewind() {
 	if (!isRewindable())
 		return false;
-
-	_needsRewind = false;
 
 	// Stop all tracks so they can be rewound
 	if (isPlaying())
@@ -316,8 +302,6 @@ bool VideoDecoder::seek(const Audio::Timestamp &time) {
 	if (!isSeekable())
 		return false;
 
-	_needsRewind = false;
-
 	// Stop all tracks so they can be seeked
 	if (isPlaying())
 		stopAudio();
@@ -347,10 +331,6 @@ void VideoDecoder::start() {
 	_isPlaying = true;
 	_startTime = g_system->getMillis();
 
-	// If someone previously called stop(), we'll rewind it.
-	if (_needsRewind)
-		rewind();
-
 	// Adjust start time if we've seeked to something besides zero time
 	if (_lastTimeChange.totalNumberOfFrames() != 0)
 		_startTime -= _lastTimeChange.msecs();
@@ -373,15 +353,8 @@ void VideoDecoder::stop() {
 	// Also reset the pause state.
 	_pauseLevel = 0;
 
-	// If this is a rewindable video, don't close it too. We'll just rewind() the video
-	// the next time someone calls start(). Otherwise, since it can't be rewound, we
-	// just close it.
-	if (isRewindable()) {
-		_lastTimeChange = getTime();
-		_needsRewind = true;
-	} else {
-		close();
-	}
+	// Keep the time marked down in case we start up again
+	_lastTimeChange = getTime();
 }
 
 Audio::Timestamp VideoDecoder::getDuration() const {
@@ -677,6 +650,17 @@ void VideoDecoder::startAudioLimit(const Audio::Timestamp &limit) {
 	for (TrackList::iterator it = _tracks.begin(); it != _tracks.end(); it++)
 		if ((*it)->getTrackType() == Track::kTrackTypeAudio)
 			((AudioTrack *)*it)->start(limit);
+}
+
+bool VideoDecoder::hasFramesLeft() const {
+	// This is similar to endOfVideo(), except it doesn't take Audio into account (and returns true if not the end of the video)
+	// This is only used for needsUpdate() atm so that setEndTime() works properly
+	// And unlike endOfVideoTracks(), this takes into account _endTime
+	for (TrackList::const_iterator it = _tracks.begin(); it != _tracks.end(); it++)
+		if ((*it)->getTrackType() == Track::kTrackTypeVideo && !(*it)->endOfTrack() && (!isPlaying() || !_endTimeSet || ((VideoTrack *)*it)->getNextFrameStartTime() < (uint)_endTime.msecs()))
+			return true;
+
+	return false;
 }
 
 } // End of namespace Video

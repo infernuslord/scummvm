@@ -145,7 +145,10 @@ bool TGADecoder::readHeader(Common::SeekableReadStream &tga, byte &imageType, by
 		if (pixelDepth == 24) {
 			_format = PixelFormat(3, 8, 8, 8, 0, 16, 8, 0, 0);
 		} else if (pixelDepth == 32) {
-			_format = PixelFormat(4, 8, 8, 8, attributeBits, 16, 8, 0, 24);
+			// HACK: According to the spec, attributeBits should determine the amount
+			// of alpha-bits, however, as the game files that use this decoder seems
+			// to ignore that fact, we force the amount to 8 for 32bpp files for now.
+			_format = PixelFormat(4, 8, 8, 8, /* attributeBits */ 8, 16, 8, 0, 24);
 		} else if (pixelDepth == 16 && imageType == TYPE_TRUECOLOR) {
 			// 16bpp TGA is ARGB1555
 			_format = PixelFormat(2, 5, 5, 5, attributeBits, 10, 5, 0, 15);
@@ -178,8 +181,9 @@ bool TGADecoder::readHeader(Common::SeekableReadStream &tga, byte &imageType, by
 bool TGADecoder::readColorMap(Common::SeekableReadStream &tga, byte imageType, byte pixelDepth) {
 	_colorMap = new byte[3 * _colorMapLength];
 	for (int i = 0; i < _colorMapLength * 3; i += 3) {
-		byte r, g, b, a;
+		byte r, g, b;
 		if (_colorMapEntryLength == 32) {
+			byte a;
 			PixelFormat format(4, 8, 8, 8, 0, 16, 8, 0, 24);
 			uint32 color = tga.readUint32LE();
 			format.colorToARGB(color, a, r, g, b);
@@ -188,9 +192,13 @@ bool TGADecoder::readColorMap(Common::SeekableReadStream &tga, byte imageType, b
 			g = tga.readByte();
 			b = tga.readByte();
 		} else if (_colorMapEntryLength == 16) {
+			byte a;
 			PixelFormat format(2, 5, 5, 5, 0, 10, 5, 0, 15);
 			uint16 color = tga.readUint16LE();
 			format.colorToARGB(color, a, r, g, b);
+		} else {
+			warning("Unsupported image type: %d", imageType);
+			r = g = b = 0;
 		}
 #ifdef SCUMM_LITTLE_ENDIAN
 		_colorMap[i] = r;
