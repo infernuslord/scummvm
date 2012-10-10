@@ -37,9 +37,7 @@ public:
 		float a3;
 
 		PixelData() {
-			a1 = 0.0f;
-			a2 = 0.0f;
-			a3 = 1.0f;
+			reset();
 		}
 
 		void reset() {
@@ -53,6 +51,12 @@ public:
 		PixelData p1;
 		PixelData p2;
 		PixelData p3;
+
+		PixelTriplet() {
+			p1.a1 = 1.0f;
+			p2.a2 = 1.0f;
+			p3.a3 = 1.0f;
+		}
 
 		void reset() {
 			p1.reset();
@@ -105,6 +109,7 @@ public:
 
 	// Buffer
 	void prepareBuffer();
+	void process();
 	void drawBuffer(Graphics::Surface *surface);
 	void computeCoordinates(Common::Point *point);
 	void adjustCoordinates(Common::Point *point);

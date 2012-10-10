@@ -29,7 +29,6 @@
 #include "ring/base/text.h"
 
 #include "ring/graphics/animation.h"
-#include "ring/graphics/aquator.h"
 #include "ring/graphics/hotspot.h"
 #include "ring/graphics/image.h"
 #include "ring/graphics/screen.h"
@@ -88,11 +87,19 @@ Rotation::Rotation(Id id, Common::String name, byte a3, LoadFrom, uint32 nodeCou
 
 	memset(_rotationTable, 0, sizeof(_rotationTable));
 
+	// Init pixel/data (original sets pixel and triple values here)
+	_float0 = 140.0f;
 	_float1 = 0.0f;
-	_float2 = 0.0f;
-	_float3 = 0.0f;
-	_float4 = 0.0f;
-	_float5 = 0.0f;
+	_float2 = 360.0f;
+	_float3 = 180.0f;
+	_float4 = 1024.0f;
+	_float5 = 1024.0f;
+
+	// Initialize rotation values
+	_width = 640;
+	_height = 448;
+	_tableWidth = 28;
+	_tableHeight = 40;
 }
 
 Rotation::~Rotation() {
@@ -121,11 +128,14 @@ void Rotation::alloc() {
 
 	// Initialize rotation data and tables
 	ImageHeaderEntry::Header header = _stream->getEntry()->getHeader();
-	_float1 = header.field_4;
+	_float4 = header.field_4;
+	_float5 = header.field_4;
 	_float2 = header.field_10 - header.field_C;
 	_float3 = (header.field_10 + header.field_C) * 0.5f;
-	_float4 = header.field_18 - header.field_14;
-	_float5 = (header.field_18 + header.field_14) * 0.5f;
+	_float0 = header.field_18 - header.field_14;
+	_float7 = (_float4 - 2) * 65536.0f;
+	_float6 = 0.0f;
+	_float1 = (header.field_18 + header.field_14) * 0.5f;
 
 	for (uint32 i = 0; i < ARRAYSIZE(_rotationTable) - 64; i += 64) {
 		for (uint32 j = 0; j < 32; j++)
@@ -227,11 +237,14 @@ void Rotation::setCoordinates(Common::Point *point, Common::KeyCode keycode) {
 void Rotation::updateView() {
 	// Initialize rotation data and tables
 	ImageHeaderEntry::Header header = _stream->getEntry()->getHeader();
-	_float1 = header.field_4;
+	_float4 = header.field_4;
+	_float5 = header.field_4;
 	_float2 = header.field_10 - header.field_C;
 	_float3 = (header.field_10 + header.field_C) * 0.5f;
-	_float4 = header.field_18 - header.field_14;
-	_float5 = (header.field_18 + header.field_14) * 0.5f;
+	_float0 = header.field_18 - header.field_14;
+	_float7 = (_float4 - 2) * 65536.0f;
+	_float6 = 0.0f;
+	_float1 = (header.field_18 + header.field_14) * 0.5f;
 
 	/////////////////////////////////
 	// RAN
@@ -242,15 +255,27 @@ void Rotation::updateView() {
 	if (_ran > 87.0f)
 		_ran = 87.0f;
 
-	// Compute data
+	/////////////////////////////////
+	// Data
+	/////////////////////////////////
+	uint32 maxWidthHeight = _width;
+	if (_width <= _height)
+		maxWidthHeight = _height;
+
 	float angle = _ran * acos(-1.0f) * 0.002777777777777778f;
 	float cos1 = cos(angle);
-	float sin1 = sin(angle) / 640.0f;
+	float sin1 = sin(angle) / (float)maxWidthHeight;
 
-	float angle0 = 640.0f * sin1;
-	float angle1 = 480.0f * sin1;
+	float angle0 = _width * sin1;
+	float angle1 = _height * sin1;
 
-	float float6 = 2 * asin(angle1) * 180.0f / acos(-1.0f);
+	float ran2;
+	if (_width == maxWidthHeight) {
+		ran2 = 2 * asin(angle1) * 180.0f / acos(-1.0f);
+	} else {
+		ran2 = _ran;
+		_ran = 2 * asin(angle0) * 180.0f / acos(-1.0f);
+	}
 
 	/////////////////////////////////
 	// ALP
@@ -263,12 +288,12 @@ void Rotation::updateView() {
 	// BET
 	/////////////////////////////////
 
-	float delta = (_float4 - float6) * 0.5f * 0.5f;
-	if (_bet > _float5 + delta)
-		_bet = _float5 + delta;
+	float delta = (_float0 - ran2) * 0.5f * 0.5f;
+	if (_bet > _float1 + delta)
+		_bet = _float1 + delta;
 
-	if (_bet < _float5 - delta)
-		_bet = _float5 - delta;
+	if (_bet < _float1 - delta)
+		_bet = _float1 - delta;
 
 	/////////////////////////////////
 	// Compute pixel value
@@ -283,21 +308,54 @@ void Rotation::updateView() {
 	Pixel::divide(&pixel);
 
 	// Setup triplet
-	Pixel::PixelTriplet triplet;
-	Pixel::set(&triplet, &pixel, 0.0f, 1.0f, 0.0f);
+	Pixel::set(&_triplet, &pixel, 0.0f, 1.0f, 0.0f);
 
 	/////////////////////////////////
 	// Pixel values
 	/////////////////////////////////
-	float movementOffset = (_ticks - _startTicks) * 0.001f;
+	float movementDelta = (_ticks - _startTicks) * 0.001f;
 
 	if (_field_65) {
-		error("[Rotation::updateView] Not implemented");
+		float angle = movementDelta * _field_3D;
+
+		// Adjust pixel values
+		_pixel0.a1 = -((sin(angle * 0.82999998f + _field_49) * _field_31 * _field_45 + 1.0f) * angle0);
+		_pixel0.a2 = -((sin(angle * 0.72000003f + _field_45) * _field_49 * _field_31 + 1.0f) * angle1);
+		_pixel0.a3 = cos1;
+
+		_pixel1.a1 =   (cos(angle * 0.91000003f + _field_51) * _field_31 * _field_4D + 1.0f) * angle0;
+		_pixel1.a2 = -((cos(angle * 1.13f       + _field_4D) * _field_31 * _field_51 + 1.0f) * angle1);
+		_pixel1.a3 = cos1;
+
+		_pixel2.a1 = -((sin(angle * 0.92000002f + _field_59) * _field_55 * _field_31 + 1.0f) * angle0);
+		_pixel2.a2 =   (sin(angle * 0.75f       + _field_55) * _field_31 * _field_59 + 1.0f) * angle1;
+		_pixel2.a3 = cos1;
+
+		_pixel3.a1 =   (cos(angle * 0.88999999f + _field_61) * _field_31 * _field_5D + 1.0f) * angle0;
+		_pixel3.a2 =   (cos(angle * 0.99f       + _field_5D) * _field_31 * _field_61 + 1.0f) * angle1;
+		_pixel3.a3 = cos1;
 	} else {
 		_stream->getEntry()->updateData(-angle0, -angle1, angle0, -angle1, -angle0, angle1, angle0, angle1);
 	}
 
-	error("[Rotation::updateView] Not implemented");
+	Pixel::PixelData pixel1;
+	Pixel::PixelData pixel2;
+	Pixel::PixelData pixel3;
+	Pixel::PixelData pixel4;
+
+	Pixel::multiply(&_triplet.p3, &pixel1, _pixel0.a3);
+	Pixel::multiply(&_triplet.p2, &pixel2, _pixel0.a2);
+	Pixel::multiply(&_triplet.p1, &pixel3, _pixel0.a1);
+
+	Pixel::add(&pixel3, &pixel4, pixel2.a1, pixel2.a2, pixel2.a3);
+
+	// Set storage pixels
+	Pixel::add(&pixel4, &_pixel0, pixel1.a1, pixel1.a2, pixel1.a3);
+	Pixel::set(&_triplet, &_pixel1, &_pixel1);
+	Pixel::set(&_triplet, &_pixel2, &_pixel3);
+	Pixel::set(&_triplet, &_pixel3, &_pixel3);
+
+	_stream->getEntry()->process();
 
 	if (_field_66) {
 		error("[Rotation::updateView] Not implemented");

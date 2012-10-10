@@ -22,6 +22,8 @@
 #ifndef RING_ROTATION_H
 #define RING_ROTATION_H
 
+#include "ring/graphics/aquator.h"
+
 #include "ring/shared.h"
 
 #include "common/keyboard.h"
@@ -148,11 +150,23 @@ private:
 	uint32                              _ticks;
 	uint32                              _startTicks;
 	int32                               _rotationTable[2048];
+	uint32                              _width;
+	uint32                              _height;
+	uint32                              _tableWidth;
+	uint32                              _tableHeight;
+	float                               _float0;
 	float                               _float1;
 	float                               _float2;
 	float                               _float3;
 	float                               _float4;
 	float                               _float5;
+	float                               _float6;
+	float                               _float7;
+	Pixel::PixelTriplet                 _triplet;
+	Pixel::PixelData                    _pixel0;
+	Pixel::PixelData                    _pixel1;
+	Pixel::PixelData                    _pixel2;
+	Pixel::PixelData                    _pixel3;
 
 	SoundItem *getSoundItem(Id soundId);
 	void updateView();

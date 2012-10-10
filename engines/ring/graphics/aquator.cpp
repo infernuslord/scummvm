@@ -75,9 +75,13 @@ void Pixel::set(PixelTriplet *triplet, PixelData *from, float a1, float a2, floa
 }
 
 void Pixel::set(PixelTriplet *from, PixelData *pixel, PixelData *pixel2) {
-	pixel->a1 = (pixel2->a1 * from->p1.a1) + (pixel2->a2 * from->p2.a1) + (pixel2->a3 * from->p3.a1);
-	pixel->a2 = (pixel2->a1 * from->p1.a2) + (pixel2->a2 * from->p2.a2) + (pixel2->a3 * from->p3.a2);
-	pixel->a3 = (pixel2->a1 * from->p1.a3) + (pixel2->a2 * from->p2.a3) + (pixel2->a3 * from->p3.a3);
+	float a1 = pixel2->a1;
+	float a2 = pixel2->a2;
+	float a3 = pixel2->a3;
+
+	pixel->a1 = (a1 * from->p1.a1) + (a2 * from->p2.a1) + (a3 * from->p3.a1);
+	pixel->a2 = (a1 * from->p1.a2) + (a2 * from->p2.a2) + (a3 * from->p3.a2);
+	pixel->a3 = (a1 * from->p1.a3) + (a2 * from->p2.a3) + (a3 * from->p3.a3);
 }
 
 void Pixel::add(int *pixel, int val) {
@@ -245,6 +249,10 @@ void ImageHeaderEntry::initData() {
 }
 
 void ImageHeaderEntry::update(ImageHeaderEntry *entry, bool updateCaller) {
+	error("[ImageHeaderEntry::update] Not implemented");
+}
+
+void ImageHeaderEntry::process() {
 	error("[ImageHeaderEntry::update] Not implemented");
 }
 
