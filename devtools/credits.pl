@@ -616,6 +616,10 @@ begin_credits("Credits");
 				add_person("", "peres", "");
 			end_section();
 
+			begin_section("Pegasus");
+				add_person("Matthew Hoops", "clone2727", "");
+			end_section();
+
 			begin_section("Queen");
 				add_person("David Eriksson", "twogood", "(retired)");
 				add_person("Gregory Montoir", "cyx", "(retired)");
@@ -681,6 +685,12 @@ begin_credits("Credits");
 				add_person("Max Horn", "Fingolfin", "(retired)");
 				add_person("Filippos Karapetis", "[md5]", "");
 				add_person("Joost Peters", "joostp", "");
+			end_section();
+
+			begin_section("Tony");
+				add_person("Arnaud Boutonn&eacute;", "Strangerke", "");
+				add_person("Paul Gilbert", "dreammaster", "");
+				add_person("Alyssa Milburn", "fuzzie", "");
 			end_section();
 
 			begin_section("Toon");
@@ -947,7 +957,7 @@ begin_credits("Credits");
 				end_section();
 				begin_section("German");
 					add_person("Simon Sawatzki", "SimSaw", "");
-					add_person("Lothar Serra Mari", "Lothar93", "");
+					add_person("Lothar Serra Mari", "Lothar93", "(retired)");
 				end_section();
 				begin_section("Hungarian");
 					add_person("Alex Bevilacqua", "", "");
@@ -1152,6 +1162,10 @@ begin_credits("Credits");
 	add_paragraph(
     "Jan Nedoma for providing the sources to the Wintermute-engine, and for his ".
     "support while porting the engine to ScummVM.");
+
+	add_paragraph(
+    "Bob Bell, Michel Kripalani, Tommy Yune, from Presto Studios for ".
+    "providing the source code of The Journeyman Project: Pegasus Prime.");
 
 	end_section();
 

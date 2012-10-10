@@ -72,9 +72,9 @@ static const MusicFileEntry kMusicFiles[] =  {
 
 
 static const char *const kJingleFileNames[] = {
-	"S00.ADP", "S01.ADP", "S02.ADP", "S03.ADP", "S04.ADP", 
-	"S05.ADP", "S06.ADP", "S07.ADP", "S08.ADP", "S09.ADP", 
-	"S10.ADP", "S11.ADP", "S12.ADP", "S13.ADP", "S14.ADP", 
+	"S00.ADP", "S01.ADP", "S02.ADP", "S03.ADP", "S04.ADP",
+	"S05.ADP", "S06.ADP", "S07.ADP", "S08.ADP", "S09.ADP",
+	"S10.ADP", "S11.ADP", "S12.ADP", "S13.ADP", "S14.ADP",
 	"S15.ADP", "S16.ADP", "S17.ADP", "S18.ADP"
 };
 
@@ -1310,7 +1310,7 @@ void autoSave(CORO_PARAM, uint32, uint32, uint32, uint32) {
 }
 
 void abortGame(CORO_PARAM, uint32, uint32, uint32, uint32) {
-	g_vm->abortGame();
+	error("script called abortGame");
 }
 
 void shakeScreen(CORO_PARAM, uint32 nScosse, uint32, uint32, uint32) {
@@ -1989,8 +1989,10 @@ void releaseOwnership(CORO_PARAM, uint32 num, uint32, uint32, uint32) {
 		return;
 	}
 
-	if (GLOBALS._mut[num]._ownerPid != (uint32)CoroScheduler.getCurrentPID())
-		error("ReleaseOwnership tried to release mutex %d, which is held by a different process", num);
+	if (GLOBALS._mut[num]._ownerPid != (uint32)CoroScheduler.getCurrentPID()) {
+		warning("ReleaseOwnership tried to release mutex %d, which is held by a different process", num);
+		return;
+	}
 
 	GLOBALS._mut[num]._lockCount--;
 	if (!GLOBALS._mut[num]._lockCount) {
@@ -2022,7 +2024,7 @@ void threadFadeInMusic(CORO_PARAM, const void *nMusic) {
 
 	CORO_BEGIN_CODE(_ctx);
 
-	debug("Start FadeIn Music");
+	debugC(DEBUG_INTERMEDIATE, kTonyDebugSound, "Start FadeIn Music");
 
 	for (_ctx->i = 0; _ctx->i < 16; _ctx->i++) {
 		g_vm->setMusicVolume(nChannel, _ctx->i * 4);
@@ -2031,7 +2033,7 @@ void threadFadeInMusic(CORO_PARAM, const void *nMusic) {
 	}
 	g_vm->setMusicVolume(nChannel, 64);
 
-	debug("End FadeIn Music");
+	debugC(DEBUG_INTERMEDIATE, kTonyDebugSound, "End FadeIn Music");
 
 	CORO_KILL_SELF();
 

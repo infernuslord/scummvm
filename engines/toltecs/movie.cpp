@@ -61,7 +61,7 @@ void MoviePlayer::playMovie(uint resIndex) {
 	int16 savedCameraY = _vm->_cameraY;
 	int16 savedGuiHeight = _vm->_guiHeight;
 	byte moviePalette[768];
-	
+
 	_vm->_isSaveAllowed = false;
 
 	memset(moviePalette, 0, sizeof(moviePalette));
@@ -96,16 +96,16 @@ void MoviePlayer::playMovie(uint resIndex) {
 
 	fetchAudioChunks();
 
-	uint32 lastTime = _vm->_mixer->getSoundElapsedTime(_audioStreamHandle);
 	byte *chunkBuffer = NULL;
 	uint32 chunkBufferSize = 0;
+	uint32 frame = 0;
 
 	while (_chunkCount--) {
 		byte chunkType = _vm->_arc->readByte();
 		uint32 chunkSize = _vm->_arc->readUint32LE();
 
 		debug(0, "chunkType = %d; chunkSize = %d", chunkType, chunkSize);
-		
+
 		// Skip audio chunks - we've already queued them in
 		// fetchAudioChunks() above
 		if (chunkType == kChunkAudio) {
@@ -125,23 +125,23 @@ void MoviePlayer::playMovie(uint resIndex) {
 		case kChunkFirstImage:
 		case kChunkSubsequentImages:
 			unpackRle(chunkBuffer, _vm->_screen->_backScreen);
-			// TODO: Rework this
-			_vm->_screen->updateShakeScreen();
 			_vm->_screen->_fullRefresh = true;
-			_vm->updateInput();
-			_vm->drawScreen();
 
 			_soundChunkFramesLeft--;
 			if (_soundChunkFramesLeft <= _framesPerSoundChunk) {
 				fetchAudioChunks();
 			}
 
-			while (_vm->_mixer->getSoundElapsedTime(_audioStreamHandle) < lastTime + 111) {
-				g_system->delayMillis(10);
+			while (_vm->_mixer->getSoundElapsedTime(_audioStreamHandle) < (1000 * frame) / 9) {
+				if (_vm->_screen->_shakeActive && _vm->_screen->updateShakeScreen()) {
+					_vm->_screen->_fullRefresh = true;
+				}
+				_vm->updateInput();
+				_vm->drawScreen();
+				// Note: drawScreen() calls delayMillis()
 			}
 
-			lastTime = _vm->_mixer->getSoundElapsedTime(_audioStreamHandle);
-
+			frame++;
 			break;
 		case kChunkPalette:
 			unpackPalette(chunkBuffer, moviePalette, 256, 3);
@@ -178,7 +178,7 @@ void MoviePlayer::playMovie(uint resIndex) {
 		default:
 			error("MoviePlayer::playMovie(%04X) Unknown chunk type %d at %08X", resIndex, chunkType, _vm->_arc->pos() - 5 - chunkSize);
 		}
-		
+
 		if (!handleInput())
 			break;
 	}
@@ -189,7 +189,7 @@ void MoviePlayer::playMovie(uint resIndex) {
 	_vm->_mixer->stopHandle(_audioStreamHandle);
 
 	_vm->_arc->closeResource();
-	
+
 	debug(0, "playMovie() done");
 
 	_vm->_sceneWidth = savedSceneWidth;
