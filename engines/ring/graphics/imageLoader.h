@@ -105,7 +105,7 @@ public:
 	virtual bool load(Image *image, ArchiveType type, ZoneId zone, LoadFrom loadFrom, DrawType drawType);
 
 protected:
-	void copy(Graphics::Surface *out, const Graphics::Surface *in);
+	void copySurface(Graphics::Surface *out, const Graphics::Surface *in);
 };
 
 //////////////////////////////////////////////////////////////////////////
