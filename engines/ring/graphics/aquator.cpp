@@ -84,7 +84,7 @@ void Pixel::set(PixelTriplet *from, PixelData *pixel, PixelData *pixel2) {
 	pixel->a3 = (a1 * from->p1.a3) + (a2 * from->p2.a3) + (a3 * from->p3.a3);
 }
 
-void Pixel::add(int *pixel, int val) {
+void Pixel::add(float *pixel, float val) {
 	*pixel += val;
 }
 
@@ -98,8 +98,8 @@ void Pixel::substract(int *pixel, int val) {
 	*pixel -= val;
 }
 
-void Pixel::multiply(int *pixel, double val) {
-	*pixel = (int)(val * 65536.0f);
+void Pixel::multiply(float *pixel, float val) {
+	*pixel = val * 65536.0f;
 }
 
 void Pixel::multiply(PixelData *from, PixelData *pixel, float val) {

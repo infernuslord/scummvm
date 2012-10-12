@@ -139,17 +139,17 @@ void Rotation::alloc() {
 
 	for (uint32 i = 0; i < ARRAYSIZE(_rotationTable) - 64; i += 64) {
 		for (uint32 j = 0; j < 32; j++)
-			_rotationTable[i + j] = rnd((uint32)_amplitude);
+			_rotationTable[i + j] = rnd((uint32)_amplitude) * 0.000030518509f;
 	}
 
-	_field_45 = rnd((uint32)_field_35);
-	_field_49 = rnd((uint32)_field_35);
-	_field_4D = rnd((uint32)_field_35);
-	_field_51 = rnd((uint32)_field_35);
-	_field_55 = rnd((uint32)_field_35);
-	_field_59 = rnd((uint32)_field_35);
-	_field_5D = rnd((uint32)_field_35);
-	_field_61 = rnd((uint32)_field_35);
+	_field_45 = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_49 = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_4D = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_51 = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_55 = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_59 = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_5D = rnd((uint32)_field_35) * 0.000030518509f;
+	_field_61 = rnd((uint32)_field_35) * 0.000030518509f;
 }
 
 void Rotation::dealloc() {
@@ -358,7 +358,22 @@ void Rotation::updateView() {
 	_stream->getEntry()->process();
 
 	if (_field_66) {
-		error("[Rotation::updateView] Not implemented");
+
+		for (uint32 i = 0; i < _tableHeight; i++) {
+			for (uint32 j = 0; j < _tableWidth; j++) {
+
+				Pixel::PixelData pixel;
+				float val;
+
+				float tableValue = _rotationTable[i * 64 + j];
+
+				Pixel::multiply(&val, sin(movementDelta * _speed * 1.05f) * _field_31 * tableValue);
+				Pixel::add(&_pixelTable0[j * 64 + i], val);
+
+				Pixel::multiply(&val, cos(movementDelta * _speed * 0.94999999f + tableValue) * _field_31 * tableValue);
+				Pixel::add(&_pixelTable1[j * 64 + i], val);
+			}
+		}
 	}
 }
 

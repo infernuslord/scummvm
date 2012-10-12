@@ -149,7 +149,7 @@ private:
 	// Working data
 	uint32                              _ticks;
 	uint32                              _startTicks;
-	int32                               _rotationTable[2048];
+	float                               _rotationTable[2048];
 	uint32                              _width;
 	uint32                              _height;
 	uint32                              _tableWidth;
@@ -167,6 +167,9 @@ private:
 	Pixel::PixelData                    _pixel1;
 	Pixel::PixelData                    _pixel2;
 	Pixel::PixelData                    _pixel3;
+
+	float                               _pixelTable0[4096];
+	float                               _pixelTable1[4096];
 
 	SoundItem *getSoundItem(Id soundId);
 	void updateView();
