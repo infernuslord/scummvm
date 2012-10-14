@@ -372,6 +372,8 @@ bool SoundHandler::updateItems2(uint32 chunkCount) {
 
 	for (uint32 i = 0; i < _soundItems2.size();) {
 		SoundItem *item = _soundItems2[i];
+		if (item == NULL)
+			continue;
 
 		if (item->getField3D() <= chunkCount) {
 			item->turnOff();

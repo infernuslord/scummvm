@@ -63,11 +63,12 @@ SaveManager::~SaveManager() {
 
 // Header
 bool SaveManager::readSavegameHeader(Common::InSaveFile *in, SavegameHeader &header) {
-	char saveIdent[6];
+	char saveIdent[7];
 	header.thumbnail = NULL;
 
 	// Validate the header Id
 	in->read(saveIdent, 6);
+	saveIdent[6] = '\0';
 	if (strcmp(saveIdent, ringSavegameIdentification))
 		return false;
 
