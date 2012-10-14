@@ -318,6 +318,8 @@ Common::String parseCommandLine(Common::StringMap &settings, int argc, const cha
 	if (argv && argv[0]) {
 		s = strrchr(argv[0], '/');
 		s_appName = s ? (s+1) : argv[0];
+	} else {
+		return Common::String();
 	}
 
 	// We store all command line settings into a string map.
