@@ -100,6 +100,8 @@ bool inflateZlibInstallShield(byte *dst, uint dstLen, const byte *src, uint srcL
 	// Otherwise, we have some custom code we get to use here.
 
 	byte *temp = (byte *)malloc(kTempBufSize);
+	if (temp == NULL)
+		return false;
 
 	uint32 bytesRead = 0, bytesProcessed = 0;
 	while (bytesRead < srcLen) {
