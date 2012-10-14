@@ -71,6 +71,9 @@ int MidiDriver_WIN::open() {
 		return MERR_ALREADY_OPEN;
 
 	_streamEvent = CreateEvent(NULL, true, true, NULL);
+	if (_streamEvent == NULL)
+		return MERR_DEVICE_NOT_AVAILABLE;
+
 	MMRESULT res = midiOutOpen((HMIDIOUT *)&_mo, _device, (DWORD_PTR)_streamEvent, 0, CALLBACK_EVENT);
 	if (res != MMSYSERR_NOERROR) {
 		check_error(res);
