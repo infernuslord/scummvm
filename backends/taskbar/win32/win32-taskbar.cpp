@@ -104,8 +104,12 @@ void Win32TaskbarManager::setOverlayIcon(const Common::String &name, const Commo
 	if (_taskbar == NULL)
 		return;
 
+	HWND hwnd = getHwnd();
+	if (hwnd == NULL)
+		return;
+
 	if (name.empty()) {
-		_taskbar->SetOverlayIcon(getHwnd(), NULL, L"");
+		_taskbar->SetOverlayIcon(hwnd, NULL, L"");
 		return;
 	}
 
@@ -122,7 +126,7 @@ void Win32TaskbarManager::setOverlayIcon(const Common::String &name, const Commo
 
 	// Sets the overlay icon
 	LPWSTR desc = ansiToUnicode(description.c_str());
-	_taskbar->SetOverlayIcon(getHwnd(), pIcon, desc);
+	_taskbar->SetOverlayIcon(hwnd, pIcon, desc);
 
 	DestroyIcon(pIcon);
 
@@ -195,6 +199,12 @@ void Win32TaskbarManager::setCount(int count) {
 		// Create the DIB section with an alpha channel
 		void *lpBits;
 		HBITMAP hBitmap = CreateDIBSection(hdc, (BITMAPINFO *)&bi, DIB_RGB_COLORS, (void **)&lpBits, NULL, 0);
+		if (hBitmap == NULL) {
+			DeleteObject(hBitmapMask);
+			DeleteDC(hMemDC);
+			return;
+		}
+
 		HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
 		// Load the icon background
@@ -362,7 +372,11 @@ Common::String Win32TaskbarManager::getIconPath(Common::String target) {
 LONGLONG VerSetConditionMaskFunc(ULONGLONG dwlConditionMask, DWORD dwTypeMask, BYTE dwConditionMask) {
 	typedef BOOL (WINAPI *VerSetConditionMaskFunction)(ULONGLONG conditionMask, DWORD typeMask, BYTE conditionOperator);
 
-	VerSetConditionMaskFunction verSetConditionMask = (VerSetConditionMaskFunction)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "VerSetConditionMask");
+	HMODULE hModule = GetModuleHandle(TEXT("kernel32.dll"));
+	if (hModule == NULL)
+		return 0;
+
+	VerSetConditionMaskFunction verSetConditionMask = (VerSetConditionMaskFunction)GetProcAddress(hModule, "VerSetConditionMask");
 	if (verSetConditionMask == NULL)
 		return 0;
 
@@ -370,13 +384,17 @@ LONGLONG VerSetConditionMaskFunc(ULONGLONG dwlConditionMask, DWORD dwTypeMask, B
 }
 
 BOOL VerifyVersionInfoFunc(LPOSVERSIONINFOEXA lpVersionInformation, DWORD dwTypeMask, DWORDLONG dwlConditionMask) {
-   typedef BOOL (WINAPI *VerifyVersionInfoFunction)(LPOSVERSIONINFOEXA versionInformation, DWORD typeMask, DWORDLONG conditionMask);
+	typedef BOOL (WINAPI *VerifyVersionInfoFunction)(LPOSVERSIONINFOEXA versionInformation, DWORD typeMask, DWORDLONG conditionMask);
 
-   VerifyVersionInfoFunction verifyVersionInfo = (VerifyVersionInfoFunction)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "VerifyVersionInfoA");
-   if (verifyVersionInfo == NULL)
-      return FALSE;
+	HMODULE hModule = GetModuleHandle(TEXT("kernel32.dll"));
+	if (hModule == NULL)
+		return 0;
 
-   return verifyVersionInfo(lpVersionInformation, dwTypeMask, dwlConditionMask);
+	VerifyVersionInfoFunction verifyVersionInfo = (VerifyVersionInfoFunction)GetProcAddress(hModule, "VerifyVersionInfoA");
+	if (verifyVersionInfo == NULL)
+		return FALSE;
+
+	return verifyVersionInfo(lpVersionInformation, dwTypeMask, dwlConditionMask);
 }
 
 bool Win32TaskbarManager::isWin7OrLater() {
