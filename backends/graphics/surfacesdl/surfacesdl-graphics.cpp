@@ -1767,9 +1767,15 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 	free(_mouseData);
 #ifdef USE_RGB_COLOR
 	_mouseData = (byte *)malloc(w * h * _cursorFormat.bytesPerPixel);
+	if (_mouseData == NULL)
+		error("[SurfaceSdlGraphicsManager::setMouseCursor] Failed to allocate memory for mouse data");
+
 	memcpy(_mouseData, buf, w * h * _cursorFormat.bytesPerPixel);
 #else
 	_mouseData = (byte *)malloc(w * h);
+	if (_mouseData == NULL)
+		error("[SurfaceSdlGraphicsManager::setMouseCursor] Failed to allocate memory for mouse data");
+
 	memcpy(_mouseData, buf, w * h);
 #endif
 
