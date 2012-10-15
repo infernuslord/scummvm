@@ -425,6 +425,7 @@ void OSystem_SDL::setupIcon() {
 		return;
 	}
 
+	memset(rgba, 0, sizeof(rgba));
 	for (i = 0; i < ncols; i++) {
 		unsigned char code;
 		char color[32];
@@ -433,6 +434,7 @@ void OSystem_SDL::setupIcon() {
 		if (sscanf(scummvm_icon[1 + i], "%c c %s", &code, color) != 2) {
 			warning("Wrong format of scummvm_icon[%d] (%s)", 1 + i, scummvm_icon[1 + i]);
 		}
+		color[sizeof(color) - 1] = '\0';
 		if (!strcmp(color, "None"))
 			col = 0x00000000;
 		else if (!strcmp(color, "black"))
