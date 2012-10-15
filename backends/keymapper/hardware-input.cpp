@@ -272,6 +272,9 @@ void HardwareInputSet::removeHardwareInput(const HardwareInput *input) {
 
 	for (it = _inputs.begin(); it != _inputs.end(); ++it) {
 		const HardwareInput *entry = (*it);
+		if (entry == NULL)
+			return;
+
 		bool match = false;
 		if (entry->id == input->id)
 			match = true;
