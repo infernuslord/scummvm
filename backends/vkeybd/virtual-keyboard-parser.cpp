@@ -190,6 +190,9 @@ bool VirtualKeyboardParser::parserCallback_event(ParserNode *node) {
 		evt->type = VirtualKeyboard::kVKEventKey;
 
 		KeyState *ks = (KeyState *)malloc(sizeof(KeyState));
+		if (!ks)
+			error("[VirtualKeyboardParser::parserCallback_event] Cannot allocate memory");
+
 		ks->keycode = (KeyCode)atoi(node->values["code"].c_str());
 		ks->ascii = atoi(node->values["ascii"].c_str());
 		ks->flags = 0;
