@@ -2574,6 +2574,8 @@ bool QDM2Stream::qdm2_decodeFrame(Common::SeekableReadStream &in, QueuingAudioSt
 
 	// Prepare a buffer for queuing
 	uint16 *outputBuffer = (uint16 *)malloc(frame_size * 2);
+	if (outputBuffer == NULL)
+		error("[QDM2Stream::qdm2_decodeFrame] Cannot allocate memory for output buffer");
 
 	for (i = 0; i < frame_size; i++) {
 		int value = (int)_outputBuffer[i];
