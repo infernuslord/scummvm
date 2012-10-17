@@ -31,7 +31,11 @@ namespace Agi {
 // gcc 3.2 Cygwin (see #635984)
 //
 static char *myStrndup(const char *src, int n) {
-	char *tmp = strncpy((char *)malloc(n + 1), src, n);
+	char *buffer = (char *)malloc(n + 1);
+	if (buffer == NULL)
+		error("Cannot allocate buffer for string");
+
+	char *tmp = strncpy(buffer, src, n);
 	tmp[n] = 0;
 	return tmp;
 }

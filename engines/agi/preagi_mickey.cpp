@@ -216,6 +216,9 @@ void MickeyEngine::printDesc(int iRoom) {
 		return;
 
 	char *buffer = (char *)malloc(256);
+	if (buffer == NULL)
+		error("[MickeyEngine::printDesc] Cannot allocate buffer for description");
+
 	memset(buffer, 0, 256);
 
 	infile.seek(hdr.ofsDesc[iRoom - 1] + IDI_MSA_OFS_DAT, SEEK_SET);

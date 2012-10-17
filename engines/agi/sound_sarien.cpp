@@ -67,6 +67,8 @@ static const int16 waveformMac[WAVEFORM_SIZE] = {
 
 SoundGenSarien::SoundGenSarien(AgiBase *vm, Audio::Mixer *pMixer) : SoundGen(vm, pMixer), _chn() {
 	_sndBuffer = (int16 *)calloc(2, BUFFER_SIZE);
+	if (_sndBuffer == NULL)
+		error("[SoundGenSarien::SoundGenSarien] Cannot allocate memory for sound buffer");
 
 	memset(_sndBuffer, 0, BUFFER_SIZE << 1);
 	_env = false;

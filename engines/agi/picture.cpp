@@ -759,6 +759,8 @@ uint8 *PictureMgr::convertV3Pic(uint8 *src, uint32 len) {
 	uint32 i, ulen;
 
 	xdata = (uint8 *)malloc(len + len / 2);
+	if (xdata == NULL)
+		error("[PictureMgr::convertV3Pic] Cannot allocate memory for picture data");
 
 	out = xdata;
 	in = src;

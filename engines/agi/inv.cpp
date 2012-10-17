@@ -195,6 +195,9 @@ void AgiEngine::inventory() {
 	// FIXME: doesn't check if objects overflow off screen...
 
 	_intobj = (uint8 *)malloc(4 + _game.numObjects);
+	if (_intobj == NULL)
+		error("[AgiEngine::inventory] Cannot allocate memory for inventory objects");
+
 	memset(_intobj, 0, (4 + _game.numObjects));
 
 	n = showItems();

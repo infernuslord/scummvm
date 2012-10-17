@@ -179,6 +179,10 @@ Menu::~Menu() {
 	MenuList::iterator iterh;
 	for (iterh = _menubar.reverse_begin(); iterh != _menubar.end(); ) {
 		AgiMenu *m = *iterh;
+		if (m == NULL) {
+			iterh = _menubar.reverse_erase(iterh);
+			continue;
+		}
 
 		debugC(3, kDebugLevelMenu, "deiniting hmenu %s", m->text);
 
@@ -261,6 +265,10 @@ void Menu::submit() {
 	MenuList::iterator iter;
 	for (iter = _menubar.reverse_begin(); iter != _menubar.end(); ) {
 		AgiMenu *m = *iter;
+		if (m == NULL) {
+			iter = _menubar.reverse_erase(iter);
+			continue;
+		}
 
 		if (m->down.empty()) {
 			free(m->text);
