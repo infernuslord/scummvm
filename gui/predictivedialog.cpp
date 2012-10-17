@@ -788,7 +788,7 @@ void PredictiveDialog::addWord(Dict &dict, const Common::String &word, const Com
 			return;
 		} else {
 			// if we found the code, but did not find a word, we must
-			// EXPANDS the currnent line with new word
+			// EXPANDS the current line with new word
 			int oldLineSize = strlen(dict.dictLine[line]);
 			int newLineSize = oldLineSize + word.size() + 1;
 
@@ -811,7 +811,7 @@ void PredictiveDialog::addWord(Dict &dict, const Common::String &word, const Com
 	} else { // if we didn't find the code, we need to INSERT new line with code and word
 		if (dict.nameDict == "user_dictionary") {
 			// if we must INSERT new line(code and word) to user_dictionary, we need to
-			// check if there is a line that we want to INSERT in predictive dictionay
+			// check if there is a line that we want to INSERT in predictive dictionary
 			int predictLine = binarySearch(_predictiveDict.dictLine, tmpCode, _predictiveDict.dictLineCount);
 			if (predictLine >= 0) {
 				if (searchWord(_predictiveDict.dictLine[predictLine], tmpCode)) {
@@ -823,10 +823,13 @@ void PredictiveDialog::addWord(Dict &dict, const Common::String &word, const Com
 					strncpy(newLine, _predictiveDict.dictLine[predictLine], len);
 				} else {
 					// if there is no word in predictive dictionary, we need to copy to
-					// user dictionary mathed line + new word.
+					// user dictionary matched line + new word.
 					int len = (predictLine == _predictiveDict.dictLineCount - 1) ? &_predictiveDict.dictText[_predictiveDict.dictTextSize] - _predictiveDict.dictLine[predictLine] :
 					          _predictiveDict.dictLine[predictLine + 1] - _predictiveDict.dictLine[predictLine];
 					newLine = (char *)malloc(len + word.size() + 1);
+					if (newLine == NULL)
+						error("[PredictiveDialog::addWord] Cannot allocate memory for dictionary data");
+
 					char *ptr = newLine;
 					strncpy(ptr, _predictiveDict.dictLine[predictLine], len);
 					ptr[len - 1] = ' ';
@@ -835,11 +838,14 @@ void PredictiveDialog::addWord(Dict &dict, const Common::String &word, const Com
 					ptr[len + word.size()] = '\0';
 				}
 			} else {
-				// if we didnt find line in predictive dialog, we should copy to user dictionary
+				// if we didn't find line in predictive dialog, we should copy to user dictionary
 				// code + word
 				Common::String tmp;
 				tmp = tmpCode + word + '\0';
 				newLine = (char *)malloc(tmp.size());
+				if (newLine == NULL)
+					error("[PredictiveDialog::addWord] Cannot allocate memory for dictionary data");
+
 				strncpy(newLine, tmp.c_str(), tmp.size());
 			}
 		} else {
@@ -848,11 +854,14 @@ void PredictiveDialog::addWord(Dict &dict, const Common::String &word, const Com
 			Common::String tmp;
 			tmp = tmpCode + word + '\0';
 			newLine = (char *)malloc(tmp.size());
+			if (newLine == NULL)
+				error("[PredictiveDialog::addWord] Cannot allocate memory for dictionary data");
+
 			strncpy(newLine, tmp.c_str(), tmp.size());
 		}
 	}
 
-	// start from here are INSERTING new line to dictionaty ( dict )
+	// start from here are INSERTING new line to dictionary ( dict )
 	char **newDictLine = (char **)calloc(1, sizeof(char *) * (dict.dictLineCount + 1));
 	if (!newDictLine) {
 		warning("Predictive Dialog: cannot allocate memory for index buffer");
