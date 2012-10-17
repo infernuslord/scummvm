@@ -483,6 +483,9 @@ void SmackerDecoder::handleAudioTrack(byte track, uint32 chunkSize, uint32 unpac
 
 		// If it's track 0, play the audio data
 		byte *soundBuffer = (byte *)malloc(chunkSize + 1);
+		if (soundBuffer == NULL)
+			error("[SmackerDecoder::handleAudioTrack] Cannot allocate memory for sound buffer");
+
 		// Padding to keep the SmallHuffmanTrees from reading past the data end
 		soundBuffer[chunkSize] = 0x00;
 
@@ -697,6 +700,9 @@ void SmackerDecoder::SmackerVideoTrack::unpackPalette(Common::SeekableReadStream
 	uint32 len = 4 * stream->readByte();
 
 	byte *chunk = (byte *)malloc(len);
+	if (chunk == NULL)
+		error("[SmackerDecoder::SmackerVideoTrack::unpackPalette] Cannot allocate memory for palette chunk");
+
 	stream->read(chunk, len);
 	byte *p = chunk;
 

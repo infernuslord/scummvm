@@ -1538,6 +1538,8 @@ void IMDDecoder::emptySoundSlice(bool hasNextCmd) {
 	// Create an empty sound buffer and queue it
 
 	byte *soundBuf = (byte *)malloc(_soundSliceSize);
+	if (soundBuf == NULL)
+		error("[IMDDecoder::emptySoundSlice] Cannot allocate memory for sound buffer");
 
 	memset(soundBuf, 0, _soundSliceSize);
 

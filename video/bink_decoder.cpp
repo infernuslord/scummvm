@@ -1358,6 +1358,9 @@ void BinkDecoder::BinkAudioTrack::decodePacket() {
 
 	while (_audioInfo->bits->pos() < _audioInfo->bits->size()) {
 		int16 *out = (int16 *)malloc(outSize * 2);
+		if (out == NULL)
+			error("[BinkDecoder::BinkAudioTrack::decodePacket] Cannot allocate memory for audio block");
+
 		memset(out, 0, outSize * 2);
 
 		audioBlock(out);
