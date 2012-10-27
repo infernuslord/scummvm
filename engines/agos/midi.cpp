@@ -401,6 +401,9 @@ void MidiPlayer::loadSMF(Common::File *in, int song, bool sfx) {
 	// this is a GMF and we have to tack on our own
 	// End of Track event.
 	p->data = (byte *)calloc(size + 4, 1);
+	if (p->data == NULL)
+		error("[MidiPlayer::loadSMF] Cannot allocate memory for file data");
+
 	in->read(p->data, size);
 
 	uint32 timerRate = _driver->getBaseTempo();

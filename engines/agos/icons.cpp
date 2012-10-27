@@ -397,6 +397,9 @@ void AGOSEngine_Feeble::drawIconArray(uint num, Item *itemRef, int line, int cla
 		removeIconArray(num);
 
 	window->iconPtr=(IconBlock *)malloc(sizeof(IconBlock));
+	if (window->iconPtr == NULL)
+		error("[AGOSEngine_Feeble::drawIconArray] Cannot allocate memory for icon block");
+
 	window->iconPtr->itemRef = itemRef;
 	window->iconPtr->upArrow = -1;
 	window->iconPtr->downArrow = -1;

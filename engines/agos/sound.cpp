@@ -85,6 +85,9 @@ BaseSound::BaseSound(Audio::Mixer *mixer, const Common::String &filename, uint32
 	res = size / sizeof(uint32);
 
 	_offsets = (uint32 *)malloc(size + sizeof(uint32));
+	if (_offsets == NULL)
+		error("[BaseSound::BaseSound] Cannot allocate memory for offsets table");
+
 	_freeOffsets = true;
 
 	file.seek(base, SEEK_SET);
@@ -671,6 +674,9 @@ void Sound::playRawData(byte *soundData, uint sound, uint size, uint freq) {
 		return;
 
 	byte *buffer = (byte *)malloc(size);
+	if (buffer == NULL)
+		error("[Sound::playRawData] Cannot allocate memory for sound buffer");
+
 	memcpy(buffer, soundData, size);
 
 	byte flags = 0;

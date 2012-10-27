@@ -784,6 +784,8 @@ void AGOSEngine::initMouse() {
 	_maxCursorWidth = 16;
 	_maxCursorHeight = 16;
 	_mouseData = (byte *)calloc(_maxCursorWidth * _maxCursorHeight, 1);
+	if (_mouseData == NULL)
+		error("[AGOSEngine::initMouse] Cannot allocate memory for mouse data");
 
 	memset(_mouseData, 0xFF, _maxCursorWidth * _maxCursorHeight);
 

@@ -40,6 +40,9 @@ namespace AGOS {
 
 void AGOSEngine::addTimeEvent(uint16 timeout, uint16 subroutine_id) {
 	TimeEvent *te = (TimeEvent *)malloc(sizeof(TimeEvent)), *first, *last = NULL;
+	if (te == NULL)
+		error("[AGOSEngine::addTimeEvent] Cannot allocate memory for event");
+
 	uint32 cur_time = getTime();
 
 	if (getGameId() == GID_DIMP) {
