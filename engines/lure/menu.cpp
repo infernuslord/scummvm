@@ -43,6 +43,8 @@ MenuRecord::MenuRecord(const MenuRecordBounds *bounds, int numParams, ...) {
 
 	_numEntries = numParams;
 	_entries = (const char **) malloc(sizeof(const char *) * _numEntries);
+	if (_entries == NULL)
+		error("[MenuRecord::MenuRecord] Cannot allocate memory for entries");
 
 	va_start(params, numParams);
 	for (int index = 0; index < _numEntries; ++index)
