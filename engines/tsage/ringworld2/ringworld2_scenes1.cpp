@@ -12596,7 +12596,8 @@ bool Scene1945::Hotspot4::startAction(CursorType action, Event &event) {
 }
 
 bool Scene1945::Actor3::startAction(CursorType action, Event &event) {
-	if ((action == R2_ALCOHOL_LAMP_3) && (action == R2_ALCOHOL_LAMP_2)) {
+	// FIXME Check original engine
+	if ((action == R2_ALCOHOL_LAMP_3) || (action == R2_ALCOHOL_LAMP_2)) {
 		Scene1945 *scene = (Scene1945 *)R2_GLOBALS._sceneManager._scene;
 
 		scene->_fieldEAE = action;
