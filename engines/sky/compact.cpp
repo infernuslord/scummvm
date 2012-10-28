@@ -232,6 +232,9 @@ SkyCompact::SkyCompact() {
 	// these are the IDs that have to be saved into savegame files.
 	_numSaveIds = _cptFile->readUint16LE();
 	_saveIds = (uint16 *)malloc(_numSaveIds * sizeof(uint16));
+	if (_saveIds == NULL)
+		error("[SkyCompact::SkyCompact] Cannot allocate memory for savegame ids");
+
 	_cptFile->read(_saveIds, _numSaveIds * sizeof(uint16));
 	for (cnt = 0; cnt < _numSaveIds; cnt++)
 		_saveIds[cnt] = FROM_LE_16(_saveIds[cnt]);
@@ -419,6 +422,9 @@ uint8 *SkyCompact::createResetData(uint16 gameVersion) {
 	_cptFile->seek(_resetDataPos);
 	uint32 dataSize = _cptFile->readUint16LE() * sizeof(uint16);
 	uint16 *resetBuf = (uint16 *)malloc(dataSize);
+	if (resetBuf == NULL)
+		error("[SkyCompact::createResetData] Cannot allocate memory for reset buffer");
+
 	_cptFile->read(resetBuf, dataSize);
 	uint16 numDiffs = _cptFile->readUint16LE();
 	for (uint16 cnt = 0; cnt < numDiffs; cnt++) {

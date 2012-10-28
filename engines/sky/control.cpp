@@ -1425,6 +1425,9 @@ uint16 Control::restoreGameFromFile(bool autoSave) {
 	uint32 infSize = inf->readUint32LE();
 	if (infSize < 4) infSize = 4;
 	uint8 *saveData = (uint8 *)malloc(infSize);
+	if (saveData == NULL)
+		error("[Control::restoreGameFromFile] Cannot allocate memory for save data");
+
 	*(uint32 *)saveData = TO_LE_32(infSize);
 
 	if (inf->read(saveData+4, infSize-4) != infSize-4) {

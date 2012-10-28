@@ -297,8 +297,11 @@ DisplayedText Text::displayText(char *textPtr, uint8 *dest, bool center, uint16 
 	uint32 dtLineSize = pixelWidth * _charHeight;
 	uint32 numBytes = (dtLineSize * numLines) + sizeof(DataFileHeader) + 4;
 
-	if (!dest)
+	if (!dest) {
 		dest = (uint8 *)malloc(numBytes);
+		if (dest == NULL)
+			error("[Text::displayText] Cannot allocate memory for text sprite buffer");
+	}
 
 	// clear text sprite buffer
 	memset(dest + sizeof(DataFileHeader), 0, numBytes - sizeof(DataFileHeader));

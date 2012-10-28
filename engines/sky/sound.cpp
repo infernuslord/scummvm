@@ -1040,6 +1040,9 @@ void Sound::playSound(uint32 id, byte *sound, uint32 size, Audio::SoundHandle *h
 	flags |= Audio::FLAG_UNSIGNED;
 	size -= sizeof(DataFileHeader);
 	byte *buffer = (byte *)malloc(size);
+	if (buffer == NULL)
+		error("[Sound::playSound] Cannot allocate memory for sound buffer");
+
 	memcpy(buffer, sound+sizeof(DataFileHeader), size);
 
 	_mixer->stopID(id);
@@ -1234,6 +1237,9 @@ bool Sound::startSpeech(uint16 textNum) {
 
 	uint32 speechSize = ((DataFileHeader *)speechData)->s_tot_size - sizeof(DataFileHeader);
 	uint8 *playBuffer = (uint8 *)malloc(speechSize);
+	if (playBuffer == NULL)
+		error("[Sound::startSpeech] Cannot allocate memory for speech buffer");
+
 	memcpy(playBuffer, speechData + sizeof(DataFileHeader), speechSize);
 
 	free(speechData);

@@ -105,6 +105,8 @@ uint8 *Disk::loadFile(uint16 fileNr) {
 	}
 
 	uint8 *fileDest = (uint8 *)malloc(fileSize + 4); // allocate memory for file
+	if (fileDest == NULL)
+		error("[Disk::loadFile] Cannot allocate memory for file data");
 
 	_dataDiskHandle->seek(fileOffset, SEEK_SET);
 
@@ -126,6 +128,8 @@ uint8 *Disk::loadFile(uint16 fileNr) {
 		decompSize |= FROM_LE_16(fileHeader->s_tot_size);
 
 		uint8 *uncompDest = (uint8 *)malloc(decompSize);
+		if (uncompDest == NULL)
+			error("[Disk::loadFile] Cannot allocate memory for decompression");
 
 		int32 unpackLen;
 		void *output, *input = fileDest + sizeof(DataFileHeader);
