@@ -53,6 +53,9 @@ uint16 MemoryManager::allocate(uint32 size) {
 
 	// Create the new entry
 	_memoryPool[idx] = (MemoryHeader *)malloc(sizeof(MemoryHeader) + size);
+	if (_memoryPool[idx] == NULL)
+		error("[MemoryManager::allocate] Cannot allocate memory");
+
 	_memoryPool[idx]->id = MEMORY_ENTRY_ID;
 	_memoryPool[idx]->index = idx;
 	_memoryPool[idx]->lockCtr = 0;
