@@ -810,8 +810,11 @@ void AmigaDisk_ns::unpackBitmap(byte *dst, byte *src, uint16 numFrames, uint16 b
 
 			uint size = READ_BE_UINT32(src + 4);
 
-			if (tempBuffer == 0)
+			if (tempBuffer == 0) {
 				tempBuffer = (byte *)malloc(planeSize * NUM_PLANES);
+				if (tempBuffer == NULL)
+					error("[AmigaDisk_ns::unpackBitmap] Cannot allocate memory for plane buffer");
+			}
 
 			memcpy(tempBuffer, baseFrame, planeSize * NUM_PLANES);
 

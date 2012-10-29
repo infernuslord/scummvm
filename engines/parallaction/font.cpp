@@ -58,9 +58,15 @@ public:
 		_height = stream.readUint32BE();
 
 		_widths = (byte *)malloc(_numGlyphs);
+		if (_widths == NULL)
+			error("[BraFont::BraFont] Cannot allocate memory for glyph widths");
+
 		stream.read(_widths, _numGlyphs);
 
 		_offsets = (uint *)malloc(_numGlyphs * sizeof(uint));
+		if (_offsets == NULL)
+			error("[BraFont::BraFont] Cannot allocate memory for glyph offsets");
+
 		_offsets[0] = 0;
 		for (uint i = 1; i < _numGlyphs; i++)
 			_offsets[i] = _offsets[i-1] + _widths[i-1] * _height;
