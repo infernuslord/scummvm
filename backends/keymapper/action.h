@@ -43,6 +43,9 @@ struct KeyActionEntry {
 	const KeyState ks;
 	const char *id;
 	const char *description;
+
+	KeyActionEntry(const KeyState ks, const char *id, const char *description)
+		: ks(ks), id(id), description(description) {}
 };
 
 struct Action {

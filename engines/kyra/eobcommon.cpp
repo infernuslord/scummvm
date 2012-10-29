@@ -330,23 +330,23 @@ void EoBCoreEngine::initKeymap() {
 	Common::Keymap *const engineKeyMap = new Common::Keymap(kKeymapName);
 
 	const Common::KeyActionEntry keyActionEntries[] = {
-		{ Common::KeyState(Common::KEYCODE_UP), "MVF", _("Move Forward") },
-		{ Common::KeyState(Common::KEYCODE_DOWN), "MVB", _("Move Back") },
-		{ Common::KeyState(Common::KEYCODE_LEFT), "MVL", _("Move Left") },
-		{ Common::KeyState(Common::KEYCODE_RIGHT), "MVR", _("Move Right") },
-		{ Common::KeyState(Common::KEYCODE_HOME), "TL", _("Turn Left") },
-		{ Common::KeyState(Common::KEYCODE_PAGEUP), "TR", _("Turn Right") },
-		{ Common::KeyState(Common::KEYCODE_i), "INV", _("Open/Close Inventory") },
-		{ Common::KeyState(Common::KEYCODE_p), "SCE", _("Switch Inventory/Character screen") },
-		{ Common::KeyState(Common::KEYCODE_c), "CMP", _("Camp") },
-		{ Common::KeyState(Common::KEYCODE_SPACE), "CSP", _("Cast Spell") },
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_UP), "MVF", _("Move Forward") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_DOWN), "MVB", _("Move Back") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_LEFT), "MVL", _("Move Left") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_RIGHT), "MVR", _("Move Right") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_HOME), "TL", _("Turn Left") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_PAGEUP), "TR", _("Turn Right") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_i), "INV", _("Open/Close Inventory") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_p), "SCE", _("Switch Inventory/Character screen") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_c), "CMP", _("Camp") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_SPACE), "CSP", _("Cast Spell") ),
 		// TODO: Spell cursor, but this needs more thought, since different
 		// game versions use different keycodes.
-		{ Common::KeyState(Common::KEYCODE_1), "SL1", _("Spell Level 1") },
-		{ Common::KeyState(Common::KEYCODE_2), "SL2", _("Spell Level 2") },
-		{ Common::KeyState(Common::KEYCODE_3), "SL3", _("Spell Level 3") },
-		{ Common::KeyState(Common::KEYCODE_4), "SL4", _("Spell Level 4") },
-		{ Common::KeyState(Common::KEYCODE_5), "SL5", _("Spell Level 5") }
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_1), "SL1", _("Spell Level 1") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_2), "SL2", _("Spell Level 2") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_3), "SL3", _("Spell Level 3") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_4), "SL4", _("Spell Level 4") ),
+		Common::KeyActionEntry( Common::KeyState(Common::KEYCODE_5), "SL5", _("Spell Level 5") )
 	};
 
 	for (uint i = 0; i < ARRAYSIZE(keyActionEntries); ++i) {

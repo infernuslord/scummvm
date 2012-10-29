@@ -475,19 +475,19 @@ void LoLEngine::initKeymap() {
 	Common::Keymap *const engineKeyMap = new Common::Keymap(kKeymapName);
 
 	const Common::KeyActionEntry keyActionEntries[] = {
-		{Common::KeyState(Common::KEYCODE_F1, Common::ASCII_F1), "AT1", _("Attack 1")},
-		{Common::KeyState(Common::KEYCODE_F2, Common::ASCII_F2), "AT2", _("Attack 2")},
-		{Common::KeyState(Common::KEYCODE_F3, Common::ASCII_F3), "AT3", _("Attack 3")},
-		{Common::KeyState(Common::KEYCODE_UP), "MVF", _("Move Forward")},
-		{Common::KeyState(Common::KEYCODE_DOWN), "MVB", _("Move Back")},
-		{Common::KeyState(Common::KEYCODE_LEFT), "SLL", _("Slide Left")},
-		{Common::KeyState(Common::KEYCODE_RIGHT), "SLR", _("Slide Right")},
-		{Common::KeyState(Common::KEYCODE_HOME), "TL", _("Turn Left")},
-		{Common::KeyState(Common::KEYCODE_PAGEUP), "TR", _("Turn Right")},
-		{Common::KeyState(Common::KEYCODE_r), "RST", _("Rest")},
-		{Common::KeyState(Common::KEYCODE_o), "OPT", _("Options")},
-		{Common::KeyState(Common::KEYCODE_SLASH), "SPL", _("Choose Spell")},
-		{Common::KeyState(), 0, 0}
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_F1, Common::ASCII_F1), "AT1", _("Attack 1")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_F2, Common::ASCII_F2), "AT2", _("Attack 2")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_F3, Common::ASCII_F3), "AT3", _("Attack 3")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_UP), "MVF", _("Move Forward")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_DOWN), "MVB", _("Move Back")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_LEFT), "SLL", _("Slide Left")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_RIGHT), "SLR", _("Slide Right")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_HOME), "TL", _("Turn Left")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_PAGEUP), "TR", _("Turn Right")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_r), "RST", _("Rest")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_o), "OPT", _("Options")),
+		Common::KeyActionEntry(Common::KeyState(Common::KEYCODE_SLASH), "SPL", _("Choose Spell")),
+		Common::KeyActionEntry(Common::KeyState(), 0, 0)
 	};
 
 	for (const Common::KeyActionEntry *entry = keyActionEntries; entry->id; ++entry) {
