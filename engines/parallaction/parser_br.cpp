@@ -315,11 +315,11 @@ DECLARE_LOCATION_PARSER(location)  {
 
 	strcpy(_vm->_location._name, _tokens[1]);
 
-	bool flip = false;
+	//bool flip = false; // FIXME unused
 	int nextToken;
 
 	if (!scumm_stricmp("flip", _tokens[2])) {
-		flip = true;
+		//flip = true; // FIXME unused
 		nextToken = 3;
 	} else {
 		nextToken = 2;
