@@ -869,7 +869,7 @@ void ScummEngine::saveOrLoad(Serializer *s) {
 		MKLINE(ScummEngine, _roomResource, sleByte, VER(8)),
 		MKLINE(ScummEngine, _numObjectsInRoom, sleByte, VER(8)),
 		MKLINE(ScummEngine, _currentScript, sleByte, VER(8)),
-		MK_OBSOLETE_ARRAY(ScummEngine, _localScriptOffsets[0], sleUint32, _numLocalScripts, VER(8), VER(50)),
+		MK_OBSOLETE_ARRAY(ScummEngine, _localScriptOffsets[0], sleUint32, (uint32)_numLocalScripts, VER(8), VER(50)),
 
 
 		// vm.localvar grew from 25 to 40 script entries and then from
