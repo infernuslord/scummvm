@@ -44,9 +44,15 @@ Seq *getConstantSeq(bool seqFlag) {
 	Seq *seq;
 	if (seqFlag) {
 		seq = (Seq *)malloc(1 * sizeof(Seq));
+		if (seq == NULL)
+			error("[getConstantSeq] Cannot allocate memory for seq");
+
 		*seq = seq1[0];
 	} else {
 		seq = (Seq *)malloc(2 * sizeof(Seq));
+		if (seq == NULL)
+			error("[getConstantSeq] Cannot allocate memory for seq");
+
 		seq[0] = seq2[0];
 		seq[1] = seq2[1];
 	}
