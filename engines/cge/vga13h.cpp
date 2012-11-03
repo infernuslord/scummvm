@@ -199,7 +199,6 @@ Sprite *Sprite::expand() {
 	for (int i = 0; i < _shpCnt + 1; ++i)
 		shplist.push_back(NULL);
 
-	Seq *seq = NULL;
 	int shapeCount = 0,
 	    seqCount = 0,
 	    nearCount = 0,
@@ -207,8 +206,14 @@ Sprite *Sprite::expand() {
 	    maxnow = 0,
 	    maxnxt = 0;
 
+	Seq *seq = NULL;
 	CommandHandler::Command *nearList = NULL;
 	CommandHandler::Command *takeList = NULL;
+
+	Seq *tempSeq = NULL;
+	CommandHandler::Command *tempNearList = NULL;
+	CommandHandler::Command *tempTakeList = NULL;
+
 	_vm->mergeExt(fname, _file, kSprExt);
 	if (_vm->_resman->exist(fname)) { // sprite description file exist
 		EncryptedStream sprf(_vm, fname);
@@ -242,8 +247,12 @@ Sprite *Sprite::expand() {
 				break;
 			case 2:
 				// Seq
-				seq = (Seq *)realloc(seq, (seqCount + 1) * sizeof(*seq));
-				assert(seq != NULL);
+				tempSeq = (Seq *)realloc(seq, (seqCount + 1) * sizeof(*seq));
+				if (tempSeq == NULL)
+					error ("[Sprite::expand] Failed reallocating memory block");
+
+				seq = tempSeq;
+
 				Seq *s;
 				s = &seq[seqCount++];
 				s->_now = atoi(strtok(NULL, " \t,;/"));
@@ -268,8 +277,12 @@ Sprite *Sprite::expand() {
 				// Near
 				if (_nearPtr == kNoPtr)
 					break;
-				nearList = (CommandHandler::Command *)realloc(nearList, (nearCount + 1) * sizeof(*nearList));
-				assert(nearList != NULL);
+				tempNearList = (CommandHandler::Command *)realloc(nearList, (nearCount + 1) * sizeof(*nearList));
+				if (tempNearList == NULL)
+					error ("[Sprite::expand] Failed reallocating memory block");
+
+				nearList = tempNearList;
+
 				c = &nearList[nearCount++];
 				if ((c->_commandType = (CommandType)_vm->takeEnum(CommandHandler::_commandText, strtok(NULL, " \t,;/"))) < 0)
 					error("Bad NEAR in %d [%s]", lcnt, fname);
@@ -281,8 +294,12 @@ Sprite *Sprite::expand() {
 				// Take
 				if (_takePtr == kNoPtr)
 					break;
-				takeList = (CommandHandler::Command *)realloc(takeList, (takeCount + 1) * sizeof(*takeList));
-				assert(takeList != NULL);
+				tempTakeList = (CommandHandler::Command *)realloc(takeList, (takeCount + 1) * sizeof(*takeList));
+				if (tempTakeList == NULL)
+					error ("[Sprite::expand] Failed reallocating memory block");
+
+				takeList = tempTakeList;
+
 				c = &takeList[takeCount++];
 				if ((c->_commandType = (CommandType)_vm->takeEnum(CommandHandler::_commandText, strtok(NULL, " \t,;/"))) < 0)
 					error("Bad NEAR in %d [%s]", lcnt, fname);
