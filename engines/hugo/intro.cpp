@@ -60,6 +60,9 @@ void IntroHandler::loadIntroData(Common::SeekableReadStream &in) {
 			_introXSize = numRows;
 			_introX = (byte *)malloc(sizeof(byte) * _introXSize);
 			_introY = (byte *)malloc(sizeof(byte) * _introXSize);
+			if (_introX == NULL || _introY == NULL)
+				error("[IntroHandler::loadIntroData] Cannot allocate memory for intro data");
+
 			for (int i = 0; i < _introXSize; i++) {
 				_introX[i] = in.readByte();
 				_introY[i] = in.readByte();

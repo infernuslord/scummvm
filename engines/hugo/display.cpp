@@ -573,7 +573,13 @@ void Screen::loadPalette(Common::ReadStream &in) {
 	// Read palette
 	_paletteSize = in.readUint16BE();
 	_mainPalette = (byte *)malloc(sizeof(byte) * _paletteSize);
+	if (_mainPalette == NULL)
+		error("[Screen::loadPalette] Cannot allocate memory for main palette");
+
 	_curPalette = (byte *)malloc(sizeof(byte) * _paletteSize);
+	if (_curPalette == NULL)
+		error("[Screen::loadPalette] Cannot allocate memory for current palette");
+
 	for (int i = 0; i < _paletteSize; i++)
 		_curPalette[i] = _mainPalette[i] = in.readByte();
 }
@@ -718,7 +724,11 @@ void Screen_v1d::loadFont(const int16 fontId) {
 void Screen_v1d::loadFontArr(Common::ReadStream &in) {
 	for (int i = 0; i < kNumFonts; i++) {
 		_arrayFontSize[i] = in.readUint16BE();
+
 		_arrayFont[i] = (byte *)malloc(sizeof(byte) * _arrayFontSize[i]);
+		if (_arrayFont[i] == NULL)
+			error("[Screen_v1d::loadFontArr] Cannot allocate memory for font array");
+
 		for (int j = 0; j < _arrayFontSize[i]; j++) {
 			_arrayFont[i][j] = in.readByte();
 		}

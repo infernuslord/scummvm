@@ -260,6 +260,9 @@ void Scheduler::loadPoints(Common::SeekableReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_numBonuses = numElem;
 			_points = (Point *)malloc(sizeof(Point) * _numBonuses);
+			if (_points == NULL)
+				error("[Scheduler::loadPoints] Cannot allocate memory for points");
+
 			for (int i = 0; i < _numBonuses; i++) {
 				_points[i]._score = in.readByte();
 				_points[i]._scoredFl = false;
@@ -298,6 +301,9 @@ void Scheduler::readAct(Common::ReadStream &in, Act &curAct) {
 		curAct._a3._promptIndex = in.readSint16BE();
 		numSubAct = in.readUint16BE();
 		curAct._a3._responsePtr = (int *)malloc(sizeof(int) * numSubAct);
+		if (curAct._a3._responsePtr == NULL)
+			error("[Scheduler::readAct] Cannot allocate memory for response");
+
 		for (int k = 0; k < numSubAct; k++)
 			curAct._a3._responsePtr[k] = in.readSint16BE();
 		curAct._a3._actPassIndex = in.readUint16BE();
@@ -561,12 +567,18 @@ void Scheduler::loadActListArr(Common::ReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_actListArrSize = numElem;
 			_actListArr = (Act **)malloc(sizeof(Act *) * _actListArrSize);
+			if (_actListArr == NULL)
+				error("[Scheduler::loadActListArr] Cannot allocate memory for action list array");
 		}
 
 		for (int i = 0; i < numElem; i++) {
 			numSubElem = in.readUint16BE();
-			if (varnt == _vm->_gameVariant)
+			if (varnt == _vm->_gameVariant) {
 				_actListArr[i] = (Act *)malloc(sizeof(Act) * (numSubElem + 1));
+				if (_actListArr[i] == NULL)
+					error("[Scheduler::loadActListArr] Cannot allocate memory for action list");
+			}
+
 			for (int j = 0; j < numSubElem; j++) {
 				if (varnt == _vm->_gameVariant) {
 					readAct(in, _actListArr[i][j]);
@@ -594,12 +606,18 @@ void Scheduler::loadScreenAct(Common::SeekableReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_screenActsSize = numElem;
 			_screenActs = (uint16 **)malloc(sizeof(uint16 *) * numElem);
+			if (_screenActs == NULL)
+				error("[Scheduler::loadScreenAct] Cannot allocate memory for screen action array");
+
 			for (int i = 0; i < numElem; i++) {
 				uint16 numSubElem = in.readUint16BE();
 				if (numSubElem == 0) {
 					_screenActs[i] = 0;
 				} else {
 					_screenActs[i] = (uint16 *)malloc(sizeof(uint16) * numSubElem);
+					if (_screenActs[i] == NULL)
+						error("[Scheduler::loadScreenAct] Cannot allocate memory for screen action");
+
 					for (int j = 0; j < numSubElem; j++)
 						_screenActs[i][j] = in.readUint16BE();
 				}

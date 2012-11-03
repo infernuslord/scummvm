@@ -86,12 +86,18 @@ void Parser::loadCmdList(Common::ReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_cmdListSize = numElem;
 			_cmdList = (cmd **)malloc(sizeof(cmd *) * _cmdListSize);
+			if (_cmdList == NULL)
+				error("[Parser::loadCmdList] Cannot allocate memory for command list");
 		}
 
 		for (int16 i = 0; i < numElem; i++) {
 			uint16 numSubElem = in.readUint16BE();
-			if (varnt == _vm->_gameVariant)
+			if (varnt == _vm->_gameVariant) {
 				_cmdList[i] = (cmd *)malloc(sizeof(cmd) * numSubElem);
+				if (_cmdList[i] == NULL)
+					error("[Parser::loadCmdList] Cannot allocate memory for command list");
+			}
+
 			for (int16 j = 0; j < numSubElem; j++)
 				readCmd(in, (varnt == _vm->_gameVariant) ? _cmdList[i][j] : tmpCmd);
 		}
@@ -121,12 +127,17 @@ void Parser::loadBackgroundObjects(Common::ReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_backgroundObjectsSize = numElem;
 			_backgroundObjects = (Background **)malloc(sizeof(Background *) * numElem);
+			if (_backgroundObjects == NULL)
+				error("[Parser::loadBackgroundObjects] Cannot allocate memory for background objects");
 		}
 
 		for (int i = 0; i < numElem; i++) {
 			uint16 numSubElem = in.readUint16BE();
-			if (varnt == _vm->_gameVariant)
+			if (varnt == _vm->_gameVariant) {
 				_backgroundObjects[i] = (Background *)malloc(sizeof(Background) * numSubElem);
+				if (_backgroundObjects[i] == NULL)
+					error("[Parser::loadBackgroundObjects] Cannot allocate memory for background objects");
+			}
 
 			for (int j = 0; j < numSubElem; j++)
 				readBG(in, (varnt == _vm->_gameVariant) ? _backgroundObjects[i][j] : tmpBG);
@@ -145,8 +156,11 @@ void Parser::loadCatchallList(Common::ReadStream &in) {
 	for (int varnt = 0; varnt < _vm->_numVariant; varnt++) {
 		uint16 numElem = in.readUint16BE();
 
-		if (varnt == _vm->_gameVariant)
+		if (varnt == _vm->_gameVariant) {
 			_catchallList = wrkCatchallList = (Background *)malloc(sizeof(Background) * numElem);
+			if (!_catchallList)
+				error("[Parser::loadCatchallList] Cannot allocate memory for catch all list");
+		}
 
 		for (int i = 0; i < numElem; i++)
 			readBG(in, (varnt == _vm->_gameVariant) ? wrkCatchallList[i] : tmpBG);

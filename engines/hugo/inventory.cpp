@@ -81,6 +81,9 @@ void InventoryHandler::loadInvent(Common::SeekableReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_maxInvent = numElem;
 			_invent = (int16 *)malloc(sizeof(int16) * numElem);
+			if (_invent == NULL)
+				error("[InventoryHandler::loadInvent] Cannot allocate memory for inventory");
+
 			for (int i = 0; i < numElem; i++)
 				_invent[i] = in.readSint16BE();
 		} else {

@@ -449,6 +449,9 @@ bool HugoEngine::loadHugoDat() {
 		numElem = in.readUint16BE();
 		if (varnt == _gameVariant) {
 			_defltTunes = (int16 *)malloc(sizeof(int16) * numElem);
+			if (_defltTunes == NULL)
+				error("[HugoEngine::loadHugoDat] Cannot allocate memory for tunes");
+
 			for (int i = 0; i < numElem; i++)
 				_defltTunes[i] = in.readSint16BE();
 		} else {
@@ -463,6 +466,9 @@ bool HugoEngine::loadHugoDat() {
 		if (varnt == _gameVariant) {
 			_numStates = numElem;
 			_screenStates = (byte *)malloc(sizeof(byte) * numElem);
+			if (_screenStates == NULL)
+				error("[HugoEngine::loadHugoDat] Cannot allocate memory for screen states");
+
 			memset(_screenStates, 0, sizeof(byte) * numElem);
 		}
 	}
@@ -493,12 +499,18 @@ uint16 **HugoEngine::loadLongArray(Common::SeekableReadStream &in) {
 		uint16 numRows = in.readUint16BE();
 		if (varnt == _gameVariant) {
 			resArray = (uint16 **)malloc(sizeof(uint16 *) * (numRows + 1));
+			if (resArray == NULL)
+				error("[HugoEngine::loadLongArray] Cannot allocate memory for resource array");
+
 			resArray[numRows] = 0;
 		}
 		for (int i = 0; i < numRows; i++) {
 			uint16 numElems = in.readUint16BE();
 			if (varnt == _gameVariant) {
 				uint16 *resRow = (uint16 *)malloc(sizeof(uint16) * numElems);
+				if (resRow == NULL)
+					error("[HugoEngine::loadLongArray] Cannot allocate memory for resource row");
+
 				for (int j = 0; j < numElems; j++)
 					resRow[j] = in.readUint16BE();
 				resArray[i] = resRow;

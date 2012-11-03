@@ -94,10 +94,16 @@ char **TextHandler::loadTextsVariante(Common::ReadStream &in, uint16 *arraySize)
 		numTexts = in.readUint16BE();
 		entryLen = in.readUint16BE();
 		pos = (char *)malloc(entryLen);
+		if (pos == NULL)
+			error("[TextHandler::loadTextsVariante] Cannot allocate memory for text entry");
+
 		if (varnt == _vm->_gameVariant) {
 			if (arraySize)
 				*arraySize = numTexts;
 			res = (char **)malloc(sizeof(char *) * numTexts);
+			if (res == NULL)
+				error("[TextHandler::loadTextsVariante] Cannot allocate memory for texts");
+
 			res[0] = pos;
 			in.read(res[0], entryLen);
 			res[0] += DATAALIGNMENT;
@@ -133,6 +139,9 @@ char ***TextHandler::loadTextsArray(Common::ReadStream &in) {
 		arraySize = in.readUint16BE();
 		if (varnt == _vm->_gameVariant) {
 			resArray = (char ***)malloc(sizeof(char **) * (arraySize + 1));
+			if (resArray == NULL)
+				error("[TextHandler::loadTextsArray] Cannot allocate memory for resource array");
+
 			resArray[arraySize] = 0;
 		}
 		for (int i = 0; i < arraySize; i++) {
@@ -143,6 +152,9 @@ char ***TextHandler::loadTextsArray(Common::ReadStream &in) {
 			char **res = 0;
 			if (varnt == _vm->_gameVariant) {
 				res = (char **)malloc(sizeof(char *) * numTexts);
+				if (res == NULL)
+					error("[TextHandler::loadTextsArray] Cannot allocate memory for resource");
+
 				res[0] = pos;
 				in.read(res[0], entryLen);
 				res[0] += DATAALIGNMENT;
@@ -175,8 +187,13 @@ char ***TextHandler::loadTextsArray(Common::ReadStream &in) {
 char **TextHandler::loadTexts(Common::ReadStream &in) {
 	int numTexts = in.readUint16BE();
 	char **res = (char **)malloc(sizeof(char *) * numTexts);
+	if (res == NULL)
+		error("[TextHandler::loadTexts] Cannot allocate memory for text entries");
+
 	int entryLen = in.readUint16BE();
 	char *pos = (char *)malloc(entryLen);
+	if (pos == NULL)
+		error("[TextHandler::loadTexts] Cannot allocate memory for text entry");
 
 	in.read(pos, entryLen);
 

@@ -364,8 +364,11 @@ void MouseHandler::loadHotspots(Common::ReadStream &in) {
 	memset(&tmp, 0, sizeof(tmp));
 	for (int varnt = 0; varnt < _vm->_numVariant; varnt++) {
 		int numRows = in.readUint16BE();
-		if (varnt == _vm->_gameVariant)
+		if (varnt == _vm->_gameVariant) {
 			_hotspots = wrkHotspots = (Hotspot *)malloc(sizeof(Hotspot) * numRows);
+			if (_hotspots == NULL)
+				error("[MouseHandler::loadHotspots] Cannot allocate memory for hotspots");
+		}
 
 		for (int i = 0; i < numRows; i++)
 			readHotspot(in, (varnt == _vm->_gameVariant) ? wrkHotspots[i] : tmp);

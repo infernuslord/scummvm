@@ -404,6 +404,9 @@ void ObjectHandler::readUse(Common::ReadStream &in, Uses &curUse) {
 	curUse._dataIndex = in.readUint16BE();
 	uint16 numSubElem = in.readUint16BE();
 	curUse._targets = (Target *)malloc(sizeof(Target) * numSubElem);
+	if (curUse._targets == NULL)
+		error("[ObjectHandler::readUse] Cannot allocate memory for targets");
+
 	for (int j = 0; j < numSubElem; j++) {
 		curUse._targets[j]._nounIndex = in.readUint16BE();
 		curUse._targets[j]._verbIndex = in.readUint16BE();
@@ -422,6 +425,8 @@ void ObjectHandler::loadObjectUses(Common::ReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_usesSize = numElem;
 			_uses = (Uses *)malloc(sizeof(Uses) * numElem);
+			if (_uses == NULL)
+				error("[ObjectHandler::loadObjectUses] Cannot allocate memory for object uses");
 		}
 
 		for (int i = 0; i < numElem; i++) {
@@ -441,10 +446,14 @@ void ObjectHandler::readObject(Common::ReadStream &in, Object &curObject) {
 	curObject._dataIndex = in.readUint16BE();
 	uint16 numSubElem = in.readUint16BE();
 
-	if (numSubElem == 0)
+	if (numSubElem == 0) {
 		curObject._stateDataIndex = 0;
-	else
+	} else {
 		curObject._stateDataIndex = (uint16 *)malloc(sizeof(uint16) * numSubElem);
+		if (curObject._stateDataIndex == NULL)
+			error("[ObjectHandler::readObject] Cannot allocate memory for state data index");
+	}
+
 	for (int j = 0; j < numSubElem; j++)
 		curObject._stateDataIndex[j] = in.readUint16BE();
 
@@ -506,6 +515,8 @@ void ObjectHandler::loadObjectArr(Common::ReadStream &in) {
 		if (varnt == _vm->_gameVariant) {
 			_objCount = numElem;
 			_objects = (Object *)malloc(sizeof(Object) * numElem);
+			if (_objects == NULL)
+				error("[ObjectHandler::loadObjectArr] Cannot allocate memory for objects");
 		}
 
 		for (int i = 0; i < numElem; i++) {
