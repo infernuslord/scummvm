@@ -567,6 +567,9 @@ Queue::~Queue() {
 void Queue::clear() {
 	while (_head) {
 		Sprite *s = remove(_head);
+		if (s == NULL)
+			error("[Queue::clear] Invalid queue element");
+
 		if (s->_flags._kill)
 			delete s;
 	}
