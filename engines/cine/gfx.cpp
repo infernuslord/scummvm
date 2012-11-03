@@ -1916,6 +1916,8 @@ void maskBgOverlay(const byte *bgPtr, const byte *maskPtr, int16 width, int16 he
 		tmpWidth = g_cine->_animDataTable[it->frame]._realWidth;
 		tmpHeight = g_cine->_animDataTable[it->frame]._height;
 		mask = (byte *)malloc(tmpWidth * tmpHeight);
+		if (mask == NULL)
+			error("[maskBgOverlay] Cannot allocate memory for mask");
 
 		if (it->param == 0) {
 			generateMask(g_cine->_animDataTable[it->frame].data(), mask, tmpWidth * tmpHeight, it->part);

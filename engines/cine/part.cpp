@@ -277,6 +277,9 @@ byte *readFile(const char *filename, bool crypted) {
 	uint32 size = in.size();
 
 	byte *dataPtr = (byte *)malloc(size);
+	if (dataPtr == NULL)
+		error("[readFile] Cannot allocate memory for file data");
+
 	in.read(dataPtr, size);
 
 	// The Sony published CD version of Future Wars has its

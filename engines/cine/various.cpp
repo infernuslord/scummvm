@@ -1144,6 +1144,8 @@ void drawSprite(Common::List<overlay>::iterator it, const byte *spritePtr, const
 	uint16 maskSpriteIdx;
 
 	msk = (byte *)malloc(width * height);
+	if (msk == NULL)
+		error("[drawSprite] Cannot allocate memory for mask");
 
 	if (g_cine->getGameType() == Cine::GType_OS) {
 		generateMask(spritePtr, msk, width * height, g_cine->_objectTable[it->objIdx].part);
